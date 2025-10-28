@@ -110,7 +110,7 @@ export const hasKey = async (key: string): Promise<boolean> => {
  * Get all storage keys
  * @returns Array of all storage keys
  */
-export const getAllKeys = async (): Promise<string[]> => {
+export const getAllKeys = async (): Promise<readonly string[]> => {
   try {
     return await AsyncStorage.getAllKeys();
   } catch (error) {
@@ -124,7 +124,9 @@ export const getAllKeys = async (): Promise<string[]> => {
  * @param keys - Array of keys to retrieve
  * @returns Array of [key, value] pairs
  */
-export const multiGet = async (keys: string[]): Promise<[string, string | null][]> => {
+export const multiGet = async (
+  keys: string[]
+): Promise<readonly [string, string | null][]> => {
   try {
     return await AsyncStorage.multiGet(keys);
   } catch (error) {
