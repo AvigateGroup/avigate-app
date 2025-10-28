@@ -29,9 +29,11 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const updateField = (field: string, value: string) => {
-    setFormData({ ...formData, [field]: value });
-    setErrors({ ...errors, [field]: undefined });
-  };
+  setFormData({ ...formData, [field]: value });
+  const newErrors = { ...errors };
+  delete newErrors[field];
+  setErrors(newErrors);
+};
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
