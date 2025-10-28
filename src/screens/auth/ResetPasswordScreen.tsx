@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
@@ -14,10 +12,11 @@ import { validateOTP, validatePassword } from '@/utils/validation';
 import { handleApiError } from '@/utils/helpers';
 import { COLORS } from '@/constants/colors';
 import { APP_CONFIG } from '@/constants/config';
+import { ResetPasswordScreenNavigationProp, ResetPasswordScreenRouteProp } from '@/types/navigation.types';
 
 type ResetPasswordScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
-  route: RouteProp<{ params: { email: string } }, 'params'>;
+  navigation: ResetPasswordScreenNavigationProp;
+  route: ResetPasswordScreenRouteProp;
 };
 
 export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({

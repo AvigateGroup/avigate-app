@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
@@ -14,10 +12,11 @@ import { handleApiError, getDeviceInfo } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { APP_CONFIG } from '@/constants/config';
+import { VerifyLoginOTPScreenNavigationProp, VerifyLoginOTPScreenRouteProp } from '@/types/navigation.types';
 
 type VerifyLoginOTPScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
-  route: RouteProp<{ params: { email: string } }, 'params'>;
+  navigation: VerifyLoginOTPScreenNavigationProp;
+  route: VerifyLoginOTPScreenRouteProp;
 };
 
 export const VerifyLoginOTPScreen: React.FC<VerifyLoginOTPScreenProps> = ({

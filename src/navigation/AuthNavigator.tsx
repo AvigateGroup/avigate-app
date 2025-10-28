@@ -11,8 +11,9 @@ import { ResetPasswordScreen } from '@/screens/auth/ResetPasswordScreen';
 import { GoogleAuthScreen } from '@/screens/auth/GoogleAuthScreen';
 import { PhoneVerificationScreen } from '@/screens/auth/PhoneVerificationScreen';
 import { COLORS } from '@/constants/colors';
+import { AuthStackParamList } from '@/types/navigation.types';
 
-const Stack = createNativeStackNavigator();
+const Stack = createNativeStackNavigator<AuthStackParamList>();
 
 export const AuthNavigator = () => {
   return (
@@ -51,7 +52,7 @@ export const AuthNavigator = () => {
         component={VerifyLoginOTPScreen}
         options={{
           title: 'Verify Login',
-          gestureEnabled: false, // Prevent swipe back
+          gestureEnabled: false,
         }}
       />
 
@@ -61,7 +62,7 @@ export const AuthNavigator = () => {
         component={VerifyEmailScreen}
         options={{
           title: 'Verify Email',
-          gestureEnabled: false, // Prevent swipe back
+          gestureEnabled: false,
         }}
       />
 
@@ -80,7 +81,7 @@ export const AuthNavigator = () => {
         component={ResetPasswordScreen}
         options={{
           title: 'Reset Password',
-          gestureEnabled: false, // Prevent swipe back
+          gestureEnabled: false,
         }}
       />
 

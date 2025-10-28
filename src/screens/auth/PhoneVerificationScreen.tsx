@@ -2,8 +2,6 @@
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RouteProp } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -15,10 +13,11 @@ import { handleApiError } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { UserSex } from '@/types/auth.types';
+import { PhoneVerificationScreenNavigationProp, PhoneVerificationScreenRouteProp } from '@/types/navigation.types';
 
 type PhoneVerificationScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
-  route: RouteProp<{ params: { fromGoogleAuth?: boolean } }, 'params'>;
+  navigation: PhoneVerificationScreenNavigationProp;
+  route: PhoneVerificationScreenRouteProp;
 };
 
 export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = ({
