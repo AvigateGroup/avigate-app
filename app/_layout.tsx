@@ -1,6 +1,3 @@
-// app/_layout.tsx
-// Root layout for the entire application
-
 import { useEffect } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'react-native';
@@ -23,7 +20,7 @@ function RootLayoutNav() {
       router.replace('/(auth)/login');
     } else if (isAuthenticated && inAuthGroup) {
       // Redirect to home if authenticated
-      router.replace('/(tabs)');
+      router.replace('/');
     }
   }, [isAuthenticated, segments, isLoading]);
 
