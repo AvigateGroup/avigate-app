@@ -61,7 +61,7 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
         ]}
       >
         <Image
-          source={require('../assets/images/splash-icon.png')}
+          source={require('.../../assets/images/splash-icon.png')}
           style={styles.logo}
           resizeMode="contain"
         />
