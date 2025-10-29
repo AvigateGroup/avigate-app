@@ -88,4 +88,25 @@ export const authFeatureStyles = StyleSheet.create({
     color: COLORS.primary,
     fontWeight: '600',
   },
+
+  // ========== INFO BOX ==========
+  infoBox: {
+    backgroundColor: COLORS.backgroundLight,
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 24,
+  },
+
+  infoTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.text,
+    marginBottom: 12,
+  },
+
+  infoText: {
+    fontSize: 14,
+    color: COLORS.textLight,
+    lineHeight: 22,
+  },
 });
