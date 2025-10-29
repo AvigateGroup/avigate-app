@@ -28,10 +28,10 @@ export const GoogleAuthScreen: React.FC = () => {
   // Configure OAuth request
   const discovery = AuthSession.useAutoDiscovery('https://accounts.google.com');
   
-  // Use Expo's auth proxy for Web OAuth clients
-  // This works with http/https redirect URIs in Google Console
+  // Create redirect URI - This works with Web OAuth clients
+  // For Expo Go, this automatically generates the correct proxy URL
   const redirectUri = AuthSession.makeRedirectUri({
-    useProxy: true, // This makes it work with Web OAuth clients
+    scheme: 'avigate',
   });
 
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
