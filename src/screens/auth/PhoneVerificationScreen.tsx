@@ -1,7 +1,8 @@
 // src/screens/auth/PhoneVerificationScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -13,18 +14,13 @@ import { handleApiError } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { UserSex } from '@/types/auth.types';
-import { PhoneVerificationScreenNavigationProp, PhoneVerificationScreenRouteProp } from '@/types/navigation.types';
+import { authStyles, commonStyles } from '@/styles';
 
-type PhoneVerificationScreenProps = {
-  navigation: PhoneVerificationScreenNavigationProp;
-  route: PhoneVerificationScreenRouteProp;
-};
-
-export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  const { fromGoogleAuth } = route.params || {};
+export const PhoneVerificationScreen: React.FC = () => {
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const fromGoogleAuth = params.fromGoogleAuth === 'true';
+  
   const { user, updateUser } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [sex, setSex] = useState<UserSex | undefined>(undefined);
@@ -94,34 +90,34 @@ export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = (
   return (
     <AuthLayout showLogo={false}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.container}>
-          <View style={styles.iconContainer}>
-            <View style={styles.iconCircle}>
+        <View style={authStyles.centeredContainer}>
+          <View style={authStyles.iconContainer}>
+            <View style={authStyles.iconCircle}>
               <Icon name="call-outline" size={40} color={COLORS.primary} />
             </View>
           </View>
 
-          <Text style={styles.title}>Add Phone Number</Text>
-          <Text style={styles.subtitle}>
+          <Text style={authStyles.titleCentered}>Add Phone Number</Text>
+          <Text style={authStyles.subtitleCentered}>
             Help us secure your account by adding your phone number
           </Text>
 
-          <View style={styles.benefitsContainer}>
-            <View style={styles.benefitItem}>
+          <View style={authStyles.benefitsContainer}>
+            <View style={authStyles.benefitItem}>
               <Icon name="shield-checkmark-outline" size={20} color={COLORS.primary} />
-              <Text style={styles.benefitText}>Enhanced account security</Text>
+              <Text style={authStyles.benefitText}>Enhanced account security</Text>
             </View>
-            <View style={styles.benefitItem}>
+            <View style={authStyles.benefitItem}>
               <Icon name="notifications-outline" size={20} color={COLORS.primary} />
-              <Text style={styles.benefitText}>Receive important notifications</Text>
+              <Text style={authStyles.benefitText}>Receive important notifications</Text>
             </View>
-            <View style={styles.benefitItem}>
+            <View style={authStyles.benefitItem}>
               <Icon name="person-outline" size={20} color={COLORS.primary} />
-              <Text style={styles.benefitText}>Complete your profile</Text>
+              <Text style={authStyles.benefitText}>Complete your profile</Text>
             </View>
           </View>
 
-          <View style={styles.form}>
+          <View style={authStyles.form}>
             <Input
               label="Phone Number"
               placeholder="+234 800 000 0000"
@@ -135,12 +131,12 @@ export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = (
               leftIcon="call-outline"
             />
 
-            <Text style={styles.genderLabel}>Gender (Optional)</Text>
-            <View style={styles.genderContainer}>
+            <Text style={authStyles.genderLabel}>Gender (Optional)</Text>
+            <View style={authStyles.genderContainer}>
               <TouchableOpacity
                 style={[
-                  styles.genderButton,
-                  sex === UserSex.MALE && styles.genderButtonActive,
+                  authStyles.genderButton,
+                  sex === UserSex.MALE && authStyles.genderButtonActive,
                 ]}
                 onPress={() => setSex(UserSex.MALE)}
               >
@@ -151,8 +147,8 @@ export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = (
                 />
                 <Text
                   style={[
-                    styles.genderButtonText,
-                    sex === UserSex.MALE && styles.genderButtonTextActive,
+                    authStyles.genderButtonText,
+                    sex === UserSex.MALE && authStyles.genderButtonTextActive,
                   ]}
                 >
                   Male
@@ -161,8 +157,8 @@ export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = (
 
               <TouchableOpacity
                 style={[
-                  styles.genderButton,
-                  sex === UserSex.FEMALE && styles.genderButtonActive,
+                  authStyles.genderButton,
+                  sex === UserSex.FEMALE && authStyles.genderButtonActive,
                 ]}
                 onPress={() => setSex(UserSex.FEMALE)}
               >
@@ -173,8 +169,8 @@ export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = (
                 />
                 <Text
                   style={[
-                    styles.genderButtonText,
-                    sex === UserSex.FEMALE && styles.genderButtonTextActive,
+                    authStyles.genderButtonText,
+                    sex === UserSex.FEMALE && authStyles.genderButtonTextActive,
                   ]}
                 >
                   Female
@@ -186,22 +182,22 @@ export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = (
               title="Continue"
               onPress={handleSubmit}
               loading={loading}
-              style={styles.submitButton}
+              style={authStyles.submitButton}
             />
 
             {fromGoogleAuth && (
               <TouchableOpacity
                 onPress={handleSkip}
-                style={styles.skipButton}
+                style={authStyles.skipButton}
               >
-                <Text style={styles.skipText}>Skip for now</Text>
+                <Text style={authStyles.skipText}>Skip for now</Text>
               </TouchableOpacity>
             )}
           </View>
 
-          <View style={styles.footer}>
+          <View style={authStyles.footerWithIcon}>
             <Icon name="lock-closed-outline" size={16} color={COLORS.textMuted} />
-            <Text style={styles.footerText}>
+            <Text style={authStyles.footerTextWithIcon}>
               Your phone number is kept private and secure
             </Text>
           </View>
@@ -210,114 +206,3 @@ export const PhoneVerificationScreen: React.FC<PhoneVerificationScreenProps> = (
     </AuthLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 40,
-  },
-  iconContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: `${COLORS.primary}15`,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    marginBottom: 32,
-    textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 24,
-  },
-  benefitsContainer: {
-    marginBottom: 32,
-  },
-  benefitItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    paddingHorizontal: 8,
-  },
-  benefitText: {
-    fontSize: 14,
-    color: COLORS.text,
-    marginLeft: 12,
-  },
-  form: {
-    marginBottom: 24,
-  },
-  genderLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: 12,
-  },
-  genderContainer: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 24,
-  },
-  genderButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    backgroundColor: COLORS.background,
-  },
-  genderButtonActive: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
-  },
-  genderButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginLeft: 8,
-  },
-  genderButtonTextActive: {
-    color: COLORS.textWhite,
-  },
-  submitButton: {
-    marginTop: 8,
-  },
-  skipButton: {
-    alignItems: 'center',
-    marginTop: 16,
-  },
-  skipText: {
-    fontSize: 14,
-    color: COLORS.textLight,
-    textDecorationLine: 'underline',
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  footerText: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-    marginLeft: 8,
-    flex: 1,
-    lineHeight: 18,
-  },
-});

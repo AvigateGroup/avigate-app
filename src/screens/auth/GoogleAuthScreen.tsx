@@ -1,8 +1,8 @@
 // src/screens/auth/GoogleAuthScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { View, Text, TouchableOpacity, Platform, Alert } from 'react-native';
+import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
@@ -14,14 +14,10 @@ import { handleApiError, getDeviceInfo } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { GOOGLE_CONFIG } from '@/constants/config';
+import { authStyles, commonStyles } from '@/styles';
 
-type GoogleAuthScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
-};
-
-export const GoogleAuthScreen: React.FC<GoogleAuthScreenProps> = ({
-  navigation,
-}) => {
+export const GoogleAuthScreen: React.FC = () => {
+  const router = useRouter();
   const { login } = useAuth();
   const [loading, setLoading] = useState(false);
   const [isConfigured, setIsConfigured] = useState(false);
@@ -102,8 +98,9 @@ export const GoogleAuthScreen: React.FC<GoogleAuthScreenProps> = ({
 
         // Check if phone number is required
         if (response.data.requiresPhoneNumber) {
-          navigation.replace('PhoneVerification', {
-            fromGoogleAuth: true,
+          router.replace({
+            pathname: '/(auth)/phone-verification',
+            params: { fromGoogleAuth: 'true' }
           });
         }
       }
@@ -146,37 +143,37 @@ export const GoogleAuthScreen: React.FC<GoogleAuthScreenProps> = ({
 
   return (
     <AuthLayout showLogo={false}>
-      <View style={styles.container}>
+      <View style={authStyles.container}>
         <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
+          style={authStyles.backButtonWithIcon}
+          onPress={() => router.back()}
         >
           <Icon name="arrow-back" size={24} color={COLORS.text} />
         </TouchableOpacity>
 
-        <View style={styles.iconContainer}>
-          <View style={styles.googleIconCircle}>
+        <View style={authStyles.iconContainerLarge}>
+          <View style={authStyles.googleIconCircle}>
             <Icon name="logo-google" size={48} color="#4285F4" />
           </View>
         </View>
 
-        <Text style={styles.title}>Sign in with Google</Text>
-        <Text style={styles.subtitle}>
+        <Text style={authStyles.titleCentered}>Sign in with Google</Text>
+        <Text style={authStyles.subtitleCentered}>
           Use your Google account to sign in quickly and securely
         </Text>
 
-        <View style={styles.benefitsContainer}>
-          <View style={styles.benefitItem}>
+        <View style={authStyles.benefitsContainer}>
+          <View style={authStyles.benefitItem}>
             <Icon name="checkmark-circle" size={20} color={COLORS.success} />
-            <Text style={styles.benefitText}>Quick and secure sign-in</Text>
+            <Text style={authStyles.benefitText}>Quick and secure sign-in</Text>
           </View>
-          <View style={styles.benefitItem}>
+          <View style={authStyles.benefitItem}>
             <Icon name="checkmark-circle" size={20} color={COLORS.success} />
-            <Text style={styles.benefitText}>No password to remember</Text>
+            <Text style={authStyles.benefitText}>No password to remember</Text>
           </View>
-          <View style={styles.benefitItem}>
+          <View style={authStyles.benefitItem}>
             <Icon name="checkmark-circle" size={20} color={COLORS.success} />
-            <Text style={styles.benefitText}>Auto-verified email</Text>
+            <Text style={authStyles.benefitText}>Auto-verified email</Text>
           </View>
         </View>
 
@@ -185,25 +182,25 @@ export const GoogleAuthScreen: React.FC<GoogleAuthScreenProps> = ({
           onPress={handleGoogleSignIn}
           loading={loading}
           variant="outline"
-          style={styles.googleButton}
+          style={authStyles.googleButton}
         />
 
-        <View style={styles.divider}>
-          <View style={styles.dividerLine} />
-          <Text style={styles.dividerText}>OR</Text>
-          <View style={styles.dividerLine} />
+        <View style={commonStyles.divider}>
+          <View style={commonStyles.dividerLine} />
+          <Text style={commonStyles.dividerText}>OR</Text>
+          <View style={commonStyles.dividerLine} />
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}
-          style={styles.emailSignIn}
+          onPress={() => router.push('/(auth)/login')}
+          style={authStyles.emailSignIn}
         >
-          <Text style={styles.emailSignInText}>Sign in with Email</Text>
+          <Text style={authStyles.emailSignInText}>Sign in with Email</Text>
         </TouchableOpacity>
 
-        <View style={styles.footer}>
+        <View style={authStyles.footerWithIcon}>
           <Icon name="shield-checkmark-outline" size={16} color={COLORS.textMuted} />
-          <Text style={styles.footerText}>
+          <Text style={authStyles.footerTextWithIcon}>
             We'll never post anything without your permission
           </Text>
         </View>
@@ -211,102 +208,3 @@ export const GoogleAuthScreen: React.FC<GoogleAuthScreenProps> = ({
     </AuthLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  iconContainer: {
-    alignItems: 'center',
-    marginBottom: 32,
-  },
-  googleIconCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: COLORS.backgroundLight,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    marginBottom: 32,
-    textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 24,
-  },
-  benefitsContainer: {
-    marginBottom: 32,
-  },
-  benefitItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-    paddingHorizontal: 8,
-  },
-  benefitText: {
-    fontSize: 14,
-    color: COLORS.text,
-    marginLeft: 12,
-  },
-  googleButton: {
-    marginBottom: 24,
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.border,
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-    color: COLORS.textMuted,
-  },
-  emailSignIn: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  emailSignInText: {
-    fontSize: 14,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  footer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  footerText: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-    marginLeft: 8,
-    flex: 1,
-    lineHeight: 18,
-  },
-});

@@ -1,8 +1,8 @@
 // src/screens/auth/RegisterScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router'; 
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { Input } from '@/components/common/Input';
@@ -10,13 +10,10 @@ import { Button } from '@/components/common/Button';
 import { authApi } from '@/api/auth.api';
 import { validateEmail, validatePassword, validatePhoneNumber } from '@/utils/validation';
 import { handleApiError, getDeviceInfo } from '@/utils/helpers';
-import { COLORS } from '@/constants/colors';
+import { authStyles, commonStyles } from '@/styles'; 
 
-type RegisterScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
-};
-
-export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) => {
+export const RegisterScreen: React.FC = () => {
+  const router = useRouter(); 
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -29,11 +26,11 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const updateField = (field: string, value: string) => {
-  setFormData({ ...formData, [field]: value });
-  const newErrors = { ...errors };
-  delete newErrors[field];
-  setErrors(newErrors);
-};
+    setFormData({ ...formData, [field]: value });
+    const newErrors = { ...errors };
+    delete newErrors[field];
+    setErrors(newErrors);
+  };
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -96,9 +93,10 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
           text2: response.message,
         });
 
-        // Navigate to email verification
-        navigation.navigate('VerifyEmail', { 
-          email: formData.email.toLowerCase().trim() 
+        // Navigate using Expo Router
+        router.push({
+          pathname: '/(auth)/verify-email',
+          params: { email: formData.email.toLowerCase().trim() }
         });
       }
     } catch (error: any) {
@@ -114,11 +112,12 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
 
   return (
     <AuthLayout showLogo={false}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Create Account</Text>
-        <Text style={styles.subtitle}>Sign up to get started with Avigate</Text>
+      {/* Using centralized styles - no local StyleSheet needed! */}
+      <View style={authStyles.container}>
+        <Text style={authStyles.title}>Create Account</Text>
+        <Text style={authStyles.subtitle}>Sign up to get started with Avigate</Text>
 
-        <View style={styles.form}>
+        <View style={authStyles.form}>
           <Input
             label="First Name"
             placeholder="Enter your first name"
@@ -182,83 +181,29 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = ({ navigation }) =>
             title="Sign Up"
             onPress={handleRegister}
             loading={loading}
-            style={styles.registerButton}
+            style={commonStyles.marginBottom24}
           />
 
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR</Text>
-            <View style={styles.dividerLine} />
+          <View style={commonStyles.divider}>
+            <View style={commonStyles.dividerLine} />
+            <Text style={commonStyles.dividerText}>OR</Text>
+            <View style={commonStyles.dividerLine} />
           </View>
 
           <Button
             title="Sign up with Google"
-            onPress={() => navigation.navigate('GoogleAuth')}
+            onPress={() => router.push('/(auth)/google-auth')}
             variant="outline"
           />
         </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-            <Text style={styles.footerLink}>Sign In</Text>
+        <View style={authStyles.footerWithPadding}>
+          <Text style={commonStyles.footerText}>Already have an account? </Text>
+          <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+            <Text style={commonStyles.footerLink}>Sign In</Text>
           </TouchableOpacity>
         </View>
       </View>
     </AuthLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    marginBottom: 32,
-  },
-  form: {
-    marginBottom: 24,
-  },
-  registerButton: {
-    marginBottom: 24,
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.border,
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-    color: COLORS.textMuted,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 24,
-  },
-  footerText: {
-    fontSize: 14,
-    color: COLORS.textLight,
-  },
-  footerLink: {
-    fontSize: 14,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-});

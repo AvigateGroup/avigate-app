@@ -1,8 +1,8 @@
 // src/screens/auth/LoginScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { Input } from '@/components/common/Input';
@@ -10,13 +10,10 @@ import { Button } from '@/components/common/Button';
 import { authApi } from '@/api/auth.api';
 import { validateEmail } from '@/utils/validation';
 import { handleApiError, getDeviceInfo } from '@/utils/helpers';
-import { COLORS } from '@/constants/colors';
+import { authStyles, commonStyles } from '@/styles';
 
-type LoginScreenProps = {
-  navigation: NativeStackNavigationProp<any>;
-};
-
-export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
+export const LoginScreen: React.FC = () => {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -58,7 +55,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
         });
 
         // Navigate to OTP verification screen
-        navigation.navigate('VerifyLoginOTP', { email: email.toLowerCase().trim() });
+        router.push({
+          pathname: '/(auth)/verify-login-otp',
+          params: { email: email.toLowerCase().trim() }
+        });
       }
     } catch (error: any) {
       Toast.show({
@@ -73,11 +73,11 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   return (
     <AuthLayout>
-      <View style={styles.container}>
-        <Text style={styles.title}>Welcome Back</Text>
-        <Text style={styles.subtitle}>Sign in to continue to Avigate</Text>
+      <View style={authStyles.container}>
+        <Text style={authStyles.title}>Welcome Back</Text>
+        <Text style={authStyles.subtitle}>Sign in to continue to Avigate</Text>
 
-        <View style={styles.form}>
+        <View style={authStyles.form}>
           <Input
             label="Email"
             placeholder="Enter your email"
@@ -106,104 +106,39 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
           />
 
           <TouchableOpacity
-            onPress={() => navigation.navigate('ForgotPassword')}
-            style={styles.forgotPassword}
+            onPress={() => router.push('/(auth)/forgot-password')}
+            style={authStyles.forgotPassword}
           >
-            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+            <Text style={authStyles.forgotPasswordText}>Forgot Password?</Text>
           </TouchableOpacity>
 
           <Button
             title="Sign In"
             onPress={handleLogin}
             loading={loading}
-            style={styles.loginButton}
+            style={commonStyles.marginBottom24}
           />
 
-          <View style={styles.divider}>
-            <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>OR</Text>
-            <View style={styles.dividerLine} />
+          <View style={commonStyles.divider}>
+            <View style={commonStyles.dividerLine} />
+            <Text style={commonStyles.dividerText}>OR</Text>
+            <View style={commonStyles.dividerLine} />
           </View>
 
           <Button
             title="Sign in with Google"
-            onPress={() => navigation.navigate('GoogleAuth')}
+            onPress={() => router.push('/(auth)/google-auth')}
             variant="outline"
-            style={styles.googleButton}
           />
         </View>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-            <Text style={styles.footerLink}>Sign Up</Text>
+        <View style={commonStyles.footer}>
+          <Text style={commonStyles.footerText}>Don't have an account? </Text>
+          <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
+            <Text style={commonStyles.footerLink}>Sign Up</Text>
           </TouchableOpacity>
         </View>
       </View>
     </AuthLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    marginBottom: 32,
-  },
-  form: {
-    marginBottom: 24,
-  },
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: 24,
-  },
-  forgotPasswordText: {
-    fontSize: 14,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  loginButton: {
-    marginBottom: 24,
-  },
-  divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  dividerLine: {
-    flex: 1,
-    height: 1,
-    backgroundColor: COLORS.border,
-  },
-  dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
-    color: COLORS.textMuted,
-  },
-  googleButton: {
-    marginBottom: 24,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 14,
-    color: COLORS.textLight,
-  },
-  footerLink: {
-    fontSize: 14,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-});

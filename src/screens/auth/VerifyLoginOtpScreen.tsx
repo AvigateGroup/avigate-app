@@ -1,7 +1,8 @@
 // src/screens/auth/VerifyLoginOTPScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
@@ -10,20 +11,14 @@ import { authApi } from '@/api/auth.api';
 import { validateOTP } from '@/utils/validation';
 import { handleApiError, getDeviceInfo } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
-import { COLORS } from '@/constants/colors';
 import { APP_CONFIG } from '@/constants/config';
-import { VerifyLoginOTPScreenNavigationProp, VerifyLoginOTPScreenRouteProp } from '@/types/navigation.types';
+import { authStyles, commonStyles } from '@/styles';
 
-type VerifyLoginOTPScreenProps = {
-  navigation: VerifyLoginOTPScreenNavigationProp;
-  route: VerifyLoginOTPScreenRouteProp;
-};
-
-export const VerifyLoginOTPScreen: React.FC<VerifyLoginOTPScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  const { email } = route.params;
+export const VerifyLoginOTPScreen: React.FC = () => {
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const email = params.email as string;
+  
   const { login } = useAuth();
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -71,6 +66,7 @@ export const VerifyLoginOTPScreen: React.FC<VerifyLoginOTPScreenProps> = ({
         );
 
         // Navigation handled by AuthContext/AppNavigator
+        // User will be redirected to main app automatically
       }
     } catch (error: any) {
       const errorMessage = handleApiError(error);
@@ -116,14 +112,14 @@ export const VerifyLoginOTPScreen: React.FC<VerifyLoginOTPScreenProps> = ({
 
   return (
     <AuthLayout showLogo={false}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Verify Your Login</Text>
-        <Text style={styles.subtitle}>
+      <View style={authStyles.centeredContainer}>
+        <Text style={authStyles.titleCentered}>Verify Your Login</Text>
+        <Text style={authStyles.subtitleCentered}>
           Enter the 6-digit code sent to{'\n'}
-          <Text style={styles.email}>{email}</Text>
+          <Text style={authStyles.email}>{email}</Text>
         </Text>
 
-        <View style={styles.otpContainer}>
+        <View style={authStyles.otpContainer}>
           <OTPInput value={otp} onChange={setOtp} error={error} />
         </View>
 
@@ -132,82 +128,30 @@ export const VerifyLoginOTPScreen: React.FC<VerifyLoginOTPScreenProps> = ({
           onPress={handleVerify}
           loading={loading}
           disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
-          style={styles.verifyButton}
+          style={commonStyles.marginBottom24}
         />
 
-        <View style={styles.resendContainer}>
+        <View style={authStyles.resendContainer}>
           {canResend ? (
             <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
-              <Text style={styles.resendText}>
+              <Text style={authStyles.resendText}>
                 {resendLoading ? 'Sending...' : 'Resend Code'}
               </Text>
             </TouchableOpacity>
           ) : (
-            <Text style={styles.countdownText}>
+            <Text style={authStyles.countdownText}>
               Resend code in {countdown}s
             </Text>
           )}
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.changeEmail}
+          onPress={() => router.back()}
+          style={authStyles.changeEmail}
         >
-          <Text style={styles.changeEmailText}>Change Email</Text>
+          <Text style={authStyles.changeEmailText}>Change Email</Text>
         </TouchableOpacity>
       </View>
     </AuthLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 40,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    marginBottom: 40,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  email: {
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  otpContainer: {
-    marginBottom: 32,
-  },
-  verifyButton: {
-    marginBottom: 24,
-  },
-  resendContainer: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  resendText: {
-    fontSize: 16,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  countdownText: {
-    fontSize: 14,
-    color: COLORS.textMuted,
-  },
-  changeEmail: {
-    alignItems: 'center',
-  },
-  changeEmailText: {
-    fontSize: 14,
-    color: COLORS.textLight,
-    textDecorationLine: 'underline',
-  },
-});

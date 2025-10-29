@@ -1,7 +1,8 @@
 // src/screens/auth/VerifyEmailScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
@@ -10,20 +11,14 @@ import { authApi } from '@/api/auth.api';
 import { validateOTP } from '@/utils/validation';
 import { handleApiError } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
-import { COLORS } from '@/constants/colors';
 import { APP_CONFIG } from '@/constants/config';
-import { VerifyEmailScreenNavigationProp, VerifyEmailScreenRouteProp } from '@/types/navigation.types';
+import { authStyles, commonStyles } from '@/styles';
 
-type VerifyEmailScreenProps = {
-  navigation: VerifyEmailScreenNavigationProp;
-  route: VerifyEmailScreenRouteProp;
-};
-
-export const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  const { email } = route.params;
+export const VerifyEmailScreen: React.FC = () => {
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const email = params.email as string;
+  
   const { login } = useAuth();
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -70,12 +65,10 @@ export const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({
             response.data.refreshToken,
             response.data.user
           );
+          // AuthContext will handle navigation to main app
         } else {
           // Navigate to login
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-          });
+          router.replace('/(auth)/login');
         }
       }
     } catch (error: any) {
@@ -122,18 +115,18 @@ export const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({
 
   return (
     <AuthLayout showLogo={false}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Verify Your Email</Text>
-        <Text style={styles.subtitle}>
+      <View style={authStyles.centeredContainer}>
+        <Text style={authStyles.titleCentered}>Verify Your Email</Text>
+        <Text style={authStyles.subtitleCentered}>
           We've sent a verification code to{'\n'}
-          <Text style={styles.email}>{email}</Text>
+          <Text style={authStyles.email}>{email}</Text>
         </Text>
 
-        <Text style={styles.instruction}>
+        <Text style={authStyles.instruction}>
           Please enter the 6-digit code to verify your email address
         </Text>
 
-        <View style={styles.otpContainer}>
+        <View style={authStyles.otpContainer}>
           <OTPInput value={otp} onChange={setOtp} error={error} />
         </View>
 
@@ -142,115 +135,40 @@ export const VerifyEmailScreen: React.FC<VerifyEmailScreenProps> = ({
           onPress={handleVerify}
           loading={loading}
           disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
-          style={styles.verifyButton}
+          style={commonStyles.marginBottom24}
         />
 
-        <View style={styles.resendContainer}>
+        <View style={authStyles.resendContainer}>
           {canResend ? (
-            <View style={styles.resendTextContainer}>
-              <Text style={styles.resendLabel}>Didn't receive the code? </Text>
+            <View style={authStyles.resendTextContainer}>
+              <Text style={authStyles.resendLabel}>Didn't receive the code? </Text>
               <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
-                <Text style={styles.resendLink}>
+                <Text style={authStyles.resendLink}>
                   {resendLoading ? 'Sending...' : 'Resend Code'}
                 </Text>
               </TouchableOpacity>
             </View>
           ) : (
-            <Text style={styles.countdownText}>
+            <Text style={authStyles.countdownText}>
               Resend code in {countdown}s
             </Text>
           )}
         </View>
 
-        <View style={styles.helpContainer}>
-          <Text style={styles.helpText}>
+        <View style={authStyles.helpContainer}>
+          <Text style={authStyles.helpText}>
             Make sure to check your spam folder
           </Text>
         </View>
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}
-          style={styles.backToLogin}
+          onPress={() => router.push('/(auth)/login')}
+          style={authStyles.backToLogin}
         >
-          <Text style={styles.backToLoginText}>Back to Login</Text>
+          <Text style={authStyles.backToLoginText}>Back to Login</Text>
         </TouchableOpacity>
       </View>
     </AuthLayout>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 40,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    marginBottom: 24,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  email: {
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  instruction: {
-    fontSize: 14,
-    color: COLORS.textMuted,
-    textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 20,
-  },
-  otpContainer: {
-    marginBottom: 32,
-  },
-  verifyButton: {
-    marginBottom: 24,
-  },
-  resendContainer: {
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  resendTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  resendLabel: {
-    fontSize: 14,
-    color: COLORS.textLight,
-  },
-  resendLink: {
-    fontSize: 14,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  countdownText: {
-    fontSize: 14,
-    color: COLORS.textMuted,
-  },
-  helpContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  helpText: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-    fontStyle: 'italic',
-  },
-  backToLogin: {
-    alignItems: 'center',
-  },
-  backToLoginText: {
-    fontSize: 14,
-    color: COLORS.textLight,
-    textDecorationLine: 'underline',
-  },
-});

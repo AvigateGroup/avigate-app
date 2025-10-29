@@ -4,7 +4,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
   Alert,
@@ -16,6 +15,7 @@ import Geolocation from '@react-native-community/geolocation';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
+import { homeStyles, platformStyles } from '@/styles';
 
 interface Location {
   latitude: number;
@@ -142,21 +142,21 @@ export const HomeScreen = () => {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={homeStyles.loadingContainer}>
         <ActivityIndicator size="large" color={COLORS.primary} />
-        <Text style={styles.loadingText}>Getting your location...</Text>
+        <Text style={homeStyles.loadingText}>Getting your location...</Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View style={homeStyles.container}>
       {/* Map */}
       {location && (
         <MapView
           ref={mapRef}
           provider={PROVIDER_GOOGLE}
-          style={styles.map}
+          style={homeStyles.map}
           initialRegion={location}
           showsUserLocation
           showsMyLocationButton={false}
@@ -172,8 +172,8 @@ export const HomeScreen = () => {
             title={`${user?.firstName}'s Location`}
             description={address}
           >
-            <View style={styles.markerContainer}>
-              <View style={styles.marker}>
+            <View style={homeStyles.markerContainer}>
+              <View style={homeStyles.marker}>
                 <Icon name="person" size={20} color={COLORS.textWhite} />
               </View>
             </View>
@@ -182,24 +182,24 @@ export const HomeScreen = () => {
       )}
 
       {/* Location Info Card */}
-      <View style={styles.infoCard}>
-        <View style={styles.infoHeader}>
+      <View style={homeStyles.infoCard}>
+        <View style={homeStyles.infoHeader}>
           <Icon name="location" size={24} color={COLORS.primary} />
-          <Text style={styles.infoTitle}>Your Location</Text>
+          <Text style={homeStyles.infoTitle}>Your Location</Text>
         </View>
-        <Text style={styles.infoAddress}>{address}</Text>
+        <Text style={homeStyles.infoAddress}>{address}</Text>
         {location && (
-          <Text style={styles.infoCoordinates}>
+          <Text style={[homeStyles.infoCoordinates, platformStyles.monospaceText]}>
             {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
           </Text>
         )}
       </View>
 
       {/* Action Buttons */}
-      <View style={styles.actionButtons}>
+      <View style={homeStyles.actionButtons}>
         {/* Center on User Button */}
         <TouchableOpacity
-          style={styles.actionButton}
+          style={homeStyles.actionButton}
           onPress={centerMapOnUser}
           activeOpacity={0.7}
         >
@@ -208,7 +208,7 @@ export const HomeScreen = () => {
 
         {/* Refresh Location Button */}
         <TouchableOpacity
-          style={styles.actionButton}
+          style={homeStyles.actionButton}
           onPress={refreshLocation}
           activeOpacity={0.7}
         >
@@ -217,124 +217,11 @@ export const HomeScreen = () => {
       </View>
 
       {/* Welcome Banner */}
-      <View style={styles.welcomeBanner}>
-        <Text style={styles.welcomeText}>
+      <View style={homeStyles.welcomeBanner}>
+        <Text style={homeStyles.welcomeText}>
           Welcome back, {user?.firstName}! 👋
         </Text>
       </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: COLORS.background,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: COLORS.background,
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: COLORS.textLight,
-  },
-  map: {
-    flex: 1,
-  },
-  markerContainer: {
-    alignItems: 'center',
-  },
-  marker: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 3,
-    borderColor: COLORS.textWhite,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    elevation: 5,
-  },
-  welcomeBanner: {
-    position: 'absolute',
-    top: 16,
-    left: 16,
-    right: 16,
-    backgroundColor: COLORS.textWhite,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  welcomeText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.text,
-  },
-  infoCard: {
-    position: 'absolute',
-    bottom: 100,
-    left: 16,
-    right: 16,
-    backgroundColor: COLORS.textWhite,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  infoHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  infoTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginLeft: 8,
-  },
-  infoAddress: {
-    fontSize: 14,
-    color: COLORS.text,
-    lineHeight: 20,
-    marginBottom: 4,
-  },
-  infoCoordinates: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-  },
-  actionButtons: {
-    position: 'absolute',
-    right: 16,
-    bottom: 280,
-    gap: 12,
-  },
-  actionButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: COLORS.primary,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-});

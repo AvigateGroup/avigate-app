@@ -1,7 +1,8 @@
 // src/screens/auth/ResetPasswordScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { useRouter, useLocalSearchParams } from 'expo-router'; 
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
@@ -10,20 +11,14 @@ import { Button } from '@/components/common/Button';
 import { authApi } from '@/api/auth.api';
 import { validateOTP, validatePassword } from '@/utils/validation';
 import { handleApiError } from '@/utils/helpers';
-import { COLORS } from '@/constants/colors';
 import { APP_CONFIG } from '@/constants/config';
-import { ResetPasswordScreenNavigationProp, ResetPasswordScreenRouteProp } from '@/types/navigation.types';
+import { authStyles, commonStyles } from '@/styles'; 
 
-type ResetPasswordScreenProps = {
-  navigation: ResetPasswordScreenNavigationProp;
-  route: ResetPasswordScreenRouteProp;
-};
+export const ResetPasswordScreen: React.FC = () => {
+  const router = useRouter(); 
+  const params = useLocalSearchParams(); 
+  const email = params.email as string;
 
-export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
-  navigation,
-  route,
-}) => {
-  const { email } = route.params;
   const [step, setStep] = useState<'otp' | 'password'>('otp');
   const [otp, setOtp] = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -100,8 +95,8 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
           text2: 'You can now login with your new password',
         });
 
-        // Navigate to login
-        navigation.navigate('Login');
+        // Navigate to login using Expo Router
+        router.push('/(auth)/login');
       }
     } catch (error: any) {
       Toast.show({
@@ -145,27 +140,27 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
   return (
     <AuthLayout showLogo={false}>
       <ScrollView 
-        style={styles.container}
+        style={authStyles.scrollContainer}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => step === 'password' ? setStep('otp') : navigation.goBack()}
+          style={authStyles.backButton}
+          onPress={() => step === 'password' ? setStep('otp') : router.back()}
           activeOpacity={0.7}
         >
-          <Text style={styles.backButtonText}>← Back</Text>
+          <Text style={authStyles.backButtonText}>← Back</Text>
         </TouchableOpacity>
 
         {step === 'otp' ? (
           <>
-            <Text style={styles.title}>Enter Reset Code</Text>
-            <Text style={styles.subtitle}>
+            <Text style={authStyles.titleCentered}>Enter Reset Code</Text>
+            <Text style={authStyles.subtitleCentered}>
               We've sent a 6-digit code to{'\n'}
-              <Text style={styles.email}>{email}</Text>
+              <Text style={authStyles.email}>{email}</Text>
             </Text>
 
-            <View style={styles.otpContainer}>
+            <View style={authStyles.otpContainer}>
               <OTPInput value={otp} onChange={setOtp} error={errors.otp} />
             </View>
 
@@ -174,18 +169,18 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
               onPress={handleContinue}
               loading={loading}
               disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
-              style={styles.button}
+              style={commonStyles.marginBottom16}
             />
 
-            <View style={styles.resendContainer}>
+            <View style={authStyles.resendContainer}>
               {canResend ? (
                 <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
-                  <Text style={styles.resendText}>
+                  <Text style={authStyles.resendText}>
                     {resendLoading ? 'Sending...' : 'Resend Code'}
                   </Text>
                 </TouchableOpacity>
               ) : (
-                <Text style={styles.countdownText}>
+                <Text style={authStyles.countdownText}>
                   Resend code in {countdown}s
                 </Text>
               )}
@@ -193,12 +188,12 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
           </>
         ) : (
           <>
-            <Text style={styles.title}>Create New Password</Text>
-            <Text style={styles.subtitle}>
+            <Text style={authStyles.titleCentered}>Create New Password</Text>
+            <Text style={authStyles.subtitleCentered}>
               Please create a strong password for your account
             </Text>
 
-            <View style={styles.form}>
+            <View style={authStyles.form}>
               <Input
                 label="New Password"
                 placeholder="Enter new password"
@@ -225,113 +220,31 @@ export const ResetPasswordScreen: React.FC<ResetPasswordScreenProps> = ({
                 leftIcon="lock-closed-outline"
               />
 
-              <View style={styles.passwordRequirements}>
-                <Text style={styles.requirementsTitle}>Password must contain:</Text>
-                <Text style={styles.requirementItem}>• At least 8 characters</Text>
-                <Text style={styles.requirementItem}>• One uppercase letter</Text>
-                <Text style={styles.requirementItem}>• One lowercase letter</Text>
-                <Text style={styles.requirementItem}>• One number</Text>
+              <View style={authStyles.passwordRequirements}>
+                <Text style={authStyles.requirementsTitle}>Password must contain:</Text>
+                <Text style={authStyles.requirementItem}>• At least 8 characters</Text>
+                <Text style={authStyles.requirementItem}>• One uppercase letter</Text>
+                <Text style={authStyles.requirementItem}>• One lowercase letter</Text>
+                <Text style={authStyles.requirementItem}>• One number</Text>
               </View>
 
               <Button
                 title="Reset Password"
                 onPress={handleResetPassword}
                 loading={loading}
-                style={styles.button}
+                style={commonStyles.marginBottom16}
               />
             </View>
           </>
         )}
 
         <TouchableOpacity
-          onPress={() => navigation.navigate('Login')}
-          style={styles.backToLogin}
+          onPress={() => router.push('/(auth)/login')}
+          style={authStyles.backToLoginWithMargin}
         >
-          <Text style={styles.backToLoginText}>Back to Login</Text>
+          <Text style={authStyles.backToLoginText}>Back to Login</Text>
         </TouchableOpacity>
       </ScrollView>
     </AuthLayout>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: 20,
-  },
-  backButton: {
-    marginBottom: 24,
-  },
-  backButtonText: {
-    fontSize: 16,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    marginBottom: 32,
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  email: {
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  otpContainer: {
-    marginBottom: 32,
-  },
-  form: {
-    marginBottom: 24,
-  },
-  passwordRequirements: {
-    backgroundColor: COLORS.backgroundLight,
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 24,
-  },
-  requirementsTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: 8,
-  },
-  requirementItem: {
-    fontSize: 13,
-    color: COLORS.textLight,
-    marginBottom: 4,
-  },
-  button: {
-    marginBottom: 16,
-  },
-  resendContainer: {
-    alignItems: 'center',
-    marginBottom: 24,
-  },
-  resendText: {
-    fontSize: 16,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
-  countdownText: {
-    fontSize: 14,
-    color: COLORS.textMuted,
-  },
-  backToLogin: {
-    alignItems: 'center',
-    marginTop: 16,
-    marginBottom: 24,
-  },
-  backToLoginText: {
-    fontSize: 14,
-    color: COLORS.textLight,
-    textDecorationLine: 'underline',
-  },
-});
