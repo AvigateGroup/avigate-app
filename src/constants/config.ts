@@ -1,25 +1,33 @@
 // src/constants/config.ts
 
-// IMPORTANT: Update this with your actual backend URL
-// For local development:
-// - Android Emulator: use 10.0.2.2
-// - iOS Simulator: use localhost
-// - Physical Device: use your computer's IP address
+// IMPORTANT: Sensitive values are now stored in .env file
+// This file is safe to commit to GitHub
+
+import Constants from 'expo-constants';
+
+// Helper to get environment variables with fallback
+const getEnvVar = (key: string, fallback: string = ''): string => {
+  return process.env[key] || Constants.expoConfig?.extra?.[key] || fallback;
+};
 
 export const API_CONFIG = {
-  // Update this based on your environment
+  // Automatically uses the correct URL based on environment
   BASE_URL: __DEV__ 
-    ? 'http://10.0.2.2:3000/api' // Android emulator
-    // ? 'http://localhost:3000/api' // iOS simulator
-    // ? 'http://192.168.1.100:3000/api' // Physical device (replace with your IP)
-    : 'https://your-production-api.com/api',
+    ? getEnvVar('EXPO_PUBLIC_API_BASE_URL', 'http://10.0.2.2:3000/api')
+    : getEnvVar('EXPO_PUBLIC_PRODUCTION_API_URL', 'https://your-production-api.com/api'),
   
   TIMEOUT: 30000,
 };
 
 export const GOOGLE_CONFIG = {
-  WEB_CLIENT_ID: 'YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com',
-  IOS_CLIENT_ID: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
+  // These are loaded from .env file - safe to commit this code!
+  WEB_CLIENT_ID: getEnvVar('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID', ''),
+  IOS_CLIENT_ID: getEnvVar('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID', ''),
+  ANDROID_CLIENT_ID: getEnvVar('EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID', ''),
+};
+
+export const GOOGLE_MAPS_CONFIG = {
+  API_KEY: getEnvVar('EXPO_PUBLIC_GOOGLE_MAPS_API_KEY', ''),
 };
 
 export const APP_CONFIG = {
@@ -36,3 +44,20 @@ export const STORAGE_KEYS = {
   USER_DATA: '@avigate_user_data',
   FCM_TOKEN: '@avigate_fcm_token',
 };
+
+// Validation: Warn if critical environment variables are missing
+if (__DEV__) {
+  const requiredVars = [
+    'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
+  ];
+
+  const missing = requiredVars.filter(varName => !getEnvVar(varName));
+  
+  if (missing.length > 0) {
+    console.warn(
+      '⚠️  Missing required environment variables:',
+      missing.join(', '),
+      '\n💡 Copy .env.example to .env and add your credentials'
+    );
+  }
+}

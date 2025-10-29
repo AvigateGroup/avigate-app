@@ -15,7 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.avigate.app"
+      "bundleIdentifier": "com.avigate.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Avigate needs access to your location to show you nearby places and provide navigation services.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Avigate needs access to your location to show you nearby places and provide navigation services."
+      },
+      "config": {
+        "googleMapsApiKey": "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +31,16 @@
       },
       "package": "com.avigate.app",
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION"
+      ],
+      "config": {
+        "googleMaps": {
+          "apiKey": "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
+        }
+      }
     },
     "web": {
       "output": "static",
@@ -41,11 +57,24 @@
           "backgroundColor": "#86B300"
         }
       ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Avigate to use your location to show you nearby places and provide navigation services.",
+          "locationAlwaysPermission": "Allow Avigate to use your location to show you nearby places and provide navigation services.",
+          "locationWhenInUsePermission": "Allow Avigate to use your location to show you nearby places and provide navigation services."
+        }
+      ],
       "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "your-project-id-here"
+      }
     }
   }
 }

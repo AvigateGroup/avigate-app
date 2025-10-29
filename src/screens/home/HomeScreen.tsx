@@ -8,16 +8,15 @@ import {
   ActivityIndicator,
   Alert,
   Platform,
-  PermissionsAndroid,
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import Geolocation from '@react-native-community/geolocation';
+import MapView, { Marker } from 'react-native-maps';
+import * as Location from 'expo-location';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { homeStyles, platformStyles } from '@/styles';
 
-interface Location {
+interface LocationType {
   latitude: number;
   longitude: number;
   latitudeDelta: number;
@@ -28,7 +27,7 @@ export const HomeScreen = () => {
   const { user } = useAuth();
   const mapRef = useRef<MapView>(null);
   
-  const [location, setLocation] = useState<Location | null>(null);
+  const [location, setLocation] = useState<LocationType | null>(null);
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState('Getting your location...');
   const [mapReady, setMapReady] = useState(false);
@@ -39,87 +38,104 @@ export const HomeScreen = () => {
 
   const requestLocationPermission = async () => {
     try {
-      if (Platform.OS === 'android') {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-            title: 'Location Permission',
-            message: 'Avigate needs access to your location',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        );
-
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          getCurrentLocation();
-        } else {
-          Alert.alert(
-            'Permission Denied',
-            'Location permission is required to use this feature'
-          );
-          setLoading(false);
-        }
-      } else {
-        // iOS
-        getCurrentLocation();
-      }
-    } catch (err) {
-      console.warn('Error requesting location permission:', err);
-      setLoading(false);
-    }
-  };
-
-  const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        const newLocation = {
-          latitude,
-          longitude,
-          latitudeDelta: 0.01,
-          longitudeDelta: 0.01,
-        };
-        setLocation(newLocation);
-        setLoading(false);
-        
-        // Get address from coordinates
-        getAddressFromCoordinates(latitude, longitude);
-      },
-      (error) => {
-        console.error('Error getting location:', error);
+      // Request foreground location permission
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      
+      if (status !== 'granted') {
         Alert.alert(
-          'Location Error',
-          'Unable to get your current location. Please check your location settings.'
+          'Permission Denied',
+          'Location permission is required to use this feature. Please enable it in your device settings.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            { 
+              text: 'Open Settings', 
+              onPress: () => {
+                if (Platform.OS === 'ios') {
+                  Location.requestForegroundPermissionsAsync();
+                }
+              }
+            }
+          ]
         );
         setLoading(false);
-        
-        // Fallback to a default location (Lagos, Nigeria)
+        // Set fallback location (Lagos, Nigeria)
         setLocation({
           latitude: 6.5244,
           longitude: 3.3792,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         });
-      },
-      {
-        enableHighAccuracy: true,
-        timeout: 15000,
-        maximumAge: 10000,
+        setAddress('Lagos, Nigeria (Default Location)');
+        return;
       }
-    );
+
+      getCurrentLocation();
+    } catch (err) {
+      console.warn('Error requesting location permission:', err);
+      setLoading(false);
+    }
+  };
+
+  const getCurrentLocation = async () => {
+    try {
+      // Get current position with high accuracy
+      const position = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.High,
+      });
+
+      const { latitude, longitude } = position.coords;
+      const newLocation = {
+        latitude,
+        longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      };
+      
+      setLocation(newLocation);
+      setLoading(false);
+      
+      // Get address from coordinates
+      getAddressFromCoordinates(latitude, longitude);
+    } catch (error) {
+      console.error('Error getting location:', error);
+      Alert.alert(
+        'Location Error',
+        'Unable to get your current location. Please check your location settings.'
+      );
+      setLoading(false);
+      
+      // Fallback to a default location (Lagos, Nigeria)
+      setLocation({
+        latitude: 6.5244,
+        longitude: 3.3792,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+      setAddress('Lagos, Nigeria (Default Location)');
+    }
   };
 
   const getAddressFromCoordinates = async (latitude: number, longitude: number) => {
     try {
-      // Using Google Geocoding API
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=YOUR_GOOGLE_MAPS_API_KEY`
-      );
-      const data = await response.json();
+      // Using Expo's reverse geocoding
+      const addresses = await Location.reverseGeocodeAsync({
+        latitude,
+        longitude,
+      });
       
-      if (data.results && data.results.length > 0) {
-        setAddress(data.results[0].formatted_address);
+      if (addresses && addresses.length > 0) {
+        const addr = addresses[0];
+        // Format the address
+        const addressParts = [
+          addr.name,
+          addr.street,
+          addr.district,
+          addr.city,
+          addr.region,
+          addr.country,
+        ].filter(Boolean);
+        
+        setAddress(addressParts.join(', ') || `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
       } else {
         setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
       }
@@ -135,9 +151,10 @@ export const HomeScreen = () => {
     }
   };
 
-  const refreshLocation = () => {
+  const refreshLocation = async () => {
     setLoading(true);
-    getCurrentLocation();
+    setAddress('Getting your location...');
+    await getCurrentLocation();
   };
 
   if (loading) {
@@ -151,11 +168,12 @@ export const HomeScreen = () => {
 
   return (
     <View style={homeStyles.container}>
-      {/* Map */}
+      {/* Map - PROVIDER_GOOGLE removed for Expo Go compatibility */}
       {location && (
         <MapView
           ref={mapRef}
-          provider={PROVIDER_GOOGLE}
+          // Note: PROVIDER_GOOGLE is removed for Expo Go compatibility
+          // Add it back only if you build a custom development build
           style={homeStyles.map}
           initialRegion={location}
           showsUserLocation
