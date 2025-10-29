@@ -1,5 +1,6 @@
+//src/components/AnimatedSplashScreen
 import React, { useEffect, useRef } from 'react';
-import { View, Animated, StyleSheet, Image } from 'react-native';
+import { Animated, StyleSheet, Image } from 'react-native';
 
 interface AnimatedSplashScreenProps {
   onComplete: () => void;
@@ -61,7 +62,7 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
         ]}
       >
         <Image
-          source={require('.../../assets/images/splash-icon.png')}
+          source={require('../../../assets/images/splash-icon.png')}
           style={styles.logo}
           resizeMode="contain"
         />
