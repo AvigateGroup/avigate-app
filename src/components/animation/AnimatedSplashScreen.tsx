@@ -19,24 +19,24 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
-          duration: 600,
+          duration: 1800,
           useNativeDriver: true,
         }),
         Animated.spring(scaleAnim, {
           toValue: 1,
-          tension: 40,
-          friction: 7,
+          tension: 60, // ← Higher = faster/bouncier (try 20-60)
+          friction: 10, // ← Higher = less bouncy (try 5-10)
           useNativeDriver: true,
         }),
       ]),
       
       // 2. Hold the logo on screen
-      Animated.delay(800),
+      Animated.delay(1800),
       
       // 3. Fade out the entire splash screen
       Animated.timing(containerOpacity, {
         toValue: 0,
-        duration: 400,
+        duration: 1400,
         useNativeDriver: true,
       }),
     ]).start(() => {
@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: 300,  // ← Make bigger or smaller
+    height: 300,  // ← Make bigger or smaller
   },
 });
 
