@@ -16,7 +16,6 @@ import { RegisterDto, UserSex } from '@/types/auth.types';
 import { 
   containerStyles, 
   typographyStyles, 
-  buttonStyles, 
   formStyles, 
   layoutStyles,
   spacingStyles 
@@ -286,7 +285,7 @@ export const RegisterScreen: React.FC = () => {
             <View>
               <Text style={formStyles.genderLabel}>Preferred Language</Text>
               <View style={authFeatureStyles.languageButtons}>
-                {['English', 'Yoruba', 'Hausa', 'Igbo'].map((lang) => (
+                {['English'].map((lang) => (
                   <TouchableOpacity
                     key={lang}
                     style={[
