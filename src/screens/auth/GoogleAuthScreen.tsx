@@ -1,7 +1,7 @@
 // src/screens/auth/GoogleAuthScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Platform, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
@@ -11,11 +11,18 @@ import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { Button } from '@/components/common/Button';
 import { Loading } from '@/components/common/Loading';
 import { authApi } from '@/api/auth.api';
-import { handleApiError, getDeviceInfo } from '@/utils/helpers';
+import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
+import { GoogleAuthDto } from '@/types/auth.types';
 import { COLORS } from '@/constants/colors';
 import { GOOGLE_CONFIG } from '@/constants/config';
-import { authStyles, commonStyles } from '@/styles';
+import { 
+  containerStyles, 
+  buttonStyles, 
+  layoutStyles,
+  iconStyles,
+} from '@/styles/base';
+import { authFeatureStyles } from '@/styles/features/auth';
 
 // Required for web browser to close properly after auth
 WebBrowser.maybeCompleteAuthSession();
@@ -28,8 +35,6 @@ export const GoogleAuthScreen: React.FC = () => {
   // Configure OAuth request
   const discovery = AuthSession.useAutoDiscovery('https://accounts.google.com');
   
-  // Create redirect URI - This works with Web OAuth clients
-  // For Expo Go, this automatically generates the correct proxy URL
   const redirectUri = AuthSession.makeRedirectUri({
     scheme: 'avigate',
   });
@@ -62,7 +67,6 @@ export const GoogleAuthScreen: React.FC = () => {
     }
   }, [response]);
 
-  // Log the redirect URI for debugging
   useEffect(() => {
     if (request) {
       console.log('📍 OAuth Redirect URI:', request.redirectUri);
@@ -80,23 +84,29 @@ export const GoogleAuthScreen: React.FC = () => {
         throw new Error('No ID token received from Google');
       }
 
-      // Decode the ID token to get user info
-      // In production, you should verify this token on your backend
       const userInfo = parseJwt(id_token);
 
-      // Send Google auth data to backend
-      const response = await authApi.googleAuth({
+      // Get FCM token and device info
+      const fcmToken = await getFCMToken();
+      const deviceInfo = {
+        userAgent: getDeviceInfo(),
+        platform: Platform.OS,
+        language: navigator?.language || 'en-US',
+      };
+
+      // Prepare Google auth data matching backend API exactly
+      const googleAuthDto: GoogleAuthDto = {
         email: userInfo.email,
         googleId: userInfo.sub,
         firstName: userInfo.given_name || userInfo.name?.split(' ')[0] || 'User',
         lastName: userInfo.family_name || userInfo.name?.split(' ')[1] || '',
         profilePicture: userInfo.picture || undefined,
         idToken: id_token,
-        deviceInfo: {
-          userAgent: getDeviceInfo(),
-          platform: Platform.OS,
-        },
-      });
+        fcmToken: fcmToken,
+        deviceInfo: deviceInfo,
+      };
+
+      const response = await authApi.googleAuth(googleAuthDto);
 
       if (response.success && response.data.accessToken && response.data.refreshToken) {
         Toast.show({
@@ -111,11 +121,16 @@ export const GoogleAuthScreen: React.FC = () => {
           response.data.user
         );
 
-        // Check if phone number is required
+        // Check if additional info is required
         if (response.data.requiresPhoneNumber) {
           router.replace({
             pathname: '/(auth)/phone-verification',
             params: { fromGoogleAuth: 'true' }
+          });
+        } else if (response.data.requiresVerification) {
+          router.replace({
+            pathname: '/(auth)/verify-email',
+            params: { email: userInfo.email }
           });
         }
       }
@@ -153,7 +168,6 @@ export const GoogleAuthScreen: React.FC = () => {
     }
   };
 
-  // Helper function to parse JWT token
   const parseJwt = (token: string) => {
     try {
       const base64Url = token.split('.')[1];
@@ -176,70 +190,76 @@ export const GoogleAuthScreen: React.FC = () => {
   }
 
   return (
-    <AuthLayout showLogo={false}>
-      <View style={authStyles.container}>
-        <TouchableOpacity
-          style={authStyles.backButtonWithIcon}
-          onPress={() => router.back()}
-        >
-          <Icon name="arrow-back" size={24} color={COLORS.text} />
-        </TouchableOpacity>
+    <AuthLayout showLogo={true}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={authFeatureStyles.scrollContent}
+      >
+        <View style={containerStyles.containerPadded}>
+          <TouchableOpacity
+            style={buttonStyles.backButtonWithIcon}
+            onPress={() => router.back()}
+          >
+            <Icon name="arrow-back" size={24} color={COLORS.text} />
+          </TouchableOpacity>
 
-        <View style={authStyles.iconContainerLarge}>
-          <View style={authStyles.googleIconCircle}>
-            <Icon name="logo-google" size={48} color="#4285F4" />
+          <View style={iconStyles.iconContainerLarge}>
+            <View style={iconStyles.googleIconCircle}>
+              <Icon name="logo-google" size={48} color="#4285F4" />
+            </View>
           </View>
-        </View>
 
-        <Text style={authStyles.titleCentered}>Sign in with Google</Text>
-        <Text style={authStyles.subtitleCentered}>
-          Use your Google account to sign in quickly and securely
-        </Text>
-
-        <View style={authStyles.benefitsContainer}>
-          <View style={authStyles.benefitItem}>
-            <Icon name="checkmark-circle" size={20} color={COLORS.success} />
-            <Text style={authStyles.benefitText}>Quick and secure sign-in</Text>
-          </View>
-          <View style={authStyles.benefitItem}>
-            <Icon name="checkmark-circle" size={20} color={COLORS.success} />
-            <Text style={authStyles.benefitText}>No password to remember</Text>
-          </View>
-          <View style={authStyles.benefitItem}>
-            <Icon name="checkmark-circle" size={20} color={COLORS.success} />
-            <Text style={authStyles.benefitText}>Auto-verified email</Text>
-          </View>
-        </View>
-
-        <Button
-          title={loading ? 'Signing in...' : 'Continue with Google'}
-          onPress={handleGoogleSignIn}
-          loading={loading}
-          disabled={loading || !request}
-          variant="outline"
-          style={authStyles.googleButton}
-        />
-
-        <View style={commonStyles.divider}>
-          <View style={commonStyles.dividerLine} />
-          <Text style={commonStyles.dividerText}>OR</Text>
-          <View style={commonStyles.dividerLine} />
-        </View>
-
-        <TouchableOpacity
-          onPress={() => router.push('/(auth)/login')}
-          style={authStyles.emailSignIn}
-        >
-          <Text style={authStyles.emailSignInText}>Sign in with Email</Text>
-        </TouchableOpacity>
-
-        <View style={authStyles.footerWithIcon}>
-          <Icon name="shield-checkmark-outline" size={16} color={COLORS.textMuted} />
-          <Text style={authStyles.footerTextWithIcon}>
-            We'll never post anything without your permission
+          <Text style={authFeatureStyles.titleCentered}>Sign in with Google</Text>
+          <Text style={authFeatureStyles.subtitleCentered}>
+            Use your Google account to sign in quickly and securely
           </Text>
+
+          <View style={authFeatureStyles.benefitsContainer}>
+            <View style={authFeatureStyles.benefitItem}>
+              <Icon name="checkmark-circle" size={20} color={COLORS.success} />
+              <Text style={authFeatureStyles.benefitText}>Quick and secure sign-in</Text>
+            </View>
+            <View style={authFeatureStyles.benefitItem}>
+              <Icon name="checkmark-circle" size={20} color={COLORS.success} />
+              <Text style={authFeatureStyles.benefitText}>No password to remember</Text>
+            </View>
+            <View style={authFeatureStyles.benefitItem}>
+              <Icon name="checkmark-circle" size={20} color={COLORS.success} />
+              <Text style={authFeatureStyles.benefitText}>Auto-verified email</Text>
+            </View>
+          </View>
+
+          <Button
+            title={loading ? 'Signing in...' : 'Continue with Google'}
+            onPress={handleGoogleSignIn}
+            loading={loading}
+            disabled={loading || !request}
+            variant="outline"
+            leftIcon="logo-google"
+            style={buttonStyles.googleButton}
+          />
+
+          <View style={layoutStyles.divider}>
+            <View style={layoutStyles.dividerLine} />
+            <Text style={layoutStyles.dividerText}>OR</Text>
+            <View style={layoutStyles.dividerLine} />
+          </View>
+
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/login')}
+            style={authFeatureStyles.emailSignIn}
+          >
+            <Text style={authFeatureStyles.emailSignInText}>Sign in with Email</Text>
+          </TouchableOpacity>
+
+          <View style={layoutStyles.footerWithIcon}>
+            <Icon name="shield-checkmark-outline" size={16} color={COLORS.textMuted} />
+            <Text style={layoutStyles.footerTextWithIcon}>
+              We'll never post anything without your permission
+            </Text>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </AuthLayout>
   );
 };
