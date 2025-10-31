@@ -1,7 +1,7 @@
 // src/screens/auth/LoginScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -118,45 +118,18 @@ export const LoginScreen: React.FC = () => {
             Sign up or login below to continue.
           </Text>
 
-          {/* Tab Switcher */}
-          <View style={authFeatureStyles.tabContainer}>
-            <TouchableOpacity
-              style={[authFeatureStyles.tab, authFeatureStyles.tabActive]}
-              onPress={() => {}}
-            >
-              <Text style={[authFeatureStyles.tabText, authFeatureStyles.tabTextActive]}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={authFeatureStyles.tab}
-              onPress={() => router.push('/(auth)/register')}
-            >
-              <Text style={authFeatureStyles.tabText}>Sign Up</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Social Login Buttons */}
+          {/* Google Login Button with Image */}
           <View style={authFeatureStyles.socialButtonsContainer}>
-            <Button
-              title="Login with Apple"
-              onPress={() => {
-                Toast.show({
-                  type: 'info',
-                  text1: 'Coming Soon',
-                  text2: 'Apple Sign-In will be available soon',
-                });
-              }}
-              variant="outline"
-              leftIcon="logo-apple"
-              style={buttonStyles.buttonOutline}
-            />
-
-            <Button
-              title="Login with Google"
+            <TouchableOpacity
               onPress={() => router.push('/(auth)/google-auth')}
-              variant="outline"
-              leftIcon="logo-google"
-              style={buttonStyles.buttonOutline}
-            />
+              activeOpacity={0.8}
+            >
+              <Image
+                source={require('../../../assets/images/google-icon.png')}
+                style={authFeatureStyles.googleButtonImage}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
           </View>
 
           {/* Divider */}
@@ -209,7 +182,7 @@ export const LoginScreen: React.FC = () => {
             />
           </View>
 
-          {/* Informational Footer - No Agreement Required */}
+          {/* Footer */}
           <View style={layoutStyles.footer}>
             <Text style={layoutStyles.footerText}>
               Don't have an account?{' '}
