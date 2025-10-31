@@ -1,55 +1,57 @@
 // src/styles/base/spacing.ts
 
 import { StyleSheet } from 'react-native';
+import { SPACING } from '@/utils/responsive';
 
 /**
- * Spacing utility styles
+ * Spacing utility styles with responsive values
+ * Based on 8pt grid system
  */
 export const spacingStyles = StyleSheet.create({
   // ========== MARGIN TOP ==========
   marginTop8: {
-    marginTop: 8,
+    marginTop: SPACING.sm,
   },
 
   marginTop16: {
-    marginTop: 16,
+    marginTop: SPACING.base,
   },
 
   marginTop24: {
-    marginTop: 24,
+    marginTop: SPACING.xl,
   },
 
   marginTop32: {
-    marginTop: 32,
+    marginTop: SPACING.xxl,
   },
 
   // ========== MARGIN BOTTOM ==========
   marginBottom8: {
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
 
   marginBottom16: {
-    marginBottom: 16,
-  },
-
-  marginBottom24: {
-    marginBottom: 24,
+    marginBottom: SPACING.base,
   },
 
   marginBottom20: {
-    marginBottom: 20,
+    marginBottom: SPACING.lg,
+  },
+
+  marginBottom24: {
+    marginBottom: SPACING.xl,
   },
 
   marginBottom32: {
-    marginBottom: 32,
+    marginBottom: SPACING.xxl,
   },
 
   // ========== PADDING HORIZONTAL ==========
   paddingHorizontal16: {
-    paddingHorizontal: 16,
+    paddingHorizontal: SPACING.base,
   },
 
   paddingHorizontal24: {
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
   },
 });
