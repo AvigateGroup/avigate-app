@@ -115,7 +115,7 @@ export const LoginScreen: React.FC = () => {
         >
           <Text style={authFeatureStyles.welcomeTitle}>Welcome to Avigate</Text>
           <Text style={authFeatureStyles.welcomeSubtitle}>
-            Sign up or login below to manage your project, task, and productivity
+            Sign up or login below to continue.
           </Text>
 
           {/* Tab Switcher */}
