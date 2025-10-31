@@ -14,7 +14,7 @@ import { handleApiError } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { UserSex } from '@/types/auth.types';
-import { authStyles, commonStyles } from '@/styles';
+import { authStyles } from '@/styles';
 
 export const PhoneVerificationScreen: React.FC = () => {
   const router = useRouter();
