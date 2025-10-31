@@ -2,94 +2,105 @@
 
 import { StyleSheet } from 'react-native';
 import { COLORS } from '@/constants/colors';
+import { 
+  SPACING, 
+  FONT_SIZES, 
+  LINE_HEIGHTS, 
+  BORDER_RADIUS, 
+  moderateScale,
+  ICON_SIZES,
+} from '@/utils/responsive';
 
 /**
  * Authentication feature-specific styles
  * These styles are used across authentication screens (login, register, google auth)
+ * Using responsive sizing for cross-device compatibility
  */
 export const authFeatureStyles = StyleSheet.create({
   // ========== SCROLL CONTENT ==========
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 40,
-    paddingHorizontal: 16,
+    paddingBottom: SPACING.xxxl,
+    paddingHorizontal: SPACING.base,
   },
 
   // ========== WELCOME SECTION ==========
   welcomeTitle: {
-    fontSize: 28,
+    fontSize: FONT_SIZES.xxxl,
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: 8,
-    marginTop: 20,
+    marginBottom: SPACING.sm,
+    marginTop: SPACING.lg,
+    lineHeight: LINE_HEIGHTS.xxxl,
   },
 
   welcomeSubtitle: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 20,
-    paddingHorizontal: 20,
+    marginBottom: SPACING.xl,
+    lineHeight: LINE_HEIGHTS.base,
+    paddingHorizontal: SPACING.lg,
   },
 
   // ========== SOCIAL BUTTONS ==========
   socialButtonsContainer: {
-    gap: 12,
-    marginBottom: 24,
+    gap: SPACING.md,
+    marginBottom: SPACING.xl,
   },
 
   // Google Button Image Style
   googleButtonImage: {
     width: '100%',
-    height: 56,
+    height: moderateScale(56),
   },
 
   // ========== MULTI-STEP REGISTRATION ==========
   progressContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 8,
-    marginBottom: 32,
-    marginTop: 20,
+    gap: SPACING.sm,
+    marginBottom: SPACING.xxl,
+    marginTop: SPACING.lg,
   },
 
   progressDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
+    width: moderateScale(8),
+    height: moderateScale(8),
+    borderRadius: moderateScale(4),
     backgroundColor: COLORS.border,
   },
 
   progressDotActive: {
     backgroundColor: COLORS.primary,
-    width: 24,
+    width: moderateScale(24),
   },
 
   stepContainer: {
-    marginBottom: 32,
+    marginBottom: SPACING.xxl,
   },
 
   stepTitle: {
-    fontSize: 24,
+    fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
     color: COLORS.text,
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.xxl,
   },
 
   stepSubtitle: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
-    marginBottom: 24,
-    lineHeight: 20,
+    marginBottom: SPACING.xl,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   // ========== NAVIGATION BUTTONS ==========
   navigationButtons: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 24,
+    gap: SPACING.md,
+    marginBottom: SPACING.xl,
   },
 
   backButton: {
@@ -104,13 +115,13 @@ export const authFeatureStyles = StyleSheet.create({
   languageButtons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: SPACING.md,
   },
 
   languageButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 20,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    borderRadius: BORDER_RADIUS.xxl,
     borderWidth: 1,
     borderColor: COLORS.border,
     backgroundColor: COLORS.textWhite,
@@ -122,9 +133,10 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   languageButtonText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '500',
     color: COLORS.textMuted,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   languageButtonTextActive: {
@@ -135,14 +147,14 @@ export const authFeatureStyles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 12,
-    marginBottom: 8,
+    gap: SPACING.md,
+    marginBottom: SPACING.sm,
   },
 
   checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 6,
+    width: ICON_SIZES.base,
+    height: ICON_SIZES.base,
+    borderRadius: moderateScale(6),
     borderWidth: 2,
     borderColor: COLORS.border,
     alignItems: 'center',
@@ -157,72 +169,75 @@ export const authFeatureStyles = StyleSheet.create({
 
   checkboxLabel: {
     flex: 1,
-    fontSize: 13,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.text,
-    lineHeight: 20,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   // ========== GOOGLE AUTH SPECIFIC ==========
   titleCentered: {
-    fontSize: 24,
+    fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.xxl,
   },
 
   subtitleCentered: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: 32,
-    lineHeight: 20,
-    paddingHorizontal: 20,
+    marginBottom: SPACING.xxl,
+    lineHeight: LINE_HEIGHTS.base,
+    paddingHorizontal: SPACING.lg,
   },
 
   benefitsContainer: {
     backgroundColor: COLORS.backgroundLight,
-    padding: 20,
-    borderRadius: 12,
-    gap: 12,
-    marginBottom: 24,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
+    gap: SPACING.md,
+    marginBottom: SPACING.xl,
   },
 
   benefitItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: SPACING.md,
   },
 
   benefitText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.text,
     fontWeight: '500',
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   emailSignIn: {
-    paddingVertical: 12,
+    paddingVertical: SPACING.md,
     alignItems: 'center',
   },
 
   emailSignInText: {
-    fontSize: 15,
+    fontSize: FONT_SIZES.md,
     color: COLORS.primary,
     fontWeight: '600',
+    lineHeight: LINE_HEIGHTS.md,
   },
 
   // ========== FOOTER ==========
   termsFooter: {
-    marginTop: 24,
-    paddingTop: 24,
+    marginTop: SPACING.xl,
+    paddingTop: SPACING.xl,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
   },
 
   termsText: {
-    fontSize: 12,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textMuted,
     textAlign: 'center',
-    lineHeight: 18,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 });
