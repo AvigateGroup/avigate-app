@@ -34,46 +34,16 @@ export const authFeatureStyles = StyleSheet.create({
     paddingHorizontal: 20,
   },
 
-  // ========== TAB SWITCHER ==========
-  tabContainer: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.backgroundLight,
-    borderRadius: 12,
-    padding: 4,
-    marginBottom: 24,
-  },
-
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-
-  tabActive: {
-    backgroundColor: COLORS.textWhite,
-    shadowColor: COLORS.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-
-  tabText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: COLORS.textMuted,
-  },
-
-  tabTextActive: {
-    color: COLORS.text,
-    fontWeight: '600',
-  },
-
   // ========== SOCIAL BUTTONS ==========
   socialButtonsContainer: {
     gap: 12,
     marginBottom: 24,
+  },
+
+  // Google Button Image Style
+  googleButtonImage: {
+    width: '100%',
+    height: 56,
   },
 
   // ========== MULTI-STEP REGISTRATION ==========
