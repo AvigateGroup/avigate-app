@@ -1,4 +1,4 @@
-// src/utils/responsive.ts
+// src/utils/responsive.ts 
 
 import { Dimensions, PixelRatio, Platform } from 'react-native';
 
@@ -187,10 +187,17 @@ export const hp = (percentage: number): number => {
 };
 
 /**
- * Get safe logo size based on screen
+ * Get safe logo size based on screen - IMPROVED VERSION
+ * Now returns larger, more prominent logo sizes
  */
 export const getLogoSize = (): number => {
-  return getResponsiveValue(120, 140, 160, 200);
+  // More prominent logo sizes
+  return getResponsiveValue(
+    180,  // Small devices (iPhone SE) - increased from 120
+    200,  // Medium devices (iPhone 13) - increased from 140
+    220,  // Large devices (iPhone Pro Max) - increased from 160
+    260   // Tablets (iPad) - increased from 200
+  );
 };
 
 /**
