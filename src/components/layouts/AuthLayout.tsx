@@ -31,10 +31,11 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = tru
         >
           {showLogo && (
             <View style={styles.logoContainer}>
-              {/* Replace with your actual logo */}
-              <View style={styles.logoPlaceholder}>
-                <View style={styles.logoCircle} />
-              </View>
+              <Image
+                source={require('../../../assets/images/avigate-logo.png')}
+                style={styles.logo}
+                resizeMode="contain"
+              />
             </View>
           )}
           <View style={styles.content}>{children}</View>
@@ -61,17 +62,9 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 32,
   },
-  logoPlaceholder: {
-    width: 100,
-    height: 100,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: COLORS.primary,
+  logo: {
+    width: 180,
+    height: 180,
   },
   content: {
     flex: 1,
