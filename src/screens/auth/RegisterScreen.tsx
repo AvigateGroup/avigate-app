@@ -1,8 +1,7 @@
 // src/screens/auth/RegisterScreen.tsx
 
-
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -446,7 +445,7 @@ export const RegisterScreen: React.FC = () => {
             />
           </View>
 
-          {/* Social Sign Up Alternative */}
+          {/* Google Sign Up Alternative */}
           {currentStep === 1 && (
             <>
               <View style={layoutStyles.divider}>
@@ -455,13 +454,16 @@ export const RegisterScreen: React.FC = () => {
                 <View style={layoutStyles.dividerLine} />
               </View>
 
-              <Button
-                title="Sign up with Google"
+              <TouchableOpacity
                 onPress={() => router.push('/(auth)/google-auth')}
-                variant="outline"
-                leftIcon="logo-google"
-                style={buttonStyles.googleButton}
-              />
+                activeOpacity={0.8}
+              >
+                <Image
+                  source={require('../../../assets/images/google-icon.png')}
+                  style={authFeatureStyles.googleButtonImage}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
             </>
           )}
 
