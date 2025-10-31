@@ -11,6 +11,7 @@ import {
   Image,
 } from 'react-native';
 import { COLORS } from '@/constants/colors';
+import { SPACING, getLogoSize } from '@/utils/responsive';
 
 interface AuthLayoutProps {
   children: ReactNode;
@@ -18,6 +19,8 @@ interface AuthLayoutProps {
 }
 
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = true }) => {
+  const logoSize = getLogoSize();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <KeyboardAvoidingView
@@ -33,7 +36,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = tru
             <View style={styles.logoContainer}>
               <Image
                 source={require('../../../assets/images/avigate-logo.png')}
-                style={styles.logo}
+                style={[styles.logo, { width: logoSize, height: logoSize }]}
                 resizeMode="contain"
               />
             </View>
@@ -55,16 +58,15 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: 40,
-    marginBottom: 32,
+    marginTop: SPACING.xxxl,
+    marginBottom: SPACING.xxl,
   },
   logo: {
-    width: 180,
-    height: 180,
+    // Dynamic width and height set via inline style
   },
   content: {
     flex: 1,
