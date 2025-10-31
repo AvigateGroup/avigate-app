@@ -2,9 +2,10 @@
 
 import { StyleSheet } from 'react-native';
 import { COLORS } from '../../constants/colors';
+import { SPACING, FONT_SIZES, BORDER_RADIUS, LINE_HEIGHTS } from '@/utils/responsive';
 
 /**
- * Layout and positioning styles
+ * Layout and positioning styles with responsive sizing
  */
 export const layoutStyles = StyleSheet.create({
   // ========== ROW LAYOUTS ==========
@@ -29,7 +30,7 @@ export const layoutStyles = StyleSheet.create({
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginVertical: 24,
+    marginVertical: SPACING.xl,
   },
 
   dividerLine: {
@@ -39,26 +40,27 @@ export const layoutStyles = StyleSheet.create({
   },
 
   dividerText: {
-    marginHorizontal: 16,
-    fontSize: 14,
+    marginHorizontal: SPACING.base,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textMuted,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   horizontalDivider: {
     height: 1,
     backgroundColor: COLORS.border,
-    marginVertical: 16,
+    marginVertical: SPACING.base,
   },
 
   // ========== SECTIONS ==========
   section: {
-    marginTop: 16,
-    paddingHorizontal: 16,
+    marginTop: SPACING.base,
+    paddingHorizontal: SPACING.base,
   },
 
   sectionContent: {
     backgroundColor: COLORS.textWhite,
-    borderRadius: 12,
+    borderRadius: BORDER_RADIUS.lg,
     overflow: 'hidden',
   },
 
@@ -67,39 +69,43 @@ export const layoutStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: SPACING.xl,
+    flexWrap: 'wrap',
   },
 
   footerWithPadding: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 24,
+    paddingBottom: SPACING.xl,
+    flexWrap: 'wrap',
   },
 
   footerText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   footerLink: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.primary,
     fontWeight: '600',
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   footerWithIcon: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 24,
+    paddingHorizontal: SPACING.xl,
   },
 
   footerTextWithIcon: {
-    fontSize: 12,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textMuted,
-    marginLeft: 8,
+    marginLeft: SPACING.sm,
     flex: 1,
-    lineHeight: 18,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 });
