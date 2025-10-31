@@ -107,9 +107,9 @@ export const ForgotPasswordScreen: React.FC = () => {
           />
         </View>
 
-        <View style={authStyles.infoBox}>
-          <Text style={authStyles.infoTitle}>📧 What happens next?</Text>
-          <Text style={authStyles.infoText}>
+        <View style={commonStyles.infoBox}>
+          <Text style={commonStyles.infoTitle}>📧 What happens next?</Text>
+          <Text style={commonStyles.infoText}>
             1. Check your email inbox{'\n'}
             2. Enter the 6-digit code we sent{'\n'}
             3. Create your new password{'\n'}
