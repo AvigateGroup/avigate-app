@@ -25,7 +25,7 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
         Animated.spring(scaleAnim, {
           toValue: 1,
           tension: 60, // ← Higher = faster/bouncier (try 20-60)
-          friction: 10, // ← Higher = less bouncy (try 5-10)
+          friction: 1, // ← Higher = less bouncy (try 5-10)
           useNativeDriver: true,
         }),
       ]),
@@ -35,8 +35,8 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
       
       // 3. Fade out the entire splash screen
       Animated.timing(containerOpacity, {
-        toValue: 0,
-        duration: 1400,
+        toValue: 1,
+        duration: 1800,
         useNativeDriver: true,
       }),
     ]).start(() => {
