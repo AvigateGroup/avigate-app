@@ -2,8 +2,6 @@
 
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
-import * as Notifications from 'expo-notifications';
-import Constants from 'expo-constants';
 
 /**
  * Get device information string for backend
@@ -30,8 +28,17 @@ export const getDeviceInfo = (): string => {
 /**
  * Get FCM (Firebase Cloud Messaging) token for push notifications
  * Returns the token string or undefined if not available
+ * 
+ * NOTE: Push notifications are not supported in Expo Go for SDK 53+
+ * To use this feature, you need to create a development build with:
+ * npx expo install expo-dev-client && npx expo run:android
  */
 export const getFCMToken = async (): Promise<string | undefined> => {
+  console.log('Push notifications are not available in Expo Go. Use a development build instead.');
+  return undefined;
+  
+  /* Uncomment this code when using a development build:
+  
   try {
     // Check if we're running on a physical device
     if (!Device.isDevice) {
@@ -63,6 +70,7 @@ export const getFCMToken = async (): Promise<string | undefined> => {
     console.error('Error getting FCM token:', error);
     return undefined;
   }
+  */
 };
 
 /**
