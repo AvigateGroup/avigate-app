@@ -2,22 +2,25 @@
 
 import { StyleSheet } from 'react-native';
 import { COLORS } from '../../constants/colors';
+import { BUTTON_HEIGHTS, BORDER_RADIUS, FONT_SIZES, ICON_SIZES, SPACING } from '@/utils/responsive';
 
 /**
  * Button styles used throughout the application
+ * Using responsive sizing for cross-device compatibility
  */
 export const buttonStyles = StyleSheet.create({
   // ========== PRIMARY BUTTONS ==========
   buttonPrimary: {
     backgroundColor: COLORS.primary,
-    paddingVertical: 16,
-    borderRadius: 12,
+    paddingVertical: SPACING.base,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
     justifyContent: 'center',
+    minHeight: BUTTON_HEIGHTS.medium,
   },
 
   buttonText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.textWhite,
   },
@@ -25,16 +28,17 @@ export const buttonStyles = StyleSheet.create({
   // ========== OUTLINE BUTTONS ==========
   buttonOutline: {
     backgroundColor: 'transparent',
-    paddingVertical: 16,
-    borderRadius: 12,
+    paddingVertical: SPACING.base,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1.5,
     borderColor: COLORS.primary,
+    minHeight: BUTTON_HEIGHTS.medium,
   },
 
   buttonTextOutline: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.primary,
   },
@@ -46,27 +50,27 @@ export const buttonStyles = StyleSheet.create({
 
   // ========== NAVIGATION BUTTONS ==========
   backButton: {
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
   },
 
   backButtonWithIcon: {
-    width: 40,
-    height: 40,
+    width: ICON_SIZES.xl,
+    height: ICON_SIZES.xl,
     justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: SPACING.lg,
   },
 
   backButtonText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     color: COLORS.primary,
     fontWeight: '600',
   },
 
   // ========== ACTION BUTTONS ==========
   actionButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: BUTTON_HEIGHTS.large,
+    height: BUTTON_HEIGHTS.large,
+    borderRadius: BUTTON_HEIGHTS.large / 2,
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
@@ -79,20 +83,20 @@ export const buttonStyles = StyleSheet.create({
 
   // ========== SPECIALIZED BUTTONS ==========
   submitButton: {
-    marginTop: 8,
+    marginTop: SPACING.sm,
   },
 
   googleButton: {
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
   },
 
   skipButton: {
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: SPACING.base,
   },
 
   skipText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
     textDecorationLine: 'underline',
   },
@@ -103,15 +107,16 @@ export const buttonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: COLORS.textWhite,
-    marginHorizontal: 16,
-    marginTop: 16,
-    padding: 16,
-    borderRadius: 12,
-    gap: 8,
+    marginHorizontal: SPACING.base,
+    marginTop: SPACING.base,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.lg,
+    gap: SPACING.sm,
+    minHeight: BUTTON_HEIGHTS.medium,
   },
 
   logoutText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.error,
   },
@@ -121,15 +126,16 @@ export const buttonStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: COLORS.textWhite,
-    padding: 16,
-    borderRadius: 12,
-    gap: 8,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.lg,
+    gap: SPACING.sm,
     borderWidth: 1,
     borderColor: COLORS.error,
+    minHeight: BUTTON_HEIGHTS.medium,
   },
 
   deleteButtonText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.error,
   },
