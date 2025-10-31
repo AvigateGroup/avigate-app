@@ -2,48 +2,52 @@
 
 import { StyleSheet } from 'react-native';
 import { COLORS } from '../../constants/colors';
+import { SPACING, FONT_SIZES, BORDER_RADIUS, LINE_HEIGHTS } from '@/utils/responsive';
 
 /**
- * Form element styles
+ * Form element styles with responsive sizing
  */
 export const formStyles = StyleSheet.create({
   // ========== FORM CONTAINERS ==========
   form: {
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
   },
 
   // ========== LABELS ==========
   inputLabel: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   // ========== LINKS ==========
   forgotPassword: {
     alignSelf: 'flex-end',
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
   },
 
   forgotPasswordText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.primary,
     fontWeight: '600',
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   // ========== GENDER SELECTION ==========
   genderLabel: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   genderContainer: {
     flexDirection: 'row',
-    gap: 12,
-    marginBottom: 24,
+    gap: SPACING.md,
+    marginBottom: SPACING.xl,
   },
 
   genderButton: {
@@ -51,11 +55,12 @@ export const formStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    borderRadius: 8,
+    paddingVertical: SPACING.base,
+    borderRadius: BORDER_RADIUS.base,
     borderWidth: 1,
     borderColor: COLORS.border,
     backgroundColor: COLORS.background,
+    gap: SPACING.sm,
   },
 
   genderButtonActive: {
@@ -64,10 +69,10 @@ export const formStyles = StyleSheet.create({
   },
 
   genderButtonText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.text,
-    marginLeft: 8,
+    lineHeight: LINE_HEIGHTS.md,
   },
 
   genderButtonTextActive: {
@@ -77,33 +82,35 @@ export const formStyles = StyleSheet.create({
   // ========== PASSWORD REQUIREMENTS ==========
   passwordRequirements: {
     backgroundColor: COLORS.backgroundLight,
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 24,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.base,
+    marginBottom: SPACING.xl,
   },
 
   requirementsTitle: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   requirementItem: {
-    fontSize: 13,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   // ========== OTP ==========
   otpContainer: {
-    marginBottom: 32,
+    marginBottom: SPACING.xxxl,
   },
 
   // ========== RESEND CODE ==========
   resendContainer: {
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: SPACING.xl,
   },
 
   resendTextContainer: {
@@ -112,24 +119,28 @@ export const formStyles = StyleSheet.create({
   },
 
   resendLabel: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   resendText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     color: COLORS.primary,
     fontWeight: '600',
+    lineHeight: LINE_HEIGHTS.md,
   },
 
   resendLink: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.primary,
     fontWeight: '600',
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   countdownText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textMuted,
+    lineHeight: LINE_HEIGHTS.base,
   },
 });
