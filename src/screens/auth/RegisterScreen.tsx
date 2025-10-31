@@ -376,24 +376,18 @@ export const RegisterScreen: React.FC = () => {
               <Text style={authFeatureStyles.checkboxLabel}>
                 I agree to the{' '}
                 <Text 
-                  style={typographyStyles.linkText} 
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    router.push('/terms');
-                  }}
-                >
-                  Terms of Service
-                </Text>
-                {' '}and{' '}
-                <Text 
-                  style={typographyStyles.linkText}
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    router.push('/privacy');
-                  }}
-                >
-                  Privacy Policy
-                </Text>
+                    style={typographyStyles.linkText} 
+                    onPress={() => router.push('/terms')}
+                  >
+                    Terms of Service
+                  </Text>
+                  {' '}and{' '}
+                  <Text 
+                    style={typographyStyles.linkText}
+                    onPress={() => router.push('/privacy')}
+                  >
+                    Privacy Policy
+                  </Text>
               </Text>
             </TouchableOpacity>
             {errors.agreedToTerms && (
