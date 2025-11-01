@@ -1,7 +1,7 @@
 // src/screens/auth/RegisterScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,6 +16,7 @@ import { RegisterDto, UserSex } from '@/types/auth.types';
 import { 
   containerStyles, 
   typographyStyles, 
+  buttonStyles, 
   formStyles, 
   layoutStyles,
   spacingStyles 
@@ -24,8 +25,8 @@ import { authFeatureStyles } from '@/styles/features/auth';
 import { COLORS } from '@/constants/colors';
 
 // Terms and Privacy Policy Version Configuration
-const TERMS_VERSION = '1.0'; // Update this when terms change
-const PRIVACY_VERSION = '1.0'; // Update this when privacy policy changes
+const TERMS_VERSION = '1.0';
+const PRIVACY_VERSION = '1.0';
 
 export const RegisterScreen: React.FC = () => {
   const router = useRouter();
@@ -60,7 +61,7 @@ export const RegisterScreen: React.FC = () => {
     const newErrors: Record<string, string> = {};
 
     switch (step) {
-      case 1: // Email
+      case 1:
         if (!formData.email) {
           newErrors.email = 'Email is required';
         } else if (!validateEmail(formData.email)) {
@@ -68,7 +69,7 @@ export const RegisterScreen: React.FC = () => {
         }
         break;
 
-      case 2: // Name
+      case 2:
         if (!formData.firstName.trim()) {
           newErrors.firstName = 'First name is required';
         }
@@ -77,7 +78,7 @@ export const RegisterScreen: React.FC = () => {
         }
         break;
 
-      case 3: // Sex & Language
+      case 3:
         if (!formData.sex) {
           newErrors.sex = 'Please select your sex';
         }
@@ -86,7 +87,7 @@ export const RegisterScreen: React.FC = () => {
         }
         break;
 
-      case 4: // Phone & Country
+      case 4:
         if (!formData.phoneNumber) {
           newErrors.phoneNumber = 'Phone number is required';
         } else if (!validatePhoneNumber(formData.countryCode + formData.phoneNumber)) {
@@ -94,7 +95,7 @@ export const RegisterScreen: React.FC = () => {
         }
         break;
 
-      case 5: // Password & Terms
+      case 5:
         if (!formData.password) {
           newErrors.password = 'Password is required';
         } else {
@@ -140,11 +141,9 @@ export const RegisterScreen: React.FC = () => {
 
     setLoading(true);
     try {
-      // Get FCM token and device info
       const fcmToken = await getFCMToken();
       const deviceInfo = getDeviceInfo();
 
-      // Prepare registration data matching backend API
       const registerDto: RegisterDto = {
         email: formData.email.toLowerCase().trim(),
         password: formData.password,
@@ -156,11 +155,6 @@ export const RegisterScreen: React.FC = () => {
         language: formData.language,
         fcmToken: fcmToken,
         deviceInfo: deviceInfo,
-        // Terms agreement metadata (if your backend supports it)
-        // agreedToTerms: true,
-        // agreedToTermsAt: new Date().toISOString(),
-        // termsVersion: TERMS_VERSION,
-        // privacyPolicyVersion: PRIVACY_VERSION,
       };
 
       const response = await authApi.register(registerDto);
@@ -285,7 +279,7 @@ export const RegisterScreen: React.FC = () => {
             <View>
               <Text style={formStyles.genderLabel}>Preferred Language</Text>
               <View style={authFeatureStyles.languageButtons}>
-                {['English'].map((lang) => (
+                {['English', 'Yoruba', 'Hausa', 'Igbo'].map((lang) => (
                   <TouchableOpacity
                     key={lang}
                     style={[
@@ -357,7 +351,6 @@ export const RegisterScreen: React.FC = () => {
               <Text style={formStyles.requirementItem}>• Both upper and lowercase letters</Text>
             </View>
 
-            {/* Terms Agreement - REQUIRED FOR REGISTRATION */}
             <TouchableOpacity
               style={authFeatureStyles.checkboxContainer}
               onPress={() => updateField('agreedToTerms', !formData.agreedToTerms)}
@@ -401,80 +394,72 @@ export const RegisterScreen: React.FC = () => {
 
   return (
     <AuthLayout showLogo={true}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={containerStyles.container}
-      >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={authFeatureStyles.scrollContent}
-        >
-          {/* Progress Indicator */}
-          <View style={authFeatureStyles.progressContainer}>
-            {[...Array(totalSteps)].map((_, index) => (
-              <View
-                key={index}
-                style={[
-                  authFeatureStyles.progressDot,
-                  index + 1 <= currentStep && authFeatureStyles.progressDotActive
-                ]}
-              />
-            ))}
-          </View>
-
-          {/* Step Content */}
-          {renderStepContent()}
-
-          {/* Navigation Buttons */}
-          <View style={authFeatureStyles.navigationButtons}>
-            {currentStep > 1 && (
-              <Button
-                title="Back"
-                onPress={handleBack}
-                variant="outline"
-                style={authFeatureStyles.backButton}
-              />
-            )}
-            <Button
-              title={currentStep === totalSteps ? 'Sign Up' : 'Next'}
-              onPress={handleNext}
-              loading={loading}
-              disabled={loading}
-              style={authFeatureStyles.nextButton}
+      <View style={authFeatureStyles.authContent}>
+        {/* Progress Indicator */}
+        <View style={authFeatureStyles.progressContainer}>
+          {[...Array(totalSteps)].map((_, index) => (
+            <View
+              key={index}
+              style={[
+                authFeatureStyles.progressDot,
+                index + 1 <= currentStep && authFeatureStyles.progressDotActive
+              ]}
             />
-          </View>
+          ))}
+        </View>
 
-          {/* Google Sign Up Alternative */}
-          {currentStep === 1 && (
-            <>
-              <View style={layoutStyles.divider}>
-                <View style={layoutStyles.dividerLine} />
-                <Text style={layoutStyles.dividerText}>OR</Text>
-                <View style={layoutStyles.dividerLine} />
-              </View>
+        {/* Step Content */}
+        {renderStepContent()}
 
-              <TouchableOpacity
-                onPress={() => router.push('/(auth)/google-auth')}
-                activeOpacity={0.8}
-              >
-                <Image
-                  source={require('../../../assets/images/google-icon.png')}
-                  style={authFeatureStyles.googleButtonImage}
-                  resizeMode="contain"
-                />
-              </TouchableOpacity>
-            </>
+        {/* Navigation Buttons */}
+        <View style={authFeatureStyles.navigationButtons}>
+          {currentStep > 1 && (
+            <Button
+              title="Back"
+              onPress={handleBack}
+              variant="outline"
+              style={authFeatureStyles.backButton}
+            />
           )}
+          <Button
+            title={currentStep === totalSteps ? 'Sign Up' : 'Next'}
+            onPress={handleNext}
+            loading={loading}
+            disabled={loading}
+            style={authFeatureStyles.nextButton}
+          />
+        </View>
 
-          {/* Footer */}
-          <View style={layoutStyles.footer}>
-            <Text style={layoutStyles.footerText}>Already have an account? </Text>
-            <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
-              <Text style={layoutStyles.footerLink}>Sign In</Text>
+        {/* Google Sign Up Alternative */}
+        {currentStep === 1 && (
+          <>
+            <View style={layoutStyles.divider}>
+              <View style={layoutStyles.dividerLine} />
+              <Text style={layoutStyles.dividerText}>OR</Text>
+              <View style={layoutStyles.dividerLine} />
+            </View>
+
+            <TouchableOpacity
+              onPress={() => router.push('/(auth)/google-auth')}
+              activeOpacity={0.8}
+            >
+              <Image
+                source={require('../../../assets/images/google-icon.png')}
+                style={authFeatureStyles.googleButtonImage}
+                resizeMode="contain"
+              />
             </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </>
+        )}
+
+        {/* Footer */}
+        <View style={layoutStyles.footer}>
+          <Text style={layoutStyles.footerText}>Already have an account? </Text>
+          <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+            <Text style={layoutStyles.footerLink}>Sign In</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </AuthLayout>
   );
 };
