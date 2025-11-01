@@ -365,4 +365,26 @@ export const authFeatureStyles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: LINE_HEIGHTS.sm,
   },
+
+  // ========== BACK TO LOGIN ==========
+  backToLoginWithMargin: {
+    paddingVertical: SPACING.sm,
+    alignItems: 'center',
+    marginTop: SPACING.base,
+  },
+
+  backToLoginText: {
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.primary,
+    fontWeight: '600',
+    lineHeight: LINE_HEIGHTS.sm,
+  },
+
+  // ========== EMAIL HIGHLIGHT ==========
+  email: {
+    fontSize: FONT_SIZES.base,
+    fontWeight: '600',
+    color: COLORS.primary,
+    lineHeight: LINE_HEIGHTS.base,
+  },
 });
