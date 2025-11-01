@@ -1,4 +1,4 @@
-// src/styles/features/auth.ts 
+// src/styles/features/auth.ts
 
 import { StyleSheet } from 'react-native';
 import { COLORS } from '@/constants/colors';
@@ -15,7 +15,6 @@ import {
  * Authentication feature-specific styles
  * These styles are used across authentication screens (login, register, google auth)
  * Using responsive sizing for cross-device compatibility
- * IMPROVED: Better spacing and visual hierarchy
  */
 export const authFeatureStyles = StyleSheet.create({
   // ========== SCROLL CONTENT ==========
@@ -31,8 +30,8 @@ export const authFeatureStyles = StyleSheet.create({
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: SPACING.xs,          // Reduced spacing for tighter connection
-    marginTop: 0,                      // Removed extra top margin
+    marginBottom: SPACING.sm,
+    marginTop: SPACING.lg,
     lineHeight: LINE_HEIGHTS.xxxl,
   },
 
@@ -40,15 +39,15 @@ export const authFeatureStyles = StyleSheet.create({
     fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.lg,          // Reduced from xl to bring content closer
+    marginBottom: SPACING.xl,
     lineHeight: LINE_HEIGHTS.base,
-    paddingHorizontal: SPACING.base,   // Reduced padding
+    paddingHorizontal: SPACING.lg,
   },
 
   // ========== SOCIAL BUTTONS ==========
   socialButtonsContainer: {
     gap: SPACING.md,
-    marginBottom: SPACING.lg,          // Reduced from xl
+    marginBottom: SPACING.xl,
   },
 
   // Google Button Image Style
@@ -62,8 +61,8 @@ export const authFeatureStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: SPACING.sm,
-    marginBottom: SPACING.xl,          // Reduced from xxl
-    marginTop: 0,                      // Removed extra top margin
+    marginBottom: SPACING.xxl,
+    marginTop: SPACING.lg,
   },
 
   progressDot: {
@@ -79,21 +78,21 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   stepContainer: {
-    marginBottom: SPACING.xl,          // Reduced from xxl
+    marginBottom: SPACING.xxl,
   },
 
   stepTitle: {
     fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
     color: COLORS.text,
-    marginBottom: SPACING.xs,          // Tighter spacing
+    marginBottom: SPACING.sm,
     lineHeight: LINE_HEIGHTS.xxl,
   },
 
   stepSubtitle: {
     fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
-    marginBottom: SPACING.lg,          // Reduced from xl
+    marginBottom: SPACING.xl,
     lineHeight: LINE_HEIGHTS.base,
   },
 
@@ -181,7 +180,7 @@ export const authFeatureStyles = StyleSheet.create({
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: SPACING.xs,          // Tighter spacing
+    marginBottom: SPACING.sm,
     lineHeight: LINE_HEIGHTS.xxl,
   },
 
@@ -189,9 +188,9 @@ export const authFeatureStyles = StyleSheet.create({
     fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.xl,          // Reduced from xxl
+    marginBottom: SPACING.xxl,
     lineHeight: LINE_HEIGHTS.base,
-    paddingHorizontal: SPACING.base,   // Reduced padding
+    paddingHorizontal: SPACING.lg,
   },
 
   benefitsContainer: {
