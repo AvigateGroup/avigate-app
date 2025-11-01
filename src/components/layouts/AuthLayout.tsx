@@ -3,7 +3,6 @@
 import React, { ReactNode } from 'react';
 import {
   View,
-  ScrollView,
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
@@ -26,12 +25,9 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = tru
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-        >
+        <View style={styles.content}>
           {showLogo && (
             <View style={styles.logoContainer}>
               <Image
@@ -41,8 +37,8 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = tru
               />
             </View>
           )}
-          <View style={styles.content}>{children}</View>
-        </ScrollView>
+          <View style={styles.formContent}>{children}</View>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -56,19 +52,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  scrollContent: {
-    flexGrow: 1,
+  content: {
+    flex: 1,
     paddingHorizontal: SPACING.xl,
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: SPACING.xxxl,
-    marginBottom: SPACING.xxl,
+    marginTop: SPACING.lg,        // Reduced from xxxl (40) to lg (20)
+    marginBottom: SPACING.lg,     // Reduced from xxl (32) to lg (20)
   },
   logo: {
     // Dynamic width and height set via inline style
   },
-  content: {
+  formContent: {
     flex: 1,
   },
 });
