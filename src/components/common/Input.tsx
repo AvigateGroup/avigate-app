@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@/constants/colors';
+import { SPACING, FONT_SIZES, LINE_HEIGHTS, BORDER_RADIUS } from '@/utils/responsive';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -51,7 +52,12 @@ export const Input: React.FC<InputProps> = ({
         ]}
       >
         {leftIcon && (
-          <Icon name={leftIcon} size={20} color={COLORS.textMuted} style={styles.leftIcon} />
+          <Icon 
+            name={leftIcon} 
+            size={20} 
+            color={isFocused ? COLORS.primary : COLORS.textMuted} 
+            style={styles.leftIcon} 
+          />
         )}
         <TextInput
           style={[styles.input, leftIcon && styles.inputWithLeftIcon]}
@@ -66,13 +72,17 @@ export const Input: React.FC<InputProps> = ({
             <Icon
               name={isSecure ? 'eye-off-outline' : 'eye-outline'}
               size={20}
-              color={COLORS.textMuted}
+              color={isFocused ? COLORS.primary : COLORS.textMuted}
             />
           </TouchableOpacity>
         )}
         {rightIcon && !secureTextEntry && (
           <TouchableOpacity onPress={onRightIconPress} style={styles.rightIcon}>
-            <Icon name={rightIcon} size={20} color={COLORS.textMuted} />
+            <Icon 
+              name={rightIcon} 
+              size={20} 
+              color={isFocused ? COLORS.primary : COLORS.textMuted} 
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -83,47 +93,71 @@ export const Input: React.FC<InputProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 16,
+    marginBottom: SPACING.base,
   },
   label: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.sm,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.sm,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: 8,
-    backgroundColor: COLORS.background,
+    borderWidth: 0,                           // ✨ No border by default
+    borderRadius: BORDER_RADIUS.base,
+    backgroundColor: COLORS.backgroundLight,  // ✨ Light gray background
+    minHeight: 48,                            // Accessibility standard
+    // Modern shadow (subtle depth)
+    shadowColor: COLORS.shadow,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
   },
   inputContainerFocused: {
-    borderColor: COLORS.primary,
+    backgroundColor: COLORS.white,            // ✨ Lifts to white when focused
+    borderWidth: 1,                           // ✨ Border appears on focus
+    borderColor: COLORS.border,               // ✨ Subtle gray border
+    // Enhanced shadow on focus (floating effect)
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   inputContainerError: {
-    borderColor: COLORS.error,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.error,                // ✨ Red border for errors
+    shadowColor: COLORS.error,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 1,
   },
   input: {
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.base,
+    fontSize: FONT_SIZES.md,
+    lineHeight: LINE_HEIGHTS.md,
     color: COLORS.text,
   },
   inputWithLeftIcon: {
-    paddingLeft: 8,
+    paddingLeft: SPACING.sm,
   },
   leftIcon: {
-    marginLeft: 12,
+    marginLeft: SPACING.md,
   },
   rightIcon: {
-    padding: 12,
+    padding: SPACING.md,
   },
   error: {
-    fontSize: 12,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.error,
-    marginTop: 4,
+    marginTop: SPACING.xs,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 });
