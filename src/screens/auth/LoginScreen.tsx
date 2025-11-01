@@ -1,7 +1,7 @@
 // src/screens/auth/LoginScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -105,97 +105,89 @@ export const LoginScreen: React.FC = () => {
 
   return (
     <AuthLayout showLogo={true}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={containerStyles.container}
-      >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={authFeatureStyles.scrollContent}
-        >
-          <Text style={authFeatureStyles.welcomeTitle}>Welcome to Avigate</Text>
-          <Text style={authFeatureStyles.welcomeSubtitle}>
-            Sign up or login below to continue.
-          </Text>
+      <View style={authFeatureStyles.authContent}>
+        <Text style={authFeatureStyles.welcomeTitle}>Welcome to Avigate</Text>
+        <Text style={authFeatureStyles.welcomeSubtitle}>
+          Sign up or login below to continue.
+        </Text>
 
-          {/* Google Login Button with Image */}
-          <View style={authFeatureStyles.socialButtonsContainer}>
-            <TouchableOpacity
-              onPress={() => router.push('/(auth)/google-auth')}
-              activeOpacity={0.8}
+        {/* Google Login Button with Image */}
+        <View style={authFeatureStyles.socialButtonsContainer}>
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/google-auth')}
+            activeOpacity={0.8}
+          >
+            <Image
+              source={require('../../../assets/images/google-icon.png')}
+              style={authFeatureStyles.googleButtonImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </View>
+
+        {/* Divider */}
+        <View style={layoutStyles.divider}>
+          <View style={layoutStyles.dividerLine} />
+          <Text style={layoutStyles.dividerText}>or continue with email</Text>
+          <View style={layoutStyles.dividerLine} />
+        </View>
+
+        {/* Email/Password Form */}
+        <View style={formStyles.form}>
+          <Input
+            placeholder="Enter your email"
+            value={email}
+            onChangeText={(text) => {
+              setEmail(text);
+              setErrors({ ...errors, email: '' });
+            }}
+            error={errors.email}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            leftIcon="mail-outline"
+          />
+
+          <Input
+            placeholder="Enter your password"
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              setErrors({ ...errors, password: '' });
+            }}
+            error={errors.password}
+            secureTextEntry
+            leftIcon="lock-closed-outline"
+            rightIcon="eye-outline"
+          />
+
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/forgot-password')}
+            style={formStyles.forgotPassword}
+          >
+            <Text style={formStyles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
+
+          <Button
+            title="Login"
+            onPress={handleLogin}
+            loading={loading}
+            style={buttonStyles.submitButton}
+          />
+        </View>
+
+        {/* Footer */}
+        <View style={layoutStyles.footer}>
+          <Text style={layoutStyles.footerText}>
+            Don't have an account?{' '}
+            <Text 
+              style={layoutStyles.footerLink} 
+              onPress={() => router.push('/(auth)/register')}
             >
-              <Image
-                source={require('../../../assets/images/google-icon.png')}
-                style={authFeatureStyles.googleButtonImage}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
-          </View>
-
-          {/* Divider */}
-          <View style={layoutStyles.divider}>
-            <View style={layoutStyles.dividerLine} />
-            <Text style={layoutStyles.dividerText}>or continue with email</Text>
-            <View style={layoutStyles.dividerLine} />
-          </View>
-
-          {/* Email/Password Form */}
-          <View style={formStyles.form}>
-            <Input
-              placeholder="Enter your email"
-              value={email}
-              onChangeText={(text) => {
-                setEmail(text);
-                setErrors({ ...errors, email: '' });
-              }}
-              error={errors.email}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              leftIcon="mail-outline"
-            />
-
-            <Input
-              placeholder="Enter your password"
-              value={password}
-              onChangeText={(text) => {
-                setPassword(text);
-                setErrors({ ...errors, password: '' });
-              }}
-              error={errors.password}
-              secureTextEntry
-              leftIcon="lock-closed-outline"
-              rightIcon="eye-outline"
-            />
-
-            <TouchableOpacity
-              onPress={() => router.push('/(auth)/forgot-password')}
-              style={formStyles.forgotPassword}
-            >
-              <Text style={formStyles.forgotPasswordText}>Forgot Password?</Text>
-            </TouchableOpacity>
-
-            <Button
-              title="Login"
-              onPress={handleLogin}
-              loading={loading}
-              style={buttonStyles.submitButton}
-            />
-          </View>
-
-          {/* Footer */}
-          <View style={layoutStyles.footer}>
-            <Text style={layoutStyles.footerText}>
-              Don't have an account?{' '}
-              <Text 
-                style={layoutStyles.footerLink} 
-                onPress={() => router.push('/(auth)/register')}
-              >
-                Sign Up
-              </Text>
+              Sign Up
             </Text>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          </Text>
+        </View>
+      </View>
     </AuthLayout>
   );
 };
