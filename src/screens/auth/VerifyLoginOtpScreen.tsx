@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
 import { Button } from '@/components/common/Button';
@@ -12,7 +13,9 @@ import { validateOTP } from '@/utils/validation';
 import { handleApiError, getDeviceInfo } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { APP_CONFIG } from '@/constants/config';
-import { authStyles, commonStyles } from '@/styles';
+import { COLORS } from '@/constants/colors';
+import { authFeatureStyles } from '@/styles/features/auth';
+import { buttonStyles } from '@/styles/base';
 
 export const VerifyLoginOTPScreen: React.FC = () => {
   const router = useRouter();
@@ -111,46 +114,56 @@ export const VerifyLoginOTPScreen: React.FC = () => {
   };
 
   return (
-    <AuthLayout showLogo={false}>
-      <View style={authStyles.centeredContainer}>
-        <Text style={authStyles.titleCentered}>Verify Your Login</Text>
-        <Text style={authStyles.subtitleCentered}>
-          Enter the 6-digit code sent to{'\n'}
-          <Text style={authStyles.email}>{email}</Text>
-        </Text>
+    <AuthLayout showLogo={true}>
+      <View style={authFeatureStyles.authContent}>
+        <View>
+          <View style={authFeatureStyles.verifyIconContainer}>
+            <View style={authFeatureStyles.verifyIconCircle}>
+              <Icon name="shield-checkmark" size={32} color={COLORS.primary} />
+            </View>
+          </View>
 
-        <View style={authStyles.otpContainer}>
-          <OTPInput value={otp} onChange={setOtp} error={error} />
+          <Text style={authFeatureStyles.titleCentered}>Verify Your Login</Text>
+          <Text style={authFeatureStyles.subtitleCentered}>
+            Enter the 6-digit code sent to
+          </Text>
+          <Text style={authFeatureStyles.emailText}>{email}</Text>
+
+          <View style={authFeatureStyles.otpWrapper}>
+            <OTPInput value={otp} onChange={setOtp} error={error} />
+          </View>
         </View>
 
-        <Button
-          title="Verify"
-          onPress={handleVerify}
-          loading={loading}
-          disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
-          style={commonStyles.marginBottom24}
-        />
+        <View>
+          <Button
+            title="Verify"
+            onPress={handleVerify}
+            loading={loading}
+            disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
+            style={buttonStyles.submitButton}
+          />
 
-        <View style={authStyles.resendContainer}>
-          {canResend ? (
-            <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
-              <Text style={authStyles.resendText}>
-                {resendLoading ? 'Sending...' : 'Resend Code'}
+          <View style={authFeatureStyles.resendSection}>
+            {canResend ? (
+              <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
+                <Text style={authFeatureStyles.resendLink}>
+                  {resendLoading ? 'Sending...' : 'Resend Code'}
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <Text style={authFeatureStyles.countdownText}>
+                Resend code in {countdown}s
               </Text>
-            </TouchableOpacity>
-          ) : (
-            <Text style={authStyles.countdownText}>
-              Resend code in {countdown}s
-            </Text>
-          )}
-        </View>
+            )}
+          </View>
 
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={authStyles.changeEmail}
-        >
-          <Text style={authStyles.changeEmailText}>Change Email</Text>
-        </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={authFeatureStyles.backLink}
+          >
+            <Text style={authFeatureStyles.backLinkText}>Change Email</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </AuthLayout>
   );
