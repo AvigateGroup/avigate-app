@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: SPACING.lg,        // Reduced from xxxl (40) to lg (20)
-    marginBottom: SPACING.lg,     // Reduced from xxl (32) to lg (20)
+    marginTop: SPACING.sm,             // 8pt (reduced from lg/20pt)
+    marginBottom: SPACING.sm,          // 8pt (reduced from lg/20pt)
   },
   logo: {
     // Dynamic width and height set via inline style

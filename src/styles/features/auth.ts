@@ -8,95 +8,94 @@ import {
   LINE_HEIGHTS, 
   BORDER_RADIUS, 
   moderateScale,
-  ICON_SIZES,
 } from '@/utils/responsive';
 
 /**
  * Authentication feature-specific styles
- * Optimized for better spacing and no scroll issues
- * Includes Login, Register, Google Auth, and Verification screens
+ * ULTRA-COMPACT VERSION - Minimal white space
  */
 export const authFeatureStyles = StyleSheet.create({
-  // ========== MAIN CONTENT WRAPPER (Prevents scrolling) ==========
+  // ========== MAIN CONTENT WRAPPER ==========
   authContent: {
     flex: 1,
-    justifyContent: 'space-between', // Distributes space evenly
+    justifyContent: 'space-between',
   },
 
-  // ========== WELCOME SECTION ==========
+  // ========== WELCOME SECTION (ULTRA COMPACT) ==========
   welcomeTitle: {
-    fontSize: FONT_SIZES.xxl,        // Reduced from xxxl (28) to xxl (24)
+    fontSize: FONT_SIZES.xl,              // Reduced from xxl (24) to xl (20)
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: SPACING.xs,
-    lineHeight: LINE_HEIGHTS.xxl,
+    marginBottom: 0,                      // REMOVED margin
+    lineHeight: LINE_HEIGHTS.xl,
   },
 
   welcomeSubtitle: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,              // Reduced from sm (12) to xs (10)
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.base,
-    lineHeight: LINE_HEIGHTS.sm,
+    marginBottom: SPACING.sm,             // 8pt
+    lineHeight: LINE_HEIGHTS.xs,
     paddingHorizontal: SPACING.base,
+    marginTop: SPACING.xs,                // 4pt gap after title
   },
 
-  // ========== SOCIAL BUTTONS ==========
+  // ========== SOCIAL BUTTONS (COMPACT) ==========
   socialButtonsContainer: {
-    marginBottom: SPACING.base,
+    marginBottom: SPACING.sm,             // 8pt
   },
 
-  // Google Button Image Style
   googleButtonImage: {
     width: '100%',
-    height: moderateScale(52),
+    height: moderateScale(48),            // Reduced from 52 to 48
   },
 
   // ========== MULTI-STEP REGISTRATION ==========
   progressContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: SPACING.sm,
-    marginBottom: SPACING.base,
+    gap: SPACING.xs,
+    marginBottom: SPACING.sm,
   },
 
   progressDot: {
-    width: moderateScale(8),
-    height: moderateScale(8),
-    borderRadius: moderateScale(4),
+    width: moderateScale(6),
+    height: moderateScale(6),
+    borderRadius: moderateScale(3),
     backgroundColor: COLORS.border,
   },
 
   progressDotActive: {
     backgroundColor: COLORS.primary,
-    width: moderateScale(24),
+    width: moderateScale(20),
   },
 
   stepContainer: {
-    marginBottom: SPACING.base,
+    marginBottom: SPACING.sm,
   },
 
   stepTitle: {
-    fontSize: FONT_SIZES.xl,
+    fontSize: FONT_SIZES.lg,              // 18px
     fontWeight: '700',
     color: COLORS.text,
-    marginBottom: SPACING.xs,
-    lineHeight: LINE_HEIGHTS.xl,
+    marginBottom: 0,
+    lineHeight: LINE_HEIGHTS.lg,
   },
 
   stepSubtitle: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.textLight,
-    marginBottom: SPACING.base,
-    lineHeight: LINE_HEIGHTS.sm,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.xs,
+    marginTop: SPACING.xs,
   },
 
   // ========== NAVIGATION BUTTONS ==========
   navigationButtons: {
     flexDirection: 'row',
-    gap: SPACING.md,
-    marginTop: SPACING.base,
+    gap: SPACING.sm,
+    marginTop: SPACING.sm,
   },
 
   backButton: {
@@ -111,12 +110,12 @@ export const authFeatureStyles = StyleSheet.create({
   languageButtons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: SPACING.sm,
+    gap: SPACING.xs,
   },
 
   languageButton: {
-    paddingHorizontal: SPACING.base,
-    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.xs,
     borderRadius: BORDER_RADIUS.xxl,
     borderWidth: 1,
     borderColor: COLORS.border,
@@ -129,10 +128,10 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   languageButtonText: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     fontWeight: '500',
     color: COLORS.textMuted,
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   languageButtonTextActive: {
@@ -143,14 +142,14 @@ export const authFeatureStyles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: SPACING.sm,
-    marginBottom: SPACING.xs,
+    gap: SPACING.xs,
+    marginBottom: 0,
   },
 
   checkbox: {
-    width: ICON_SIZES.base,
-    height: ICON_SIZES.base,
-    borderRadius: moderateScale(6),
+    width: moderateScale(18),
+    height: moderateScale(18),
+    borderRadius: moderateScale(5),
     borderWidth: 2,
     borderColor: COLORS.border,
     alignItems: 'center',
@@ -173,13 +172,13 @@ export const authFeatureStyles = StyleSheet.create({
   // ========== GOOGLE AUTH SPECIFIC ==========
   googleIconContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.base,
+    marginBottom: SPACING.sm,
   },
 
   googleIconCircle: {
-    width: moderateScale(72),
-    height: moderateScale(72),
-    borderRadius: moderateScale(36),
+    width: moderateScale(60),
+    height: moderateScale(60),
+    borderRadius: moderateScale(30),
     backgroundColor: COLORS.backgroundLight,
     alignItems: 'center',
     justifyContent: 'center',
@@ -191,54 +190,55 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   titleCentered: {
-    fontSize: FONT_SIZES.xxl,
+    fontSize: FONT_SIZES.xl,
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: SPACING.xs,
-    lineHeight: LINE_HEIGHTS.xxl,
+    marginBottom: 0,
+    lineHeight: LINE_HEIGHTS.xl,
   },
 
   subtitleCentered: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.base,
-    lineHeight: LINE_HEIGHTS.sm,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.xs,
     paddingHorizontal: SPACING.base,
+    marginTop: SPACING.xs,
   },
 
   benefitsContainer: {
     backgroundColor: COLORS.backgroundLight,
-    padding: SPACING.base,
-    borderRadius: BORDER_RADIUS.lg,
-    gap: SPACING.sm,
-    marginBottom: SPACING.base,
+    padding: SPACING.sm,
+    borderRadius: BORDER_RADIUS.base,
+    gap: SPACING.xs,
+    marginBottom: SPACING.sm,
   },
 
   benefitItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.sm,
+    gap: SPACING.xs,
   },
 
   benefitText: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.text,
     fontWeight: '500',
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   emailSignIn: {
-    paddingVertical: SPACING.sm,
+    paddingVertical: SPACING.xs,
     alignItems: 'center',
   },
 
   emailSignInText: {
-    fontSize: FONT_SIZES.md,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.primary,
     fontWeight: '600',
-    lineHeight: LINE_HEIGHTS.md,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   privacyNote: {
@@ -246,7 +246,7 @@ export const authFeatureStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: SPACING.xs,
-    marginTop: SPACING.sm,
+    marginTop: SPACING.xs,
   },
 
   privacyText: {
@@ -254,47 +254,48 @@ export const authFeatureStyles = StyleSheet.create({
     color: COLORS.textMuted,
     lineHeight: LINE_HEIGHTS.xs,
     flex: 1,
+    textAlign: 'center',
   },
 
   // ========== VERIFICATION SCREENS ==========
   verifyIconContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.base,
+    marginBottom: SPACING.sm,
   },
 
   verifyIconCircle: {
-    width: moderateScale(72),
-    height: moderateScale(72),
-    borderRadius: moderateScale(36),
+    width: moderateScale(60),
+    height: moderateScale(60),
+    borderRadius: moderateScale(30),
     backgroundColor: `${COLORS.primary}15`,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   emailText: {
-    fontSize: FONT_SIZES.base,
+    fontSize: FONT_SIZES.sm,
     fontWeight: '600',
     color: COLORS.primary,
     textAlign: 'center',
-    marginBottom: SPACING.sm,
-    lineHeight: LINE_HEIGHTS.base,
-  },
-
-  instructionText: {
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.textLight,
-    textAlign: 'center',
-    marginBottom: SPACING.base,
+    marginBottom: SPACING.xs,
     lineHeight: LINE_HEIGHTS.sm,
   },
 
+  instructionText: {
+    fontSize: FONT_SIZES.xs,
+    color: COLORS.textLight,
+    textAlign: 'center',
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.xs,
+  },
+
   otpWrapper: {
-    marginBottom: SPACING.base,
+    marginBottom: SPACING.sm,
   },
 
   resendSection: {
     alignItems: 'center',
-    marginVertical: SPACING.base,
+    marginVertical: SPACING.sm,
   },
 
   resendRow: {
@@ -304,22 +305,22 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   resendLabel: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.textLight,
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   resendLink: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.primary,
     fontWeight: '600',
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   countdownText: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.textMuted,
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   helpNote: {
@@ -328,7 +329,7 @@ export const authFeatureStyles = StyleSheet.create({
     justifyContent: 'center',
     gap: SPACING.xs,
     paddingHorizontal: SPACING.base,
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.xs,
   },
 
   helpText: {
@@ -340,51 +341,87 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   backLink: {
-    paddingVertical: SPACING.sm,
+    paddingVertical: SPACING.xs,
     alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 
   backLinkText: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.primary,
     fontWeight: '600',
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
+  },
+
+  // ========== INFO BOX ==========
+  infoBox: {
+    backgroundColor: COLORS.backgroundLight,
+    padding: SPACING.sm,
+    borderRadius: BORDER_RADIUS.base,
+    marginBottom: SPACING.sm,
+    borderLeftWidth: 3,
+    borderLeftColor: COLORS.primary,
+  },
+
+  infoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.xs,
+    marginBottom: SPACING.xs,
+  },
+
+  infoTitle: {
+    fontSize: FONT_SIZES.xs,
+    fontWeight: '600',
+    color: COLORS.text,
+    lineHeight: LINE_HEIGHTS.xs,
+  },
+
+  infoList: {
+    gap: 2,
+  },
+
+  infoItem: {
+    fontSize: FONT_SIZES.xs,
+    color: COLORS.textLight,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   // ========== FOOTER ==========
   termsFooter: {
-    marginTop: SPACING.xl,
-    paddingTop: SPACING.xl,
+    marginTop: SPACING.sm,
+    paddingTop: SPACING.sm,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
   },
 
   termsText: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.textMuted,
     textAlign: 'center',
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   // ========== BACK TO LOGIN ==========
   backToLoginWithMargin: {
-    paddingVertical: SPACING.sm,
+    paddingVertical: SPACING.xs,
     alignItems: 'center',
-    marginTop: SPACING.base,
+    marginTop: SPACING.xs,
   },
 
   backToLoginText: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,
     color: COLORS.primary,
     fontWeight: '600',
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   // ========== EMAIL HIGHLIGHT ==========
   email: {
-    fontSize: FONT_SIZES.base,
+    fontSize: FONT_SIZES.sm,
     fontWeight: '600',
     color: COLORS.primary,
-    lineHeight: LINE_HEIGHTS.base,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 });
