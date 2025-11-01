@@ -13,47 +13,43 @@ import {
 
 /**
  * Authentication feature-specific styles
- * These styles are used across authentication screens (login, register, google auth)
- * Using responsive sizing for cross-device compatibility
+ * Optimized for better spacing and no scroll issues
  */
 export const authFeatureStyles = StyleSheet.create({
-  // ========== SCROLL CONTENT ==========
-  scrollContent: {
-    flexGrow: 1,
-    paddingBottom: SPACING.xxxl,
-    paddingHorizontal: SPACING.base,
+  // ========== MAIN CONTENT WRAPPER (Prevents scrolling) ==========
+  authContent: {
+    flex: 1,
+    justifyContent: 'space-between', // Distributes space evenly
   },
 
   // ========== WELCOME SECTION ==========
   welcomeTitle: {
-    fontSize: FONT_SIZES.xxxl,
+    fontSize: FONT_SIZES.xxl,        // Reduced from xxxl (28) to xxl (24)
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: SPACING.sm,
-    marginTop: SPACING.lg,
-    lineHeight: LINE_HEIGHTS.xxxl,
+    marginBottom: SPACING.xs,         // Reduced from sm to xs
+    lineHeight: LINE_HEIGHTS.xxl,
   },
 
   welcomeSubtitle: {
-    fontSize: FONT_SIZES.base,
+    fontSize: FONT_SIZES.sm,          // Reduced from base to sm
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.xl,
-    lineHeight: LINE_HEIGHTS.base,
-    paddingHorizontal: SPACING.lg,
+    marginBottom: SPACING.base,       // Reduced from xl to base
+    lineHeight: LINE_HEIGHTS.sm,
+    paddingHorizontal: SPACING.base,
   },
 
   // ========== SOCIAL BUTTONS ==========
   socialButtonsContainer: {
-    gap: SPACING.md,
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.base,       // Reduced from xl to base
   },
 
   // Google Button Image Style
   googleButtonImage: {
     width: '100%',
-    height: moderateScale(56),
+    height: moderateScale(52),        // Slightly reduced from 56
   },
 
   // ========== MULTI-STEP REGISTRATION ==========
@@ -61,8 +57,7 @@ export const authFeatureStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: SPACING.sm,
-    marginBottom: SPACING.xxl,
-    marginTop: SPACING.lg,
+    marginBottom: SPACING.base,       // Reduced from xxl to base
   },
 
   progressDot: {
@@ -78,29 +73,29 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   stepContainer: {
-    marginBottom: SPACING.xxl,
+    marginBottom: SPACING.base,       // Reduced from xxl to base
   },
 
   stepTitle: {
-    fontSize: FONT_SIZES.xxl,
+    fontSize: FONT_SIZES.xl,          // Reduced from xxl
     fontWeight: '700',
     color: COLORS.text,
-    marginBottom: SPACING.sm,
-    lineHeight: LINE_HEIGHTS.xxl,
+    marginBottom: SPACING.xs,         // Reduced
+    lineHeight: LINE_HEIGHTS.xl,
   },
 
   stepSubtitle: {
-    fontSize: FONT_SIZES.base,
+    fontSize: FONT_SIZES.sm,          // Reduced from base
     color: COLORS.textLight,
-    marginBottom: SPACING.xl,
-    lineHeight: LINE_HEIGHTS.base,
+    marginBottom: SPACING.base,       // Reduced from xl
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   // ========== NAVIGATION BUTTONS ==========
   navigationButtons: {
     flexDirection: 'row',
     gap: SPACING.md,
-    marginBottom: SPACING.xl,
+    marginTop: SPACING.base,          // Added top margin
   },
 
   backButton: {
@@ -115,12 +110,12 @@ export const authFeatureStyles = StyleSheet.create({
   languageButtons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: SPACING.md,
+    gap: SPACING.sm,                  // Reduced from md
   },
 
   languageButton: {
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.base,  // Reduced from lg
+    paddingVertical: SPACING.sm,      // Reduced from md
     borderRadius: BORDER_RADIUS.xxl,
     borderWidth: 1,
     borderColor: COLORS.border,
@@ -133,10 +128,10 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   languageButtonText: {
-    fontSize: FONT_SIZES.base,
+    fontSize: FONT_SIZES.sm,          // Reduced from base
     fontWeight: '500',
     color: COLORS.textMuted,
-    lineHeight: LINE_HEIGHTS.base,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   languageButtonTextActive: {
@@ -147,8 +142,8 @@ export const authFeatureStyles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: SPACING.md,
-    marginBottom: SPACING.sm,
+    gap: SPACING.sm,                  // Reduced from md
+    marginBottom: SPACING.xs,         // Reduced from sm
   },
 
   checkbox: {
@@ -169,9 +164,9 @@ export const authFeatureStyles = StyleSheet.create({
 
   checkboxLabel: {
     flex: 1,
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.xs,          // Reduced from sm
     color: COLORS.text,
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.xs,
   },
 
   // ========== GOOGLE AUTH SPECIFIC ==========
