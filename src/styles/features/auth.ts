@@ -8,94 +8,96 @@ import {
   LINE_HEIGHTS, 
   BORDER_RADIUS, 
   moderateScale,
+  ICON_SIZES,
 } from '@/utils/responsive';
 
 /**
  * Authentication feature-specific styles
- * ULTRA-COMPACT VERSION - Minimal white space
+ * Fixed: Natural spacing without keyboard-triggered adjustments
  */
 export const authFeatureStyles = StyleSheet.create({
   // ========== MAIN CONTENT WRAPPER ==========
   authContent: {
     flex: 1,
-    justifyContent: 'space-between',
+    // ❌ REMOVED: justifyContent: 'space-between' - This was causing the spread
+    // ✅ Content will now flow naturally with consistent spacing
   },
 
-  // ========== WELCOME SECTION (ULTRA COMPACT) ==========
+  // ========== WELCOME SECTION ==========
   welcomeTitle: {
-    fontSize: FONT_SIZES.xl,              // Reduced from xxl (24) to xl (20)
+    fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: 0,                      // REMOVED margin
-    lineHeight: LINE_HEIGHTS.xl,
+    marginBottom: SPACING.xs,
+    lineHeight: LINE_HEIGHTS.xxl,
   },
 
   welcomeSubtitle: {
-    fontSize: FONT_SIZES.xs,              // Reduced from sm (12) to xs (10)
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.sm,             // 8pt
-    lineHeight: LINE_HEIGHTS.xs,
+    marginBottom: SPACING.lg,         // Increased from base to lg for better spacing
+    lineHeight: LINE_HEIGHTS.sm,
     paddingHorizontal: SPACING.base,
-    marginTop: SPACING.xs,                // 4pt gap after title
   },
 
-  // ========== SOCIAL BUTTONS (COMPACT) ==========
+  // ========== SOCIAL BUTTONS ==========
   socialButtonsContainer: {
-    marginBottom: SPACING.sm,             // 8pt
+    marginBottom: SPACING.lg,         // Increased from base to lg
   },
 
+  // Google Button Image Style
   googleButtonImage: {
     width: '100%',
-    height: moderateScale(48),            // Reduced from 52 to 48
+    height: moderateScale(52),
   },
 
   // ========== MULTI-STEP REGISTRATION ==========
   progressContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: SPACING.xs,
-    marginBottom: SPACING.sm,
+    gap: SPACING.sm,
+    marginBottom: SPACING.lg,         // Increased from base to lg
   },
 
   progressDot: {
-    width: moderateScale(6),
-    height: moderateScale(6),
-    borderRadius: moderateScale(3),
+    width: moderateScale(8),
+    height: moderateScale(8),
+    borderRadius: moderateScale(4),
     backgroundColor: COLORS.border,
   },
 
   progressDotActive: {
     backgroundColor: COLORS.primary,
-    width: moderateScale(20),
+    width: moderateScale(24),
   },
 
   stepContainer: {
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.lg,         // Increased from base to lg
   },
 
   stepTitle: {
-    fontSize: FONT_SIZES.lg,              // 18px
+    fontSize: FONT_SIZES.xl,
     fontWeight: '700',
     color: COLORS.text,
-    marginBottom: 0,
-    lineHeight: LINE_HEIGHTS.lg,
+    marginBottom: SPACING.xs,
+    lineHeight: LINE_HEIGHTS.xl,
   },
 
   stepSubtitle: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
-    marginBottom: SPACING.sm,
-    lineHeight: LINE_HEIGHTS.xs,
-    marginTop: SPACING.xs,
+    marginBottom: SPACING.lg,         // Increased from base to lg
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   // ========== NAVIGATION BUTTONS ==========
   navigationButtons: {
     flexDirection: 'row',
-    gap: SPACING.sm,
-    marginTop: SPACING.sm,
+    gap: SPACING.md,
+    marginTop: SPACING.lg,            // Increased from base to lg
+    marginBottom: SPACING.md,         // Added bottom margin
   },
 
   backButton: {
@@ -110,12 +112,12 @@ export const authFeatureStyles = StyleSheet.create({
   languageButtons: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: SPACING.xs,
+    gap: SPACING.sm,
   },
 
   languageButton: {
-    paddingHorizontal: SPACING.md,
-    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.base,
+    paddingVertical: SPACING.sm,
     borderRadius: BORDER_RADIUS.xxl,
     borderWidth: 1,
     borderColor: COLORS.border,
@@ -128,10 +130,10 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   languageButtonText: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.sm,
     fontWeight: '500',
     color: COLORS.textMuted,
-    lineHeight: LINE_HEIGHTS.xs,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   languageButtonTextActive: {
@@ -142,14 +144,14 @@ export const authFeatureStyles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: SPACING.xs,
-    marginBottom: 0,
+    gap: SPACING.sm,
+    marginBottom: SPACING.xs,
   },
 
   checkbox: {
-    width: moderateScale(18),
-    height: moderateScale(18),
-    borderRadius: moderateScale(5),
+    width: ICON_SIZES.base,
+    height: ICON_SIZES.base,
+    borderRadius: moderateScale(6),
     borderWidth: 2,
     borderColor: COLORS.border,
     alignItems: 'center',
@@ -190,55 +192,54 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   titleCentered: {
-    fontSize: FONT_SIZES.xl,
+    fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
     color: COLORS.text,
     textAlign: 'center',
-    marginBottom: 0,
-    lineHeight: LINE_HEIGHTS.xl,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.xxl,
   },
 
   subtitleCentered: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.sm,
-    lineHeight: LINE_HEIGHTS.xs,
-    paddingHorizontal: SPACING.base,
-    marginTop: SPACING.xs,
+    marginBottom: SPACING.xxl,
+    lineHeight: LINE_HEIGHTS.base,
+    paddingHorizontal: SPACING.lg,
   },
 
   benefitsContainer: {
     backgroundColor: COLORS.backgroundLight,
-    padding: SPACING.sm,
-    borderRadius: BORDER_RADIUS.base,
-    gap: SPACING.xs,
-    marginBottom: SPACING.sm,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
+    gap: SPACING.md,
+    marginBottom: SPACING.xl,
   },
 
   benefitItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.xs,
+    gap: SPACING.md,
   },
 
   benefitText: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.base,
     color: COLORS.text,
     fontWeight: '500',
-    lineHeight: LINE_HEIGHTS.xs,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   emailSignIn: {
-    paddingVertical: SPACING.xs,
+    paddingVertical: SPACING.md,
     alignItems: 'center',
   },
 
   emailSignInText: {
-    fontSize: FONT_SIZES.sm,
+    fontSize: FONT_SIZES.md,
     color: COLORS.primary,
     fontWeight: '600',
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.md,
   },
 
   privacyNote: {
@@ -390,24 +391,24 @@ export const authFeatureStyles = StyleSheet.create({
 
   // ========== FOOTER ==========
   termsFooter: {
-    marginTop: SPACING.sm,
-    paddingTop: SPACING.sm,
+    marginTop: SPACING.xl,
+    paddingTop: SPACING.xl,
     borderTopWidth: 1,
     borderTopColor: COLORS.border,
   },
 
   termsText: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textMuted,
     textAlign: 'center',
-    lineHeight: LINE_HEIGHTS.xs,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   // ========== BACK TO LOGIN ==========
   backToLoginWithMargin: {
     paddingVertical: SPACING.xs,
     alignItems: 'center',
-    marginTop: SPACING.xs,
+    marginTop: SPACING.xl,           // Increased from xs to xl for better spacing
   },
 
   backToLoginText: {
