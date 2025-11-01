@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
 import { Button } from '@/components/common/Button';
@@ -12,7 +13,9 @@ import { validateOTP } from '@/utils/validation';
 import { handleApiError } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { APP_CONFIG } from '@/constants/config';
-import { authStyles, commonStyles } from '@/styles';
+import { COLORS } from '@/constants/colors';
+import { authFeatureStyles } from '@/styles/features/auth';
+import { buttonStyles, layoutStyles } from '@/styles/base';
 
 export const VerifyEmailScreen: React.FC = () => {
   const router = useRouter();
@@ -114,61 +117,71 @@ export const VerifyEmailScreen: React.FC = () => {
   };
 
   return (
-    <AuthLayout showLogo={false}>
-      <View style={authStyles.centeredContainer}>
-        <Text style={authStyles.titleCentered}>Verify Your Email</Text>
-        <Text style={authStyles.subtitleCentered}>
-          We've sent a verification code to{'\n'}
-          <Text style={authStyles.email}>{email}</Text>
-        </Text>
-
-        <Text style={authStyles.instruction}>
-          Please enter the 6-digit code to verify your email address
-        </Text>
-
-        <View style={authStyles.otpContainer}>
-          <OTPInput value={otp} onChange={setOtp} error={error} />
-        </View>
-
-        <Button
-          title="Verify Email"
-          onPress={handleVerify}
-          loading={loading}
-          disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
-          style={commonStyles.marginBottom24}
-        />
-
-        <View style={authStyles.resendContainer}>
-          {canResend ? (
-            <View style={authStyles.resendTextContainer}>
-              <Text style={authStyles.resendLabel}>Didn't receive the code? </Text>
-              <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
-                <Text style={authStyles.resendLink}>
-                  {resendLoading ? 'Sending...' : 'Resend Code'}
-                </Text>
-              </TouchableOpacity>
+    <AuthLayout showLogo={true}>
+      <View style={authFeatureStyles.authContent}>
+        <View>
+          <View style={authFeatureStyles.verifyIconContainer}>
+            <View style={authFeatureStyles.verifyIconCircle}>
+              <Icon name="mail" size={32} color={COLORS.primary} />
             </View>
-          ) : (
-            <Text style={authStyles.countdownText}>
-              Resend code in {countdown}s
-            </Text>
-          )}
-        </View>
+          </View>
 
-        <View style={authStyles.helpContainer}>
-          <Text style={authStyles.helpText}>
-            Make sure to check your spam folder
+          <Text style={authFeatureStyles.titleCentered}>Verify Your Email</Text>
+          <Text style={authFeatureStyles.subtitleCentered}>
+            We've sent a verification code to
           </Text>
+          <Text style={authFeatureStyles.emailText}>{email}</Text>
+
+          <Text style={authFeatureStyles.instructionText}>
+            Enter the 6-digit code to verify your email
+          </Text>
+
+          <View style={authFeatureStyles.otpWrapper}>
+            <OTPInput value={otp} onChange={setOtp} error={error} />
+          </View>
         </View>
 
-        <TouchableOpacity
-          onPress={() => router.push('/(auth)/login')}
-          style={authStyles.backToLogin}
-        >
-          <Text style={authStyles.backToLoginText}>Back to Login</Text>
-        </TouchableOpacity>
+        <View>
+          <Button
+            title="Verify Email"
+            onPress={handleVerify}
+            loading={loading}
+            disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
+            style={buttonStyles.submitButton}
+          />
+
+          <View style={authFeatureStyles.resendSection}>
+            {canResend ? (
+              <View style={authFeatureStyles.resendRow}>
+                <Text style={authFeatureStyles.resendLabel}>Didn't receive the code? </Text>
+                <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
+                  <Text style={authFeatureStyles.resendLink}>
+                    {resendLoading ? 'Sending...' : 'Resend'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <Text style={authFeatureStyles.countdownText}>
+                Resend code in {countdown}s
+              </Text>
+            )}
+          </View>
+
+          <View style={authFeatureStyles.helpNote}>
+            <Icon name="information-circle-outline" size={14} color={COLORS.textMuted} />
+            <Text style={authFeatureStyles.helpText}>
+              Check your spam folder if you don't see it
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/login')}
+            style={authFeatureStyles.backLink}
+          >
+            <Text style={authFeatureStyles.backLinkText}>Back to Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </AuthLayout>
   );
 };
-
