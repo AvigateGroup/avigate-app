@@ -1,7 +1,7 @@
 // src/screens/auth/GoogleAuthScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Platform, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Platform, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import * as WebBrowser from 'expo-web-browser';
 import * as AuthSession from 'expo-auth-session';
@@ -17,10 +17,8 @@ import { GoogleAuthDto } from '@/types/auth.types';
 import { COLORS } from '@/constants/colors';
 import { GOOGLE_CONFIG } from '@/constants/config';
 import { 
-  containerStyles, 
   buttonStyles, 
   layoutStyles,
-  iconStyles,
 } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
@@ -191,11 +189,8 @@ export const GoogleAuthScreen: React.FC = () => {
 
   return (
     <AuthLayout showLogo={true}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={authFeatureStyles.scrollContent}
-      >
-        <View style={containerStyles.containerPadded}>
+      <View style={authFeatureStyles.authContent}>
+        <View>
           <TouchableOpacity
             style={buttonStyles.backButtonWithIcon}
             onPress={() => router.back()}
@@ -203,9 +198,9 @@ export const GoogleAuthScreen: React.FC = () => {
             <Icon name="arrow-back" size={24} color={COLORS.text} />
           </TouchableOpacity>
 
-          <View style={iconStyles.iconContainerLarge}>
-            <View style={iconStyles.googleIconCircle}>
-              <Icon name="logo-google" size={48} color="#4285F4" />
+          <View style={authFeatureStyles.googleIconContainer}>
+            <View style={authFeatureStyles.googleIconCircle}>
+              <Icon name="logo-google" size={40} color="#4285F4" />
             </View>
           </View>
 
@@ -216,28 +211,32 @@ export const GoogleAuthScreen: React.FC = () => {
 
           <View style={authFeatureStyles.benefitsContainer}>
             <View style={authFeatureStyles.benefitItem}>
-              <Icon name="checkmark-circle" size={20} color={COLORS.success} />
+              <Icon name="checkmark-circle" size={18} color={COLORS.success} />
               <Text style={authFeatureStyles.benefitText}>Quick and secure sign-in</Text>
             </View>
             <View style={authFeatureStyles.benefitItem}>
-              <Icon name="checkmark-circle" size={20} color={COLORS.success} />
+              <Icon name="checkmark-circle" size={18} color={COLORS.success} />
               <Text style={authFeatureStyles.benefitText}>No password to remember</Text>
             </View>
             <View style={authFeatureStyles.benefitItem}>
-              <Icon name="checkmark-circle" size={20} color={COLORS.success} />
+              <Icon name="checkmark-circle" size={18} color={COLORS.success} />
               <Text style={authFeatureStyles.benefitText}>Auto-verified email</Text>
             </View>
           </View>
+        </View>
 
-          <Button
-            title={loading ? 'Signing in...' : 'Continue with Google'}
+        <View>
+          <TouchableOpacity
             onPress={handleGoogleSignIn}
-            loading={loading}
             disabled={loading || !request}
-            variant="outline"
-            leftIcon="logo-google"
-            style={buttonStyles.googleButton}
-          />
+            activeOpacity={0.8}
+          >
+            <Image
+              source={require('../../../assets/images/google-icon.png')}
+              style={authFeatureStyles.googleButtonImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
 
           <View style={layoutStyles.divider}>
             <View style={layoutStyles.dividerLine} />
@@ -252,14 +251,14 @@ export const GoogleAuthScreen: React.FC = () => {
             <Text style={authFeatureStyles.emailSignInText}>Sign in with Email</Text>
           </TouchableOpacity>
 
-          <View style={layoutStyles.footerWithIcon}>
-            <Icon name="shield-checkmark-outline" size={16} color={COLORS.textMuted} />
-            <Text style={layoutStyles.footerTextWithIcon}>
+          <View style={authFeatureStyles.privacyNote}>
+            <Icon name="shield-checkmark-outline" size={14} color={COLORS.textMuted} />
+            <Text style={authFeatureStyles.privacyText}>
               We'll never post anything without your permission
             </Text>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </AuthLayout>
   );
 };
