@@ -80,7 +80,7 @@ export const ForgotPasswordScreen: React.FC = () => {
 
         <Text style={authStyles.title}>Forgot Password?</Text>
         <Text style={authStyles.subtitle}>
-          No worries! Enter your email address and we'll send you a code to reset your password.
+          Enter your email address and we'll send you a code to reset your password.
         </Text>
 
         <View style={authStyles.form}>
