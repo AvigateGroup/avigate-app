@@ -12,8 +12,7 @@ import { validateEmail } from '@/utils/validation';
 import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { LoginDto } from '@/types/auth.types';
-import { 
-  containerStyles,  
+import {  
   buttonStyles, 
   formStyles, 
   layoutStyles,
@@ -111,27 +110,6 @@ export const LoginScreen: React.FC = () => {
           Sign up or login below to continue.
         </Text>
 
-        {/* Google Login Button with Image */}
-        <View style={authFeatureStyles.socialButtonsContainer}>
-          <TouchableOpacity
-            onPress={() => router.push('/(auth)/google-auth')}
-            activeOpacity={0.8}
-          >
-            <Image
-              source={require('../../../assets/images/google-icon.png')}
-              style={authFeatureStyles.googleButtonImage}
-              resizeMode="contain"
-            />
-          </TouchableOpacity>
-        </View>
-
-        {/* Divider */}
-        <View style={layoutStyles.divider}>
-          <View style={layoutStyles.dividerLine} />
-          <Text style={layoutStyles.dividerText}>or continue with email</Text>
-          <View style={layoutStyles.dividerLine} />
-        </View>
-
         {/* Email/Password Form */}
         <View style={formStyles.form}>
           <Input
@@ -173,6 +151,27 @@ export const LoginScreen: React.FC = () => {
             loading={loading}
             style={buttonStyles.submitButton}
           />
+        </View>
+
+        {/* Divider */}
+        <View style={layoutStyles.divider}>
+          <View style={layoutStyles.dividerLine} />
+          <Text style={layoutStyles.dividerText}>OR</Text>
+          <View style={layoutStyles.dividerLine} />
+        </View>
+
+        {/* Google Login Button with Image */}
+        <View style={authFeatureStyles.socialButtonsContainer}>
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/google-auth')}
+            activeOpacity={0.8}
+          >
+            <Image
+              source={require('../../../assets/images/google-icon.png')}
+              style={authFeatureStyles.googleButtonImage}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
         </View>
 
         {/* Footer */}
