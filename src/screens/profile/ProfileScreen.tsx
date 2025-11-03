@@ -51,10 +51,10 @@ export const ProfileScreen: React.FC = () => {
     },
     {
       icon: 'time-outline',
-      title: 'Ride History',
+      title: 'Trip History',
       subtitle: 'View your past trips',
       onPress: () => {
-        Alert.alert('Coming Soon', 'Ride history feature will be available soon');
+        Alert.alert('Coming Soon', 'Trip history feature will be available soon');
       },
     },
     {
