@@ -106,6 +106,7 @@ export interface AuthResponse {
   success: boolean;
   message: string;
   data: {
+    email?: string;
     user: User;
     accessToken?: string;
     refreshToken?: string;
