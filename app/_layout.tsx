@@ -1,3 +1,4 @@
+//app/_layout.tsx
 import { useEffect, useState, useCallback } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'react-native';
