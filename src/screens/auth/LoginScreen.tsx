@@ -49,7 +49,7 @@ export const LoginScreen: React.FC = () => {
       const fcmToken = await getFCMToken();
       const deviceInfo = getDeviceInfo();
 
-      // Prepare login data matching backend API
+      // Prepare login data
       const loginDto: LoginDto = {
         email: email.toLowerCase().trim(),
         password: password,
@@ -59,36 +59,91 @@ export const LoginScreen: React.FC = () => {
 
       const response = await authApi.login(loginDto);
 
-      if (response.success && response.data.accessToken && response.data.refreshToken) {
-        Toast.show({
-          type: 'success',
-          text1: 'Welcome Back!',
-          text2: response.message,
-        });
+      if (response.success) {
+        // Check what type of response we got
+        const { accessToken, refreshToken, user, requiresOtpVerification, requiresVerification, requiresPhoneNumber } = response.data;
 
-        await login(response.data.accessToken, response.data.refreshToken, response.data.user);
+        // Case 1: OTP verification required (most common for your flow)
+        if (requiresOtpVerification) {
+          Toast.show({
+            type: 'success',
+            text1: 'Verification Code Sent',
+            text2: 'Please check your email for the login code',
+          });
 
-        // Navigate based on user status
-        if (response.data.requiresVerification) {
+          // Navigate to OTP verification screen
+          router.push({
+            pathname: '/(auth)/verify-login-otp',
+            params: { email: email.toLowerCase().trim() },
+          });
+          return;
+        }
+
+        // Case 2: Full login with tokens (direct login without OTP)
+        if (accessToken && refreshToken && user) {
+          Toast.show({
+            type: 'success',
+            text1: 'Welcome Back!',
+            text2: response.message || 'Login successful',
+          });
+
+          // Save auth data
+          await login(accessToken, refreshToken, user);
+
+          // Check for additional verification requirements
+          if (requiresVerification) {
+            router.replace({
+              pathname: '/(auth)/verify-email',
+              params: { email: email.toLowerCase().trim() },
+            });
+          } else if (requiresPhoneNumber) {
+            router.replace('/(auth)/phone-verification');
+          }
+          // If no additional requirements, AuthContext will handle navigation to main app
+          return;
+        }
+
+        // Case 3: Email verification required (unverified account)
+        if (requiresVerification) {
+          Toast.show({
+            type: 'info',
+            text1: 'Email Verification Required',
+            text2: response.message || 'Please verify your email to continue',
+          });
+
           router.replace({
             pathname: '/(auth)/verify-email',
             params: { email: email.toLowerCase().trim() },
           });
-        } else if (response.data.requiresPhoneNumber) {
-          router.replace('/(auth)/phone-verification');
-        } else if (response.data.requiresOtpVerification) {
-          router.replace({
-            pathname: '/(auth)/verify-login-otp',
-            params: { email: email.toLowerCase().trim() },
-          });
+          return;
         }
+
+        // Fallback: If we get here, something unexpected happened
+        Toast.show({
+          type: 'error',
+          text1: 'Login Error',
+          text2: 'Unexpected response from server. Please try again.',
+        });
       }
     } catch (error: any) {
+      const errorMessage = handleApiError(error);
+      
       Toast.show({
         type: 'error',
         text1: 'Login Failed',
-        text2: handleApiError(error),
+        text2: errorMessage,
       });
+
+      // If error mentions rate limit or OTP already sent, navigate to OTP screen
+      if (errorMessage.toLowerCase().includes('verification code') || 
+          errorMessage.toLowerCase().includes('check your email')) {
+        setTimeout(() => {
+          router.push({
+            pathname: '/(auth)/verify-login-otp',
+            params: { email: email.toLowerCase().trim() },
+          });
+        }, 1500);
+      }
     } finally {
       setLoading(false);
     }
