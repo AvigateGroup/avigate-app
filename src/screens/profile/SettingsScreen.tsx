@@ -1,14 +1,7 @@
 // src/screens/profile/SettingsScreen.tsx
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Switch,
-  Alert,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@/constants/colors';
 import { profileStyles, commonStyles } from '@/styles';
@@ -115,7 +108,8 @@ export const SettingsScreen = () => {
           title: 'Contact Support',
           subtitle: 'Reach out to our team',
           type: 'navigation',
-          onPress: () => Alert.alert('Contact Support', 'Email: support@avigate.com\nPhone: +234 800 000 0000'),
+          onPress: () =>
+            Alert.alert('Contact Support', 'Email: support@avigate.com\nPhone: +234 800 000 0000'),
         },
         {
           icon: 'star-outline',
@@ -195,7 +189,7 @@ export const SettingsScreen = () => {
                   style: 'destructive',
                   onPress: () => Alert.alert('Coming Soon', 'Account deletion coming soon'),
                 },
-              ]
+              ],
             );
           }}
           activeOpacity={0.7}
@@ -206,9 +200,7 @@ export const SettingsScreen = () => {
       </View>
 
       <View style={profileStyles.footer}>
-        <Text style={profileStyles.footerText}>
-          Made with ❤️ by Avigate Team
-        </Text>
+        <Text style={profileStyles.footerText}>Made with ❤️ by Avigate Team</Text>
       </View>
     </ScrollView>
   );

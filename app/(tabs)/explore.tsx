@@ -9,9 +9,7 @@ export default function Explore() {
   return (
     <View style={commonStyles.centeredContainer}>
       <Text style={styles.title}>🔍 Explore</Text>
-      <Text style={commonStyles.bodyTextLight}>
-        Discover new destinations
-      </Text>
+      <Text style={commonStyles.bodyTextLight}>Discover new destinations</Text>
       <Text style={styles.comingSoon}>Coming Soon!</Text>
     </View>
   );

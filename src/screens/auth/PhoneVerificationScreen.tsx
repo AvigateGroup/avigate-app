@@ -20,7 +20,7 @@ export const PhoneVerificationScreen: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const fromGoogleAuth = params.fromGoogleAuth === 'true';
-  
+
   const { user, updateUser } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
   const [sex, setSex] = useState<UserSex | undefined>(undefined);
@@ -122,7 +122,7 @@ export const PhoneVerificationScreen: React.FC = () => {
               label="Phone Number"
               placeholder="+234 800 000 0000"
               value={phoneNumber}
-              onChangeText={(text) => {
+              onChangeText={text => {
                 setPhoneNumber(text);
                 setError('');
               }}
@@ -186,10 +186,7 @@ export const PhoneVerificationScreen: React.FC = () => {
             />
 
             {fromGoogleAuth && (
-              <TouchableOpacity
-                onPress={handleSkip}
-                style={authStyles.skipButton}
-              >
+              <TouchableOpacity onPress={handleSkip} style={authStyles.skipButton}>
                 <Text style={authStyles.skipText}>Skip for now</Text>
               </TouchableOpacity>
             )}

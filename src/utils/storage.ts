@@ -124,9 +124,7 @@ export const getAllKeys = async (): Promise<readonly string[]> => {
  * @param keys - Array of keys to retrieve
  * @returns Array of [key, value] pairs
  */
-export const multiGet = async (
-  keys: string[]
-): Promise<readonly [string, string | null][]> => {
+export const multiGet = async (keys: string[]): Promise<readonly [string, string | null][]> => {
   try {
     return await AsyncStorage.multiGet(keys);
   } catch (error) {

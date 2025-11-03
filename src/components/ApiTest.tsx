@@ -15,7 +15,7 @@ export const ApiTest = () => {
       const response = await axios.get(`${API_CONFIG.BASE_URL}/admin/auth/health`, {
         timeout: 5000,
       });
-      
+
       setStatus('success');
       setMessage(`✅ Connected!\n${JSON.stringify(response.data, null, 2)}`);
     } catch (error: any) {
@@ -29,14 +29,11 @@ export const ApiTest = () => {
     <View style={styles.container}>
       <Text style={styles.title}>API Connection Test</Text>
       <Text style={styles.url}>Testing: {API_CONFIG.BASE_URL}</Text>
-      
+
       <Button title="Test Connection" onPress={testConnection} />
-      
+
       {status !== 'idle' && (
-        <View style={[
-          styles.resultBox,
-          status === 'success' ? styles.success : styles.error
-        ]}>
+        <View style={[styles.resultBox, status === 'success' ? styles.success : styles.error]}>
           <Text style={styles.resultText}>{message}</Text>
         </View>
       )}

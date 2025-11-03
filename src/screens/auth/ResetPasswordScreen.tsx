@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router'; 
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
@@ -12,11 +12,11 @@ import { authApi } from '@/api/auth.api';
 import { validateOTP, validatePassword } from '@/utils/validation';
 import { handleApiError } from '@/utils/helpers';
 import { APP_CONFIG } from '@/constants/config';
-import { authStyles, commonStyles } from '@/styles'; 
+import { authStyles, commonStyles } from '@/styles';
 
 export const ResetPasswordScreen: React.FC = () => {
-  const router = useRouter(); 
-  const params = useLocalSearchParams(); 
+  const router = useRouter();
+  const params = useLocalSearchParams();
   const email = params.email as string;
 
   const [step, setStep] = useState<'otp' | 'password'>('otp');
@@ -139,14 +139,14 @@ export const ResetPasswordScreen: React.FC = () => {
 
   return (
     <AuthLayout showLogo={false}>
-      <ScrollView 
+      <ScrollView
         style={authStyles.scrollContainer}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         <TouchableOpacity
           style={authStyles.backButton}
-          onPress={() => step === 'password' ? setStep('otp') : router.back()}
+          onPress={() => (step === 'password' ? setStep('otp') : router.back())}
           activeOpacity={0.7}
         >
           <Text style={authStyles.backButtonText}>← Back</Text>
@@ -180,9 +180,7 @@ export const ResetPasswordScreen: React.FC = () => {
                   </Text>
                 </TouchableOpacity>
               ) : (
-                <Text style={authStyles.countdownText}>
-                  Resend code in {countdown}s
-                </Text>
+                <Text style={authStyles.countdownText}>Resend code in {countdown}s</Text>
               )}
             </View>
           </>
@@ -198,7 +196,7 @@ export const ResetPasswordScreen: React.FC = () => {
                 label="New Password"
                 placeholder="Enter new password"
                 value={newPassword}
-                onChangeText={(text) => {
+                onChangeText={text => {
                   setNewPassword(text);
                   setErrors({ ...errors, password: undefined });
                 }}
@@ -211,7 +209,7 @@ export const ResetPasswordScreen: React.FC = () => {
                 label="Confirm Password"
                 placeholder="Confirm new password"
                 value={confirmPassword}
-                onChangeText={(text) => {
+                onChangeText={text => {
                   setConfirmPassword(text);
                   setErrors({ ...errors, confirm: undefined });
                 }}

@@ -1,14 +1,7 @@
 // src/screens/home/HomeScreen.tsx
 
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-  Platform,
-} from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Alert, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -26,7 +19,7 @@ interface LocationType {
 export const HomeScreen = () => {
   const { user } = useAuth();
   const mapRef = useRef<MapView>(null);
-  
+
   const [location, setLocation] = useState<LocationType | null>(null);
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState('Getting your location...');
@@ -40,22 +33,22 @@ export const HomeScreen = () => {
     try {
       // Request foreground location permission
       const { status } = await Location.requestForegroundPermissionsAsync();
-      
+
       if (status !== 'granted') {
         Alert.alert(
           'Permission Denied',
           'Location permission is required to use this feature. Please enable it in your device settings.',
           [
             { text: 'Cancel', style: 'cancel' },
-            { 
-              text: 'Open Settings', 
+            {
+              text: 'Open Settings',
               onPress: () => {
                 if (Platform.OS === 'ios') {
                   Location.requestForegroundPermissionsAsync();
                 }
-              }
-            }
-          ]
+              },
+            },
+          ],
         );
         setLoading(false);
         // Set fallback location (Lagos, Nigeria)
@@ -90,20 +83,20 @@ export const HomeScreen = () => {
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
       };
-      
+
       setLocation(newLocation);
       setLoading(false);
-      
+
       // Get address from coordinates
       getAddressFromCoordinates(latitude, longitude);
     } catch (error) {
       console.error('Error getting location:', error);
       Alert.alert(
         'Location Error',
-        'Unable to get your current location. Please check your location settings.'
+        'Unable to get your current location. Please check your location settings.',
       );
       setLoading(false);
-      
+
       // Fallback to a default location (Lagos, Nigeria)
       setLocation({
         latitude: 6.5244,
@@ -122,7 +115,7 @@ export const HomeScreen = () => {
         latitude,
         longitude,
       });
-      
+
       if (addresses && addresses.length > 0) {
         const addr = addresses[0];
         // Format the address
@@ -134,7 +127,7 @@ export const HomeScreen = () => {
           addr.region,
           addr.country,
         ].filter(Boolean);
-        
+
         setAddress(addressParts.join(', ') || `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
       } else {
         setAddress(`${latitude.toFixed(6)}, ${longitude.toFixed(6)}`);
@@ -236,9 +229,7 @@ export const HomeScreen = () => {
 
       {/* Welcome Banner */}
       <View style={homeStyles.welcomeBanner}>
-        <Text style={homeStyles.welcomeText}>
-          Welcome back, {user?.firstName}! 👋
-        </Text>
+        <Text style={homeStyles.welcomeText}>Welcome back, {user?.firstName}! 👋</Text>
       </View>
     </View>
   );

@@ -16,13 +16,34 @@ export type AuthStackParamList = {
 
 // Navigation prop types for each screen
 export type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
-export type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
-export type VerifyLoginOTPScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'VerifyLoginOTP'>;
-export type VerifyEmailScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'VerifyEmail'>;
-export type ForgotPasswordScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'ForgotPassword'>;
-export type ResetPasswordScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'ResetPassword'>;
-export type GoogleAuthScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'GoogleAuth'>;
-export type PhoneVerificationScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'PhoneVerification'>;
+export type RegisterScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'Register'
+>;
+export type VerifyLoginOTPScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'VerifyLoginOTP'
+>;
+export type VerifyEmailScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'VerifyEmail'
+>;
+export type ForgotPasswordScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'ForgotPassword'
+>;
+export type ResetPasswordScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'ResetPassword'
+>;
+export type GoogleAuthScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'GoogleAuth'
+>;
+export type PhoneVerificationScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'PhoneVerification'
+>;
 
 // Route prop types for each screen
 export type VerifyLoginOTPScreenRouteProp = RouteProp<AuthStackParamList, 'VerifyLoginOTP'>;

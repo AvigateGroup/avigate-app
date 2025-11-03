@@ -8,7 +8,7 @@ import { COLORS } from '../src/constants/colors';
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: "Oops! Page not found" }} />
+      <Stack.Screen options={{ title: 'Oops! Page not found' }} />
       <View style={styles.container}>
         <Text style={styles.title}>404</Text>
         <Text style={styles.subtitle}>This screen doesn't exist.</Text>

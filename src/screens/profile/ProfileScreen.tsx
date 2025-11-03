@@ -1,14 +1,7 @@
 // src/screens/profile/ProfileScreen.tsx
 
 import React from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  Alert,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
@@ -21,20 +14,16 @@ export const ProfileScreen: React.FC = () => {
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Logout',
-          style: 'destructive',
-          onPress: async () => {
-            await logout();
-          },
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Logout',
+        style: 'destructive',
+        onPress: async () => {
+          await logout();
         },
-      ]
-    );
+      },
+    ]);
   };
 
   const menuItems = [
@@ -123,7 +112,9 @@ export const ProfileScreen: React.FC = () => {
           <View style={profileStyles.statDivider} />
           <View style={profileStyles.statItem}>
             <Text style={profileStyles.statValue}>
-              {user?.createdAt ? new Date().getFullYear() - new Date(user.createdAt).getFullYear() : 0}
+              {user?.createdAt
+                ? new Date().getFullYear() - new Date(user.createdAt).getFullYear()
+                : 0}
             </Text>
             <Text style={profileStyles.statLabel}>Years</Text>
           </View>

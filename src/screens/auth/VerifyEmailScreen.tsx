@@ -21,7 +21,7 @@ export const VerifyEmailScreen: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const email = params.email as string;
-  
+
   const { login } = useAuth();
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -63,11 +63,7 @@ export const VerifyEmailScreen: React.FC = () => {
 
         // If tokens are provided, log the user in
         if (response.data.accessToken && response.data.refreshToken) {
-          await login(
-            response.data.accessToken,
-            response.data.refreshToken,
-            response.data.user
-          );
+          await login(response.data.accessToken, response.data.refreshToken, response.data.user);
           // AuthContext will handle navigation to main app
         } else {
           // Navigate to login
@@ -127,9 +123,7 @@ export const VerifyEmailScreen: React.FC = () => {
           </View>
 
           <Text style={authFeatureStyles.titleCentered}>Verify Your Email</Text>
-          <Text style={authFeatureStyles.subtitleCentered}>
-            We've sent a verification code to
-          </Text>
+          <Text style={authFeatureStyles.subtitleCentered}>We've sent a verification code to</Text>
           <Text style={authFeatureStyles.emailText}>{email}</Text>
 
           <Text style={authFeatureStyles.instructionText}>
@@ -161,9 +155,7 @@ export const VerifyEmailScreen: React.FC = () => {
                 </TouchableOpacity>
               </View>
             ) : (
-              <Text style={authFeatureStyles.countdownText}>
-                Resend code in {countdown}s
-              </Text>
+              <Text style={authFeatureStyles.countdownText}>Resend code in {countdown}s</Text>
             )}
           </View>
 

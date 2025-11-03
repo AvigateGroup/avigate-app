@@ -31,23 +31,20 @@ function RootLayoutNav() {
 
   return (
     <>
-      <StatusBar 
-        barStyle="light-content" 
-        backgroundColor={COLORS.primary} 
-      />
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen 
-          name="settings" 
-          options={{ 
+        <Stack.Screen
+          name="settings"
+          options={{
             headerShown: true,
             title: 'Settings',
             headerStyle: {
               backgroundColor: COLORS.background,
             },
             headerTintColor: COLORS.text,
-          }} 
+          }}
         />
         <Stack.Screen name="+not-found" />
       </Stack>
@@ -66,7 +63,7 @@ export default function RootLayout() {
         // Pre-load any resources here
         // await Font.loadAsync({ ... });
         // await loadUserData();
-        
+
         // Small delay to ensure everything is loaded
         await new Promise(resolve => setTimeout(resolve, 500));
       } catch (e) {

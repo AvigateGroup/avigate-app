@@ -21,7 +21,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const email = params.email as string;
-  
+
   const { login } = useAuth();
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
@@ -62,11 +62,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
           text2: 'Login successful!',
         });
 
-        await login(
-          response.data.accessToken,
-          response.data.refreshToken,
-          response.data.user
-        );
+        await login(response.data.accessToken, response.data.refreshToken, response.data.user);
 
         // Navigation handled by AuthContext/AppNavigator
         // User will be redirected to main app automatically
@@ -124,9 +120,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
           </View>
 
           <Text style={authFeatureStyles.titleCentered}>Verify Your Login</Text>
-          <Text style={authFeatureStyles.subtitleCentered}>
-            Enter the 6-digit code sent to
-          </Text>
+          <Text style={authFeatureStyles.subtitleCentered}>Enter the 6-digit code sent to</Text>
           <Text style={authFeatureStyles.emailText}>{email}</Text>
 
           <View style={authFeatureStyles.otpWrapper}>
@@ -151,16 +145,11 @@ export const VerifyLoginOTPScreen: React.FC = () => {
                 </Text>
               </TouchableOpacity>
             ) : (
-              <Text style={authFeatureStyles.countdownText}>
-                Resend code in {countdown}s
-              </Text>
+              <Text style={authFeatureStyles.countdownText}>Resend code in {countdown}s</Text>
             )}
           </View>
 
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={authFeatureStyles.backLink}
-          >
+          <TouchableOpacity onPress={() => router.back()} style={authFeatureStyles.backLink}>
             <Text style={authFeatureStyles.backLinkText}>Change Email</Text>
           </TouchableOpacity>
         </View>

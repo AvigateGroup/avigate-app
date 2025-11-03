@@ -27,10 +27,10 @@ const HomeStack = () => (
       },
     }}
   >
-    <Stack.Screen 
-      name="HomeMain" 
+    <Stack.Screen
+      name="HomeMain"
       component={HomeScreen}
-      options={{ 
+      options={{
         title: 'Avigate',
         headerShown: true,
       }}
@@ -51,17 +51,17 @@ const ProfileStack = () => (
       },
     }}
   >
-    <Stack.Screen 
-      name="ProfileMain" 
+    <Stack.Screen
+      name="ProfileMain"
       component={ProfileScreen}
-      options={{ 
+      options={{
         title: 'Profile',
       }}
     />
-    <Stack.Screen 
-      name="Settings" 
+    <Stack.Screen
+      name="Settings"
       component={SettingsScreen}
-      options={{ 
+      options={{
         title: 'Settings',
       }}
     />
@@ -101,15 +101,15 @@ export const MainNavigator = () => {
         headerShown: false,
       })}
     >
-      <Tab.Screen 
-        name="Home" 
+      <Tab.Screen
+        name="Home"
         component={HomeStack}
         options={{
           tabBarLabel: 'Home',
         }}
       />
-      <Tab.Screen 
-        name="Profile" 
+      <Tab.Screen
+        name="Profile"
         component={ProfileStack}
         options={{
           tabBarLabel: 'Profile',

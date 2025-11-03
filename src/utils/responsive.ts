@@ -36,12 +36,12 @@ export const scaleHeight = (size: number): number => {
 export const scaleFontSize = (size: number): number => {
   const scale = SCREEN_WIDTH / DESIGN_WIDTH;
   const newSize = size * scale;
-  
+
   // Limit scaling on very large devices (tablets)
   if (SCREEN_WIDTH > 768) {
     return size * 1.2; // Max 20% increase on tablets
   }
-  
+
   return Math.round(PixelRatio.roundToNearestPixel(newSize));
 };
 
@@ -68,7 +68,7 @@ export const getResponsiveValue = (
   small: number,
   medium: number,
   large: number,
-  tablet: number
+  tablet: number,
 ): number => {
   if (isTablet()) return tablet;
   if (isLargeDevice()) return large;
@@ -104,15 +104,15 @@ export const SPACING = {
  * Following iOS Human Interface Guidelines and Material Design
  */
 export const FONT_SIZES = {
-  xs: scaleFontSize(10),    // Caption, fine print
-  sm: scaleFontSize(12),    // Small labels, secondary text
-  base: scaleFontSize(14),  // Body text, default
-  md: scaleFontSize(16),    // Buttons, inputs, prominent body
-  lg: scaleFontSize(18),    // Subheadings
-  xl: scaleFontSize(20),    // Section titles
-  xxl: scaleFontSize(24),   // Screen titles
-  xxxl: scaleFontSize(28),  // Hero titles
-  huge: scaleFontSize(32),  // Display text
+  xs: scaleFontSize(10), // Caption, fine print
+  sm: scaleFontSize(12), // Small labels, secondary text
+  base: scaleFontSize(14), // Body text, default
+  md: scaleFontSize(16), // Buttons, inputs, prominent body
+  lg: scaleFontSize(18), // Subheadings
+  xl: scaleFontSize(20), // Section titles
+  xxl: scaleFontSize(24), // Screen titles
+  xxxl: scaleFontSize(28), // Hero titles
+  huge: scaleFontSize(32), // Display text
 };
 
 /**
@@ -150,7 +150,7 @@ export const ICON_SIZES = {
  */
 export const BUTTON_HEIGHTS = {
   small: moderateScale(40),
-  medium: moderateScale(48),  // Default, meets accessibility standards
+  medium: moderateScale(48), // Default, meets accessibility standards
   large: moderateScale(56),
 };
 
@@ -171,7 +171,7 @@ export const BORDER_RADIUS = {
 /**
  * Platform-specific adjustments
  */
-export const platformValue = <T,>(ios: T, android: T): T => {
+export const platformValue = <T>(ios: T, android: T): T => {
   return Platform.OS === 'ios' ? ios : android;
 };
 

@@ -30,9 +30,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="home-outline" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Icon name="home-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -48,18 +46,14 @@ export default function TabLayout() {
         name="trips"
         options={{
           title: 'Trips',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="car-outline" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Icon name="car-outline" size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: 'Profile',
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="person-outline" size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <Icon name="person-outline" size={size} color={color} />,
         }}
       />
     </Tabs>

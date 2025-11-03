@@ -13,13 +13,13 @@ import { authApi } from '@/api/auth.api';
 import { validateEmail, validatePassword, validatePhoneNumber } from '@/utils/validation';
 import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { RegisterDto, UserSex } from '@/types/auth.types';
-import { 
-  containerStyles, 
-  typographyStyles, 
-  buttonStyles, 
-  formStyles, 
+import {
+  containerStyles,
+  typographyStyles,
+  buttonStyles,
+  formStyles,
   layoutStyles,
-  spacingStyles 
+  spacingStyles,
 } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 import { COLORS } from '@/constants/colors';
@@ -33,7 +33,7 @@ export const RegisterScreen: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -168,7 +168,7 @@ export const RegisterScreen: React.FC = () => {
 
         router.push({
           pathname: '/(auth)/verify-email',
-          params: { email: formData.email.toLowerCase().trim() }
+          params: { email: formData.email.toLowerCase().trim() },
         });
       }
     } catch (error: any) {
@@ -188,12 +188,14 @@ export const RegisterScreen: React.FC = () => {
         return (
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>What's your email?</Text>
-            <Text style={authFeatureStyles.stepSubtitle}>We'll use this to create your account</Text>
-            
+            <Text style={authFeatureStyles.stepSubtitle}>
+              We'll use this to create your account
+            </Text>
+
             <Input
               placeholder="Enter your email"
               value={formData.email}
-              onChangeText={(text) => updateField('email', text)}
+              onChangeText={text => updateField('email', text)}
               error={errors.email}
               keyboardType="email-address"
               autoCapitalize="none"
@@ -208,11 +210,11 @@ export const RegisterScreen: React.FC = () => {
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>What's your name?</Text>
             <Text style={authFeatureStyles.stepSubtitle}>Let us know what to call you</Text>
-            
+
             <Input
               placeholder="First name"
               value={formData.firstName}
-              onChangeText={(text) => updateField('firstName', text)}
+              onChangeText={text => updateField('firstName', text)}
               error={errors.firstName}
               leftIcon="person-outline"
               autoFocus
@@ -221,7 +223,7 @@ export const RegisterScreen: React.FC = () => {
             <Input
               placeholder="Last name"
               value={formData.lastName}
-              onChangeText={(text) => updateField('lastName', text)}
+              onChangeText={text => updateField('lastName', text)}
               error={errors.lastName}
               leftIcon="person-outline"
             />
@@ -233,44 +235,52 @@ export const RegisterScreen: React.FC = () => {
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>Tell us about yourself</Text>
             <Text style={authFeatureStyles.stepSubtitle}>Help us personalize your experience</Text>
-            
+
             <View style={spacingStyles.marginBottom20}>
               <Text style={formStyles.genderLabel}>Sex</Text>
               <View style={formStyles.genderContainer}>
                 <TouchableOpacity
                   style={[
                     formStyles.genderButton,
-                    formData.sex === UserSex.MALE && formStyles.genderButtonActive
+                    formData.sex === UserSex.MALE && formStyles.genderButtonActive,
                   ]}
                   onPress={() => updateField('sex', UserSex.MALE)}
                 >
-                  <Icon 
-                    name="male" 
-                    size={24} 
-                    color={formData.sex === UserSex.MALE ? COLORS.textWhite : COLORS.textMuted} 
+                  <Icon
+                    name="male"
+                    size={24}
+                    color={formData.sex === UserSex.MALE ? COLORS.textWhite : COLORS.textMuted}
                   />
-                  <Text style={[
-                    formStyles.genderButtonText,
-                    formData.sex === UserSex.MALE && formStyles.genderButtonTextActive
-                  ]}>Male</Text>
+                  <Text
+                    style={[
+                      formStyles.genderButtonText,
+                      formData.sex === UserSex.MALE && formStyles.genderButtonTextActive,
+                    ]}
+                  >
+                    Male
+                  </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   style={[
                     formStyles.genderButton,
-                    formData.sex === UserSex.FEMALE && formStyles.genderButtonActive
+                    formData.sex === UserSex.FEMALE && formStyles.genderButtonActive,
                   ]}
                   onPress={() => updateField('sex', UserSex.FEMALE)}
                 >
-                  <Icon 
-                    name="female" 
-                    size={24} 
-                    color={formData.sex === UserSex.FEMALE ? COLORS.textWhite : COLORS.textMuted} 
+                  <Icon
+                    name="female"
+                    size={24}
+                    color={formData.sex === UserSex.FEMALE ? COLORS.textWhite : COLORS.textMuted}
                   />
-                  <Text style={[
-                    formStyles.genderButtonText,
-                    formData.sex === UserSex.FEMALE && formStyles.genderButtonTextActive
-                  ]}>Female</Text>
+                  <Text
+                    style={[
+                      formStyles.genderButtonText,
+                      formData.sex === UserSex.FEMALE && formStyles.genderButtonTextActive,
+                    ]}
+                  >
+                    Female
+                  </Text>
                 </TouchableOpacity>
               </View>
               {errors.sex && <Text style={typographyStyles.errorText}>{errors.sex}</Text>}
@@ -279,19 +289,23 @@ export const RegisterScreen: React.FC = () => {
             <View>
               <Text style={formStyles.genderLabel}>Preferred Language</Text>
               <View style={authFeatureStyles.languageButtons}>
-                {['English'].map((lang) => (
+                {['English'].map(lang => (
                   <TouchableOpacity
                     key={lang}
                     style={[
                       authFeatureStyles.languageButton,
-                      formData.language === lang && authFeatureStyles.languageButtonActive
+                      formData.language === lang && authFeatureStyles.languageButtonActive,
                     ]}
                     onPress={() => updateField('language', lang)}
                   >
-                    <Text style={[
-                      authFeatureStyles.languageButtonText,
-                      formData.language === lang && authFeatureStyles.languageButtonTextActive
-                    ]}>{lang}</Text>
+                    <Text
+                      style={[
+                        authFeatureStyles.languageButtonText,
+                        formData.language === lang && authFeatureStyles.languageButtonTextActive,
+                      ]}
+                    >
+                      {lang}
+                    </Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -304,7 +318,7 @@ export const RegisterScreen: React.FC = () => {
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>What's your phone number?</Text>
             <Text style={authFeatureStyles.stepSubtitle}>We'll use this for account security</Text>
-            
+
             <CountryPhonePicker
               countryCode={formData.countryCode}
               phoneNumber={formData.phoneNumber}
@@ -313,7 +327,7 @@ export const RegisterScreen: React.FC = () => {
                 updateField('countryCode', code);
                 updateField('country', country);
               }}
-              onPhoneChange={(phone) => updateField('phoneNumber', phone)}
+              onPhoneChange={phone => updateField('phoneNumber', phone)}
               error={errors.phoneNumber}
             />
           </View>
@@ -324,11 +338,11 @@ export const RegisterScreen: React.FC = () => {
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>Create a password</Text>
             <Text style={authFeatureStyles.stepSubtitle}>Make sure it's secure</Text>
-            
+
             <Input
               placeholder="Password"
               value={formData.password}
-              onChangeText={(text) => updateField('password', text)}
+              onChangeText={text => updateField('password', text)}
               error={errors.password}
               secureTextEntry
               leftIcon="lock-closed-outline"
@@ -338,7 +352,7 @@ export const RegisterScreen: React.FC = () => {
             <Input
               placeholder="Confirm password"
               value={formData.confirmPassword}
-              onChangeText={(text) => updateField('confirmPassword', text)}
+              onChangeText={text => updateField('confirmPassword', text)}
               error={errors.confirmPassword}
               secureTextEntry
               leftIcon="lock-closed-outline"
@@ -356,29 +370,25 @@ export const RegisterScreen: React.FC = () => {
               onPress={() => updateField('agreedToTerms', !formData.agreedToTerms)}
               activeOpacity={0.7}
             >
-              <View style={[
-                authFeatureStyles.checkbox,
-                formData.agreedToTerms && authFeatureStyles.checkboxChecked
-              ]}>
+              <View
+                style={[
+                  authFeatureStyles.checkbox,
+                  formData.agreedToTerms && authFeatureStyles.checkboxChecked,
+                ]}
+              >
                 {formData.agreedToTerms && (
                   <Icon name="checkmark" size={16} color={COLORS.textWhite} />
                 )}
               </View>
               <Text style={authFeatureStyles.checkboxLabel}>
                 I agree to the{' '}
-                <Text 
-                    style={typographyStyles.linkText} 
-                    onPress={() => router.push('/terms')}
-                  >
-                    Terms of Service
-                  </Text>
-                  {' '}and{' '}
-                  <Text 
-                    style={typographyStyles.linkText}
-                    onPress={() => router.push('/privacy')}
-                  >
-                    Privacy Policy
-                  </Text>
+                <Text style={typographyStyles.linkText} onPress={() => router.push('/terms')}>
+                  Terms of Service
+                </Text>{' '}
+                and{' '}
+                <Text style={typographyStyles.linkText} onPress={() => router.push('/privacy')}>
+                  Privacy Policy
+                </Text>
               </Text>
             </TouchableOpacity>
             {errors.agreedToTerms && (
@@ -402,7 +412,7 @@ export const RegisterScreen: React.FC = () => {
               key={index}
               style={[
                 authFeatureStyles.progressDot,
-                index + 1 <= currentStep && authFeatureStyles.progressDotActive
+                index + 1 <= currentStep && authFeatureStyles.progressDotActive,
               ]}
             />
           ))}

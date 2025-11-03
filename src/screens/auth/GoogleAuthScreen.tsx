@@ -16,10 +16,7 @@ import { useAuth } from '@/store/AuthContext';
 import { GoogleAuthDto } from '@/types/auth.types';
 import { COLORS } from '@/constants/colors';
 import { GOOGLE_CONFIG } from '@/constants/config';
-import { 
-  buttonStyles, 
-  layoutStyles,
-} from '@/styles/base';
+import { buttonStyles, layoutStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
 // Required for web browser to close properly after auth
@@ -32,7 +29,7 @@ export const GoogleAuthScreen: React.FC = () => {
 
   // Configure OAuth request
   const discovery = AuthSession.useAutoDiscovery('https://accounts.google.com');
-  
+
   const redirectUri = AuthSession.makeRedirectUri({
     scheme: 'avigate',
   });
@@ -44,7 +41,7 @@ export const GoogleAuthScreen: React.FC = () => {
       scopes: ['openid', 'profile', 'email'],
       responseType: AuthSession.ResponseType.IdToken,
     },
-    discovery
+    discovery,
   );
 
   useEffect(() => {
@@ -113,22 +110,18 @@ export const GoogleAuthScreen: React.FC = () => {
           text2: response.message,
         });
 
-        await login(
-          response.data.accessToken,
-          response.data.refreshToken,
-          response.data.user
-        );
+        await login(response.data.accessToken, response.data.refreshToken, response.data.user);
 
         // Check if additional info is required
         if (response.data.requiresPhoneNumber) {
           router.replace({
             pathname: '/(auth)/phone-verification',
-            params: { fromGoogleAuth: 'true' }
+            params: { fromGoogleAuth: 'true' },
           });
         } else if (response.data.requiresVerification) {
           router.replace({
             pathname: '/(auth)/verify-email',
-            params: { email: userInfo.email }
+            params: { email: userInfo.email },
           });
         }
       }
@@ -173,8 +166,8 @@ export const GoogleAuthScreen: React.FC = () => {
       const jsonPayload = decodeURIComponent(
         atob(base64)
           .split('')
-          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-          .join('')
+          .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
       );
       return JSON.parse(jsonPayload);
     } catch (error) {
@@ -191,10 +184,7 @@ export const GoogleAuthScreen: React.FC = () => {
     <AuthLayout showLogo={true}>
       <View style={authFeatureStyles.authContent}>
         <View>
-          <TouchableOpacity
-            style={buttonStyles.backButtonWithIcon}
-            onPress={() => router.back()}
-          >
+          <TouchableOpacity style={buttonStyles.backButtonWithIcon} onPress={() => router.back()}>
             <Icon name="arrow-back" size={24} color={COLORS.text} />
           </TouchableOpacity>
 

@@ -32,10 +32,7 @@
       "package": "com.avigate.app",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "permissions": [
-        "ACCESS_COARSE_LOCATION",
-        "ACCESS_FINE_LOCATION"
-      ],
+      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
       "config": {
         "googleMaps": {
           "apiKey": "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"

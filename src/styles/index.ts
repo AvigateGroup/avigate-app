@@ -2,12 +2,12 @@
 
 /**
  * Central export file for all application styles
- * 
+ *
  * RECOMMENDED USAGE (Modern approach):
  * Import specific style modules:
  * import { containerStyles, typographyStyles, buttonStyles } from '@/styles/base';
  * import { authFeatureStyles } from '@/styles/features/auth';
- * 
+ *
  * BACKWARD COMPATIBLE USAGE (Legacy):
  * import { commonStyles, authStyles, profileStyles, homeStyles } from '@/styles';
  */
@@ -30,11 +30,7 @@ export {
 
 // ========== FEATURE STYLES (RECOMMENDED) ==========
 // Import feature-specific styles
-export {
-  authFeatureStyles,
-  profileFeatureStyles,
-  homeFeatureStyles,
-} from './features';
+export { authFeatureStyles, profileFeatureStyles, homeFeatureStyles } from './features';
 
 // ========== UTILITY STYLES ==========
 export { platformStyles } from './utils';

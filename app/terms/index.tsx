@@ -18,16 +18,16 @@ export default function TermsScreen() {
           leftIcon="arrow-back"
         />
       </View>
-      
+
       <ScrollView style={styles.content}>
         <Text style={styles.title}>Terms of Service</Text>
         <Text style={styles.version}>Version 1.0 - Last Updated: October 2025</Text>
-        
+
         <Text style={styles.text}>
           {/* Add your actual terms content here */}
           Welcome to Avigate. By using our service, you agree to these terms...
         </Text>
-        
+
         {/* Add more sections */}
       </ScrollView>
     </SafeAreaView>

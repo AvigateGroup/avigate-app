@@ -1,15 +1,7 @@
 // src/components/common/CountryPhonePicker.tsx
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  FlatList,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
+import { View, Text, TouchableOpacity, Modal, FlatList, StyleSheet, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@/constants/colors';
 
@@ -54,11 +46,11 @@ export const CountryPhonePicker: React.FC<CountryPhonePickerProps> = ({
   const [modalVisible, setModalVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  const selectedCountry = COUNTRIES.find((c) => c.dialCode === countryCode) || COUNTRIES[0];
+  const selectedCountry = COUNTRIES.find(c => c.dialCode === countryCode) || COUNTRIES[0];
 
-  const filteredCountries = COUNTRIES.filter((c) =>
-    c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    c.dialCode.includes(searchQuery)
+  const filteredCountries = COUNTRIES.filter(
+    c =>
+      c.name.toLowerCase().includes(searchQuery.toLowerCase()) || c.dialCode.includes(searchQuery),
   );
 
   const handleCountrySelect = (selectedCountry: Country) => {
@@ -70,13 +62,10 @@ export const CountryPhonePicker: React.FC<CountryPhonePickerProps> = ({
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Phone Number</Text>
-      
+
       <View style={styles.inputContainer}>
         {/* Country Selector */}
-        <TouchableOpacity
-          style={styles.countrySelector}
-          onPress={() => setModalVisible(true)}
-        >
+        <TouchableOpacity style={styles.countrySelector} onPress={() => setModalVisible(true)}>
           <Text style={styles.flag}>{selectedCountry.flag}</Text>
           <Text style={styles.dialCode}>{selectedCountry.dialCode}</Text>
           <Icon name="chevron-down" size={16} color={COLORS.textMuted} />
@@ -128,7 +117,7 @@ export const CountryPhonePicker: React.FC<CountryPhonePickerProps> = ({
             {/* Country List */}
             <FlatList
               data={filteredCountries}
-              keyExtractor={(item) => item.code}
+              keyExtractor={item => item.code}
               renderItem={({ item }) => (
                 <TouchableOpacity
                   style={[

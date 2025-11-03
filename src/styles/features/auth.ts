@@ -2,11 +2,11 @@
 
 import { StyleSheet } from 'react-native';
 import { COLORS } from '@/constants/colors';
-import { 
-  SPACING, 
-  FONT_SIZES, 
-  LINE_HEIGHTS, 
-  BORDER_RADIUS, 
+import {
+  SPACING,
+  FONT_SIZES,
+  LINE_HEIGHTS,
+  BORDER_RADIUS,
   moderateScale,
   ICON_SIZES,
 } from '@/utils/responsive';
@@ -37,14 +37,14 @@ export const authFeatureStyles = StyleSheet.create({
     fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.lg,         // Increased from base to lg for better spacing
+    marginBottom: SPACING.lg, // Increased from base to lg for better spacing
     lineHeight: LINE_HEIGHTS.sm,
     paddingHorizontal: SPACING.base,
   },
 
   // ========== SOCIAL BUTTONS ==========
   socialButtonsContainer: {
-    marginBottom: SPACING.lg,         // Increased from base to lg
+    marginBottom: SPACING.lg, // Increased from base to lg
   },
 
   // Google Button Image Style
@@ -58,7 +58,7 @@ export const authFeatureStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     gap: SPACING.sm,
-    marginBottom: SPACING.lg,         // Increased from base to lg
+    marginBottom: SPACING.lg, // Increased from base to lg
   },
 
   progressDot: {
@@ -74,7 +74,7 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   stepContainer: {
-    marginBottom: SPACING.lg,         // Increased from base to lg
+    marginBottom: SPACING.lg, // Increased from base to lg
   },
 
   stepTitle: {
@@ -88,7 +88,7 @@ export const authFeatureStyles = StyleSheet.create({
   stepSubtitle: {
     fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
-    marginBottom: SPACING.lg,         // Increased from base to lg
+    marginBottom: SPACING.lg, // Increased from base to lg
     lineHeight: LINE_HEIGHTS.sm,
   },
 
@@ -96,8 +96,8 @@ export const authFeatureStyles = StyleSheet.create({
   navigationButtons: {
     flexDirection: 'row',
     gap: SPACING.md,
-    marginTop: SPACING.lg,            // Increased from base to lg
-    marginBottom: SPACING.md,         // Added bottom margin
+    marginTop: SPACING.lg, // Increased from base to lg
+    marginBottom: SPACING.md, // Added bottom margin
   },
 
   backButton: {
@@ -408,7 +408,7 @@ export const authFeatureStyles = StyleSheet.create({
   backToLoginWithMargin: {
     paddingVertical: SPACING.xs,
     alignItems: 'center',
-    marginTop: SPACING.xl,           // Increased from xs to xl for better spacing
+    marginTop: SPACING.xl, // Increased from xs to xl for better spacing
   },
 
   backToLoginText: {

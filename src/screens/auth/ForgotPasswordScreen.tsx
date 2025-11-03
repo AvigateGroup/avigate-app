@@ -53,7 +53,7 @@ export const ForgotPasswordScreen: React.FC = () => {
         // Navigate to reset password screen
         router.push({
           pathname: '/(auth)/reset-password',
-          params: { email: email.toLowerCase().trim() }
+          params: { email: email.toLowerCase().trim() },
         });
       }
     } catch (error: any) {
@@ -88,7 +88,7 @@ export const ForgotPasswordScreen: React.FC = () => {
             label="Email Address"
             placeholder="Enter your email"
             value={email}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setEmail(text);
               setError('');
             }}

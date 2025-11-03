@@ -52,11 +52,11 @@ export const Input: React.FC<InputProps> = ({
         ]}
       >
         {leftIcon && (
-          <Icon 
-            name={leftIcon} 
-            size={20} 
-            color={isFocused ? COLORS.primary : COLORS.textMuted} 
-            style={styles.leftIcon} 
+          <Icon
+            name={leftIcon}
+            size={20}
+            color={isFocused ? COLORS.primary : COLORS.textMuted}
+            style={styles.leftIcon}
           />
         )}
         <TextInput
@@ -78,10 +78,10 @@ export const Input: React.FC<InputProps> = ({
         )}
         {rightIcon && !secureTextEntry && (
           <TouchableOpacity onPress={onRightIconPress} style={styles.rightIcon}>
-            <Icon 
-              name={rightIcon} 
-              size={20} 
-              color={isFocused ? COLORS.primary : COLORS.textMuted} 
+            <Icon
+              name={rightIcon}
+              size={20}
+              color={isFocused ? COLORS.primary : COLORS.textMuted}
             />
           </TouchableOpacity>
         )}
@@ -105,10 +105,10 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 0,                           // ✨ No border by default
+    borderWidth: 0, // ✨ No border by default
     borderRadius: BORDER_RADIUS.base,
-    backgroundColor: COLORS.backgroundLight,  // ✨ Light gray background
-    minHeight: 48,                            // Accessibility standard
+    backgroundColor: COLORS.backgroundLight, // ✨ Light gray background
+    minHeight: 48, // Accessibility standard
     // Modern shadow (subtle depth)
     shadowColor: COLORS.shadow,
     shadowOffset: { width: 0, height: 1 },
@@ -117,9 +117,9 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   inputContainerFocused: {
-    backgroundColor: COLORS.white,            // ✨ Lifts to white when focused
-    borderWidth: 1,                           // ✨ Border appears on focus
-    borderColor: COLORS.border,               // ✨ Subtle gray border
+    backgroundColor: COLORS.white, // ✨ Lifts to white when focused
+    borderWidth: 1, // ✨ Border appears on focus
+    borderColor: COLORS.border, // ✨ Subtle gray border
     // Enhanced shadow on focus (floating effect)
     shadowColor: COLORS.primary,
     shadowOffset: { width: 0, height: 2 },
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   inputContainerError: {
     backgroundColor: COLORS.white,
     borderWidth: 1,
-    borderColor: COLORS.error,                // ✨ Red border for errors
+    borderColor: COLORS.error, // ✨ Red border for errors
     shadowColor: COLORS.error,
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,

@@ -18,16 +18,16 @@ export default function PrivacyScreen() {
           leftIcon="arrow-back"
         />
       </View>
-      
+
       <ScrollView style={styles.content}>
         <Text style={styles.title}>Privacy Policy</Text>
         <Text style={styles.version}>Version 1.0 - Last Updated: October 2025</Text>
-        
+
         <Text style={styles.text}>
           {/* Add your actual privacy policy content here */}
           Your privacy is important to us. This policy explains how we collect and use your data...
         </Text>
-        
+
         {/* Add more sections */}
       </ScrollView>
     </SafeAreaView>

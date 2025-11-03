@@ -24,19 +24,19 @@ class ApiClient {
   private setupInterceptors() {
     // Request interceptor
     this.client.interceptors.request.use(
-      async (config) => {
+      async config => {
         const token = await getItem(STORAGE_KEYS.ACCESS_TOKEN);
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
         return config;
       },
-      (error) => Promise.reject(error)
+      error => Promise.reject(error),
     );
 
     // Response interceptor
     this.client.interceptors.response.use(
-      (response) => response,
+      response => response,
       async (error: AxiosError) => {
         const originalRequest = error.config as any;
 
@@ -44,7 +44,7 @@ class ApiClient {
         if (error.response?.status === 401 && !originalRequest._retry) {
           if (this.isRefreshing) {
             // Wait for the refresh to complete
-            return new Promise((resolve) => {
+            return new Promise(resolve => {
               this.refreshSubscribers.push((token: string) => {
                 originalRequest.headers.Authorization = `Bearer ${token}`;
                 resolve(this.client(originalRequest));
@@ -71,7 +71,7 @@ class ApiClient {
             await setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
 
             // Notify all subscribers
-            this.refreshSubscribers.forEach((callback) => callback(accessToken));
+            this.refreshSubscribers.forEach(callback => callback(accessToken));
             this.refreshSubscribers = [];
 
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
@@ -86,7 +86,7 @@ class ApiClient {
         }
 
         return Promise.reject(error);
-      }
+      },
     );
   }
 

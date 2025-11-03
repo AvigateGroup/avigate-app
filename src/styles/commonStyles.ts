@@ -3,7 +3,7 @@
 /**
  * Backward compatibility layer for commonStyles
  * Re-exports all base styles under the commonStyles name
- * 
+ *
  * @deprecated Use individual imports from '@/styles/base' instead
  * This file exists for backward compatibility only
  */

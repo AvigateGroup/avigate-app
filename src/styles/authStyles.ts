@@ -3,7 +3,7 @@
 /**
  * Backward compatibility layer for authStyles
  * Combines base styles with auth-specific styles
- * 
+ *
  * @deprecated Use individual imports from '@/styles/base' and '@/styles/features/auth' instead
  * This file exists for backward compatibility only
  */
@@ -32,7 +32,7 @@ export const authStyles = StyleSheet.create({
   ...layoutStyles,
   ...iconStyles,
   ...listStyles,
-  
+
   // Auth-specific styles
   ...authFeatureStyles,
 });

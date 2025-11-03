@@ -3,18 +3,13 @@
 /**
  * Backward compatibility layer for homeStyles
  * Combines base styles with home-specific styles
- * 
+ *
  * @deprecated Use individual imports from '@/styles/base' and '@/styles/features/home' instead
  * This file exists for backward compatibility only
  */
 
 import { StyleSheet } from 'react-native';
-import {
-  containerStyles,
-  buttonStyles,
-  cardStyles,
-  typographyStyles,
-} from './base';
+import { containerStyles, buttonStyles, cardStyles, typographyStyles } from './base';
 import { homeFeatureStyles } from './features/home';
 
 /**
@@ -26,7 +21,7 @@ export const homeStyles = StyleSheet.create({
   ...buttonStyles,
   ...cardStyles,
   ...typographyStyles,
-  
+
   // Home-specific styles
   ...homeFeatureStyles,
 });

@@ -28,7 +28,7 @@ export const getDeviceInfo = (): string => {
 /**
  * Get FCM (Firebase Cloud Messaging) token for push notifications
  * Returns the token string or undefined if not available
- * 
+ *
  * NOTE: Push notifications are not supported in Expo Go for SDK 53+
  * To use this feature, you need to create a development build with:
  * npx expo install expo-dev-client && npx expo run:android
@@ -36,7 +36,7 @@ export const getDeviceInfo = (): string => {
 export const getFCMToken = async (): Promise<string | undefined> => {
   console.log('Push notifications are not available in Expo Go. Use a development build instead.');
   return undefined;
-  
+
   /* Uncomment this code when using a development build:
   
   try {
@@ -97,7 +97,7 @@ export const handleApiError = (error: any): string => {
       case 401:
         return 'Invalid credentials. Please try again.';
       case 403:
-        return 'Access denied. You don\'t have permission.';
+        return "Access denied. You don't have permission.";
       case 404:
         return 'Resource not found.';
       case 409:
@@ -241,7 +241,7 @@ export const getRelativeTime = (dateString: string | Date): string => {
  */
 export const debounce = <T extends (...args: any[]) => any>(
   func: T,
-  delay: number
+  delay: number,
 ): ((...args: Parameters<T>) => void) => {
   let timeoutId: NodeJS.Timeout;
 

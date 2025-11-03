@@ -7,7 +7,9 @@ export const validateEmail = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
-export const validatePassword = (password: string): {
+export const validatePassword = (
+  password: string,
+): {
   isValid: boolean;
   errors: string[];
 } => {
@@ -49,7 +51,9 @@ export const validateName = (name: string): boolean => {
   return name.trim().length >= 2 && name.trim().length <= 50;
 };
 
-export const getPasswordStrength = (password: string): {
+export const getPasswordStrength = (
+  password: string,
+): {
   strength: 'weak' | 'medium' | 'strong';
   score: number;
 } => {

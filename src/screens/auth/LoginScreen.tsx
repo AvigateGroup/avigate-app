@@ -12,11 +12,7 @@ import { validateEmail } from '@/utils/validation';
 import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { LoginDto } from '@/types/auth.types';
-import {  
-  buttonStyles, 
-  formStyles, 
-  layoutStyles,
-} from '@/styles/base';
+import { buttonStyles, formStyles, layoutStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
 export const LoginScreen: React.FC = () => {
@@ -70,24 +66,20 @@ export const LoginScreen: React.FC = () => {
           text2: response.message,
         });
 
-        await login(
-          response.data.accessToken,
-          response.data.refreshToken,
-          response.data.user
-        );
+        await login(response.data.accessToken, response.data.refreshToken, response.data.user);
 
         // Navigate based on user status
         if (response.data.requiresVerification) {
           router.replace({
             pathname: '/(auth)/verify-email',
-            params: { email: email.toLowerCase().trim() }
+            params: { email: email.toLowerCase().trim() },
           });
         } else if (response.data.requiresPhoneNumber) {
           router.replace('/(auth)/phone-verification');
         } else if (response.data.requiresOtpVerification) {
           router.replace({
             pathname: '/(auth)/verify-login-otp',
-            params: { email: email.toLowerCase().trim() }
+            params: { email: email.toLowerCase().trim() },
           });
         }
       }
@@ -106,16 +98,14 @@ export const LoginScreen: React.FC = () => {
     <AuthLayout showLogo={true}>
       <View style={authFeatureStyles.authContent}>
         <Text style={authFeatureStyles.welcomeTitle}>Welcome to Avigate</Text>
-        <Text style={authFeatureStyles.welcomeSubtitle}>
-          Sign up or login below to continue.
-        </Text>
+        <Text style={authFeatureStyles.welcomeSubtitle}>Sign up or login below to continue.</Text>
 
         {/* Email/Password Form */}
         <View style={formStyles.form}>
           <Input
             placeholder="Enter your email"
             value={email}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setEmail(text);
               setErrors({ ...errors, email: '' });
             }}
@@ -128,7 +118,7 @@ export const LoginScreen: React.FC = () => {
           <Input
             placeholder="Enter your password"
             value={password}
-            onChangeText={(text) => {
+            onChangeText={text => {
               setPassword(text);
               setErrors({ ...errors, password: '' });
             }}
@@ -162,10 +152,7 @@ export const LoginScreen: React.FC = () => {
 
         {/* Google Login Button with Image */}
         <View style={authFeatureStyles.socialButtonsContainer}>
-          <TouchableOpacity
-            onPress={() => router.push('/(auth)/google-auth')}
-            activeOpacity={0.8}
-          >
+          <TouchableOpacity onPress={() => router.push('/(auth)/google-auth')} activeOpacity={0.8}>
             <Image
               source={require('../../../assets/images/google-icon.png')}
               style={authFeatureStyles.googleButtonImage}
@@ -178,10 +165,7 @@ export const LoginScreen: React.FC = () => {
         <View style={layoutStyles.footer}>
           <Text style={layoutStyles.footerText}>
             Don't have an account?{' '}
-            <Text 
-              style={layoutStyles.footerLink} 
-              onPress={() => router.push('/(auth)/register')}
-            >
+            <Text style={layoutStyles.footerLink} onPress={() => router.push('/(auth)/register')}>
               Sign Up
             </Text>
           </Text>

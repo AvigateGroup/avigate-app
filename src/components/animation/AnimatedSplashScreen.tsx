@@ -29,10 +29,10 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
           useNativeDriver: true,
         }),
       ]),
-      
+
       // 2. Hold the logo on screen
       Animated.delay(1800),
-      
+
       // 3. Fade out the entire splash screen
       Animated.timing(containerOpacity, {
         toValue: 1,
@@ -46,12 +46,7 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
   }, []);
 
   return (
-    <Animated.View 
-      style={[
-        styles.container,
-        { opacity: containerOpacity }
-      ]}
-    >
+    <Animated.View style={[styles.container, { opacity: containerOpacity }]}>
       <Animated.View
         style={[
           styles.logoContainer,
@@ -83,8 +78,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: {
-    width: 300,  // ← Make bigger or smaller
-    height: 300,  // ← Make bigger or smaller
+    width: 300, // ← Make bigger or smaller
+    height: 300, // ← Make bigger or smaller
   },
 });
 

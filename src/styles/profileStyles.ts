@@ -3,19 +3,13 @@
 /**
  * Backward compatibility layer for profileStyles
  * Combines base styles with profile-specific styles
- * 
+ *
  * @deprecated Use individual imports from '@/styles/base' and '@/styles/features/profile' instead
  * This file exists for backward compatibility only
  */
 
 import { StyleSheet } from 'react-native';
-import {
-  containerStyles,
-  avatarStyles,
-  listStyles,
-  buttonStyles,
-  cardStyles,
-} from './base';
+import { containerStyles, avatarStyles, listStyles, buttonStyles, cardStyles } from './base';
 import { profileFeatureStyles } from './features/profile';
 
 /**
@@ -28,7 +22,7 @@ export const profileStyles = StyleSheet.create({
   ...listStyles,
   ...buttonStyles,
   ...cardStyles,
-  
+
   // Profile-specific styles
   ...profileFeatureStyles,
 });

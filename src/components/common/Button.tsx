@@ -83,21 +83,11 @@ export const Button: React.FC<ButtonProps> = ({
       ) : (
         <>
           {leftIcon && (
-            <Icon
-              name={leftIcon}
-              size={20}
-              color={getIconColor()}
-              style={styles.leftIcon}
-            />
+            <Icon name={leftIcon} size={20} color={getIconColor()} style={styles.leftIcon} />
           )}
           <Text style={[styles.text, getTextStyle(), textStyle]}>{title}</Text>
           {rightIcon && (
-            <Icon
-              name={rightIcon}
-              size={20}
-              color={getIconColor()}
-              style={styles.rightIcon}
-            />
+            <Icon name={rightIcon} size={20} color={getIconColor()} style={styles.rightIcon} />
           )}
         </>
       )}

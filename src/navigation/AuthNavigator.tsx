@@ -28,8 +28,8 @@ export const AuthNavigator = () => {
       initialRouteName="Login"
     >
       {/* Login Screen - Entry point */}
-      <Stack.Screen 
-        name="Login" 
+      <Stack.Screen
+        name="Login"
         component={LoginScreen}
         options={{
           title: 'Login',
@@ -37,8 +37,8 @@ export const AuthNavigator = () => {
       />
 
       {/* Registration Screen */}
-      <Stack.Screen 
-        name="Register" 
+      <Stack.Screen
+        name="Register"
         component={RegisterScreen}
         options={{
           title: 'Create Account',
@@ -47,8 +47,8 @@ export const AuthNavigator = () => {
       />
 
       {/* Login OTP Verification Screen */}
-      <Stack.Screen 
-        name="VerifyLoginOTP" 
+      <Stack.Screen
+        name="VerifyLoginOTP"
         component={VerifyLoginOTPScreen}
         options={{
           title: 'Verify Login',
@@ -57,8 +57,8 @@ export const AuthNavigator = () => {
       />
 
       {/* Email Verification Screen */}
-      <Stack.Screen 
-        name="VerifyEmail" 
+      <Stack.Screen
+        name="VerifyEmail"
         component={VerifyEmailScreen}
         options={{
           title: 'Verify Email',
@@ -67,8 +67,8 @@ export const AuthNavigator = () => {
       />
 
       {/* Forgot Password Screen */}
-      <Stack.Screen 
-        name="ForgotPassword" 
+      <Stack.Screen
+        name="ForgotPassword"
         component={ForgotPasswordScreen}
         options={{
           title: 'Forgot Password',
@@ -76,8 +76,8 @@ export const AuthNavigator = () => {
       />
 
       {/* Reset Password Screen */}
-      <Stack.Screen 
-        name="ResetPassword" 
+      <Stack.Screen
+        name="ResetPassword"
         component={ResetPasswordScreen}
         options={{
           title: 'Reset Password',
@@ -86,8 +86,8 @@ export const AuthNavigator = () => {
       />
 
       {/* Google OAuth Screen */}
-      <Stack.Screen 
-        name="GoogleAuth" 
+      <Stack.Screen
+        name="GoogleAuth"
         component={GoogleAuthScreen}
         options={{
           title: 'Google Sign In',
@@ -96,8 +96,8 @@ export const AuthNavigator = () => {
       />
 
       {/* Phone Number Verification Screen */}
-      <Stack.Screen 
-        name="PhoneVerification" 
+      <Stack.Screen
+        name="PhoneVerification"
         component={PhoneVerificationScreen}
         options={{
           title: 'Add Phone Number',

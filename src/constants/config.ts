@@ -15,7 +15,7 @@ const getApiBaseUrl = (): string => {
 
   // Development - use different URLs based on platform
   const customUrl = getEnvVar('EXPO_PUBLIC_API_BASE_URL', '');
-  
+
   if (customUrl) {
     return customUrl;
   }
@@ -68,10 +68,10 @@ if (__DEV__) {
   console.log('🔧 API Configuration:');
   console.log('  Platform:', Platform.OS);
   console.log('  Base URL:', API_CONFIG.BASE_URL);
-  
+
   const requiredVars = ['EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID'];
   const missing = requiredVars.filter(varName => !getEnvVar(varName));
-  
+
   if (missing.length > 0) {
     console.warn('⚠️  Missing required environment variables:', missing.join(', '));
   }
