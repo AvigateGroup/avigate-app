@@ -200,7 +200,7 @@ export const SettingsScreen = () => {
       </View>
 
       <View style={profileStyles.footer}>
-        <Text style={profileStyles.footerText}>Made with ❤️ by Avigate Team</Text>
+        <Text style={profileStyles.footerText}>Avigate v1.0.0</Text>
       </View>
     </ScrollView>
   );
