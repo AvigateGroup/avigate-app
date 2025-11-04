@@ -3,18 +3,20 @@
 
 import { Tabs } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { COLORS } from '../../src/constants/colors';
+import { useThemedColors } from '../../src/hooks/useThemedColors';
 
 export default function TabLayout() {
+  const colors = useThemedColors();
+
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.textMuted,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: COLORS.textWhite,
-          borderTopColor: COLORS.border,
+          backgroundColor: colors.white,
+          borderTopColor: colors.border,
           borderTopWidth: 1,
           height: 60,
           paddingBottom: 8,
