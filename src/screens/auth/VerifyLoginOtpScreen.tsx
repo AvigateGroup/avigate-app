@@ -63,9 +63,6 @@ export const VerifyLoginOTPScreen: React.FC = () => {
         });
 
         await login(response.data.accessToken, response.data.refreshToken, response.data.user);
-
-        // Navigation handled by AuthContext/AppNavigator
-        // User will be redirected to main app automatically
       }
     } catch (error: any) {
       const errorMessage = handleApiError(error);
@@ -112,6 +109,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
   return (
     <AuthLayout showLogo={true}>
       <View style={authFeatureStyles.authContent}>
+        {/* TOP SECTION */}
         <View>
           <View style={authFeatureStyles.verifyIconContainer}>
             <View style={authFeatureStyles.verifyIconCircle}>
@@ -120,14 +118,22 @@ export const VerifyLoginOTPScreen: React.FC = () => {
           </View>
 
           <Text style={authFeatureStyles.titleCentered}>Verify Your Login</Text>
-          <Text style={authFeatureStyles.subtitleCentered}>Enter the 6-digit code sent to</Text>
-          <Text style={authFeatureStyles.emailText}>{email}</Text>
+          
+          <Text style={authFeatureStyles.subtitleCentered}>
+            Enter the 6-digit code sent to
+          </Text>
+
+          {/* ENHANCED EMAIL DISPLAY WITH CONTAINER */}
+          <View style={authFeatureStyles.emailContainer}>
+            <Text style={authFeatureStyles.emailText}>{email}</Text>
+          </View>
 
           <View style={authFeatureStyles.otpWrapper}>
             <OTPInput value={otp} onChange={setOtp} error={error} />
           </View>
         </View>
 
+        {/* BOTTOM SECTION */}
         <View>
           <Button
             title="Verify"
@@ -145,12 +151,18 @@ export const VerifyLoginOTPScreen: React.FC = () => {
                 </Text>
               </TouchableOpacity>
             ) : (
-              <Text style={authFeatureStyles.countdownText}>Resend code in {countdown}s</Text>
+              <Text style={authFeatureStyles.countdownText}>
+                Resend code in {countdown}s
+              </Text>
             )}
           </View>
 
-          <TouchableOpacity onPress={() => router.back()} style={authFeatureStyles.backLink}>
-            <Text style={authFeatureStyles.backLinkText}>Change Email</Text>
+          <TouchableOpacity 
+            onPress={() => router.back()}
+            style={authFeatureStyles.changeEmailButton}
+          >
+            <Icon name="arrow-back" size={18} color={COLORS.primary} />
+            <Text style={authFeatureStyles.changeEmailText}>Change Email</Text>
           </TouchableOpacity>
         </View>
       </View>
