@@ -10,12 +10,48 @@ import { COLORS } from '@/constants/colors';
 import { HomeScreen } from '@/screens/home/HomeScreen';
 import { ProfileScreen } from '@/screens/profile/ProfileScreen';
 import { SettingsScreen } from '@/screens/profile/SettingsScreen';
+import { ShareLocationScreen } from '@/screens/share/ShareLocationScreen';
+import { SearchDestinationScreen } from '@/screens/search/SearchDestinationScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 // Home Stack Navigator
 const HomeStack = () => (
+  <Stack.Navigator
+    screenOptions={{
+      headerShown: false, // Hide header for cleaner look like Bolt
+      animation: 'slide_from_right',
+    }}
+  >
+    <Stack.Screen
+      name="HomeMain"
+      component={HomeScreen}
+      options={{
+        title: 'Avigate',
+      }}
+    />
+    {/* Modal screen for search destination */}
+    <Stack.Screen
+      name="SearchDestination"
+      component={SearchDestinationScreen}
+      options={{
+        presentation: 'modal',
+        animation: 'slide_from_bottom',
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: COLORS.white,
+        },
+        headerTintColor: COLORS.text,
+        headerTitle: '',
+        headerShadowVisible: false,
+      }}
+    />
+  </Stack.Navigator>
+);
+
+// Share Location Stack Navigator
+const ShareLocationStack = () => (
   <Stack.Navigator
     screenOptions={{
       headerStyle: {
@@ -28,11 +64,10 @@ const HomeStack = () => (
     }}
   >
     <Stack.Screen
-      name="HomeMain"
-      component={HomeScreen}
+      name="ShareLocationMain"
+      component={ShareLocationScreen}
       options={{
-        title: 'Avigate',
-        headerShown: true,
+        title: 'Share Location',
       }}
     />
   </Stack.Navigator>
@@ -68,7 +103,7 @@ const ProfileStack = () => (
   </Stack.Navigator>
 );
 
-// Main Tab Navigator
+// Main Tab Navigator - Updated to 3 tabs like Bolt
 export const MainNavigator = () => {
   return (
     <Tab.Navigator
@@ -78,6 +113,8 @@ export const MainNavigator = () => {
 
           if (route.name === 'Home') {
             iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'ShareLocation') {
+            iconName = focused ? 'share-social' : 'share-social-outline';
           } else if (route.name === 'Profile') {
             iconName = focused ? 'person' : 'person-outline';
           }
@@ -87,12 +124,17 @@ export const MainNavigator = () => {
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.textMuted,
         tabBarStyle: {
-          backgroundColor: COLORS.background,
+          backgroundColor: COLORS.white,
           borderTopWidth: 1,
           borderTopColor: COLORS.border,
-          paddingBottom: 5,
-          paddingTop: 5,
-          height: 60,
+          paddingBottom: 10,
+          paddingTop: 10,
+          height: 70,
+          elevation: 8,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
         },
         tabBarLabelStyle: {
           fontSize: 12,
@@ -106,6 +148,13 @@ export const MainNavigator = () => {
         component={HomeStack}
         options={{
           tabBarLabel: 'Home',
+        }}
+      />
+      <Tab.Screen
+        name="ShareLocation"
+        component={ShareLocationStack}
+        options={{
+          tabBarLabel: 'Share Location',
         }}
       />
       <Tab.Screen
