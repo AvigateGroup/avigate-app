@@ -1,10 +1,10 @@
 // src/constants/colors.ts
 
-export const COLORS = {
+export const LIGHT_COLORS = {
   // Primary Brand Colors
-  primary: '#86B300', // Avigate Green
-  primaryDark: '#6B8F00', // Darker shade for pressed states
-  primaryLight: '#E8F3D0', // Light shade for backgrounds
+  primary: '#86B300',
+  primaryDark: '#6B8F00',
+  primaryLight: '#E8F3D0',
 
   // Secondary Colors
   secondary: '#4A5568',
@@ -19,9 +19,9 @@ export const COLORS = {
   // Background Colors
   background: '#F7FAFC',
   backgroundDark: '#EDF2F7',
+  backgroundLight: '#F9F9F9',
   white: '#FFFFFF',
-  black: '#000000', // Main background color
-  backgroundLight: '#F9F9F9', // Light background for cards/sections // Darker background for contrast
+  black: '#000000',
 
   // Status Colors
   success: '#48BB78',
@@ -48,6 +48,68 @@ export const COLORS = {
 
   // Overlay
   overlay: 'rgba(0, 0, 0, 0.5)',
-  disabled: '#BDBDBD',
   overlayLight: 'rgba(0, 0, 0, 0.3)',
+  disabled: '#BDBDBD',
+};
+
+export const DARK_COLORS = {
+  // Primary Brand Colors (keep brand colors consistent)
+  primary: '#86B300',
+  primaryDark: '#9DC91F',
+  primaryLight: '#3D4D00',
+
+  // Secondary Colors
+  secondary: '#CBD5E0',
+  secondaryLight: '#2D3748',
+
+  // Text Colors
+  text: '#F7FAFC',
+  textMuted: '#A0AEC0',
+  textLight: '#718096',
+  textWhite: '#FFFFFF',
+
+  // Background Colors
+  background: '#1A202C',
+  backgroundDark: '#171923',
+  backgroundLight: '#2D3748',
+  white: '#2D3748',
+  black: '#000000',
+
+  // Status Colors
+  success: '#48BB78',
+  successLight: '#22543D',
+  error: '#FC8181',
+  errorLight: '#742A2A',
+  warning: '#F6AD55',
+  warningLight: '#7C2D12',
+  info: '#63B3ED',
+  infoLight: '#2C5282',
+
+  // Border & Divider
+  border: '#2D3748',
+  divider: '#4A5568',
+  borderLight: '#374151',
+
+  // Social Media Colors
+  google: '#4285F4',
+  apple: '#FFFFFF',
+
+  // Shadow
+  shadow: 'rgba(0, 0, 0, 0.3)',
+  shadowDark: 'rgba(0, 0, 0, 0.5)',
+
+  // Overlay
+  overlay: 'rgba(0, 0, 0, 0.7)',
+  overlayLight: 'rgba(0, 0, 0, 0.5)',
+  disabled: '#4A5568',
+};
+
+// Default export for backward compatibility
+export const COLORS = LIGHT_COLORS;
+
+/**
+ * Get colors based on theme
+ */
+export const getColors = (isDark: boolean) => {
+  return isDark ? DARK_COLORS : LIGHT_COLORS;
 };
