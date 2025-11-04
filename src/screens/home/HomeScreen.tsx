@@ -8,8 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { homeStyles, platformStyles } from '@/styles';
-import { useNavigation } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useRouter } from 'expo-router';
 
 interface LocationType {
   latitude: number;
@@ -18,11 +17,9 @@ interface LocationType {
   longitudeDelta: number;
 }
 
-type NavigationProp = NativeStackNavigationProp<any>;
-
 export const HomeScreen = () => {
   const { user } = useAuth();
-  const navigation = useNavigation<NavigationProp>();
+  const router = useRouter();
   const mapRef = useRef<MapView>(null);
 
   const [location, setLocation] = useState<LocationType | null>(null);
@@ -156,14 +153,14 @@ export const HomeScreen = () => {
   };
 
   const handleSearchPress = () => {
-    // Navigate to search screen
-    navigation.navigate('SearchDestination');
+    // Navigate to search modal using Expo Router
+    router.push('/search');
   };
 
   const handleMenuPress = () => {
     // TODO: Open drawer or menu
     Alert.alert('Menu', 'Menu functionality coming soon!', [
-      { text: 'Profile', onPress: () => navigation.navigate('Profile') },
+      { text: 'Profile', onPress: () => router.push('/(tabs)/profile') },
       { text: 'Settings', onPress: () => {} },
       { text: 'Cancel', style: 'cancel' },
     ]);
@@ -181,7 +178,11 @@ export const HomeScreen = () => {
   return (
     <View style={homeStyles.container}>
       {/* Hamburger Menu Button */}
-      <TouchableOpacity style={homeStyles.menuButton} onPress={handleMenuPress} activeOpacity={0.7}>
+      <TouchableOpacity
+        style={homeStyles.menuButton}
+        onPress={handleMenuPress}
+        activeOpacity={0.7}
+      >
         <Icon name="menu" size={28} color={COLORS.text} />
       </TouchableOpacity>
 
