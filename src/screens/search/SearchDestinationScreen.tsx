@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@/constants/colors';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 interface LocationSuggestion {
   id: string;
@@ -54,7 +54,7 @@ const SAVED_PLACES: LocationSuggestion[] = [
 ];
 
 export const SearchDestinationScreen = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -67,7 +67,7 @@ export const SearchDestinationScreen = () => {
       // TODO: Implement actual location search API
       // For now, just filter recent searches
       const filtered = RECENT_SEARCHES.filter(
-        item =>
+        (item) =>
           item.name.toLowerCase().includes(text.toLowerCase()) ||
           item.address.toLowerCase().includes(text.toLowerCase()),
       );
@@ -82,14 +82,17 @@ export const SearchDestinationScreen = () => {
     Keyboard.dismiss();
     console.log('Selected location:', location);
     // TODO: Navigate to route planning or show on map
-    // navigation.navigate('RouteDetails', { destination: location });
-    navigation.goBack();
+    router.back();
   };
 
   const handleClearSearch = () => {
     setSearchQuery('');
     setSuggestions([]);
     Keyboard.dismiss();
+  };
+
+  const handleBack = () => {
+    router.back();
   };
 
   const renderLocationItem = ({ item }: { item: LocationSuggestion }) => {
@@ -138,7 +141,9 @@ export const SearchDestinationScreen = () => {
         <View style={styles.emptyState}>
           <Icon name="search" size={48} color={COLORS.textMuted} />
           <Text style={styles.emptyText}>No results found</Text>
-          <Text style={styles.emptySubtext}>Try searching for a different location</Text>
+          <Text style={styles.emptySubtext}>
+            Try searching for a different location
+          </Text>
         </View>
       );
     }
@@ -148,12 +153,20 @@ export const SearchDestinationScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* Header */}
+      <View style={styles.header}>
+        <TouchableOpacity onPress={handleBack} style={styles.backButton}>
+          <Icon name="arrow-back" size={24} color={COLORS.text} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Where to?</Text>
+      </View>
+
       {/* Search Input */}
       <View style={styles.searchContainer}>
         <Icon name="search" size={20} color={COLORS.textMuted} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Where to?"
+          placeholder="Search for a destination"
           placeholderTextColor={COLORS.textMuted}
           value={searchQuery}
           onChangeText={handleSearch}
@@ -176,7 +189,7 @@ export const SearchDestinationScreen = () => {
             <Text style={styles.sectionTitle}>Saved Places</Text>
             <FlatList
               data={SAVED_PLACES}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               renderItem={renderLocationItem}
               scrollEnabled={false}
             />
@@ -187,7 +200,7 @@ export const SearchDestinationScreen = () => {
             <Text style={styles.sectionTitle}>Recent</Text>
             <FlatList
               data={RECENT_SEARCHES}
-              keyExtractor={item => item.id}
+              keyExtractor={(item) => item.id}
               renderItem={renderLocationItem}
               scrollEnabled={false}
             />
@@ -197,7 +210,7 @@ export const SearchDestinationScreen = () => {
         // Show search results
         <FlatList
           data={suggestions}
-          keyExtractor={item => item.id}
+          keyExtractor={(item) => item.id}
           renderItem={renderLocationItem}
           ListEmptyComponent={renderEmptyState}
           keyboardShouldPersistTaps="handled"
@@ -211,6 +224,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: COLORS.white,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  backButton: {
+    marginRight: 16,
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: COLORS.text,
   },
   searchContainer: {
     flexDirection: 'row',
