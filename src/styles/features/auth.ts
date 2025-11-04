@@ -13,15 +13,15 @@ import {
 
 /**
  * Authentication feature-specific styles
- * Fixed: Natural spacing without keyboard-triggered adjustments
  */
 export const authFeatureStyles = StyleSheet.create({
-  // ========== MAIN CONTENT WRAPPER ==========
+  // MAIN CONTENT WRAPPER 
   authContent: {
     flex: 1,
+    justifyContent: 'space-between',
   },
 
-  // ========== WELCOME SECTION ==========
+  // WELCOME SECTION 
   welcomeTitle: {
     fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
@@ -35,28 +35,27 @@ export const authFeatureStyles = StyleSheet.create({
     fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.lg, // Increased from base to lg for better spacing
+    marginBottom: SPACING.lg,
     lineHeight: LINE_HEIGHTS.sm,
     paddingHorizontal: SPACING.base,
   },
 
-  // ========== SOCIAL BUTTONS ==========
+  // SOCIAL BUTTONS 
   socialButtonsContainer: {
-    marginBottom: SPACING.lg, // Increased from base to lg
+    marginBottom: SPACING.lg,
   },
 
-  // Google Button Image Style
   googleButtonImage: {
     width: '100%',
     height: moderateScale(52),
   },
 
-  // ========== MULTI-STEP REGISTRATION ==========
+  // MULTI-STEP REGISTRATION 
   progressContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     gap: SPACING.sm,
-    marginBottom: SPACING.lg, // Increased from base to lg
+    marginBottom: SPACING.lg,
   },
 
   progressDot: {
@@ -72,7 +71,7 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   stepContainer: {
-    marginBottom: SPACING.lg, // Increased from base to lg
+    marginBottom: SPACING.lg,
   },
 
   stepTitle: {
@@ -86,16 +85,16 @@ export const authFeatureStyles = StyleSheet.create({
   stepSubtitle: {
     fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
-    marginBottom: SPACING.lg, // Increased from base to lg
+    marginBottom: SPACING.lg,
     lineHeight: LINE_HEIGHTS.sm,
   },
 
-  // ========== NAVIGATION BUTTONS ==========
+  // NAVIGATION BUTTONS 
   navigationButtons: {
     flexDirection: 'row',
     gap: SPACING.md,
-    marginTop: SPACING.lg, // Increased from base to lg
-    marginBottom: SPACING.md, // Added bottom margin
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.md,
   },
 
   backButton: {
@@ -169,7 +168,7 @@ export const authFeatureStyles = StyleSheet.create({
     lineHeight: LINE_HEIGHTS.xs,
   },
 
-  // ========== GOOGLE AUTH SPECIFIC ==========
+  // GOOGLE AUTH SPECIFIC 
   googleIconContainer: {
     alignItems: 'center',
     marginBottom: SPACING.sm,
@@ -202,7 +201,7 @@ export const authFeatureStyles = StyleSheet.create({
     fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.xxl,
+    marginBottom: SPACING.md,
     lineHeight: LINE_HEIGHTS.base,
     paddingHorizontal: SPACING.lg,
   },
@@ -256,45 +255,66 @@ export const authFeatureStyles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // ========== VERIFICATION SCREENS ==========
+  // VERIFICATION SCREENS (ENHANCED)
   verifyIconContainer: {
     alignItems: 'center',
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.base,
   },
 
   verifyIconCircle: {
-    width: moderateScale(60),
-    height: moderateScale(60),
-    borderRadius: moderateScale(30),
+    width: moderateScale(64),
+    height: moderateScale(64),
+    borderRadius: moderateScale(32),
     backgroundColor: `${COLORS.primary}15`,
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
 
+  // ENHANCED EMAIL DISPLAY
   emailText: {
-    fontSize: FONT_SIZES.sm,
-    fontWeight: '600',
+    fontSize: FONT_SIZES.lg,
+    fontWeight: '700',
     color: COLORS.primary,
     textAlign: 'center',
-    marginBottom: SPACING.xs,
-    lineHeight: LINE_HEIGHTS.sm,
+    lineHeight: LINE_HEIGHTS.lg,
+    letterSpacing: 0.3,
+  },
+
+  // EMAIL CONTAINER WITH BACKGROUND
+  emailContainer: {
+    backgroundColor: `${COLORS.primary}08`,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.base,
+    borderRadius: BORDER_RADIUS.base,
+    marginHorizontal: SPACING.base,
+    marginBottom: SPACING.lg,
+    borderWidth: 1,
+    borderColor: `${COLORS.primary}20`,
   },
 
   instructionText: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
     textAlign: 'center',
-    marginBottom: SPACING.sm,
-    lineHeight: LINE_HEIGHTS.xs,
+    marginBottom: SPACING.base,
+    lineHeight: LINE_HEIGHTS.sm,
+    paddingHorizontal: SPACING.md,
   },
 
   otpWrapper: {
-    marginBottom: SPACING.sm,
+    marginBottom: SPACING.lg,
+    marginTop: SPACING.sm,
   },
 
   resendSection: {
     alignItems: 'center',
-    marginVertical: SPACING.sm,
+    marginVertical: SPACING.base,
+    paddingVertical: SPACING.sm,
   },
 
   resendRow: {
@@ -304,31 +324,50 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   resendLabel: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textLight,
-    lineHeight: LINE_HEIGHTS.xs,
+    lineHeight: LINE_HEIGHTS.sm,
   },
 
   resendLink: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.primary,
     fontWeight: '600',
-    lineHeight: LINE_HEIGHTS.xs,
+    lineHeight: LINE_HEIGHTS.sm,
+    textDecorationLine: 'underline',
   },
 
   countdownText: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textMuted,
-    lineHeight: LINE_HEIGHTS.xs,
+    lineHeight: LINE_HEIGHTS.sm,
+    fontWeight: '500',
   },
 
+  changeEmailButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: SPACING.md,
+    gap: SPACING.xs,
+    marginTop: SPACING.sm,
+  },
+
+  changeEmailText: {
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.primary,
+    fontWeight: '600',
+    lineHeight: LINE_HEIGHTS.sm,
+  },
+
+  // ========== LEGACY STYLES (kept for other screens) ==========
   helpNote: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: SPACING.xs,
     paddingHorizontal: SPACING.base,
-    marginBottom: SPACING.xs,
+    marginBottom: SPACING.sm,
   },
 
   helpText: {
@@ -340,17 +379,19 @@ export const authFeatureStyles = StyleSheet.create({
   },
 
   backLink: {
-    paddingVertical: SPACING.xs,
+    paddingVertical: SPACING.md,
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: SPACING.sm,
   },
 
   backLinkText: {
-    fontSize: FONT_SIZES.xs,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.primary,
     fontWeight: '600',
-    lineHeight: LINE_HEIGHTS.xs,
+    lineHeight: LINE_HEIGHTS.sm,
+    textDecorationLine: 'underline',
   },
 
   // ========== INFO BOX ==========
@@ -402,11 +443,10 @@ export const authFeatureStyles = StyleSheet.create({
     lineHeight: LINE_HEIGHTS.sm,
   },
 
-  // ========== BACK TO LOGIN ==========
   backToLoginWithMargin: {
     paddingVertical: SPACING.xs,
     alignItems: 'center',
-    marginTop: SPACING.xl, // Increased from xs to xl for better spacing
+    marginTop: SPACING.xl,
   },
 
   backToLoginText: {
@@ -416,7 +456,6 @@ export const authFeatureStyles = StyleSheet.create({
     lineHeight: LINE_HEIGHTS.xs,
   },
 
-  // ========== EMAIL HIGHLIGHT ==========
   email: {
     fontSize: FONT_SIZES.sm,
     fontWeight: '600',
