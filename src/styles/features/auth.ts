@@ -18,7 +18,6 @@ export const authFeatureStyles = StyleSheet.create({
   // MAIN CONTENT WRAPPER
   authContent: {
     flex: 1,
-    justifyContent: 'space-between',
   },
 
   // WELCOME SECTION
