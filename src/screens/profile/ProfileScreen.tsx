@@ -5,13 +5,15 @@ import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-na
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
-import { COLORS } from '@/constants/colors';
+import { useThemedColors } from '@/hooks/useThemedColors';
 import { getInitials, formatDate } from '@/utils/helpers';
 import { profileStyles } from '@/styles';
 
 export const ProfileScreen: React.FC = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
+  const colors = useThemedColors();
+  
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -82,7 +84,7 @@ export const ProfileScreen: React.FC = () => {
             </View>
           )}
           <TouchableOpacity style={profileStyles.cameraButton} activeOpacity={0.7}>
-            <Icon name="camera" size={16} color={COLORS.textWhite} />
+            <Icon name="camera" size={16} color={colors.textWhite} />
           </TouchableOpacity>
         </View>
 
@@ -93,7 +95,7 @@ export const ProfileScreen: React.FC = () => {
 
         {user?.phoneNumber && (
           <View style={profileStyles.phoneContainer}>
-            <Icon name="call-outline" size={16} color={COLORS.textMuted} />
+            <Icon name="call-outline" size={16} color={colors.textMuted} />
             <Text style={profileStyles.phone}>{user.phoneNumber}</Text>
           </View>
         )}
@@ -135,7 +137,7 @@ export const ProfileScreen: React.FC = () => {
           <View style={profileStyles.infoRow}>
             <Text style={profileStyles.infoLabel}>Account Status</Text>
             <View style={profileStyles.statusBadge}>
-              <Icon name="checkmark-circle" size={16} color={COLORS.success} />
+              <Icon name="checkmark-circle" size={16} color={colors.success} />
               <Text style={profileStyles.statusText}>
                 {user?.isVerified ? 'Verified' : 'Unverified'}
               </Text>
@@ -160,13 +162,13 @@ export const ProfileScreen: React.FC = () => {
             activeOpacity={0.7}
           >
             <View style={profileStyles.menuIconContainer}>
-              <Icon name={item.icon} size={24} color={COLORS.primary} />
+              <Icon name={item.icon} size={24} color={colors.primary} />
             </View>
             <View style={profileStyles.menuContent}>
               <Text style={profileStyles.menuTitle}>{item.title}</Text>
               <Text style={profileStyles.menuSubtitle}>{item.subtitle}</Text>
             </View>
-            <Icon name="chevron-forward" size={20} color={COLORS.textMuted} />
+            <Icon name="chevron-forward" size={20} color={colors.textMuted} />
           </TouchableOpacity>
         ))}
       </View>
@@ -177,7 +179,7 @@ export const ProfileScreen: React.FC = () => {
         onPress={handleLogout}
         activeOpacity={0.7}
       >
-        <Icon name="log-out-outline" size={20} color={COLORS.error} />
+        <Icon name="log-out-outline" size={20} color={colors.error} />
         <Text style={profileStyles.logoutText}>Logout</Text>
       </TouchableOpacity>
 

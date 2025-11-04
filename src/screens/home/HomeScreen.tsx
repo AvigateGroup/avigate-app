@@ -6,8 +6,8 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
-import { COLORS } from '@/constants/colors';
-import { homeStyles, platformStyles } from '@/styles';
+import { useThemedColors } from '@/hooks/useThemedColors';
+import { homeStyles } from '@/styles';
 import { useRouter } from 'expo-router';
 
 interface LocationType {
@@ -21,6 +21,7 @@ export const HomeScreen = () => {
   const { user } = useAuth();
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
+  const colors = useThemedColors();
 
   const [location, setLocation] = useState<LocationType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -169,7 +170,7 @@ export const HomeScreen = () => {
   if (loading) {
     return (
       <View style={homeStyles.loadingContainer}>
-        <ActivityIndicator size="large" color={COLORS.primary} />
+        <ActivityIndicator size="large" color={colors.primary} />
         <Text style={homeStyles.loadingText}>Getting your location...</Text>
       </View>
     );
@@ -183,7 +184,7 @@ export const HomeScreen = () => {
         onPress={handleMenuPress}
         activeOpacity={0.7}
       >
-        <Icon name="menu" size={28} color={COLORS.text} />
+        <Icon name="menu" size={28} color={colors.text} />
       </TouchableOpacity>
 
       {/* Map */}
@@ -208,7 +209,7 @@ export const HomeScreen = () => {
           >
             <View style={homeStyles.markerContainer}>
               <View style={homeStyles.marker}>
-                <Icon name="person" size={20} color={COLORS.textWhite} />
+                <Icon name="person" size={20} color={colors.textWhite} />
               </View>
             </View>
           </Marker>
@@ -223,7 +224,7 @@ export const HomeScreen = () => {
           onPress={centerMapOnUser}
           activeOpacity={0.7}
         >
-          <Icon name="navigate" size={24} color={COLORS.textWhite} />
+          <Icon name="navigate" size={24} color={colors.textWhite} />
         </TouchableOpacity>
 
         {/* Refresh Location Button */}
@@ -232,7 +233,7 @@ export const HomeScreen = () => {
           onPress={refreshLocation}
           activeOpacity={0.7}
         >
-          <Icon name="refresh" size={24} color={COLORS.textWhite} />
+          <Icon name="refresh" size={24} color={colors.textWhite} />
         </TouchableOpacity>
       </View>
 
@@ -243,7 +244,7 @@ export const HomeScreen = () => {
           onPress={handleSearchPress}
           activeOpacity={0.7}
         >
-          <Icon name="search" size={24} color={COLORS.text} />
+          <Icon name="search" size={24} color={colors.text} />
           <Text style={homeStyles.searchPlaceholder}>Where to?</Text>
         </TouchableOpacity>
       </View>
