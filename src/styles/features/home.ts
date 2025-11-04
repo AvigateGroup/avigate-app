@@ -33,101 +33,121 @@ export const homeFeatureStyles = StyleSheet.create({
     elevation: 5,
   },
 
-  // ========== BANNERS & OVERLAYS ==========
-  welcomeBanner: {
+  // ========== MENU BUTTON ==========
+  menuButton: {
     position: 'absolute',
-    top: 16,
+    top: Platform.OS === 'ios' ? 60 : 50,
     left: 16,
-    right: 16,
     backgroundColor: COLORS.textWhite,
-    padding: 16,
-    borderRadius: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    zIndex: 10,
   },
 
-  welcomeText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.text,
-  },
-
-  // ========== INFO CARD ==========
-  infoCard: {
-    position: 'absolute',
-    bottom: 100,
-    left: 16,
-    right: 16,
-    backgroundColor: COLORS.textWhite,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-
-  infoHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-
-  infoTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginLeft: 8,
-  },
-
-  infoAddress: {
-    fontSize: 14,
-    color: COLORS.text,
-    lineHeight: 20,
-    marginBottom: 4,
-  },
-
-  infoCoordinates: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-  },
-
-  // ========== ACTION BUTTONS ==========
+  // ========== ACTION BUTTONS (REPOSITIONED) ==========
   actionButtons: {
     position: 'absolute',
     right: 16,
-    bottom: 280,
+    bottom: 180,
     gap: 12,
+    zIndex: 5,
   },
 
-  // ========== SEARCH BAR ==========
-  searchBar: {
-    position: 'absolute',
-    top: 80,
-    left: 16,
-    right: 16,
-    backgroundColor: COLORS.textWhite,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 12,
-    flexDirection: 'row',
+  actionButton: {
+    backgroundColor: COLORS.primary,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 8,
+  },
+
+  // ========== BOTTOM SECTION ==========
+  bottomSection: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: COLORS.textWhite,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: Platform.OS === 'ios' ? 90 : 70,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+
+  // ========== SEARCH CONTAINER (WHERE TO?) ==========
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.backgroundLight,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    borderRadius: 12,
+    marginBottom: 8,
+  },
+
+  searchPlaceholder: {
+    fontSize: 18,
+    color: COLORS.text,
+    marginLeft: 12,
+    fontWeight: '500',
+  },
+
+  // ========== DEPRECATED STYLES (KEPT FOR BACKWARD COMPATIBILITY) ==========
+  // These styles are no longer used but kept to prevent breaking changes
+  welcomeBanner: {
+    display: 'none', // Hidden - no longer used
+  },
+
+  welcomeText: {
+    display: 'none', // Hidden - no longer used
+  },
+
+  infoCard: {
+    display: 'none', // Hidden - replaced by bottom section
+  },
+
+  infoHeader: {
+    display: 'none',
+  },
+
+  infoTitle: {
+    display: 'none',
+  },
+
+  infoAddress: {
+    display: 'none',
+  },
+
+  infoCoordinates: {
+    display: 'none',
+  },
+
+  // ========== SEARCH BAR (OLD - DEPRECATED) ==========
+  searchBar: {
+    display: 'none', // Hidden - replaced by searchContainer
   },
 
   searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: COLORS.text,
-    marginLeft: 12,
+    display: 'none',
   },
 });
