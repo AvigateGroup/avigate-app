@@ -4,7 +4,8 @@ import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { AuthProvider, useAuth } from '../src/store/AuthContext';
-import { COLORS } from '../src/constants/colors';
+import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
+import { useThemedColors } from '../src/hooks/useThemedColors';
 import AnimatedSplashScreen from '../src/components/animation/AnimatedSplashScreen';
 import * as SplashScreen from 'expo-splash-screen';
 
@@ -13,6 +14,8 @@ SplashScreen.preventAutoHideAsync();
 
 function RootLayoutNav() {
   const { isAuthenticated, isLoading } = useAuth();
+  const { isDark } = useTheme();
+  const colors = useThemedColors();
   const segments = useSegments();
   const router = useRouter();
 
@@ -32,8 +35,18 @@ function RootLayoutNav() {
 
   return (
     <>
-      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
-      <Stack screenOptions={{ headerShown: false }}>
+      <StatusBar 
+        barStyle={isDark ? 'light-content' : 'dark-content'} 
+        backgroundColor={colors.primary} 
+      />
+      <Stack 
+        screenOptions={{ 
+          headerShown: false,
+          contentStyle: {
+            backgroundColor: colors.background,
+          },
+        }}
+      >
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
@@ -42,15 +55,49 @@ function RootLayoutNav() {
             headerShown: true,
             title: 'Settings',
             headerStyle: {
-              backgroundColor: COLORS.background,
+              backgroundColor: colors.white,
             },
-            headerTintColor: COLORS.text,
+            headerTintColor: colors.text,
+            headerShadowVisible: false,
+          }}
+        />
+        <Stack.Screen 
+          name="privacy/index"
+          options={{
+            headerShown: true,
+            title: 'Privacy Policy',
+            headerStyle: {
+              backgroundColor: colors.white,
+            },
+            headerTintColor: colors.text,
+            headerShadowVisible: false,
+          }}
+        />
+        <Stack.Screen 
+          name="terms/index"
+          options={{
+            headerShown: true,
+            title: 'Terms of Service',
+            headerStyle: {
+              backgroundColor: colors.white,
+            },
+            headerTintColor: colors.text,
+            headerShadowVisible: false,
           }}
         />
         <Stack.Screen name="+not-found" />
       </Stack>
       <Toast />
     </>
+  );
+}
+
+// Wrapper component that provides theme context to RootLayoutNav
+function ThemedRootLayoutNav() {
+  return (
+    <ThemeProvider>
+      <RootLayoutNav />
+    </ThemeProvider>
   );
 }
 
@@ -88,10 +135,10 @@ export default function RootLayout() {
     return <AnimatedSplashScreen onComplete={handleAnimationComplete} />;
   }
 
-  // Main app content
+  // Main app content with both AuthProvider and ThemeProvider
   return (
     <AuthProvider>
-      <RootLayoutNav />
+      <ThemedRootLayoutNav />
     </AuthProvider>
   );
 }
