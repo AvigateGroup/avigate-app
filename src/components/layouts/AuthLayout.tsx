@@ -1,5 +1,4 @@
 // src/components/layouts/AuthLayout.tsx
-
 import React, { ReactNode } from 'react';
 import {
   View,
@@ -9,7 +8,7 @@ import {
   SafeAreaView,
   Image,
 } from 'react-native';
-import { COLORS } from '@/constants/colors';
+import { useThemedColors } from '@/hooks/useThemedColors';
 import { SPACING, getLogoSize } from '@/utils/responsive';
 
 interface AuthLayoutProps {
@@ -18,10 +17,11 @@ interface AuthLayoutProps {
 }
 
 export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = true }) => {
+  const colors = useThemedColors(); // ← Add this
   const logoSize = getLogoSize();
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={[styles.safeArea, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
@@ -47,7 +47,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = tru
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    // backgroundColor removed - now dynamic
   },
   container: {
     flex: 1,
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    marginTop: SPACING.lg, // Reduced from xxxl (40) to lg (20)
-    marginBottom: SPACING.lg, // Reduced from xxl (32) to lg (20)
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.lg,
   },
   logo: {
     // Dynamic width and height set via inline style
