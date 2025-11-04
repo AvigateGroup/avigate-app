@@ -3,22 +3,23 @@
 import { Tabs } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { Platform } from 'react-native';
-import { COLORS } from '../../src/constants/colors';
+import { useThemedColors } from '../../src/hooks/useThemedColors';
 
 export default function TabLayout() {
+  const colors = useThemedColors();
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.textMuted,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
         headerShown: false,
         tabBarStyle: {
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          backgroundColor: COLORS.white,
-          borderTopColor: COLORS.border,
+          backgroundColor: colors.white,
+          borderTopColor: colors.border,
           borderTopWidth: 0.5,
           height: Platform.OS === 'ios' ? 85 : 65,
           paddingBottom: Platform.OS === 'ios' ? 25 : 8,
@@ -67,19 +68,6 @@ export default function TabLayout() {
         }}
       />
 
-      {/* HIDE ALL OTHER SCREENS - DO NOT SHOW AS TABS */}
-      <Tabs.Screen
-        name="explore"
-        options={{
-          href: null, // Completely hide from tabs
-        }}
-      />
-      <Tabs.Screen
-        name="trips"
-        options={{
-          href: null, // Completely hide from tabs
-        }}
-      />
     </Tabs>
   );
 }
