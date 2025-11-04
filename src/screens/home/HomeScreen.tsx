@@ -8,6 +8,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { homeStyles, platformStyles } from '@/styles';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface LocationType {
   latitude: number;
@@ -16,8 +18,11 @@ interface LocationType {
   longitudeDelta: number;
 }
 
+type NavigationProp = NativeStackNavigationProp<any>;
+
 export const HomeScreen = () => {
   const { user } = useAuth();
+  const navigation = useNavigation<NavigationProp>();
   const mapRef = useRef<MapView>(null);
 
   const [location, setLocation] = useState<LocationType | null>(null);
@@ -150,6 +155,20 @@ export const HomeScreen = () => {
     await getCurrentLocation();
   };
 
+  const handleSearchPress = () => {
+    // Navigate to search screen
+    navigation.navigate('SearchDestination');
+  };
+
+  const handleMenuPress = () => {
+    // TODO: Open drawer or menu
+    Alert.alert('Menu', 'Menu functionality coming soon!', [
+      { text: 'Profile', onPress: () => navigation.navigate('Profile') },
+      { text: 'Settings', onPress: () => {} },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
+  };
+
   if (loading) {
     return (
       <View style={homeStyles.loadingContainer}>
@@ -161,12 +180,19 @@ export const HomeScreen = () => {
 
   return (
     <View style={homeStyles.container}>
-      {/* Map - PROVIDER_GOOGLE removed for Expo Go compatibility */}
+      {/* Hamburger Menu Button */}
+      <TouchableOpacity
+        style={homeStyles.menuButton}
+        onPress={handleMenuPress}
+        activeOpacity={0.7}
+      >
+        <Icon name="menu" size={28} color={COLORS.text} />
+      </TouchableOpacity>
+
+      {/* Map */}
       {location && (
         <MapView
           ref={mapRef}
-          // Note: PROVIDER_GOOGLE is removed for Expo Go compatibility
-          // Add it back only if you build a custom development build
           style={homeStyles.map}
           initialRegion={location}
           showsUserLocation
@@ -192,21 +218,7 @@ export const HomeScreen = () => {
         </MapView>
       )}
 
-      {/* Location Info Card */}
-      <View style={homeStyles.infoCard}>
-        <View style={homeStyles.infoHeader}>
-          <Icon name="location" size={24} color={COLORS.primary} />
-          <Text style={homeStyles.infoTitle}>Your Location</Text>
-        </View>
-        <Text style={homeStyles.infoAddress}>{address}</Text>
-        {location && (
-          <Text style={[homeStyles.infoCoordinates, platformStyles.monospaceText]}>
-            {location.latitude.toFixed(6)}, {location.longitude.toFixed(6)}
-          </Text>
-        )}
-      </View>
-
-      {/* Action Buttons */}
+      {/* Action Buttons - Repositioned */}
       <View style={homeStyles.actionButtons}>
         {/* Center on User Button */}
         <TouchableOpacity
@@ -227,9 +239,16 @@ export const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Welcome Banner */}
-      <View style={homeStyles.welcomeBanner}>
-        <Text style={homeStyles.welcomeText}>Welcome back, {user?.firstName}! 👋</Text>
+      {/* Bottom Section - "Where to?" Search Field */}
+      <View style={homeStyles.bottomSection}>
+        <TouchableOpacity
+          style={homeStyles.searchContainer}
+          onPress={handleSearchPress}
+          activeOpacity={0.7}
+        >
+          <Icon name="search" size={24} color={COLORS.text} />
+          <Text style={homeStyles.searchPlaceholder}>Where to?</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
