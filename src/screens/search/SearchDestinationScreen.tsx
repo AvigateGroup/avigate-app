@@ -67,7 +67,7 @@ export const SearchDestinationScreen = () => {
       // TODO: Implement actual location search API
       // For now, just filter recent searches
       const filtered = RECENT_SEARCHES.filter(
-        (item) =>
+        item =>
           item.name.toLowerCase().includes(text.toLowerCase()) ||
           item.address.toLowerCase().includes(text.toLowerCase()),
       );
@@ -138,9 +138,7 @@ export const SearchDestinationScreen = () => {
         <View style={styles.emptyState}>
           <Icon name="search" size={48} color={COLORS.textMuted} />
           <Text style={styles.emptyText}>No results found</Text>
-          <Text style={styles.emptySubtext}>
-            Try searching for a different location
-          </Text>
+          <Text style={styles.emptySubtext}>Try searching for a different location</Text>
         </View>
       );
     }
@@ -178,7 +176,7 @@ export const SearchDestinationScreen = () => {
             <Text style={styles.sectionTitle}>Saved Places</Text>
             <FlatList
               data={SAVED_PLACES}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
               renderItem={renderLocationItem}
               scrollEnabled={false}
             />
@@ -189,7 +187,7 @@ export const SearchDestinationScreen = () => {
             <Text style={styles.sectionTitle}>Recent</Text>
             <FlatList
               data={RECENT_SEARCHES}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
               renderItem={renderLocationItem}
               scrollEnabled={false}
             />
@@ -199,7 +197,7 @@ export const SearchDestinationScreen = () => {
         // Show search results
         <FlatList
           data={suggestions}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           renderItem={renderLocationItem}
           ListEmptyComponent={renderEmptyState}
           keyboardShouldPersistTaps="handled"

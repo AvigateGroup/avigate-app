@@ -35,12 +35,12 @@ function RootLayoutNav() {
 
   return (
     <>
-      <StatusBar 
-        barStyle={isDark ? 'light-content' : 'dark-content'} 
-        backgroundColor={colors.primary} 
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={colors.primary}
       />
-      <Stack 
-        screenOptions={{ 
+      <Stack
+        screenOptions={{
           headerShown: false,
           contentStyle: {
             backgroundColor: colors.background,
@@ -61,7 +61,7 @@ function RootLayoutNav() {
             headerShadowVisible: false,
           }}
         />
-        <Stack.Screen 
+        <Stack.Screen
           name="privacy/index"
           options={{
             headerShown: true,
@@ -73,7 +73,7 @@ function RootLayoutNav() {
             headerShadowVisible: false,
           }}
         />
-        <Stack.Screen 
+        <Stack.Screen
           name="terms/index"
           options={{
             headerShown: true,

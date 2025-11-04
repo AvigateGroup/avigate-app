@@ -23,12 +23,10 @@ interface ThemeProviderProps {
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>('system');
-  const [systemTheme, setSystemTheme] = useState<ColorSchemeName>(
-    Appearance.getColorScheme()
-  );
+  const [systemTheme, setSystemTheme] = useState<ColorSchemeName>(Appearance.getColorScheme());
 
   // Determine actual theme based on mode
-  const theme = themeMode === 'system' ? (systemTheme || 'light') : themeMode;
+  const theme = themeMode === 'system' ? systemTheme || 'light' : themeMode;
   const isDark = theme === 'dark';
 
   // Load saved theme preference

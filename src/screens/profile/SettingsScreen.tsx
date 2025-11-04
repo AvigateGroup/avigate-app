@@ -10,7 +10,7 @@ import { profileStyles, commonStyles } from '@/styles';
 export const SettingsScreen = () => {
   const { themeMode, setThemeMode, isDark } = useTheme();
   const colors = useThemedColors();
-  
+
   const [notifications, setNotifications] = useState(true);
   const [locationSharing, setLocationSharing] = useState(true);
 
@@ -52,7 +52,7 @@ export const SettingsScreen = () => {
           type: 'switch',
           value: themeMode === 'system',
           onValueChange: (value: boolean) => {
-            setThemeMode(value ? 'system' : (isDark ? 'dark' : 'light'));
+            setThemeMode(value ? 'system' : isDark ? 'dark' : 'light');
           },
         },
       ],
@@ -141,23 +141,17 @@ export const SettingsScreen = () => {
   const renderSettingItem = (item: any, index: number) => {
     if (item.type === 'switch') {
       return (
-        <View 
-          key={index} 
-          style={[
-            profileStyles.settingItem, 
-            { borderBottomColor: colors.border }
-          ]}
-        >
-          <View style={[
-            profileStyles.settingIconContainer,
-            { backgroundColor: colors.backgroundLight }
-          ]}>
+        <View key={index} style={[profileStyles.settingItem, { borderBottomColor: colors.border }]}>
+          <View
+            style={[
+              profileStyles.settingIconContainer,
+              { backgroundColor: colors.backgroundLight },
+            ]}
+          >
             <Icon name={item.icon} size={24} color={colors.primary} />
           </View>
           <View style={profileStyles.settingContent}>
-            <Text style={[profileStyles.settingTitle, { color: colors.text }]}>
-              {item.title}
-            </Text>
+            <Text style={[profileStyles.settingTitle, { color: colors.text }]}>{item.title}</Text>
             <Text style={[profileStyles.settingSubtitle, { color: colors.textMuted }]}>
               {item.subtitle}
             </Text>
@@ -175,23 +169,17 @@ export const SettingsScreen = () => {
     return (
       <TouchableOpacity
         key={index}
-        style={[
-          profileStyles.settingItem,
-          { borderBottomColor: colors.border }
-        ]}
+        style={[profileStyles.settingItem, { borderBottomColor: colors.border }]}
         onPress={item.onPress}
         activeOpacity={0.7}
       >
-        <View style={[
-          profileStyles.settingIconContainer,
-          { backgroundColor: colors.backgroundLight }
-        ]}>
+        <View
+          style={[profileStyles.settingIconContainer, { backgroundColor: colors.backgroundLight }]}
+        >
           <Icon name={item.icon} size={24} color={colors.primary} />
         </View>
         <View style={profileStyles.settingContent}>
-          <Text style={[profileStyles.settingTitle, { color: colors.text }]}>
-            {item.title}
-          </Text>
+          <Text style={[profileStyles.settingTitle, { color: colors.text }]}>{item.title}</Text>
           <Text style={[profileStyles.settingSubtitle, { color: colors.textMuted }]}>
             {item.subtitle}
           </Text>
@@ -202,19 +190,14 @@ export const SettingsScreen = () => {
   };
 
   return (
-    <ScrollView 
-      style={[profileStyles.container, { backgroundColor: colors.background }]} 
+    <ScrollView
+      style={[profileStyles.container, { backgroundColor: colors.background }]}
       showsVerticalScrollIndicator={false}
     >
       {settingsSections.map((section, sectionIndex) => (
         <View key={sectionIndex} style={profileStyles.section}>
-          <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>
-            {section.title}
-          </Text>
-          <View style={[
-            profileStyles.sectionContent,
-            { backgroundColor: colors.white }
-          ]}>
+          <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>{section.title}</Text>
+          <View style={[profileStyles.sectionContent, { backgroundColor: colors.white }]}>
             {section.items.map((item, itemIndex) => renderSettingItem(item, itemIndex))}
           </View>
         </View>
@@ -222,16 +205,14 @@ export const SettingsScreen = () => {
 
       {/* Delete Account */}
       <View style={profileStyles.dangerZone}>
-        <Text style={[profileStyles.dangerZoneTitle, { color: colors.error }]}>
-          Danger Zone
-        </Text>
+        <Text style={[profileStyles.dangerZoneTitle, { color: colors.error }]}>Danger Zone</Text>
         <TouchableOpacity
           style={[
             profileStyles.deleteButton,
-            { 
+            {
               backgroundColor: colors.white,
-              borderColor: colors.error 
-            }
+              borderColor: colors.error,
+            },
           ]}
           onPress={() => {
             Alert.alert(
@@ -257,9 +238,7 @@ export const SettingsScreen = () => {
       </View>
 
       <View style={profileStyles.footer}>
-        <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>
-          Avigate v1.0.0
-        </Text>
+        <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>Avigate v1.0.0</Text>
       </View>
     </ScrollView>
   );

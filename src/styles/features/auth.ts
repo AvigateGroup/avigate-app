@@ -15,13 +15,13 @@ import {
  * Authentication feature-specific styles
  */
 export const authFeatureStyles = StyleSheet.create({
-  // MAIN CONTENT WRAPPER 
+  // MAIN CONTENT WRAPPER
   authContent: {
     flex: 1,
     justifyContent: 'space-between',
   },
 
-  // WELCOME SECTION 
+  // WELCOME SECTION
   welcomeTitle: {
     fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
@@ -40,7 +40,7 @@ export const authFeatureStyles = StyleSheet.create({
     paddingHorizontal: SPACING.base,
   },
 
-  // SOCIAL BUTTONS 
+  // SOCIAL BUTTONS
   socialButtonsContainer: {
     marginBottom: SPACING.lg,
   },
@@ -50,7 +50,7 @@ export const authFeatureStyles = StyleSheet.create({
     height: moderateScale(52),
   },
 
-  // MULTI-STEP REGISTRATION 
+  // MULTI-STEP REGISTRATION
   progressContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -89,7 +89,7 @@ export const authFeatureStyles = StyleSheet.create({
     lineHeight: LINE_HEIGHTS.sm,
   },
 
-  // NAVIGATION BUTTONS 
+  // NAVIGATION BUTTONS
   navigationButtons: {
     flexDirection: 'row',
     gap: SPACING.md,
@@ -168,7 +168,7 @@ export const authFeatureStyles = StyleSheet.create({
     lineHeight: LINE_HEIGHTS.xs,
   },
 
-  // GOOGLE AUTH SPECIFIC 
+  // GOOGLE AUTH SPECIFIC
   googleIconContainer: {
     alignItems: 'center',
     marginBottom: SPACING.sm,

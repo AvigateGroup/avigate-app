@@ -1,15 +1,7 @@
 // src/screens/share/ShareLocationScreen.tsx
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Switch,
-  Alert,
-} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
@@ -48,11 +40,9 @@ export const ShareLocationScreen = () => {
   };
 
   const handleToggleContact = (contactId: string) => {
-    setSharedContacts((prev) =>
-      prev.map((contact) =>
-        contact.id === contactId
-          ? { ...contact, isActive: !contact.isActive }
-          : contact,
+    setSharedContacts(prev =>
+      prev.map(contact =>
+        contact.id === contactId ? { ...contact, isActive: !contact.isActive } : contact,
       ),
     );
   };
@@ -62,10 +52,7 @@ export const ShareLocationScreen = () => {
   };
 
   const handleShareLink = () => {
-    Alert.alert(
-      'Share Location Link',
-      'Generate a temporary link to share your location',
-    );
+    Alert.alert('Share Location Link', 'Generate a temporary link to share your location');
   };
 
   return (
@@ -76,9 +63,7 @@ export const ShareLocationScreen = () => {
           <Icon name="location" size={40} color={COLORS.primary} />
         </View>
         <Text style={styles.headerTitle}>Share Your Location</Text>
-        <Text style={styles.headerSubtitle}>
-          Let your friends and family know where you are
-        </Text>
+        <Text style={styles.headerSubtitle}>Let your friends and family know where you are</Text>
       </View>
 
       {/* Master Toggle */}
@@ -127,7 +112,7 @@ export const ShareLocationScreen = () => {
       {isSharing && (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Shared With</Text>
-          {sharedContacts.map((contact) => (
+          {sharedContacts.map(contact => (
             <View key={contact.id} style={styles.contactCard}>
               <View style={styles.contactInfo}>
                 <View style={styles.contactAvatar}>
@@ -153,8 +138,8 @@ export const ShareLocationScreen = () => {
       <View style={styles.infoCard}>
         <Icon name="information-circle" size={24} color={COLORS.info} />
         <Text style={styles.infoText}>
-          Your location will only be shared with people you choose. You can stop
-          sharing at any time.
+          Your location will only be shared with people you choose. You can stop sharing at any
+          time.
         </Text>
       </View>
     </ScrollView>

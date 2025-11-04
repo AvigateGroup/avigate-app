@@ -181,11 +181,7 @@ export const HomeScreen = () => {
   return (
     <View style={homeStyles.container}>
       {/* Hamburger Menu Button */}
-      <TouchableOpacity
-        style={homeStyles.menuButton}
-        onPress={handleMenuPress}
-        activeOpacity={0.7}
-      >
+      <TouchableOpacity style={homeStyles.menuButton} onPress={handleMenuPress} activeOpacity={0.7}>
         <Icon name="menu" size={28} color={COLORS.text} />
       </TouchableOpacity>
 

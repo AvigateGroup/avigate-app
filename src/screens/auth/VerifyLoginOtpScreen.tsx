@@ -118,10 +118,8 @@ export const VerifyLoginOTPScreen: React.FC = () => {
           </View>
 
           <Text style={authFeatureStyles.titleCentered}>Verify Your Login</Text>
-          
-          <Text style={authFeatureStyles.subtitleCentered}>
-            Enter the 6-digit code sent to
-          </Text>
+
+          <Text style={authFeatureStyles.subtitleCentered}>Enter the 6-digit code sent to</Text>
 
           {/* ENHANCED EMAIL DISPLAY WITH CONTAINER */}
           <View style={authFeatureStyles.emailContainer}>
@@ -151,13 +149,11 @@ export const VerifyLoginOTPScreen: React.FC = () => {
                 </Text>
               </TouchableOpacity>
             ) : (
-              <Text style={authFeatureStyles.countdownText}>
-                Resend code in {countdown}s
-              </Text>
+              <Text style={authFeatureStyles.countdownText}>Resend code in {countdown}s</Text>
             )}
           </View>
 
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={() => router.back()}
             style={authFeatureStyles.changeEmailButton}
           >

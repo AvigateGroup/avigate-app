@@ -61,7 +61,14 @@ export const LoginScreen: React.FC = () => {
 
       if (response.success) {
         // Check what type of response we got
-        const { accessToken, refreshToken, user, requiresOtpVerification, requiresVerification, requiresPhoneNumber } = response.data;
+        const {
+          accessToken,
+          refreshToken,
+          user,
+          requiresOtpVerification,
+          requiresVerification,
+          requiresPhoneNumber,
+        } = response.data;
 
         // Case 1: OTP verification required (most common for your flow)
         if (requiresOtpVerification) {
@@ -127,7 +134,7 @@ export const LoginScreen: React.FC = () => {
       }
     } catch (error: any) {
       const errorMessage = handleApiError(error);
-      
+
       Toast.show({
         type: 'error',
         text1: 'Login Failed',
@@ -135,8 +142,10 @@ export const LoginScreen: React.FC = () => {
       });
 
       // If error mentions rate limit or OTP already sent, navigate to OTP screen
-      if (errorMessage.toLowerCase().includes('verification code') || 
-          errorMessage.toLowerCase().includes('check your email')) {
+      if (
+        errorMessage.toLowerCase().includes('verification code') ||
+        errorMessage.toLowerCase().includes('check your email')
+      ) {
         setTimeout(() => {
           router.push({
             pathname: '/(auth)/verify-login-otp',
