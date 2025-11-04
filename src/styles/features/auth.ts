@@ -19,8 +19,6 @@ export const authFeatureStyles = StyleSheet.create({
   // ========== MAIN CONTENT WRAPPER ==========
   authContent: {
     flex: 1,
-    // ❌ REMOVED: justifyContent: 'space-between' - This was causing the spread
-    // ✅ Content will now flow naturally with consistent spacing
   },
 
   // ========== WELCOME SECTION ==========
