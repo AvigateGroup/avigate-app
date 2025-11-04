@@ -3,10 +3,6 @@
 import { StyleSheet, Platform } from 'react-native';
 import { COLORS } from '../../constants/colors';
 
-/**
- * Home screen specific styles
- * Includes map-related styles and location-based UI elements
- */
 export const homeFeatureStyles = StyleSheet.create({
   // ========== MAP STYLES ==========
   map: {
@@ -52,11 +48,11 @@ export const homeFeatureStyles = StyleSheet.create({
     zIndex: 10,
   },
 
-  // ========== ACTION BUTTONS (REPOSITIONED) ==========
+  // ========== ACTION BUTTONS - MOVED MUCH HIGHER! ==========
   actionButtons: {
     position: 'absolute',
     right: 16,
-    bottom: 180,
+    bottom: 260, // MOVED WAY UP! (was 200, now 260)
     gap: 12,
     zIndex: 5,
   },
@@ -75,18 +71,16 @@ export const homeFeatureStyles = StyleSheet.create({
     elevation: 8,
   },
 
-  // ========== BOTTOM SECTION ==========
+  // ========== BOTTOM SECTION - RIGHT ABOVE TABS ==========
   bottomSection: {
     position: 'absolute',
-    bottom: 0,
+    bottom: Platform.OS === 'ios' ? 85 : 65,
     left: 0,
     right: 0,
     backgroundColor: COLORS.textWhite,
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: Platform.OS === 'ios' ? 90 : 70,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
@@ -94,15 +88,14 @@ export const homeFeatureStyles = StyleSheet.create({
     elevation: 10,
   },
 
-  // ========== SEARCH CONTAINER (WHERE TO?) ==========
+  // ========== SEARCH CONTAINER - DARK LIKE BOLT ==========
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.backgroundLight,
+    backgroundColor: '#E8E8E8',
     paddingHorizontal: 16,
     paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 8,
+    borderRadius: 8,
   },
 
   searchPlaceholder: {
@@ -112,42 +105,34 @@ export const homeFeatureStyles = StyleSheet.create({
     fontWeight: '500',
   },
 
-  // ========== DEPRECATED STYLES (KEPT FOR BACKWARD COMPATIBILITY) ==========
-  // These styles are no longer used but kept to prevent breaking changes
-  welcomeBanner: {
-    display: 'none', // Hidden - no longer used
+  // ========== LOADING ==========
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: COLORS.background,
   },
 
-  welcomeText: {
-    display: 'none', // Hidden - no longer used
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: COLORS.textMuted,
   },
 
-  infoCard: {
-    display: 'none', // Hidden - replaced by bottom section
+  // ========== CONTAINER ==========
+  container: {
+    flex: 1,
+    backgroundColor: COLORS.background,
   },
 
-  infoHeader: {
-    display: 'none',
-  },
-
-  infoTitle: {
-    display: 'none',
-  },
-
-  infoAddress: {
-    display: 'none',
-  },
-
-  infoCoordinates: {
-    display: 'none',
-  },
-
-  // ========== SEARCH BAR (OLD - DEPRECATED) ==========
-  searchBar: {
-    display: 'none', // Hidden - replaced by searchContainer
-  },
-
-  searchInput: {
-    display: 'none',
-  },
+  // ========== DEPRECATED ==========
+  welcomeBanner: { display: 'none' },
+  welcomeText: { display: 'none' },
+  infoCard: { display: 'none' },
+  infoHeader: { display: 'none' },
+  infoTitle: { display: 'none' },
+  infoAddress: { display: 'none' },
+  infoCoordinates: { display: 'none' },
+  searchBar: { display: 'none' },
+  searchInput: { display: 'none' },
 });
