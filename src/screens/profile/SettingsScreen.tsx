@@ -5,7 +5,7 @@ import { View, Text, ScrollView, TouchableOpacity, Switch, Alert } from 'react-n
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
-import { profileStyles, commonStyles } from '@/styles';
+import { profileStyles } from '@/styles';
 
 export const SettingsScreen = () => {
   const { themeMode, setThemeMode, isDark } = useTheme();
