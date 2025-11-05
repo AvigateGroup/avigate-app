@@ -78,7 +78,11 @@ export const ProfileScreen: React.FC = () => {
       <View style={[profileStyles.header, { backgroundColor: colors.white }]}>
         <View style={profileStyles.avatarContainer}>
           {user?.profilePicture ? (
-            <Image source={{ uri: user.profilePicture }} style={profileStyles.avatar} />
+            <Image 
+              source={{ uri: user.profilePicture }} 
+              style={profileStyles.avatar}
+              resizeMode="cover"
+            />
           ) : (
             <View style={[profileStyles.avatarPlaceholder, { backgroundColor: colors.primary }]}>
               <Text style={profileStyles.avatarText}>
