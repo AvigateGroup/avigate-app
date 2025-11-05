@@ -41,18 +41,8 @@ export const SettingsScreen = () => {
           type: 'switch',
           value: isDark,
           onValueChange: (value: boolean) => {
-            // Toggle between light and dark (not system)
+            // Toggle between light and dark
             setThemeMode(value ? 'dark' : 'light');
-          },
-        },
-        {
-          icon: 'phone-portrait-outline',
-          title: 'Use System Theme',
-          subtitle: 'Follow device theme settings',
-          type: 'switch',
-          value: themeMode === 'system',
-          onValueChange: (value: boolean) => {
-            setThemeMode(value ? 'system' : isDark ? 'dark' : 'light');
           },
         },
       ],
