@@ -14,9 +14,7 @@ import { validateEmail, validatePassword, validatePhoneNumber } from '@/utils/va
 import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { RegisterDto, UserSex } from '@/types/auth.types';
 import {
-  containerStyles,
   typographyStyles,
-  buttonStyles,
   formStyles,
   layoutStyles,
   spacingStyles,
