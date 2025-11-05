@@ -169,9 +169,11 @@ export const HomeScreen = () => {
 
   if (loading) {
     return (
-      <View style={homeStyles.loadingContainer}>
+      <View style={[homeStyles.loadingContainer, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={homeStyles.loadingText}>Getting your location...</Text>
+        <Text style={[homeStyles.loadingText, { color: colors.text }]}>
+          Getting your location...
+        </Text>
       </View>
     );
   }
@@ -180,7 +182,7 @@ export const HomeScreen = () => {
     <View style={homeStyles.container}>
       {/* Hamburger Menu Button */}
       <TouchableOpacity
-        style={homeStyles.menuButton}
+        style={[homeStyles.menuButton, { backgroundColor: colors.white }]}
         onPress={handleMenuPress}
         activeOpacity={0.7}
       >
@@ -208,7 +210,7 @@ export const HomeScreen = () => {
             description={address}
           >
             <View style={homeStyles.markerContainer}>
-              <View style={homeStyles.marker}>
+              <View style={[homeStyles.marker, { backgroundColor: colors.primary }]}>
                 <Icon name="person" size={20} color={colors.textWhite} />
               </View>
             </View>
@@ -220,7 +222,7 @@ export const HomeScreen = () => {
       <View style={homeStyles.actionButtons}>
         {/* Center on User Button */}
         <TouchableOpacity
-          style={homeStyles.actionButton}
+          style={[homeStyles.actionButton, { backgroundColor: colors.primary }]}
           onPress={centerMapOnUser}
           activeOpacity={0.7}
         >
@@ -229,7 +231,7 @@ export const HomeScreen = () => {
 
         {/* Refresh Location Button */}
         <TouchableOpacity
-          style={homeStyles.actionButton}
+          style={[homeStyles.actionButton, { backgroundColor: colors.primary }]}
           onPress={refreshLocation}
           activeOpacity={0.7}
         >
@@ -240,12 +242,14 @@ export const HomeScreen = () => {
       {/* Bottom Section - "Where to?" Search Field */}
       <View style={homeStyles.bottomSection}>
         <TouchableOpacity
-          style={homeStyles.searchContainer}
+          style={[homeStyles.searchContainer, { backgroundColor: colors.white }]}
           onPress={handleSearchPress}
           activeOpacity={0.7}
         >
           <Icon name="search" size={24} color={colors.text} />
-          <Text style={homeStyles.searchPlaceholder}>Where to?</Text>
+          <Text style={[homeStyles.searchPlaceholder, { color: colors.textMuted }]}>
+            Where to?
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

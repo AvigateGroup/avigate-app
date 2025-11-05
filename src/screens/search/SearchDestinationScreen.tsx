@@ -110,16 +110,16 @@ export const SearchDestinationScreen = () => {
 
     return (
       <TouchableOpacity
-        style={searchStyles.suggestionItem}
+        style={[searchStyles.suggestionItem, { backgroundColor: colors.white }]}
         onPress={() => handleSelectLocation(item)}
         activeOpacity={0.7}
       >
-        <View style={searchStyles.iconContainer}>
+        <View style={[searchStyles.iconContainer, { backgroundColor: colors.backgroundLight }]}>
           <Icon name={iconName} size={24} color={iconColor} />
         </View>
         <View style={searchStyles.suggestionText}>
-          <Text style={searchStyles.suggestionName}>{item.name}</Text>
-          <Text style={searchStyles.suggestionAddress} numberOfLines={1}>
+          <Text style={[searchStyles.suggestionName, { color: colors.text }]}>{item.name}</Text>
+          <Text style={[searchStyles.suggestionAddress, { color: colors.textMuted }]} numberOfLines={1}>
             {item.address}
           </Text>
         </View>
@@ -132,7 +132,7 @@ export const SearchDestinationScreen = () => {
     if (isSearching) {
       return (
         <View style={searchStyles.emptyState}>
-          <Text style={searchStyles.emptyText}>Searching...</Text>
+          <Text style={[searchStyles.emptyText, { color: colors.text }]}>Searching...</Text>
         </View>
       );
     }
@@ -141,8 +141,8 @@ export const SearchDestinationScreen = () => {
       return (
         <View style={searchStyles.emptyState}>
           <Icon name="search" size={48} color={colors.textMuted} />
-          <Text style={searchStyles.emptyText}>No results found</Text>
-          <Text style={searchStyles.emptySubtext}>
+          <Text style={[searchStyles.emptyText, { color: colors.text }]}>No results found</Text>
+          <Text style={[searchStyles.emptySubtext, { color: colors.textMuted }]}>
             Try searching for a different location
           </Text>
         </View>
@@ -153,20 +153,20 @@ export const SearchDestinationScreen = () => {
   };
 
   return (
-    <SafeAreaView style={searchStyles.container}>
+    <SafeAreaView style={[searchStyles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={searchStyles.header}>
+      <View style={[searchStyles.header, { backgroundColor: colors.white, borderBottomColor: colors.border }]}>
         <TouchableOpacity onPress={handleBack} style={searchStyles.backButton}>
           <Icon name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={searchStyles.headerTitle}>Where to?</Text>
+        <Text style={[searchStyles.headerTitle, { color: colors.text }]}>Where to?</Text>
       </View>
 
       {/* Search Input */}
-      <View style={searchStyles.searchContainer}>
+      <View style={[searchStyles.searchContainer, { backgroundColor: colors.white, borderBottomColor: colors.border }]}>
         <Icon name="search" size={20} color={colors.textMuted} />
         <TextInput
-          style={searchStyles.searchInput}
+          style={[searchStyles.searchInput, { color: colors.text }]}
           placeholder="Search for a destination"
           placeholderTextColor={colors.textMuted}
           value={searchQuery}
@@ -187,7 +187,7 @@ export const SearchDestinationScreen = () => {
         <View style={searchStyles.content}>
           {/* Saved Places */}
           <View style={searchStyles.section}>
-            <Text style={searchStyles.sectionTitle}>Saved Places</Text>
+            <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>Saved Places</Text>
             <FlatList
               data={SAVED_PLACES}
               keyExtractor={(item) => item.id}
@@ -198,7 +198,7 @@ export const SearchDestinationScreen = () => {
 
           {/* Recent Searches */}
           <View style={searchStyles.section}>
-            <Text style={searchStyles.sectionTitle}>Recent</Text>
+            <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>Recent</Text>
             <FlatList
               data={RECENT_SEARCHES}
               keyExtractor={(item) => item.id}

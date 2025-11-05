@@ -58,22 +58,24 @@ export const ShareLocationScreen = () => {
   };
 
   return (
-    <ScrollView style={shareStyles.container}>
+    <ScrollView style={[shareStyles.container, { backgroundColor: colors.background }]}>
       {/* Header Section */}
-      <View style={shareStyles.header}>
-        <View style={shareStyles.iconContainer}>
+      <View style={[shareStyles.header, { backgroundColor: colors.white }]}>
+        <View style={[shareStyles.iconContainer, { backgroundColor: colors.primaryLight }]}>
           <Icon name="location" size={40} color={colors.primary} />
         </View>
-        <Text style={shareStyles.headerTitle}>Share Your Location</Text>
-        <Text style={shareStyles.headerSubtitle}>Let your friends and family know where you are</Text>
+        <Text style={[shareStyles.headerTitle, { color: colors.text }]}>Share Your Location</Text>
+        <Text style={[shareStyles.headerSubtitle, { color: colors.textMuted }]}>
+          Let your friends and family know where you are
+        </Text>
       </View>
 
       {/* Master Toggle */}
-      <View style={shareStyles.card}>
+      <View style={[shareStyles.card, { backgroundColor: colors.white }]}>
         <View style={shareStyles.toggleRow}>
           <View style={shareStyles.toggleInfo}>
-            <Text style={shareStyles.toggleTitle}>Location Sharing</Text>
-            <Text style={shareStyles.toggleSubtitle}>
+            <Text style={[shareStyles.toggleTitle, { color: colors.text }]}>Location Sharing</Text>
+            <Text style={[shareStyles.toggleSubtitle, { color: colors.textMuted }]}>
               {isSharing ? 'Currently sharing' : 'Not sharing location'}
             </Text>
           </View>
@@ -88,24 +90,24 @@ export const ShareLocationScreen = () => {
 
       {/* Quick Actions */}
       <View style={shareStyles.section}>
-        <Text style={shareStyles.sectionTitle}>Quick Actions</Text>
+        <Text style={[shareStyles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
         <View style={shareStyles.actionButtons}>
           <TouchableOpacity
-            style={shareStyles.actionButton}
+            style={[shareStyles.actionButton, { backgroundColor: colors.white }]}
             onPress={handleShareLink}
             activeOpacity={0.7}
           >
             <Icon name="link" size={24} color={colors.primary} />
-            <Text style={shareStyles.actionButtonText}>Share Link</Text>
+            <Text style={[shareStyles.actionButtonText, { color: colors.text }]}>Share Link</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={shareStyles.actionButton}
+            style={[shareStyles.actionButton, { backgroundColor: colors.white }]}
             onPress={handleAddContact}
             activeOpacity={0.7}
           >
             <Icon name="person-add" size={24} color={colors.primary} />
-            <Text style={shareStyles.actionButtonText}>Add Contact</Text>
+            <Text style={[shareStyles.actionButtonText, { color: colors.text }]}>Add Contact</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -113,16 +115,16 @@ export const ShareLocationScreen = () => {
       {/* Shared With Section */}
       {isSharing && (
         <View style={shareStyles.section}>
-          <Text style={shareStyles.sectionTitle}>Shared With</Text>
+          <Text style={[shareStyles.sectionTitle, { color: colors.text }]}>Shared With</Text>
           {sharedContacts.map(contact => (
-            <View key={contact.id} style={shareStyles.contactCard}>
+            <View key={contact.id} style={[shareStyles.contactCard, { backgroundColor: colors.white }]}>
               <View style={shareStyles.contactInfo}>
-                <View style={shareStyles.contactAvatar}>
+                <View style={[shareStyles.contactAvatar, { backgroundColor: colors.primaryLight }]}>
                   <Icon name="person" size={24} color={colors.primary} />
                 </View>
                 <View style={shareStyles.contactDetails}>
-                  <Text style={shareStyles.contactName}>{contact.name}</Text>
-                  <Text style={shareStyles.contactPhone}>{contact.phone}</Text>
+                  <Text style={[shareStyles.contactName, { color: colors.text }]}>{contact.name}</Text>
+                  <Text style={[shareStyles.contactPhone, { color: colors.textMuted }]}>{contact.phone}</Text>
                 </View>
               </View>
               <Switch
@@ -137,9 +139,9 @@ export const ShareLocationScreen = () => {
       )}
 
       {/* Info Section */}
-      <View style={shareStyles.infoCard}>
+      <View style={[shareStyles.infoCard, { backgroundColor: colors.infoLight }]}>
         <Icon name="information-circle" size={24} color={colors.info} />
-        <Text style={shareStyles.infoText}>
+        <Text style={[shareStyles.infoText, { color: colors.text }]}>
           Your location will only be shared with people you choose. You can stop sharing at any
           time.
         </Text>
