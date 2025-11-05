@@ -38,9 +38,12 @@ export const validatePassword = (
 };
 
 export const validatePhoneNumber = (phoneNumber: string): boolean => {
-  // Basic validation - adjust based on your requirements
-  const phoneRegex = /^\+?[1-9]\d{9,14}$/;
-  return phoneRegex.test(phoneNumber.replace(/\s/g, ''));
+  // Remove country code and spaces to validate just the phone number
+  const cleanNumber = phoneNumber.replace(/\+\d+/, '').replace(/\s/g, '').trim();
+  
+  // Check if the number is exactly 10 digits
+  const phoneRegex = /^\d{10}$/;
+  return phoneRegex.test(cleanNumber);
 };
 
 export const validateOTP = (otp: string): boolean => {
