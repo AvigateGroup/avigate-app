@@ -1,11 +1,12 @@
 // src/screens/profile/ProfileScreen.tsx
 
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { useUserService } from '@/hooks/useUserService';
 import { getInitials, formatDate } from '@/utils/helpers';
 import { profileStyles } from '@/styles';
 
@@ -13,7 +14,7 @@ export const ProfileScreen: React.FC = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
   const colors = useThemedColors();
-  
+  const { pickAndUploadProfilePicture, isUploadingImage } = useUserService();
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -28,14 +29,29 @@ export const ProfileScreen: React.FC = () => {
     ]);
   };
 
+  const handleEditProfile = () => {
+    router.push('./profile/edit');
+  };
+
+  const handleUploadPicture = () => {
+    Alert.alert('Upload Profile Picture', 'Choose an option', [
+      {
+        text: 'Choose from Library',
+        onPress: pickAndUploadProfilePicture,
+      },
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+    ]);
+  };
+
   const menuItems = [
     {
       icon: 'person-outline',
       title: 'Edit Profile',
       subtitle: 'Update your personal information',
-      onPress: () => {
-        Alert.alert('Coming Soon', 'Edit profile feature will be available soon');
-      },
+      onPress: handleEditProfile,
     },
     {
       icon: 'settings-outline',
@@ -58,6 +74,12 @@ export const ProfileScreen: React.FC = () => {
       onPress: () => {
         Alert.alert('Coming Soon', 'Trip history feature will be available soon');
       },
+    },
+    {
+      icon: 'phone-portrait-outline',
+      title: 'My Devices',
+      subtitle: 'Manage your logged-in devices',
+      onPress: () => router.push('./profile/devices'),
     },
     {
       icon: 'help-circle-outline',
@@ -93,8 +115,14 @@ export const ProfileScreen: React.FC = () => {
           <TouchableOpacity 
             style={[profileStyles.cameraButton, { backgroundColor: colors.primary }]} 
             activeOpacity={0.7}
+            onPress={handleUploadPicture}
+            disabled={isUploadingImage}
           >
-            <Icon name="camera" size={16} color={colors.textWhite} />
+            {isUploadingImage ? (
+              <ActivityIndicator size="small" color={colors.textWhite} />
+            ) : (
+              <Icon name="camera" size={16} color={colors.textWhite} />
+            )}
           </TouchableOpacity>
         </View>
 
