@@ -1,4 +1,4 @@
-//app/_layout.tsx
+// app/_layout.tsx
 import { useEffect, useState, useCallback } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'react-native';
@@ -49,6 +49,8 @@ function RootLayoutNav() {
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        
+        {/* Settings Screen */}
         <Stack.Screen
           name="settings"
           options={{
@@ -61,6 +63,34 @@ function RootLayoutNav() {
             headerShadowVisible: false,
           }}
         />
+        
+        {/* Profile Routes - NEW */}
+        <Stack.Screen
+          name="profile/edit"
+          options={{
+            headerShown: true,
+            title: 'Edit Profile',
+            headerStyle: {
+              backgroundColor: colors.white,
+            },
+            headerTintColor: colors.text,
+            headerShadowVisible: false,
+          }}
+        />
+        <Stack.Screen
+          name="profile/devices"
+          options={{
+            headerShown: true,
+            title: 'My Devices',
+            headerStyle: {
+              backgroundColor: colors.white,
+            },
+            headerTintColor: colors.text,
+            headerShadowVisible: false,
+          }}
+        />
+        
+        {/* Privacy & Terms */}
         <Stack.Screen
           name="privacy/index"
           options={{
@@ -85,8 +115,11 @@ function RootLayoutNav() {
             headerShadowVisible: false,
           }}
         />
+        
         <Stack.Screen name="+not-found" />
       </Stack>
+      
+      {/* Toast Notifications - Already present */}
       <Toast />
     </>
   );
