@@ -244,11 +244,6 @@ export const RegisterScreen: React.FC = () => {
                   ]}
                   onPress={() => updateField('sex', UserSex.MALE)}
                 >
-                  <Icon
-                    name="male"
-                    size={24}
-                    color={formData.sex === UserSex.MALE ? COLORS.textWhite : COLORS.textMuted}
-                  />
                   <Text
                     style={[
                       formStyles.genderButtonText,
@@ -266,11 +261,6 @@ export const RegisterScreen: React.FC = () => {
                   ]}
                   onPress={() => updateField('sex', UserSex.FEMALE)}
                 >
-                  <Icon
-                    name="female"
-                    size={24}
-                    color={formData.sex === UserSex.FEMALE ? COLORS.textWhite : COLORS.textMuted}
-                  />
                   <Text
                     style={[
                       formStyles.genderButtonText,
