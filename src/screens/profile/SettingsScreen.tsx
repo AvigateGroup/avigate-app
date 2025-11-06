@@ -151,7 +151,7 @@ export const SettingsScreen = () => {
           subtitle: 'Reach out to our team',
           type: 'navigation',
           onPress: () =>
-            Alert.alert('Contact Support', 'Email: support@avigate.com\nPhone: +234 800 000 0000'),
+            Alert.alert('Contact Support', 'Email: hello@avigate.com\nPhone: +234 800 000 0000'),
         },
         {
           icon: 'star-outline',
