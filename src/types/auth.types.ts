@@ -102,6 +102,11 @@ export interface UpdateProfileDto {
   language?: string;
 }
 
+export interface DeleteAccountDto {
+  password: string;
+  confirmDelete: string;
+}
+
 export interface AuthResponse {
   success: boolean;
   message: string;
@@ -122,4 +127,36 @@ export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
   data?: T;
+}
+
+export interface UserDevice {
+  id: string;
+  userId: string;
+  fcmToken?: string;
+  deviceFingerprint: string;
+  deviceInfo?: string;
+  deviceType: 'mobile' | 'tablet' | 'desktop' | 'unknown';
+  platform: 'ios' | 'android' | 'web' | 'unknown';
+  appVersion?: string;
+  ipAddress?: string;
+  lastActiveAt: Date;
+  isActive: boolean;
+  metadata?: Record<string, any>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface UserStats {
+  userId: string;
+  email: string;
+  isVerified: boolean;
+  isTestAccount: boolean;
+  memberSince: string;
+  lastLogin: string;
+  reputationScore: number;
+  totalContributions: number;
+  totalDevices: number;
+  activeDevices: number;
+  totalOTPs: number;
+  usedOTPs: number;
 }
