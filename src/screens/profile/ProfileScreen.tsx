@@ -30,7 +30,7 @@ export const ProfileScreen: React.FC = () => {
   };
 
   const handleEditProfile = () => {
-    router.push('./profile/edit');
+    router.push('/profile/edit');
   };
 
   const handleUploadPicture = () => {
@@ -60,14 +60,6 @@ export const ProfileScreen: React.FC = () => {
       onPress: () => router.push('/settings'),
     },
     {
-      icon: 'card-outline',
-      title: 'Payment Methods',
-      subtitle: 'Manage your payment options',
-      onPress: () => {
-        Alert.alert('Coming Soon', 'Payment methods feature will be available soon');
-      },
-    },
-    {
       icon: 'time-outline',
       title: 'Trip History',
       subtitle: 'View your past trips',
@@ -79,7 +71,7 @@ export const ProfileScreen: React.FC = () => {
       icon: 'phone-portrait-outline',
       title: 'My Devices',
       subtitle: 'Manage your logged-in devices',
-      onPress: () => router.push('./profile/devices'),
+      onPress: () => router.push('/profile/devices'),
     },
     {
       icon: 'help-circle-outline',
