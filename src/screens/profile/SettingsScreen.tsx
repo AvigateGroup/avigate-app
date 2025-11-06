@@ -22,7 +22,7 @@ import { profileStyles } from '@/styles';
 
 export const SettingsScreen = () => {
   const router = useRouter();
-  const { themeMode, setThemeMode, isDark } = useTheme();
+  const { setThemeMode, isDark } = useTheme();
   const colors = useThemedColors();
   const { deleteAccount, isLoading } = useUserService();
   const { logout, user } = useAuth();
@@ -113,13 +113,6 @@ export const SettingsScreen = () => {
           subtitle: 'Control your privacy',
           type: 'navigation',
           onPress: () => Alert.alert('Coming Soon', 'Privacy settings coming soon'),
-        },
-        {
-          icon: 'card-outline',
-          title: 'Payment Settings',
-          subtitle: 'Manage payment methods',
-          type: 'navigation',
-          onPress: () => Alert.alert('Coming Soon', 'Payment settings coming soon'),
         },
       ],
     },
