@@ -108,13 +108,6 @@ export const SettingsScreen = () => {
       title: 'Account',
       items: [
         {
-          icon: 'lock-closed-outline',
-          title: 'Change Password',
-          subtitle: 'Update your password',
-          type: 'navigation',
-          onPress: () => Alert.alert('Coming Soon', 'Change password feature coming soon'),
-        },
-        {
           icon: 'shield-checkmark-outline',
           title: 'Privacy Settings',
           subtitle: 'Control your privacy',
