@@ -155,7 +155,7 @@ export const HomeScreen = () => {
 
   const handleSearchPress = () => {
     // Navigate to search modal using Expo Router
-    router.push('/search');
+    router.push('./search/search');
   };
 
   const handleMenuPress = () => {
