@@ -23,7 +23,6 @@ import { validateEmail, validatePhoneNumber } from '@/utils/validation';
 import { profileStyles } from '@/styles';
 import { formStyles, spacingStyles, typographyStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
-import { COLORS } from '@/constants/colors';
 
 export const EditProfileScreen: React.FC = () => {
   const router = useRouter();
