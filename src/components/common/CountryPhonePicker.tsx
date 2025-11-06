@@ -59,6 +59,26 @@ export const CountryPhonePicker: React.FC<CountryPhonePickerProps> = ({
     setSearchQuery('');
   };
 
+  // Get appropriate placeholder based on country
+  const getPlaceholder = () => {
+    if (countryCode === '+234') {
+      return '8012345678';
+    } else if (countryCode === '+1') {
+      return '2025551234';
+    } else if (countryCode === '+44') {
+      return '7400123456';
+    }
+    return 'Phone number';
+  };
+
+  // Get helper text based on country
+  const getHelperText = () => {
+    if (countryCode === '+234') {
+      return 'Enter 10 digits without leading 0 (e.g., 8012345678)';
+    }
+    return null;
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.label}>Phone Number</Text>
@@ -74,7 +94,7 @@ export const CountryPhonePicker: React.FC<CountryPhonePickerProps> = ({
         {/* Phone Number Input */}
         <TextInput
           style={styles.phoneInput}
-          placeholder="9076434333"
+          placeholder={getPlaceholder()}
           value={phoneNumber}
           onChangeText={onPhoneChange}
           keyboardType="phone-pad"
@@ -83,6 +103,12 @@ export const CountryPhonePicker: React.FC<CountryPhonePickerProps> = ({
         />
       </View>
 
+      {/* Helper Text */}
+      {!error && getHelperText() && (
+        <Text style={styles.helperText}>{getHelperText()}</Text>
+      )}
+
+      {/* Error Text */}
       {error && <Text style={styles.errorText}>{error}</Text>}
 
       {/* Country Selection Modal */}
@@ -185,6 +211,11 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     paddingHorizontal: 12,
     paddingVertical: 14,
+  },
+  helperText: {
+    fontSize: 12,
+    color: COLORS.textMuted,
+    marginTop: 4,
   },
   errorText: {
     fontSize: 12,
