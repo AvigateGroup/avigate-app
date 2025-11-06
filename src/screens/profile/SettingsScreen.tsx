@@ -1,18 +1,76 @@
 // src/screens/profile/SettingsScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Switch, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Switch,
+  Alert,
+  Modal,
+} from 'react-native';
+import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { useUserService } from '@/hooks/useUserService';
+import { useAuth } from '@/store/AuthContext';
+import { Input } from '@/components/common/Input';
+import { Button } from '@/components/common/Button';
 import { profileStyles } from '@/styles';
 
 export const SettingsScreen = () => {
+  const router = useRouter();
   const { themeMode, setThemeMode, isDark } = useTheme();
   const colors = useThemedColors();
+  const { deleteAccount, isLoading } = useUserService();
+  const { logout, user } = useAuth();
 
   const [notifications, setNotifications] = useState(true);
   const [locationSharing, setLocationSharing] = useState(true);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+
+  const handleDeleteAccount = async () => {
+    // Check if user is Google OAuth user
+    if (user?.authProvider === 'google') {
+      Alert.alert(
+        'Delete Account',
+        'Are you absolutely sure you want to delete your account? This action cannot be undone.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: async () => {
+              const success = await deleteAccount('');
+              if (success) {
+                await logout();
+                router.replace('/(auth)/login');
+              }
+            },
+          },
+        ],
+      );
+    } else {
+      setShowDeleteModal(true);
+    }
+  };
+
+  const confirmDeleteAccount = async () => {
+    if (!deletePassword.trim()) {
+      Alert.alert('Error', 'Please enter your password');
+      return;
+    }
+
+    const success = await deleteAccount(deletePassword);
+    if (success) {
+      setShowDeleteModal(false);
+      await logout();
+      router.replace('/(auth)/login');
+    }
+  };
 
   const settingsSections = [
     {
@@ -41,7 +99,6 @@ export const SettingsScreen = () => {
           type: 'switch',
           value: isDark,
           onValueChange: (value: boolean) => {
-            // Toggle between light and dark
             setThemeMode(value ? 'dark' : 'light');
           },
         },
@@ -88,14 +145,14 @@ export const SettingsScreen = () => {
           title: 'Terms of Service',
           subtitle: 'Read our terms',
           type: 'navigation',
-          onPress: () => Alert.alert('Coming Soon', 'Terms of service coming soon'),
+          onPress: () => router.push('/terms'),
         },
         {
           icon: 'shield-outline',
           title: 'Privacy Policy',
           subtitle: 'Read our privacy policy',
           type: 'navigation',
-          onPress: () => Alert.alert('Coming Soon', 'Privacy policy coming soon'),
+          onPress: () => router.push('/privacy'),
         },
       ],
     },
@@ -180,56 +237,131 @@ export const SettingsScreen = () => {
   };
 
   return (
-    <ScrollView
-      style={[profileStyles.container, { backgroundColor: colors.background }]}
-      showsVerticalScrollIndicator={false}
-    >
-      {settingsSections.map((section, sectionIndex) => (
-        <View key={sectionIndex} style={profileStyles.section}>
-          <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>{section.title}</Text>
-          <View style={[profileStyles.sectionContent, { backgroundColor: colors.white }]}>
-            {section.items.map((item, itemIndex) => renderSettingItem(item, itemIndex))}
+    <>
+      <ScrollView
+        style={[profileStyles.container, { backgroundColor: colors.background }]}
+        showsVerticalScrollIndicator={false}
+      >
+        {settingsSections.map((section, sectionIndex) => (
+          <View key={sectionIndex} style={profileStyles.section}>
+            <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>{section.title}</Text>
+            <View style={[profileStyles.sectionContent, { backgroundColor: colors.white }]}>
+              {section.items.map((item, itemIndex) => renderSettingItem(item, itemIndex))}
+            </View>
+          </View>
+        ))}
+
+        {/* Danger Zone */}
+        <View style={profileStyles.dangerZone}>
+          <Text style={[profileStyles.dangerZoneTitle, { color: colors.error }]}>Danger Zone</Text>
+          <TouchableOpacity
+            style={[
+              profileStyles.deleteButton,
+              {
+                backgroundColor: colors.white,
+                borderColor: colors.error,
+              },
+            ]}
+            onPress={handleDeleteAccount}
+            activeOpacity={0.7}
+          >
+            <Icon name="trash-outline" size={20} color={colors.error} />
+            <Text style={[profileStyles.deleteButtonText, { color: colors.error }]}>
+              Delete Account
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={profileStyles.footer}>
+          <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>Avigate v1.0.0</Text>
+        </View>
+      </ScrollView>
+
+      {/* Delete Account Modal */}
+      <Modal
+        visible={showDeleteModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowDeleteModal(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 20,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: colors.white,
+              borderRadius: 16,
+              padding: 24,
+              width: '100%',
+              maxWidth: 400,
+            }}
+          >
+            <View style={{ alignItems: 'center', marginBottom: 20 }}>
+              <View
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: 32,
+                  backgroundColor: colors.errorLight,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  marginBottom: 12,
+                }}
+              >
+                <Icon name="warning" size={32} color={colors.error} />
+              </View>
+              <Text style={[profileStyles.name, { color: colors.text, fontSize: 20 }]}>
+                Delete Account
+              </Text>
+              <Text
+                style={[
+                  profileStyles.menuSubtitle,
+                  { color: colors.textMuted, textAlign: 'center', marginTop: 8 },
+                ]}
+              >
+                This action cannot be undone. All your data will be permanently deleted.
+              </Text>
+            </View>
+
+            {/* Password Input */}
+            <Input
+              placeholder="Enter your password"
+              value={deletePassword}
+              onChangeText={setDeletePassword}
+              secureTextEntry
+              leftIcon="lock-closed-outline"
+            />
+
+            {/* Action Buttons */}
+            <View style={{ flexDirection: 'row', gap: 12, marginTop: 20 }}>
+              <Button
+                title="Cancel"
+                onPress={() => {
+                  setShowDeleteModal(false);
+                  setDeletePassword('');
+                }}
+                variant="outline"
+                disabled={isLoading}
+                style={{ flex: 1 }}
+              />
+
+              <Button
+                title="Delete"
+                onPress={confirmDeleteAccount}
+                loading={isLoading}
+                disabled={isLoading}
+                style={{ flex: 1, backgroundColor: colors.error }}
+              />
+            </View>
           </View>
         </View>
-      ))}
-
-      {/* Delete Account */}
-      <View style={profileStyles.dangerZone}>
-        <Text style={[profileStyles.dangerZoneTitle, { color: colors.error }]}>Danger Zone</Text>
-        <TouchableOpacity
-          style={[
-            profileStyles.deleteButton,
-            {
-              backgroundColor: colors.white,
-              borderColor: colors.error,
-            },
-          ]}
-          onPress={() => {
-            Alert.alert(
-              'Delete Account',
-              'Are you sure you want to delete your account? This action cannot be undone.',
-              [
-                { text: 'Cancel', style: 'cancel' },
-                {
-                  text: 'Delete',
-                  style: 'destructive',
-                  onPress: () => Alert.alert('Coming Soon', 'Account deletion coming soon'),
-                },
-              ],
-            );
-          }}
-          activeOpacity={0.7}
-        >
-          <Icon name="trash-outline" size={20} color={colors.error} />
-          <Text style={[profileStyles.deleteButtonText, { color: colors.error }]}>
-            Delete Account
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={profileStyles.footer}>
-        <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>Avigate v1.0.0</Text>
-      </View>
-    </ScrollView>
+      </Modal>
+    </>
   );
 };
