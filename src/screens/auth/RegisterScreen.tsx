@@ -11,7 +11,7 @@ import { Button } from '@/components/common/Button';
 import { CountryPhonePicker } from '@/components/common/CountryPhonePicker';
 import { authApi } from '@/api/auth.api';
 import { validateEmail, validatePassword, validatePhoneNumber } from '@/utils/validation';
-import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
+import { getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { RegisterDto, UserSex } from '@/types/auth.types';
 import {
   typographyStyles,
@@ -170,11 +170,59 @@ export const RegisterScreen: React.FC = () => {
         });
       }
     } catch (error: any) {
-      Toast.show({
-        type: 'error',
-        text1: 'Registration Failed',
-        text2: handleApiError(error),
-      });
+      console.error('Registration error:', error);
+      
+      // Extract error message from various possible error structures
+      const errorMessage = 
+        error?.response?.data?.message || 
+        error?.response?.data?.error || 
+        error?.message || 
+        'Registration failed';
+      
+      const statusCode = error?.response?.status || error?.response?.data?.statusCode;
+      
+      // Handle 409 Conflict errors (duplicate email/phone)
+      if (statusCode === 409) {
+        const lowerMessage = errorMessage.toLowerCase();
+        
+        if (lowerMessage.includes('email') && lowerMessage.includes('already')) {
+          setErrors({ email: 'This email is already registered' });
+          setCurrentStep(1); // Go back to email step
+          Toast.show({
+            type: 'error',
+            text1: 'Email Already Registered',
+            text2: 'This email is already in use. Please use a different email or sign in.',
+          });
+          return;
+        }
+        
+        if (lowerMessage.includes('phone') && lowerMessage.includes('already')) {
+          setErrors({ phoneNumber: 'This phone number is already registered' });
+          setCurrentStep(4); // Go back to phone step
+          Toast.show({
+            type: 'error',
+            text1: 'Phone Number Already Registered',
+            text2: 'This phone number is already in use. Please use a different number.',
+          });
+          return;
+        }
+      }
+      
+      // Handle validation errors (400)
+      if (statusCode === 400) {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Information',
+          text2: errorMessage,
+        });
+      } else {
+        // Generic error handling
+        Toast.show({
+          type: 'error',
+          text1: 'Registration Failed',
+          text2: errorMessage,
+        });
+      }
     } finally {
       setLoading(false);
     }

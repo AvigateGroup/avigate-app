@@ -144,30 +144,54 @@ export const EditProfileScreen: React.FC = () => {
     } catch (error: any) {
       console.error('Update profile error:', error);
       
-      // Handle specific error cases
-      const errorMessage = error?.message || error?.response?.data?.message || 'Failed to update profile';
+      // Extract error message from various possible error structures
+      const errorMessage = 
+        error?.response?.data?.message || 
+        error?.response?.data?.error || 
+        error?.message || 
+        'Failed to update profile';
       
-      // Check for duplicate email or phone errors
-      if (errorMessage.toLowerCase().includes('email') && 
-          (errorMessage.toLowerCase().includes('already') || 
-           errorMessage.toLowerCase().includes('exist') || 
-           errorMessage.toLowerCase().includes('in use'))) {
-        setErrors({ email: 'This email is already in use by another account' });
+      const statusCode = error?.response?.status || error?.response?.data?.statusCode;
+      
+      // Handle 409 Conflict errors (duplicate email/phone)
+      if (statusCode === 409) {
+        const lowerMessage = errorMessage.toLowerCase();
+        
+        if (lowerMessage.includes('email') && lowerMessage.includes('already in use')) {
+          setErrors({ email: 'This email is already in use by another account' });
+          Toast.show({
+            type: 'error',
+            text1: 'Email Already In Use',
+            text2: 'This email is already registered to another account',
+          });
+          return;
+        }
+        
+        if (lowerMessage.includes('phone') && lowerMessage.includes('already in use')) {
+          setErrors({ phoneNumber: 'This phone number is already in use by another account' });
+          Toast.show({
+            type: 'error',
+            text1: 'Phone Number Already In Use',
+            text2: 'This phone number is already registered to another account',
+          });
+          return;
+        }
+      }
+      
+      // Handle other error types
+      if (statusCode === 400) {
         Toast.show({
           type: 'error',
-          text1: 'Email Already Exists',
-          text2: 'This email is already in use by another account',
+          text1: 'Invalid Input',
+          text2: errorMessage,
         });
-      } else if (errorMessage.toLowerCase().includes('phone') && 
-                 (errorMessage.toLowerCase().includes('already') || 
-                  errorMessage.toLowerCase().includes('exist') || 
-                  errorMessage.toLowerCase().includes('in use'))) {
-        setErrors({ phoneNumber: 'This phone number is already in use by another account' });
+      } else if (statusCode === 401 || statusCode === 403) {
         Toast.show({
           type: 'error',
-          text1: 'Phone Number Already Exists',
-          text2: 'This phone number is already in use by another account',
+          text1: 'Authentication Error',
+          text2: 'Please log in again to continue',
         });
+        // Optionally: router.push('/(auth)/login');
       } else {
         Toast.show({
           type: 'error',
