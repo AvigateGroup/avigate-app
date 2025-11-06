@@ -18,7 +18,9 @@
       "bundleIdentifier": "com.avigate.app",
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Avigate needs access to your location to show you nearby places and provide navigation services.",
-        "NSLocationAlwaysAndWhenInUseUsageDescription": "Avigate needs access to your location to show you nearby places and provide navigation services."
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Avigate needs access to your location to show you nearby places and provide navigation services.",
+        "NSPhotoLibraryUsageDescription": "Allow Avigate to access your photos to update your profile picture",
+        "NSCameraUsageDescription": "Allow Avigate to use your camera to take profile pictures"
       },
       "config": {
         "googleMapsApiKey": "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
@@ -32,7 +34,14 @@
       "package": "com.avigate.app",
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "permissions": ["ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_MEDIA_IMAGES",
+        "CAMERA"
+      ],
       "config": {
         "googleMaps": {
           "apiKey": "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
@@ -60,6 +69,13 @@
           "locationAlwaysAndWhenInUsePermission": "Allow Avigate to use your location to show you nearby places and provide navigation services.",
           "locationAlwaysPermission": "Allow Avigate to use your location to show you nearby places and provide navigation services.",
           "locationWhenInUsePermission": "Allow Avigate to use your location to show you nearby places and provide navigation services."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Avigate to access your photos to update your profile picture",
+          "cameraPermission": "Allow Avigate to use your camera to take profile pictures"
         }
       ],
       "expo-web-browser"
