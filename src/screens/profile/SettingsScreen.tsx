@@ -146,19 +146,12 @@ export const SettingsScreen = () => {
       title: 'Support',
       items: [
         {
-          icon: 'help-circle-outline',
-          title: 'Help Center',
-          subtitle: 'Get help with your account',
-          type: 'navigation',
-          onPress: () => Alert.alert('Coming Soon', 'Help center coming soon'),
-        },
-        {
           icon: 'chatbubble-outline',
           title: 'Contact Support',
           subtitle: 'Reach out to our team',
           type: 'navigation',
           onPress: () =>
-            Alert.alert('Contact Support', 'Email: hello@avigate.com\nPhone: +234 800 000 0000'),
+            Alert.alert('Contact Support', 'Email: support@avigate.com\nPhone: +234 800 000 0000'),
         },
         {
           icon: 'star-outline',
