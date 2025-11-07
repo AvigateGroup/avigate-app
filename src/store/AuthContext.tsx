@@ -1,7 +1,7 @@
 // src/store/AuthContext.tsx
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, AuthResponse } from '@/types/auth.types';
+import { User } from '@/types/auth.types';
 import { authApi } from '@/api/auth.api';
 import { getItem, setItem, removeItem, getObject, setObject } from '@/utils/storage';
 import { STORAGE_KEYS } from '@/constants/config';
@@ -16,6 +16,7 @@ interface AuthContextType {
   login: (accessToken: string, refreshToken: string, user: User) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (user: User) => void;
+  refreshUser: () => Promise<void>;
   loadAuthData: () => Promise<void>;
 }
 
@@ -119,6 +120,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setObject(STORAGE_KEYS.USER_DATA, updatedUser);
   };
 
+  /**
+   * Refresh user data from the server
+   * Useful after email verification or profile updates
+   */
+  const refreshUser = async () => {
+    try {
+      const response = await authApi.getProfile();
+      if (response.success && response.data.user) {
+        setUser(response.data.user);
+        await setObject(STORAGE_KEYS.USER_DATA, response.data.user);
+      }
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+      throw error;
+    }
+  };
+
   const value: AuthContextType = {
     user,
     accessToken,
@@ -128,6 +146,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
     updateUser,
+    refreshUser,
     loadAuthData,
   };
 

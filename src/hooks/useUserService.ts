@@ -249,6 +249,35 @@ export const useUserService = () => {
     }
   };
 
+  // Verify email change with OTP
+  const verifyEmailChange = async (data: { email: string; otpCode: string }) => {
+    setIsLoading(true);
+    try {
+      const response = await userApi.verifyEmailChange(data);
+      
+      // Update user with new email if verification successful
+      if (response.success && response.data?.user) {
+        updateUser(response.data.user);
+      }
+      
+      return response;
+    } catch (error: any) {
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Resend email change OTP
+  const resendEmailChangeOTP = async (email: string) => {
+    try {
+      const response = await userApi.resendEmailChangeOTP(email);
+      return response;
+    } catch (error: any) {
+      throw error;
+    }
+  };
+
   return {
     isLoading,
     isUploadingImage,
@@ -259,5 +288,7 @@ export const useUserService = () => {
     deactivateDevice,
     getUserStats,
     deleteAccount,
+    verifyEmailChange,
+    resendEmailChangeOTP,
   };
 };

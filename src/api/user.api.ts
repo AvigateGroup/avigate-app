@@ -1,7 +1,7 @@
 // src/api/user.api.ts
 
 import { apiClient } from './client';
-import { UpdateProfileDto, ApiResponse, User } from '@/types/auth.types';
+import { UpdateProfileDto, ApiResponse, User, VerifyEmailDto } from '@/types/auth.types';
 
 export const userApi = {
   // Get user profile
@@ -18,6 +18,14 @@ export const userApi = {
         'Content-Type': 'multipart/form-data',
       },
     }),
+
+  // Verify email change with OTP (reuses auth verification logic)
+  verifyEmailChange: (data: VerifyEmailDto) =>
+    apiClient.post<ApiResponse<{ user: User }>>('/auth/verify-email', data),
+
+  // Resend email change OTP (reuses auth resend verification logic)
+  resendEmailChangeOTP: (email: string) =>
+    apiClient.post<ApiResponse>('/auth/resend-verification', { email }),
 
   // Get user devices
   getDevices: () => apiClient.get<ApiResponse>('/users/devices'),
