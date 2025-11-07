@@ -10,6 +10,7 @@ import { COLORS } from '@/constants/colors';
 import { HomeScreen } from '@/screens/home/HomeScreen';
 import { ProfileScreen } from '@/screens/profile/ProfileScreen';
 import { SettingsScreen } from '@/screens/profile/SettingsScreen';
+import { VerifyEmailChangeScreen } from '@/screens/profile/VerifyEmailChangeScreen';
 import { ShareLocationScreen } from '@/screens/share/ShareLocationScreen';
 import { SearchDestinationScreen } from '@/screens/search/SearchDestinationScreen';
 
@@ -98,6 +99,14 @@ const ProfileStack = () => (
       component={SettingsScreen}
       options={{
         title: 'Settings',
+      }}
+    />
+    <Stack.Screen
+      name="VerifyEmailChange"
+      component={VerifyEmailChangeScreen}
+      options={{
+        title: 'Verify Email',
+        gestureEnabled: false, // Prevent swipe back
       }}
     />
   </Stack.Navigator>
