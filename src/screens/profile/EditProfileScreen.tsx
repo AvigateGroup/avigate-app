@@ -110,10 +110,11 @@ export const EditProfileScreen: React.FC = () => {
     try {
       // Only send changed fields
       const changedFields: any = {};
+      const emailChanged = formData.email !== user?.email;
       
       if (formData.firstName !== user?.firstName) changedFields.firstName = formData.firstName.trim();
       if (formData.lastName !== user?.lastName) changedFields.lastName = formData.lastName.trim();
-      if (formData.email !== user?.email) changedFields.email = formData.email.toLowerCase().trim();
+      if (emailChanged) changedFields.email = formData.email.toLowerCase().trim();
       
       const newFullPhone = formData.countryCode + formData.phoneNumber;
       if (newFullPhone !== user?.phoneNumber) {
@@ -134,6 +135,23 @@ export const EditProfileScreen: React.FC = () => {
 
       await updateProfile(changedFields);
       
+      // If email was changed, navigate to verification screen
+      if (emailChanged) {
+        Toast.show({
+          type: 'success',
+          text1: 'Verification Required',
+          text2: 'Please verify your new email address',
+        });
+        
+        // Use Expo Router to navigate
+        router.push({
+          pathname: '/profile/verify-email-change',
+          params: { email: formData.email.toLowerCase().trim() },
+        });
+        return;
+      }
+      
+      // For other changes, show success and go back
       Toast.show({
         type: 'success',
         text1: 'Profile Updated',
