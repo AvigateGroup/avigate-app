@@ -15,7 +15,7 @@ import { useAuth } from '@/store/AuthContext';
 import { APP_CONFIG } from '@/constants/config';
 import { COLORS } from '@/constants/colors';
 import { authFeatureStyles } from '@/styles/features/auth';
-import { buttonStyles, layoutStyles } from '@/styles/base';
+import { buttonStyles } from '@/styles/base';
 
 export const VerifyEmailScreen: React.FC = () => {
   const router = useRouter();
