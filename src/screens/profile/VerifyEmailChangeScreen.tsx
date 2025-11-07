@@ -60,7 +60,6 @@ export const VerifyEmailChangeScreen: React.FC = () => {
           text2: 'Your email has been successfully updated!',
         });
 
-        // Navigate back to profile
         navigation.goBack();
       }
     } catch (error: any) {
@@ -125,78 +124,81 @@ export const VerifyEmailChangeScreen: React.FC = () => {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.background }}
-      contentContainerStyle={{ flexGrow: 1, padding: 20 }}
+      contentContainerStyle={{ flexGrow: 1, padding: 20, justifyContent: 'center' }}
       showsVerticalScrollIndicator={false}
     >
-      <View style={{ flex: 1, justifyContent: 'space-between' }}>
-        <View>
-          <View style={authFeatureStyles.verifyIconContainer}>
-            <View style={authFeatureStyles.verifyIconCircle}>
-              <Icon name="mail" size={32} color={COLORS.primary} />
-            </View>
-          </View>
-
-          <Text style={[authFeatureStyles.titleCentered, { color: colors.text }]}>
-            Verify Your New Email
-          </Text>
-          <Text style={[authFeatureStyles.subtitleCentered, { color: colors.textMuted }]}>
-            We've sent a verification code to
-          </Text>
-          <Text style={authFeatureStyles.emailText}>{newEmail}</Text>
-
-          <Text style={[authFeatureStyles.instructionText, { color: colors.textMuted }]}>
-            Enter the 6-digit code to verify your new email address
-          </Text>
-
-          <View style={authFeatureStyles.otpWrapper}>
-            <OTPInput value={otp} onChange={setOtp} error={error} />
+      <View>
+        {/* Icon Section */}
+        <View style={authFeatureStyles.verifyIconContainer}>
+          <View style={authFeatureStyles.verifyIconCircle}>
+            <Icon name="mail" size={32} color={COLORS.primary} />
           </View>
         </View>
 
-        <View>
-          <Button
-            title="Verify Email"
-            onPress={handleVerify}
-            loading={isLoading}
-            disabled={otp.length !== APP_CONFIG.OTP_LENGTH || isLoading}
-            style={buttonStyles.submitButton}
-          />
+        {/* Title and Email */}
+        <Text style={[authFeatureStyles.titleCentered, { color: colors.text }]}>
+          Verify Your New Email
+        </Text>
+        <Text style={[authFeatureStyles.subtitleCentered, { color: colors.textMuted }]}>
+          We've sent a verification code to
+        </Text>
+        <Text style={authFeatureStyles.emailText}>{newEmail}</Text>
 
-          <View style={authFeatureStyles.resendSection}>
-            {canResend ? (
-              <View style={authFeatureStyles.resendRow}>
-                <Text style={[authFeatureStyles.resendLabel, { color: colors.textMuted }]}>
-                  Didn't receive the code?{' '}
-                </Text>
-                <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
-                  <Text style={authFeatureStyles.resendLink}>
-                    {resendLoading ? 'Sending...' : 'Resend'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <Text style={[authFeatureStyles.countdownText, { color: colors.textMuted }]}>
-                Resend code in {countdown}s
+        <Text style={[authFeatureStyles.instructionText, { color: colors.textMuted }]}>
+          Enter the 6-digit code to verify your new email address
+        </Text>
+
+        {/* OTP Input */}
+        <View style={authFeatureStyles.otpWrapper}>
+          <OTPInput value={otp} onChange={setOtp} error={error} />
+        </View>
+
+        {/* Verify Button */}
+        <Button
+          title="Verify Email"
+          onPress={handleVerify}
+          loading={isLoading}
+          disabled={otp.length !== APP_CONFIG.OTP_LENGTH || isLoading}
+          style={buttonStyles.submitButton}
+        />
+
+        {/* Resend Section */}
+        <View style={authFeatureStyles.resendSection}>
+          {canResend ? (
+            <View style={authFeatureStyles.resendRow}>
+              <Text style={[authFeatureStyles.resendLabel, { color: colors.textMuted }]}>
+                Didn't receive the code?{' '}
               </Text>
-            )}
-          </View>
-
-          <View style={authFeatureStyles.helpNote}>
-            <Icon name="information-circle-outline" size={14} color={colors.textMuted} />
-            <Text style={[authFeatureStyles.helpText, { color: colors.textMuted }]}>
-              Check your spam folder if you don't see it
+              <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
+                <Text style={authFeatureStyles.resendLink}>
+                  {resendLoading ? 'Sending...' : 'Resend'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <Text style={[authFeatureStyles.countdownText, { color: colors.textMuted }]}>
+              Resend code in {countdown}s
             </Text>
-          </View>
-
-          <TouchableOpacity
-            onPress={handleCancel}
-            style={[authFeatureStyles.backLink, { marginTop: 16 }]}
-          >
-            <Text style={[authFeatureStyles.backLinkText, { color: colors.primary }]}>
-              Cancel and Go Back
-            </Text>
-          </TouchableOpacity>
+          )}
         </View>
+
+        {/* Help Note */}
+        <View style={authFeatureStyles.helpNote}>
+          <Icon name="information-circle-outline" size={14} color={colors.textMuted} />
+          <Text style={[authFeatureStyles.helpText, { color: colors.textMuted }]}>
+            Check your spam folder if you don't see it
+          </Text>
+        </View>
+
+        {/* Cancel Button */}
+        <TouchableOpacity
+          onPress={handleCancel}
+          style={[authFeatureStyles.backLink, { marginTop: 16 }]}
+        >
+          <Text style={[authFeatureStyles.backLinkText, { color: colors.primary }]}>
+            Cancel and Go Back
+          </Text>
+        </TouchableOpacity>
       </View>
     </ScrollView>
   );

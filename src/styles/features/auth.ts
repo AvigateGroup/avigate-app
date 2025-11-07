@@ -282,6 +282,7 @@ export const authFeatureStyles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: LINE_HEIGHTS.lg,
     letterSpacing: 0.3,
+    marginBottom: SPACING.md,
   },
 
   // EMAIL CONTAINER WITH BACKGROUND
