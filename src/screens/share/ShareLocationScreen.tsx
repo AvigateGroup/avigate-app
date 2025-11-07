@@ -117,14 +117,21 @@ export const ShareLocationScreen = () => {
         <View style={shareStyles.section}>
           <Text style={[shareStyles.sectionTitle, { color: colors.text }]}>Shared With</Text>
           {sharedContacts.map(contact => (
-            <View key={contact.id} style={[shareStyles.contactCard, { backgroundColor: colors.white }]}>
+            <View
+              key={contact.id}
+              style={[shareStyles.contactCard, { backgroundColor: colors.white }]}
+            >
               <View style={shareStyles.contactInfo}>
                 <View style={[shareStyles.contactAvatar, { backgroundColor: colors.primaryLight }]}>
                   <Icon name="person" size={24} color={colors.primary} />
                 </View>
                 <View style={shareStyles.contactDetails}>
-                  <Text style={[shareStyles.contactName, { color: colors.text }]}>{contact.name}</Text>
-                  <Text style={[shareStyles.contactPhone, { color: colors.textMuted }]}>{contact.phone}</Text>
+                  <Text style={[shareStyles.contactName, { color: colors.text }]}>
+                    {contact.name}
+                  </Text>
+                  <Text style={[shareStyles.contactPhone, { color: colors.textMuted }]}>
+                    {contact.phone}
+                  </Text>
                 </View>
               </View>
               <Switch

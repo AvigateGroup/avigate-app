@@ -13,12 +13,7 @@ import { authApi } from '@/api/auth.api';
 import { validateEmail, validatePassword, validatePhoneNumber } from '@/utils/validation';
 import { getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { RegisterDto, UserSex } from '@/types/auth.types';
-import {
-  typographyStyles,
-  formStyles,
-  layoutStyles,
-  spacingStyles,
-} from '@/styles/base';
+import { typographyStyles, formStyles, layoutStyles, spacingStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 import { COLORS } from '@/constants/colors';
 
@@ -171,20 +166,20 @@ export const RegisterScreen: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Registration error:', error);
-      
+
       // Extract error message from various possible error structures
-      const errorMessage = 
-        error?.response?.data?.message || 
-        error?.response?.data?.error || 
-        error?.message || 
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
         'Registration failed';
-      
+
       const statusCode = error?.response?.status || error?.response?.data?.statusCode;
-      
+
       // Handle 409 Conflict errors (duplicate email/phone)
       if (statusCode === 409) {
         const lowerMessage = errorMessage.toLowerCase();
-        
+
         if (lowerMessage.includes('email') && lowerMessage.includes('already')) {
           setErrors({ email: 'This email is already registered' });
           setCurrentStep(1); // Go back to email step
@@ -195,7 +190,7 @@ export const RegisterScreen: React.FC = () => {
           });
           return;
         }
-        
+
         if (lowerMessage.includes('phone') && lowerMessage.includes('already')) {
           setErrors({ phoneNumber: 'This phone number is already registered' });
           setCurrentStep(4); // Go back to phone step
@@ -207,7 +202,7 @@ export const RegisterScreen: React.FC = () => {
           return;
         }
       }
-      
+
       // Handle validation errors (400)
       if (statusCode === 400) {
         Toast.show({

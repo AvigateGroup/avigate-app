@@ -104,9 +104,7 @@ export const CountryPhonePicker: React.FC<CountryPhonePickerProps> = ({
       </View>
 
       {/* Helper Text */}
-      {!error && getHelperText() && (
-        <Text style={styles.helperText}>{getHelperText()}</Text>
-      )}
+      {!error && getHelperText() && <Text style={styles.helperText}>{getHelperText()}</Text>}
 
       {/* Error Text */}
       {error && <Text style={styles.errorText}>{error}</Text>}

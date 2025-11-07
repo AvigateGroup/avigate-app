@@ -49,7 +49,7 @@ function RootLayoutNav() {
       >
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        
+
         {/* Settings Screen */}
         <Stack.Screen
           name="settings"
@@ -63,7 +63,7 @@ function RootLayoutNav() {
             headerShadowVisible: false,
           }}
         />
-        
+
         {/* Profile Routes - NEW */}
         <Stack.Screen
           name="profile/edit"
@@ -89,7 +89,7 @@ function RootLayoutNav() {
             headerShadowVisible: false,
           }}
         />
-        
+
         {/* Privacy & Terms */}
         <Stack.Screen
           name="privacy/index"
@@ -115,10 +115,10 @@ function RootLayoutNav() {
             headerShadowVisible: false,
           }}
         />
-        
+
         <Stack.Screen name="+not-found" />
       </Stack>
-      
+
       {/* Toast Notifications - Already present */}
       <Toast />
     </>

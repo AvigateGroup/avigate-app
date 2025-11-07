@@ -43,7 +43,7 @@ export const useUserService = () => {
     setIsLoading(true);
     try {
       const response = await userApi.updateProfile(data);
-      
+
       if (response.success && response.data?.user) {
         updateUser(response.data.user);
         Toast.show({
@@ -71,7 +71,7 @@ export const useUserService = () => {
     try {
       // Request permissions
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
+
       if (status !== 'granted') {
         Toast.show({
           type: 'error',
@@ -108,7 +108,7 @@ export const useUserService = () => {
     try {
       // Create form data
       const formData = new FormData();
-      
+
       // Get file extension
       const uriParts = imageUri.split('.');
       const fileType = uriParts[uriParts.length - 1];
@@ -254,12 +254,12 @@ export const useUserService = () => {
     setIsLoading(true);
     try {
       const response = await userApi.verifyEmailChange(data);
-      
+
       // Update user with new email if verification successful
       if (response.success && response.data?.user) {
         updateUser(response.data.user);
       }
-      
+
       return response;
     } catch (error: any) {
       throw error;

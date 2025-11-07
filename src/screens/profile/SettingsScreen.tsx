@@ -1,15 +1,7 @@
 // src/screens/profile/SettingsScreen.tsx
 
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Switch,
-  Alert,
-  Modal,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch, Alert, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -223,7 +215,9 @@ export const SettingsScreen = () => {
       >
         {settingsSections.map((section, sectionIndex) => (
           <View key={sectionIndex} style={profileStyles.section}>
-            <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>{section.title}</Text>
+            <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>
+              {section.title}
+            </Text>
             <View style={[profileStyles.sectionContent, { backgroundColor: colors.white }]}>
               {section.items.map((item, itemIndex) => renderSettingItem(item, itemIndex))}
             </View>
@@ -252,7 +246,9 @@ export const SettingsScreen = () => {
         </View>
 
         <View style={profileStyles.footer}>
-          <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>Avigate v1.0.0</Text>
+          <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>
+            Avigate v1.0.0
+          </Text>
         </View>
       </ScrollView>
 

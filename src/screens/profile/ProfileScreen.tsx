@@ -1,7 +1,15 @@
 // src/screens/profile/ProfileScreen.tsx
 
 import React from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, Alert, ActivityIndicator } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
@@ -84,16 +92,16 @@ export const ProfileScreen: React.FC = () => {
   ];
 
   return (
-    <ScrollView 
-      style={[profileStyles.container, { backgroundColor: colors.background }]} 
+    <ScrollView
+      style={[profileStyles.container, { backgroundColor: colors.background }]}
       showsVerticalScrollIndicator={false}
     >
       {/* Profile Header */}
       <View style={[profileStyles.header, { backgroundColor: colors.white }]}>
         <View style={profileStyles.avatarContainer}>
           {user?.profilePicture ? (
-            <Image 
-              source={{ uri: user.profilePicture }} 
+            <Image
+              source={{ uri: user.profilePicture }}
               style={profileStyles.avatar}
               resizeMode="cover"
             />
@@ -104,8 +112,8 @@ export const ProfileScreen: React.FC = () => {
               </Text>
             </View>
           )}
-          <TouchableOpacity 
-            style={[profileStyles.cameraButton, { backgroundColor: colors.primary }]} 
+          <TouchableOpacity
+            style={[profileStyles.cameraButton, { backgroundColor: colors.primary }]}
             activeOpacity={0.7}
             onPress={handleUploadPicture}
             disabled={isUploadingImage}
@@ -126,7 +134,9 @@ export const ProfileScreen: React.FC = () => {
         {user?.phoneNumber && (
           <View style={profileStyles.phoneContainer}>
             <Icon name="call-outline" size={16} color={colors.textMuted} />
-            <Text style={[profileStyles.phone, { color: colors.textMuted }]}>{user.phoneNumber}</Text>
+            <Text style={[profileStyles.phone, { color: colors.textMuted }]}>
+              {user.phoneNumber}
+            </Text>
           </View>
         )}
 
@@ -159,7 +169,9 @@ export const ProfileScreen: React.FC = () => {
 
       {/* Account Info */}
       <View style={profileStyles.section}>
-        <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>Account Information</Text>
+        <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>
+          Account Information
+        </Text>
         <View style={[profileStyles.infoCard, { backgroundColor: colors.white }]}>
           <View style={profileStyles.infoRow}>
             <Text style={[profileStyles.infoLabel, { color: colors.textMuted }]}>Member Since</Text>
@@ -169,7 +181,9 @@ export const ProfileScreen: React.FC = () => {
           </View>
           <View style={[profileStyles.infoDivider, { backgroundColor: colors.border }]} />
           <View style={profileStyles.infoRow}>
-            <Text style={[profileStyles.infoLabel, { color: colors.textMuted }]}>Account Status</Text>
+            <Text style={[profileStyles.infoLabel, { color: colors.textMuted }]}>
+              Account Status
+            </Text>
             <View style={profileStyles.statusBadge}>
               <Icon name="checkmark-circle" size={16} color={colors.success} />
               <Text style={[profileStyles.statusText, { color: colors.success }]}>
@@ -197,11 +211,8 @@ export const ProfileScreen: React.FC = () => {
             onPress={item.onPress}
             activeOpacity={0.7}
           >
-            <View 
-              style={[
-                profileStyles.menuIconContainer, 
-                { backgroundColor: colors.backgroundLight }
-              ]}
+            <View
+              style={[profileStyles.menuIconContainer, { backgroundColor: colors.backgroundLight }]}
             >
               <Icon name={item.icon} size={24} color={colors.primary} />
             </View>
@@ -219,11 +230,11 @@ export const ProfileScreen: React.FC = () => {
       {/* Logout Button */}
       <TouchableOpacity
         style={[
-          profileStyles.logoutButton, 
-          { 
+          profileStyles.logoutButton,
+          {
             backgroundColor: colors.white,
-            borderColor: colors.error 
-          }
+            borderColor: colors.error,
+          },
         ]}
         onPress={handleLogout}
         activeOpacity={0.7}

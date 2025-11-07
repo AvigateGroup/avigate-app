@@ -111,16 +111,17 @@ export const EditProfileScreen: React.FC = () => {
       // Only send changed fields
       const changedFields: any = {};
       const emailChanged = formData.email !== user?.email;
-      
-      if (formData.firstName !== user?.firstName) changedFields.firstName = formData.firstName.trim();
+
+      if (formData.firstName !== user?.firstName)
+        changedFields.firstName = formData.firstName.trim();
       if (formData.lastName !== user?.lastName) changedFields.lastName = formData.lastName.trim();
       if (emailChanged) changedFields.email = formData.email.toLowerCase().trim();
-      
+
       const newFullPhone = formData.countryCode + formData.phoneNumber;
       if (newFullPhone !== user?.phoneNumber) {
         changedFields.phoneNumber = newFullPhone;
       }
-      
+
       if (formData.sex !== user?.sex) changedFields.sex = formData.sex;
 
       if (Object.keys(changedFields).length === 0) {
@@ -134,7 +135,7 @@ export const EditProfileScreen: React.FC = () => {
       }
 
       await updateProfile(changedFields);
-      
+
       // If email was changed, navigate to verification screen
       if (emailChanged) {
         Toast.show({
@@ -142,7 +143,7 @@ export const EditProfileScreen: React.FC = () => {
           text1: 'Verification Required',
           text2: 'Please verify your new email address',
         });
-        
+
         // Use Expo Router to navigate
         router.push({
           pathname: '/profile/verify-email-change',
@@ -150,7 +151,7 @@ export const EditProfileScreen: React.FC = () => {
         });
         return;
       }
-      
+
       // For other changes, show success and go back
       Toast.show({
         type: 'success',
@@ -161,20 +162,20 @@ export const EditProfileScreen: React.FC = () => {
       router.back();
     } catch (error: any) {
       console.error('Update profile error:', error);
-      
+
       // Extract error message from various possible error structures
-      const errorMessage = 
-        error?.response?.data?.message || 
-        error?.response?.data?.error || 
-        error?.message || 
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
         'Failed to update profile';
-      
+
       const statusCode = error?.response?.status || error?.response?.data?.statusCode;
-      
+
       // Handle 409 Conflict errors (duplicate email/phone)
       if (statusCode === 409) {
         const lowerMessage = errorMessage.toLowerCase();
-        
+
         if (lowerMessage.includes('email') && lowerMessage.includes('already in use')) {
           setErrors({ email: 'This email is already in use by another account' });
           Toast.show({
@@ -184,7 +185,7 @@ export const EditProfileScreen: React.FC = () => {
           });
           return;
         }
-        
+
         if (lowerMessage.includes('phone') && lowerMessage.includes('already in use')) {
           setErrors({ phoneNumber: 'This phone number is already in use by another account' });
           Toast.show({
@@ -195,7 +196,7 @@ export const EditProfileScreen: React.FC = () => {
           return;
         }
       }
-      
+
       // Handle other error types
       if (statusCode === 400) {
         Toast.show({
@@ -264,7 +265,9 @@ export const EditProfileScreen: React.FC = () => {
             autoCapitalize="none"
           />
           {formData.email !== user?.email && !errors.email && (
-            <Text style={[authFeatureStyles.instructionText, { color: colors.warning, marginTop: -12 }]}>
+            <Text
+              style={[authFeatureStyles.instructionText, { color: colors.warning, marginTop: -12 }]}
+            >
               Changing your email will require re-verification
             </Text>
           )}

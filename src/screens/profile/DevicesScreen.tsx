@@ -78,7 +78,12 @@ export const DevicesScreen: React.FC = () => {
 
   if (isLoading && devices.length === 0) {
     return (
-      <View style={[profileStyles.container, { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' }]}>
+      <View
+        style={[
+          profileStyles.container,
+          { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' },
+        ]}
+      >
         <ActivityIndicator size="large" color={colors.primary} />
         <Text style={[profileStyles.footerText, { color: colors.textMuted, marginTop: 16 }]}>
           Loading devices...
@@ -184,10 +189,7 @@ export const DevicesScreen: React.FC = () => {
 
                 {device.appVersion && (
                   <Text
-                    style={[
-                      profileStyles.menuSubtitle,
-                      { color: colors.textMuted, fontSize: 11 },
-                    ]}
+                    style={[profileStyles.menuSubtitle, { color: colors.textMuted, fontSize: 11 }]}
                   >
                     Version: {device.appVersion}
                   </Text>

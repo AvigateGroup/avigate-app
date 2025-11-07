@@ -52,7 +52,11 @@ export default function TabLayout() {
         options={{
           title: 'Share Location',
           tabBarIcon: ({ color, focused }) => (
-            <Icon name={focused ? 'share-social' : 'share-social-outline'} size={24} color={color} />
+            <Icon
+              name={focused ? 'share-social' : 'share-social-outline'}
+              size={24}
+              color={color}
+            />
           ),
         }}
       />
@@ -67,7 +71,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
     </Tabs>
   );
 }

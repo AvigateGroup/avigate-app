@@ -68,7 +68,7 @@ export const SearchDestinationScreen = () => {
       // TODO: Implement actual location search API
       // For now, just filter recent searches
       const filtered = RECENT_SEARCHES.filter(
-        (item) =>
+        item =>
           item.name.toLowerCase().includes(text.toLowerCase()) ||
           item.address.toLowerCase().includes(text.toLowerCase()),
       );
@@ -119,7 +119,10 @@ export const SearchDestinationScreen = () => {
         </View>
         <View style={searchStyles.suggestionText}>
           <Text style={[searchStyles.suggestionName, { color: colors.text }]}>{item.name}</Text>
-          <Text style={[searchStyles.suggestionAddress, { color: colors.textMuted }]} numberOfLines={1}>
+          <Text
+            style={[searchStyles.suggestionAddress, { color: colors.textMuted }]}
+            numberOfLines={1}
+          >
             {item.address}
           </Text>
         </View>
@@ -155,7 +158,12 @@ export const SearchDestinationScreen = () => {
   return (
     <SafeAreaView style={[searchStyles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
-      <View style={[searchStyles.header, { backgroundColor: colors.white, borderBottomColor: colors.border }]}>
+      <View
+        style={[
+          searchStyles.header,
+          { backgroundColor: colors.white, borderBottomColor: colors.border },
+        ]}
+      >
         <TouchableOpacity onPress={handleBack} style={searchStyles.backButton}>
           <Icon name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
@@ -163,7 +171,12 @@ export const SearchDestinationScreen = () => {
       </View>
 
       {/* Search Input */}
-      <View style={[searchStyles.searchContainer, { backgroundColor: colors.white, borderBottomColor: colors.border }]}>
+      <View
+        style={[
+          searchStyles.searchContainer,
+          { backgroundColor: colors.white, borderBottomColor: colors.border },
+        ]}
+      >
         <Icon name="search" size={20} color={colors.textMuted} />
         <TextInput
           style={[searchStyles.searchInput, { color: colors.text }]}
@@ -190,7 +203,7 @@ export const SearchDestinationScreen = () => {
             <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>Saved Places</Text>
             <FlatList
               data={SAVED_PLACES}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
               renderItem={renderLocationItem}
               scrollEnabled={false}
             />
@@ -201,7 +214,7 @@ export const SearchDestinationScreen = () => {
             <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>Recent</Text>
             <FlatList
               data={RECENT_SEARCHES}
-              keyExtractor={(item) => item.id}
+              keyExtractor={item => item.id}
               renderItem={renderLocationItem}
               scrollEnabled={false}
             />
@@ -211,7 +224,7 @@ export const SearchDestinationScreen = () => {
         // Show search results
         <FlatList
           data={suggestions}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           renderItem={renderLocationItem}
           ListEmptyComponent={renderEmptyState}
           keyboardShouldPersistTaps="handled"

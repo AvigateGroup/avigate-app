@@ -21,9 +21,9 @@ export const VerifyEmailChangeScreen: React.FC = () => {
   const params = route.params as { email?: string } | undefined;
   const newEmail = params?.email || '';
   const colors = useThemedColors();
-  
+
   const { verifyEmailChange, resendEmailChangeOTP, isLoading } = useUserService();
-  
+
   const [otp, setOtp] = useState('');
   const [error, setError] = useState('');
   const [resendLoading, setResendLoading] = useState(false);
@@ -65,13 +65,13 @@ export const VerifyEmailChangeScreen: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Email verification error:', error);
-      
-      const errorMessage = 
-        error?.response?.data?.message || 
-        error?.response?.data?.error || 
-        error?.message || 
+
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
         'Verification failed';
-      
+
       setError(errorMessage);
       Toast.show({
         type: 'error',
@@ -101,13 +101,13 @@ export const VerifyEmailChangeScreen: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Resend error:', error);
-      
-      const errorMessage = 
-        error?.response?.data?.message || 
-        error?.response?.data?.error || 
-        error?.message || 
+
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
         'Failed to resend code';
-      
+
       Toast.show({
         type: 'error',
         text1: 'Resend Failed',
