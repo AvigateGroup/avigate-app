@@ -37,7 +37,7 @@ export const Input: React.FC<InputProps> = ({
 }) => {
   const [isFocused, setIsFocused] = useState(false);
   const [isSecure, setIsSecure] = useState(secureTextEntry);
-  
+
   // Shake animation
   const shakeAnimation = useRef(new Animated.Value(0)).current;
 

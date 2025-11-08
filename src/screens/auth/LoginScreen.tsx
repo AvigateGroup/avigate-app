@@ -134,7 +134,7 @@ export const LoginScreen: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Login error:', error);
-      
+
       const errorMessage = handleApiError(error);
       const statusCode = error?.response?.status;
 
@@ -147,7 +147,7 @@ export const LoginScreen: React.FC = () => {
           text2: 'The email or password you entered is incorrect.',
           visibilityTime: 4000,
         });
-        
+
         // Clear password for security and show error state on both fields
         setPassword('');
         setErrors({
@@ -182,7 +182,7 @@ export const LoginScreen: React.FC = () => {
           text2: errorMessage,
           visibilityTime: 3000,
         });
-        
+
         setTimeout(() => {
           router.push({
             pathname: '/(auth)/verify-login-otp',

@@ -41,7 +41,7 @@ class ApiClient {
         const originalRequest = error.config as any;
 
         // 🔧 CRITICAL FIX: Don't try to refresh tokens for auth endpoints
-        const isAuthEndpoint = 
+        const isAuthEndpoint =
           originalRequest?.url?.includes('/auth/login') ||
           originalRequest?.url?.includes('/auth/register') ||
           originalRequest?.url?.includes('/auth/google') ||
@@ -59,7 +59,7 @@ class ApiClient {
         if (error.response?.status === 401 && !originalRequest._retry) {
           // Check if we have a refresh token before attempting refresh
           const refreshToken = await getItem(STORAGE_KEYS.REFRESH_TOKEN);
-          
+
           // If no refresh token exists, user is not authenticated
           if (!refreshToken) {
             await this.clearAuth();
