@@ -138,22 +138,78 @@ export const LoginScreen: React.FC = () => {
       const errorMessage = handleApiError(error);
       const statusCode = error?.response?.status;
 
-      // Handle specific error cases
+      // Handle specific error cases based on message content
       if (statusCode === 401) {
-        // Invalid credentials
-        Toast.show({
-          type: 'error',
-          text1: 'Invalid Credentials',
-          text2: 'The email or password you entered is incorrect.',
-          visibilityTime: 4000,
-        });
+        // Check for specific error messages from backend
+        const lowerErrorMessage = errorMessage.toLowerCase();
 
-        // Clear password for security and show error state on both fields
-        setPassword('');
-        setErrors({
-          email: 'Invalid credentials', // Space to trigger error styling without duplicate message
-          password: 'Invalid credentials',
-        });
+        if (
+          lowerErrorMessage.includes('no account found') ||
+          lowerErrorMessage.includes('please sign up')
+        ) {
+          // Email not found
+          Toast.show({
+            type: 'error',
+            text1: 'Account Not Found',
+            text2: errorMessage,
+            visibilityTime: 6000,
+            onPress: () => {
+              Toast.hide();
+              router.push('/(auth)/register');
+            },
+          });
+
+          setErrors({
+            email: 'No account found with this email',
+            password: '',
+          });
+        } else if (lowerErrorMessage.includes('incorrect password')) {
+          // Wrong password
+          Toast.show({
+            type: 'error',
+            text1: 'Incorrect Password',
+            text2: errorMessage,
+            visibilityTime: 5000,
+            onPress: () => {
+              Toast.hide();
+              router.push('/(auth)/forgot-password');
+            },
+          });
+
+          // Clear password and show error on password field only
+          setPassword('');
+          setErrors({
+            email: '',
+            password: 'Incorrect password',
+          });
+        } else if (lowerErrorMessage.includes('deactivated')) {
+          // Account deactivated
+          Toast.show({
+            type: 'error',
+            text1: 'Account Deactivated',
+            text2: errorMessage,
+            visibilityTime: 5000,
+          });
+
+          setErrors({
+            email: 'Account deactivated',
+            password: '',
+          });
+        } else {
+          // Generic 401 - fallback to generic invalid credentials
+          Toast.show({
+            type: 'error',
+            text1: 'Login Failed',
+            text2: errorMessage || 'Invalid email or password.',
+            visibilityTime: 4000,
+          });
+
+          setPassword('');
+          setErrors({
+            email: ' ',
+            password: ' ',
+          });
+        }
       } else if (statusCode === 429) {
         // Rate limiting
         Toast.show({
