@@ -40,8 +40,32 @@ class ApiClient {
       async (error: AxiosError) => {
         const originalRequest = error.config as any;
 
+        // 🔧 CRITICAL FIX: Don't try to refresh tokens for auth endpoints
+        const isAuthEndpoint = 
+          originalRequest?.url?.includes('/auth/login') ||
+          originalRequest?.url?.includes('/auth/register') ||
+          originalRequest?.url?.includes('/auth/google') ||
+          originalRequest?.url?.includes('/auth/verify-email') ||
+          originalRequest?.url?.includes('/auth/forgot-password') ||
+          originalRequest?.url?.includes('/auth/reset-password') ||
+          originalRequest?.url?.includes('/auth/refresh-token');
+
+        // If it's an auth endpoint, just reject the error without trying to refresh
+        if (isAuthEndpoint) {
+          return Promise.reject(error);
+        }
+
         // If error is 401 and we haven't tried to refresh yet
         if (error.response?.status === 401 && !originalRequest._retry) {
+          // Check if we have a refresh token before attempting refresh
+          const refreshToken = await getItem(STORAGE_KEYS.REFRESH_TOKEN);
+          
+          // If no refresh token exists, user is not authenticated
+          if (!refreshToken) {
+            await this.clearAuth();
+            return Promise.reject(error);
+          }
+
           if (this.isRefreshing) {
             // Wait for the refresh to complete
             return new Promise(resolve => {
@@ -56,11 +80,6 @@ class ApiClient {
           this.isRefreshing = true;
 
           try {
-            const refreshToken = await getItem(STORAGE_KEYS.REFRESH_TOKEN);
-            if (!refreshToken) {
-              throw new Error('No refresh token');
-            }
-
             const response = await this.client.post('/auth/refresh-token', {
               refreshToken,
             });
@@ -68,7 +87,9 @@ class ApiClient {
             const { accessToken, refreshToken: newRefreshToken } = response.data.data;
 
             await setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
-            await setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+            if (newRefreshToken) {
+              await setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
+            }
 
             // Notify all subscribers
             this.refreshSubscribers.forEach(callback => callback(accessToken));
@@ -77,8 +98,9 @@ class ApiClient {
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
             return this.client(originalRequest);
           } catch (refreshError) {
-            // Refresh failed, logout user
+            // Refresh failed, clear auth and logout user
             await this.clearAuth();
+            this.refreshSubscribers = [];
             return Promise.reject(refreshError);
           } finally {
             this.isRefreshing = false;
@@ -117,6 +139,11 @@ class ApiClient {
 
   public async delete<T>(url: string, config?: any) {
     const response = await this.client.delete<T>(url, config);
+    return response.data;
+  }
+
+  public async patch<T>(url: string, data?: any, config?: any) {
+    const response = await this.client.patch<T>(url, data, config);
     return response.data;
   }
 }
