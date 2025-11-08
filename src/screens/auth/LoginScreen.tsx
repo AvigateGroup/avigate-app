@@ -133,25 +133,70 @@ export const LoginScreen: React.FC = () => {
         });
       }
     } catch (error: any) {
+      console.error('Login error:', error);
+      
       const errorMessage = handleApiError(error);
+      const statusCode = error?.response?.status;
 
-      Toast.show({
-        type: 'error',
-        text1: 'Login Failed',
-        text2: errorMessage,
-      });
-
-      // If error mentions rate limit or OTP already sent, navigate to OTP screen
-      if (
+      // Handle specific error cases
+      if (statusCode === 401) {
+        // Invalid credentials
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Credentials',
+          text2: 'The email or password you entered is incorrect.',
+          visibilityTime: 4000,
+        });
+        
+        // Clear password for security and show error state on both fields
+        setPassword('');
+        setErrors({
+          email: 'Invalid credentials', // Space to trigger error styling without duplicate message
+          password: 'Invalid credentials',
+        });
+      } else if (statusCode === 429) {
+        // Rate limiting
+        Toast.show({
+          type: 'error',
+          text1: 'Too Many Attempts',
+          text2: 'Please wait a few minutes before trying again.',
+          visibilityTime: 5000,
+        });
+      } else if (statusCode === 403) {
+        // Account might be locked or disabled
+        Toast.show({
+          type: 'error',
+          text1: 'Access Denied',
+          text2: errorMessage,
+          visibilityTime: 5000,
+        });
+      } else if (
         errorMessage.toLowerCase().includes('verification code') ||
-        errorMessage.toLowerCase().includes('check your email')
+        errorMessage.toLowerCase().includes('check your email') ||
+        errorMessage.toLowerCase().includes('otp')
       ) {
+        // OTP already sent or required
+        Toast.show({
+          type: 'info',
+          text1: 'Verification Required',
+          text2: errorMessage,
+          visibilityTime: 3000,
+        });
+        
         setTimeout(() => {
           router.push({
             pathname: '/(auth)/verify-login-otp',
             params: { email: email.toLowerCase().trim() },
           });
         }, 1500);
+      } else {
+        // Generic error
+        Toast.show({
+          type: 'error',
+          text1: 'Login Failed',
+          text2: errorMessage,
+          visibilityTime: 4000,
+        });
       }
     } finally {
       setLoading(false);
