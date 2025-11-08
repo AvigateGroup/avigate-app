@@ -37,37 +37,38 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const loadAuthData = async () => {
-    try {
-      const [storedAccessToken, storedRefreshToken, storedUser] = await Promise.all([
-        getItem(STORAGE_KEYS.ACCESS_TOKEN),
-        getItem(STORAGE_KEYS.REFRESH_TOKEN),
-        getObject<User>(STORAGE_KEYS.USER_DATA),
-      ]);
+  try {
+    const [storedAccessToken, storedRefreshToken, storedUser] = await Promise.all([
+      getItem(STORAGE_KEYS.ACCESS_TOKEN),
+      getItem(STORAGE_KEYS.REFRESH_TOKEN),
+      getObject<User>(STORAGE_KEYS.USER_DATA),
+    ]);
 
-      if (storedAccessToken && storedRefreshToken && storedUser) {
-        setAccessToken(storedAccessToken);
-        setRefreshToken(storedRefreshToken);
-        setUser(storedUser);
+    if (storedAccessToken && storedRefreshToken && storedUser) {
+      setAccessToken(storedAccessToken);
+      setRefreshToken(storedRefreshToken);
+      setUser(storedUser);
 
-        // Optionally verify token validity by fetching profile
-        try {
-          const response = await authApi.getProfile();
-          if (response.success && response.data.user) {
-            setUser(response.data.user);
-            await setObject(STORAGE_KEYS.USER_DATA, response.data.user);
-          }
-        } catch (error) {
-          // If profile fetch fails, clear auth data
-          await clearAuthData();
+      // Optionally verify token validity by fetching profile
+      try {
+        const response = await authApi.getProfile();
+        if (response.success && response.data.user) {
+          setUser(response.data.user);
+          await setObject(STORAGE_KEYS.USER_DATA, response.data.user);
         }
+      } catch (error) {
+        console.log('Profile verification failed, clearing auth data');
+        // If profile fetch fails, clear auth data
+        await clearAuthData();
       }
-    } catch (error) {
-      console.error('Error loading auth data:', error);
-      await clearAuthData();
-    } finally {
-      setIsLoading(false);
     }
-  };
+  } catch (error) {
+    console.error('Error loading auth data:', error);
+    await clearAuthData();
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const login = async (newAccessToken: string, newRefreshToken: string, newUser: User) => {
     try {
