@@ -1,16 +1,18 @@
 // src/screens/auth/ForgotPasswordScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
+import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
 import { authApi } from '@/api/auth.api';
 import { validateEmail } from '@/utils/validation';
 import { handleApiError } from '@/utils/helpers';
-import { authStyles, commonStyles } from '@/styles';
+import { buttonStyles, formStyles, layoutStyles } from '@/styles/base';
+import { authFeatureStyles } from '@/styles/features/auth';
 
 export const ForgotPasswordScreen: React.FC = () => {
   const router = useRouter();
@@ -57,10 +59,11 @@ export const ForgotPasswordScreen: React.FC = () => {
         });
       }
     } catch (error: any) {
+      const errorMessage = handleApiError(error);
       Toast.show({
         type: 'error',
         text1: 'Request Failed',
-        text2: handleApiError(error),
+        text2: errorMessage,
       });
     } finally {
       setLoading(false);
@@ -69,61 +72,86 @@ export const ForgotPasswordScreen: React.FC = () => {
 
   return (
     <AuthLayout showLogo={false}>
-      <View style={authStyles.container}>
-        <TouchableOpacity
-          style={authStyles.backButton}
-          onPress={() => router.back()}
-          activeOpacity={0.7}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
         >
-          <Text style={authStyles.backButtonText}>← Back</Text>
-        </TouchableOpacity>
+          <View style={authFeatureStyles.authContent}>
+            {/* Back Button */}
+            <TouchableOpacity
+              style={buttonStyles.backButton}
+              onPress={() => router.back()}
+              activeOpacity={0.7}
+            >
+              <Text style={buttonStyles.backButtonText}>← Back</Text>
+            </TouchableOpacity>
 
-        <Text style={authStyles.title}>Forgot Password?</Text>
-        <Text style={authStyles.subtitle}>
-          Enter your email address and we'll send you a code to reset your password.
-        </Text>
+            {/* Header Section */}
+            <View style={authFeatureStyles.stepContainer}>
+              <Text style={authFeatureStyles.stepTitle}>Forgot Password?</Text>
+              <Text style={authFeatureStyles.stepSubtitle}>
+                Enter your email address and we'll send you a code to reset your password.
+              </Text>
+            </View>
 
-        <View style={authStyles.form}>
-          <Input
-            label="Email Address"
-            placeholder="Enter your email"
-            value={email}
-            onChangeText={text => {
-              setEmail(text);
-              setError('');
-            }}
-            error={error}
-            keyboardType="email-address"
-            autoCapitalize="none"
-            autoFocus
-            leftIcon="mail-outline"
-          />
+            {/* Form */}
+            <View style={formStyles.form}>
+              <Input
+                label="Email Address"
+                placeholder="Enter your email"
+                value={email}
+                onChangeText={text => {
+                  setEmail(text);
+                  setError('');
+                }}
+                error={error}
+                keyboardType="email-address"
+                autoCapitalize="none"
+                leftIcon="mail-outline"
+              />
 
-          <Button
-            title="Send Reset Code"
-            onPress={handleSubmit}
-            loading={loading}
-            style={authStyles.submitButton}
-          />
-        </View>
+              <Button
+                title="Send Reset Code"
+                onPress={handleSubmit}
+                loading={loading}
+                style={buttonStyles.submitButton}
+              />
+            </View>
 
-        <View style={commonStyles.infoBox}>
-          <Text style={commonStyles.infoTitle}>📧 What happens next?</Text>
-          <Text style={commonStyles.infoText}>
-            1. Check your email inbox{'\n'}
-            2. Enter the 6-digit code we sent{'\n'}
-            3. Create your new password{'\n'}
-            4. Login with your new credentials
-          </Text>
-        </View>
+            {/* Info Box */}
+            <View style={authFeatureStyles.infoBox}>
+              <View style={authFeatureStyles.infoHeader}>
+                <Icon name="information-circle-outline" size={16} color="#7C3AED" />
+                <Text style={authFeatureStyles.infoTitle}>What happens next?</Text>
+              </View>
+              <View style={authFeatureStyles.infoList}>
+                <Text style={authFeatureStyles.infoItem}>1. Check your email inbox</Text>
+                <Text style={authFeatureStyles.infoItem}>2. Enter the 6-digit code we sent</Text>
+                <Text style={authFeatureStyles.infoItem}>3. Create your new password</Text>
+                <Text style={authFeatureStyles.infoItem}>4. Login with your new credentials</Text>
+              </View>
+            </View>
 
-        <View style={commonStyles.footer}>
-          <Text style={commonStyles.footerText}>Remember your password? </Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
-            <Text style={commonStyles.footerLink}>Sign In</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+            {/* Footer */}
+            <View style={layoutStyles.footer}>
+              <Text style={layoutStyles.footerText}>
+                Remember your password?{' '}
+                <Text
+                  style={layoutStyles.footerLink}
+                  onPress={() => router.push('/(auth)/login')}
+                >
+                  Sign In
+                </Text>
+              </Text>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </AuthLayout>
   );
 };
