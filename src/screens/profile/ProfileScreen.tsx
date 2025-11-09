@@ -9,6 +9,7 @@ import {
   Image,
   Alert,
   ActivityIndicator,
+  StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -22,7 +23,12 @@ export const ProfileScreen: React.FC = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
   const colors = useThemedColors();
-  const { pickAndUploadProfilePicture, isUploadingImage } = useUserService();
+  const { 
+    pickAndUploadProfilePicture, 
+    takeCameraPhoto, 
+    isUploadingImage, 
+    uploadProgress 
+  } = useUserService();
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -44,7 +50,11 @@ export const ProfileScreen: React.FC = () => {
   const handleUploadPicture = () => {
     Alert.alert('Upload Profile Picture', 'Choose an option', [
       {
-        text: 'Choose from Library',
+        text: 'Take Photo',
+        onPress: takeCameraPhoto,
+      },
+      {
+        text: 'Choose from Gallery',
         onPress: pickAndUploadProfilePicture,
       },
       {
@@ -97,7 +107,7 @@ export const ProfileScreen: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       {/* Profile Header */}
-      <View style={[profileStyles.header, { backgroundColor: colors.white }]}>
+      <View style={[profileStyles.header, { backgroundColor: colors.white, paddingTop: 60 }]}>
         <View style={profileStyles.avatarContainer}>
           {user?.profilePicture ? (
             <Image
@@ -112,6 +122,17 @@ export const ProfileScreen: React.FC = () => {
               </Text>
             </View>
           )}
+
+          {/* Upload Progress Overlay */}
+          {isUploadingImage && (
+            <View style={[styles.uploadOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.7)' }]}>
+              <ActivityIndicator size="large" color={colors.white} />
+              <Text style={[styles.uploadText, { color: colors.white }]}>
+                {uploadProgress}%
+              </Text>
+            </View>
+          )}
+
           <TouchableOpacity
             style={[profileStyles.cameraButton, { backgroundColor: colors.primary }]}
             activeOpacity={0.7}
@@ -126,7 +147,7 @@ export const ProfileScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={[profileStyles.name, { color: colors.text }]}>
+        <Text style={[profileStyles.name, { color: colors.text, marginTop: 2 }]}>
           {user?.firstName} {user?.lastName}
         </Text>
         <Text style={[profileStyles.email, { color: colors.textMuted }]}>{user?.email}</Text>
@@ -249,3 +270,22 @@ export const ProfileScreen: React.FC = () => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  uploadOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 10,
+  },
+  uploadText: {
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});
