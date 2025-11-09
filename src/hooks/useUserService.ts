@@ -37,6 +37,7 @@ export const useUserService = () => {
   const { updateUser, user: currentUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
 
   // Update user profile
   const updateProfile = async (data: UpdateProfileDto) => {
@@ -66,7 +67,42 @@ export const useUserService = () => {
     }
   };
 
-  // Pick and upload profile picture
+  // Launch camera to capture photo
+  const takeCameraPhoto = async () => {
+    try {
+      // Request camera permissions
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+
+      if (status !== 'granted') {
+        Toast.show({
+          type: 'error',
+          text1: 'Permission Denied',
+          text2: 'We need camera permissions to take photos',
+        });
+        return;
+      }
+
+      // Launch camera
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets[0]) {
+        await uploadProfilePicture(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error taking photo:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to take photo',
+      });
+    }
+  };
+
+  // Pick from gallery and upload profile picture
   const pickAndUploadProfilePicture = async () => {
     try {
       // Request permissions
@@ -102,10 +138,23 @@ export const useUserService = () => {
     }
   };
 
-  // Upload profile picture
+  // Upload profile picture with progress
   const uploadProfilePicture = async (imageUri: string) => {
     setIsUploadingImage(true);
+    setUploadProgress(0);
+
     try {
+      // Simulate progress for better UX
+      const progressInterval = setInterval(() => {
+        setUploadProgress((prev) => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return 90;
+          }
+          return prev + 10;
+        });
+      }, 200);
+
       // Create form data
       const formData = new FormData();
 
@@ -120,6 +169,9 @@ export const useUserService = () => {
       } as any);
 
       const response = await userApi.uploadProfilePicture(formData);
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
 
       if (response.success && response.data?.profilePicture) {
         // Update user with new profile picture
@@ -147,7 +199,10 @@ export const useUserService = () => {
       });
       throw error;
     } finally {
-      setIsUploadingImage(false);
+      setTimeout(() => {
+        setIsUploadingImage(false);
+        setUploadProgress(0);
+      }, 500);
     }
   };
 
@@ -281,7 +336,9 @@ export const useUserService = () => {
   return {
     isLoading,
     isUploadingImage,
+    uploadProgress,
     updateProfile,
+    takeCameraPhoto,
     pickAndUploadProfilePicture,
     uploadProfilePicture,
     getUserDevices,
