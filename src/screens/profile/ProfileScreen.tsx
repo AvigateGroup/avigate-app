@@ -147,7 +147,7 @@ export const ProfileScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={[profileStyles.name, { color: colors.text, marginTop: 2 }]}>
+        <Text style={[profileStyles.name, { color: colors.text, marginTop: 0 }]}>
           {user?.firstName} {user?.lastName}
         </Text>
         <Text style={[profileStyles.email, { color: colors.textMuted }]}>{user?.email}</Text>
