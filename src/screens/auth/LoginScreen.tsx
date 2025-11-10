@@ -7,10 +7,12 @@ import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
+import { Loading } from '@/components/common/Loading';
 import { authApi } from '@/api/auth.api';
 import { validateEmail } from '@/utils/validation';
 import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
+import { useGoogleAuth } from '@/hooks/useGoogleAuth';
 import { LoginDto } from '@/types/auth.types';
 import { buttonStyles, formStyles, layoutStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
@@ -18,6 +20,8 @@ import { authFeatureStyles } from '@/styles/features/auth';
 export const LoginScreen: React.FC = () => {
   const router = useRouter();
   const { login } = useAuth();
+  const { signInWithGoogle, loading: googleLoading, isReady } = useGoogleAuth();
+  
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -45,11 +49,9 @@ export const LoginScreen: React.FC = () => {
 
     setLoading(true);
     try {
-      // Get FCM token and device info
       const fcmToken = await getFCMToken();
       const deviceInfo = getDeviceInfo();
 
-      // Prepare login data
       const loginDto: LoginDto = {
         email: email.toLowerCase().trim(),
         password: password,
@@ -60,7 +62,6 @@ export const LoginScreen: React.FC = () => {
       const response = await authApi.login(loginDto);
 
       if (response.success) {
-        // Check what type of response we got
         const {
           accessToken,
           refreshToken,
@@ -70,7 +71,6 @@ export const LoginScreen: React.FC = () => {
           requiresPhoneNumber,
         } = response.data;
 
-        // Case 1: OTP verification required (most common for your flow)
         if (requiresOtpVerification) {
           Toast.show({
             type: 'success',
@@ -78,7 +78,6 @@ export const LoginScreen: React.FC = () => {
             text2: 'Please check your email for the login code',
           });
 
-          // Navigate to OTP verification screen
           router.push({
             pathname: '/(auth)/verify-login-otp',
             params: { email: email.toLowerCase().trim() },
@@ -86,7 +85,6 @@ export const LoginScreen: React.FC = () => {
           return;
         }
 
-        // Case 2: Full login with tokens (direct login without OTP)
         if (accessToken && refreshToken && user) {
           Toast.show({
             type: 'success',
@@ -94,10 +92,8 @@ export const LoginScreen: React.FC = () => {
             text2: response.message || 'Login successful',
           });
 
-          // Save auth data
           await login(accessToken, refreshToken, user);
 
-          // Check for additional verification requirements
           if (requiresVerification) {
             router.replace({
               pathname: '/(auth)/verify-email',
@@ -106,11 +102,9 @@ export const LoginScreen: React.FC = () => {
           } else if (requiresPhoneNumber) {
             router.replace('/(auth)/phone-verification');
           }
-          // If no additional requirements, AuthContext will handle navigation to main app
           return;
         }
 
-        // Case 3: Email verification required (unverified account)
         if (requiresVerification) {
           Toast.show({
             type: 'info',
@@ -125,7 +119,6 @@ export const LoginScreen: React.FC = () => {
           return;
         }
 
-        // Fallback: If we get here, something unexpected happened
         Toast.show({
           type: 'error',
           text1: 'Login Error',
@@ -138,16 +131,13 @@ export const LoginScreen: React.FC = () => {
       const errorMessage = handleApiError(error);
       const statusCode = error?.response?.status;
 
-      // Handle specific error cases based on message content
       if (statusCode === 401) {
-        // Check for specific error messages from backend
         const lowerErrorMessage = errorMessage.toLowerCase();
 
         if (
           lowerErrorMessage.includes('no account found') ||
           lowerErrorMessage.includes('please sign up')
         ) {
-          // Email not found
           Toast.show({
             type: 'error',
             text1: 'Account Not Found',
@@ -164,7 +154,6 @@ export const LoginScreen: React.FC = () => {
             password: '',
           });
         } else if (lowerErrorMessage.includes('incorrect password')) {
-          // Wrong password
           Toast.show({
             type: 'error',
             text1: 'Incorrect Password',
@@ -176,14 +165,12 @@ export const LoginScreen: React.FC = () => {
             },
           });
 
-          // Clear password and show error on password field only
           setPassword('');
           setErrors({
             email: '',
             password: 'Incorrect password',
           });
         } else if (lowerErrorMessage.includes('deactivated')) {
-          // Account deactivated
           Toast.show({
             type: 'error',
             text1: 'Account Deactivated',
@@ -196,7 +183,6 @@ export const LoginScreen: React.FC = () => {
             password: '',
           });
         } else {
-          // Generic 401 - fallback to generic invalid credentials
           Toast.show({
             type: 'error',
             text1: 'Login Failed',
@@ -211,7 +197,6 @@ export const LoginScreen: React.FC = () => {
           });
         }
       } else if (statusCode === 429) {
-        // Rate limiting
         Toast.show({
           type: 'error',
           text1: 'Too Many Attempts',
@@ -219,7 +204,6 @@ export const LoginScreen: React.FC = () => {
           visibilityTime: 5000,
         });
       } else if (statusCode === 403) {
-        // Account might be locked or disabled
         Toast.show({
           type: 'error',
           text1: 'Access Denied',
@@ -231,7 +215,6 @@ export const LoginScreen: React.FC = () => {
         errorMessage.toLowerCase().includes('check your email') ||
         errorMessage.toLowerCase().includes('otp')
       ) {
-        // OTP already sent or required
         Toast.show({
           type: 'info',
           text1: 'Verification Required',
@@ -246,7 +229,6 @@ export const LoginScreen: React.FC = () => {
           });
         }, 1500);
       } else {
-        // Generic error
         Toast.show({
           type: 'error',
           text1: 'Login Failed',
@@ -259,13 +241,16 @@ export const LoginScreen: React.FC = () => {
     }
   };
 
+  if (!isReady) {
+    return <Loading fullScreen message="Setting up authentication..." />;
+  }
+
   return (
     <AuthLayout showLogo={true}>
       <View style={authFeatureStyles.authContent}>
         <Text style={authFeatureStyles.welcomeTitle}>Welcome to Avigate</Text>
         <Text style={authFeatureStyles.welcomeSubtitle}>Sign up or login below to continue.</Text>
 
-        {/* Email/Password Form */}
         <View style={formStyles.form}>
           <Input
             placeholder="Enter your email"
@@ -304,29 +289,34 @@ export const LoginScreen: React.FC = () => {
             title="Login"
             onPress={handleLogin}
             loading={loading}
+            disabled={googleLoading}
             style={buttonStyles.submitButton}
           />
         </View>
 
-        {/* Divider */}
         <View style={layoutStyles.divider}>
           <View style={layoutStyles.dividerLine} />
           <Text style={layoutStyles.dividerText}>OR</Text>
           <View style={layoutStyles.dividerLine} />
         </View>
 
-        {/* Google Login Button with Image */}
         <View style={authFeatureStyles.socialButtonsContainer}>
-          <TouchableOpacity onPress={() => router.push('/(auth)/google-auth')} activeOpacity={0.8}>
+          <TouchableOpacity 
+            onPress={signInWithGoogle}
+            disabled={loading || googleLoading}
+            activeOpacity={0.8}
+          >
             <Image
               source={require('../../../assets/images/google-icon.png')}
-              style={authFeatureStyles.googleButtonImage}
+              style={[
+                authFeatureStyles.googleButtonImage,
+                (loading || googleLoading) && { opacity: 0.5 }
+              ]}
               resizeMode="contain"
             />
           </TouchableOpacity>
         </View>
 
-        {/* Footer */}
         <View style={layoutStyles.footer}>
           <Text style={layoutStyles.footerText}>
             Don't have an account?{' '}
