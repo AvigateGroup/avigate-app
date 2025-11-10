@@ -23,38 +23,62 @@ export const useGoogleAuth = () => {
   // Configure OAuth discovery
   const discovery = AuthSession.useAutoDiscovery('https://accounts.google.com');
 
+  // Select the correct client ID based on platform
+  const getClientId = () => {
+    if (Platform.OS === 'ios') {
+      // Use iOS client ID if available, fallback to web
+      return GOOGLE_CONFIG.IOS_CLIENT_ID || GOOGLE_CONFIG.WEB_CLIENT_ID;
+    } else if (Platform.OS === 'android') {
+      // Use Android client ID if available, fallback to web
+      return GOOGLE_CONFIG.ANDROID_CLIENT_ID || GOOGLE_CONFIG.WEB_CLIENT_ID;
+    }
+    // Default to web client ID for web platform or Expo Go
+    return GOOGLE_CONFIG.WEB_CLIENT_ID;
+  };
+
+  const clientId = getClientId();
+
   // Create redirect URI
   const redirectUri = AuthSession.makeRedirectUri({
     scheme: 'avigate',
-    path: 'auth/callback', // Optional: adds a path for better organization
+    path: 'auth/callback',
   });
 
   // Configure the auth request with authorization code flow + PKCE
   const [request, response, promptAsync] = AuthSession.useAuthRequest(
     {
-      clientId: GOOGLE_CONFIG.WEB_CLIENT_ID,
+      clientId,
       redirectUri,
       scopes: ['openid', 'profile', 'email'],
-      responseType: AuthSession.ResponseType.Code, // Use Code instead of IdToken
-      usePKCE: true, // Explicitly enable PKCE for security
-      // Optional: Add these for better UX
+      responseType: AuthSession.ResponseType.Code,
+      usePKCE: true,
       extraParams: {
-        access_type: 'offline', // Get refresh token
+        access_type: 'offline',
       },
     },
     discovery,
   );
 
-  // Log redirect URI for debugging (add this to Google Console)
+  // Log configuration for debugging
   useEffect(() => {
     if (request) {
-      console.log('📍 OAuth Redirect URI:', redirectUri);
-      console.log('🔑 Add this exact URI to Google Cloud Console:');
-      console.log('   - Go to: https://console.cloud.google.com/apis/credentials');
-      console.log('   - Edit your OAuth 2.0 Client ID');
-      console.log(`   - Add to "Authorized redirect URIs": ${redirectUri}`);
+      console.log('📱 Platform:', Platform.OS);
+      console.log('🔑 Using Client ID:', clientId ? clientId.substring(0, 20) + '...' : 'NOT SET');
+      console.log('📍 Redirect URI:', redirectUri);
+      
+      if (!clientId || clientId === '') {
+        console.error('❌ ERROR: No client ID configured for platform:', Platform.OS);
+        console.error('   Please check your .env file and ensure:');
+        if (Platform.OS === 'android') {
+          console.error('   - EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID is set');
+        } else if (Platform.OS === 'ios') {
+          console.error('   - EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID is set');
+        } else {
+          console.error('   - EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID is set');
+        }
+      }
     }
-  }, [request, redirectUri]);
+  }, [request, redirectUri, clientId]);
 
   // Handle auth response
   useEffect(() => {
@@ -62,10 +86,19 @@ export const useGoogleAuth = () => {
       handleGoogleResponse(response);
     } else if (response?.type === 'error') {
       console.error('Google Auth Error:', response.error);
+      
+      // Provide more helpful error messages
+      let errorMessage = response.error?.message || 'Failed to authenticate with Google';
+      
+      if (errorMessage.includes('code_challenge_method')) {
+        errorMessage = `Platform configuration error. Please ensure you've created ${Platform.OS === 'android' ? 'an Android' : Platform.OS === 'ios' ? 'an iOS' : 'a Web'} OAuth client in Google Cloud Console.`;
+      }
+      
       Toast.show({
         type: 'error',
         text1: 'Authentication Error',
-        text2: response.error?.message || 'Failed to authenticate with Google',
+        text2: errorMessage,
+        visibilityTime: 6000,
       });
     } else if (response?.type === 'dismiss' || response?.type === 'cancel') {
       Toast.show({
@@ -91,7 +124,7 @@ export const useGoogleAuth = () => {
       // Exchange authorization code for tokens
       const tokenResponse = await AuthSession.exchangeCodeAsync(
         {
-          clientId: GOOGLE_CONFIG.WEB_CLIENT_ID,
+          clientId,
           code,
           redirectUri,
         },
@@ -112,7 +145,7 @@ export const useGoogleAuth = () => {
       const deviceInfo = {
         userAgent: getDeviceInfo(),
         platform: Platform.OS,
-        language: 'en-US', // You can get this from device locale if needed
+        language: 'en-US',
       };
 
       // Prepare Google auth data matching backend API
@@ -189,6 +222,16 @@ export const useGoogleAuth = () => {
       return;
     }
 
+    if (!clientId || clientId === '') {
+      Toast.show({
+        type: 'error',
+        text1: 'Configuration Missing',
+        text2: `Please configure ${Platform.OS === 'android' ? 'Android' : Platform.OS === 'ios' ? 'iOS' : 'Web'} OAuth client in .env file`,
+        visibilityTime: 6000,
+      });
+      return;
+    }
+
     try {
       await promptAsync();
     } catch (error: any) {
@@ -222,6 +265,6 @@ export const useGoogleAuth = () => {
   return {
     signInWithGoogle,
     loading,
-    isReady: !!request,
+    isReady: !!request && !!clientId,
   };
 };
