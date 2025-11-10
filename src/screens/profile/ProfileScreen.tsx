@@ -23,12 +23,8 @@ export const ProfileScreen: React.FC = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
   const colors = useThemedColors();
-  const { 
-    pickAndUploadProfilePicture, 
-    takeCameraPhoto, 
-    isUploadingImage, 
-    uploadProgress 
-  } = useUserService();
+  const { pickAndUploadProfilePicture, takeCameraPhoto, isUploadingImage, uploadProgress } =
+    useUserService();
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -127,9 +123,7 @@ export const ProfileScreen: React.FC = () => {
           {isUploadingImage && (
             <View style={[styles.uploadOverlay, { backgroundColor: 'rgba(0, 0, 0, 0.7)' }]}>
               <ActivityIndicator size="large" color={colors.white} />
-              <Text style={[styles.uploadText, { color: colors.white }]}>
-                {uploadProgress}%
-              </Text>
+              <Text style={[styles.uploadText, { color: colors.white }]}>{uploadProgress}%</Text>
             </View>
           )}
 

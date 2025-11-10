@@ -1,7 +1,15 @@
 // src/screens/auth/ResetPasswordScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+} from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -46,7 +54,7 @@ export const ResetPasswordScreen: React.FC = () => {
   // Helper function to get user-friendly OTP error messages
   const getOTPErrorMessage = (errorMessage: string): string => {
     const lowerMessage = errorMessage.toLowerCase();
-    
+
     if (lowerMessage.includes('already been used')) {
       return 'This code has already been used. Please request a new one.';
     }
@@ -56,7 +64,7 @@ export const ResetPasswordScreen: React.FC = () => {
     if (lowerMessage.includes('invalid')) {
       return 'Invalid code. Please check and try again.';
     }
-    
+
     return errorMessage;
   };
 
@@ -122,14 +130,14 @@ export const ResetPasswordScreen: React.FC = () => {
       }
     } catch (error: any) {
       console.error('Reset password error:', error);
-      
+
       const errorMessage = handleApiError(error);
       const statusCode = error?.response?.status;
 
       // Handle OTP-related errors (401)
       if (statusCode === 401) {
         const friendlyMessage = getOTPErrorMessage(errorMessage);
-        
+
         Toast.show({
           type: 'error',
           text1: 'Verification Failed',
@@ -141,7 +149,7 @@ export const ResetPasswordScreen: React.FC = () => {
         setStep('otp');
         setOtp('');
         setErrors({ otp: 'Invalid or expired code' });
-      } 
+      }
       // Handle password validation errors (400)
       else if (statusCode === 400) {
         Toast.show({
@@ -195,7 +203,7 @@ export const ResetPasswordScreen: React.FC = () => {
       }
     } catch (error: any) {
       const errorMessage = handleApiError(error);
-      
+
       Toast.show({
         type: 'error',
         text1: 'Resend Failed',
@@ -214,10 +222,7 @@ export const ResetPasswordScreen: React.FC = () => {
         style={styles.container}
       >
         <ScrollView
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingTop: insets.top || SPACING.xl }
-          ]}
+          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top || SPACING.xl }]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           bounces={false}
@@ -262,9 +267,7 @@ export const ResetPasswordScreen: React.FC = () => {
                 <View style={authFeatureStyles.infoBox}>
                   <View style={authFeatureStyles.infoHeader}>
                     <Icon name="time-outline" size={16} color="#7C3AED" />
-                    <Text style={authFeatureStyles.infoTitle}>
-                      Your code expires in 15 minutes
-                    </Text>
+                    <Text style={authFeatureStyles.infoTitle}>Your code expires in 15 minutes</Text>
                   </View>
                   <Text style={authFeatureStyles.infoItem}>
                     Make sure to complete the reset process before the code expires.

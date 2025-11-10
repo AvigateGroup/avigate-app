@@ -1,7 +1,15 @@
 // src/screens/auth/ForgotPasswordScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, StyleSheet } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from 'react-native';
 import { useRouter } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -79,10 +87,7 @@ export const ForgotPasswordScreen: React.FC = () => {
         style={styles.container}
       >
         <ScrollView
-          contentContainerStyle={[
-            styles.scrollContent,
-            { paddingTop: insets.top || SPACING.xl }
-          ]}
+          contentContainerStyle={[styles.scrollContent, { paddingTop: insets.top || SPACING.xl }]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           bounces={false}
@@ -151,10 +156,7 @@ export const ForgotPasswordScreen: React.FC = () => {
             <View style={layoutStyles.footer}>
               <Text style={layoutStyles.footerText}>
                 Remember your password?{' '}
-                <Text
-                  style={layoutStyles.footerLink}
-                  onPress={() => router.push('/(auth)/login')}
-                >
+                <Text style={layoutStyles.footerLink} onPress={() => router.push('/(auth)/login')}>
                   Sign In
                 </Text>
               </Text>
