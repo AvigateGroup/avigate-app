@@ -81,7 +81,8 @@
           "cameraPermission": "Allow Avigate to use your camera to take profile pictures"
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-build-properties"
     ],
     "experiments": {
       "typedRoutes": true,
