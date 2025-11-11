@@ -105,7 +105,7 @@ export const OnboardingScreen: React.FC = () => {
       {/* Logo */}
       <View style={styles.logoContainer}>
         <Image
-          source={require('../../../assets/images/logo.png')}
+          source={require('../../../assets/images/avigate-logo.png')}
           style={styles.logo}
           resizeMode="contain"
         />
