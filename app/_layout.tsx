@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { StatusBar } from 'react-native';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthProvider, useAuth } from '../src/store/AuthContext';
 import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
 import { useThemedColors } from '../src/hooks/useThemedColors';
@@ -18,20 +19,43 @@ function RootLayoutNav() {
   const colors = useThemedColors();
   const segments = useSegments();
   const router = useRouter();
+  const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean | null>(null);
 
+  // Check onboarding status
   useEffect(() => {
-    if (isLoading) return;
+    const checkOnboarding = async () => {
+      try {
+        const value = await AsyncStorage.getItem('hasSeenOnboarding');
+        setHasSeenOnboarding(value === 'true');
+      } catch (error) {
+        console.error('Error checking onboarding status:', error);
+        setHasSeenOnboarding(false);
+      }
+    };
+
+    checkOnboarding();
+  }, []);
+
+  // Handle navigation based on auth and onboarding status
+  useEffect(() => {
+    if (isLoading || hasSeenOnboarding === null) return;
 
     const inAuthGroup = segments[0] === '(auth)';
+    const inOnboarding = segments[0] === 'onboarding';
 
-    if (!isAuthenticated && !inAuthGroup) {
-      // Redirect to login if not authenticated
+    // First time user - show onboarding
+    if (!hasSeenOnboarding && !inOnboarding) {
+      router.replace('/onboarding/index');
+      return;
+    }
+
+    // Regular authentication flow
+    if (!isAuthenticated && !inAuthGroup && !inOnboarding) {
       router.replace('/(auth)/login');
     } else if (isAuthenticated && inAuthGroup) {
-      // Redirect to home if authenticated
       router.replace('/');
     }
-  }, [isAuthenticated, segments, isLoading]);
+  }, [isAuthenticated, segments, isLoading, hasSeenOnboarding]);
 
   return (
     <>
@@ -47,6 +71,15 @@ function RootLayoutNav() {
           },
         }}
       >
+        {/* Onboarding Screen - NEW */}
+        <Stack.Screen 
+          name="onboarding/index" 
+          options={{ 
+            headerShown: false,
+            gestureEnabled: false,
+          }} 
+        />
+        
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
@@ -64,7 +97,7 @@ function RootLayoutNav() {
           }}
         />
 
-        {/* Profile Routes - NEW */}
+        {/* Profile Routes */}
         <Stack.Screen
           name="profile/edit"
           options={{
@@ -119,7 +152,7 @@ function RootLayoutNav() {
         <Stack.Screen name="+not-found" />
       </Stack>
 
-      {/* Toast Notifications - Already present */}
+      {/* Toast Notifications */}
       <Toast />
     </>
   );
