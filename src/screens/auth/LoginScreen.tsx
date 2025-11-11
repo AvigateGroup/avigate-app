@@ -12,7 +12,7 @@ import { authApi } from '@/api/auth.api';
 import { validateEmail } from '@/utils/validation';
 import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
-import { useGoogleAuth } from '@/hooks/useFirebaseGoogleAuth';
+import { useFirebaseGoogleAuth } from '@/hooks/useFirebaseGoogleAuth';
 import { LoginDto } from '@/types/auth.types';
 import { buttonStyles, formStyles, layoutStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
@@ -20,7 +20,7 @@ import { authFeatureStyles } from '@/styles/features/auth';
 export const LoginScreen: React.FC = () => {
   const router = useRouter();
   const { login } = useAuth();
-  const { signInWithGoogle, loading: googleLoading, isReady } = useGoogleAuth();
+  const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
   
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
