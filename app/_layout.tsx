@@ -45,7 +45,7 @@ function RootLayoutNav() {
 
     // First time user - show onboarding
     if (!hasSeenOnboarding && !inOnboarding) {
-      router.replace('/onboarding/index');
+      router.replace('/onboarding');
       return;
     }
 
