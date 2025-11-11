@@ -62,12 +62,21 @@ export const useFirebaseGoogleAuth = () => {
       console.log('📱 Starting Google Sign-In...');
 
       // Sign in with Google
-      const userInfo = await GoogleSignin.signIn();
+      const signInResult = await GoogleSignin.signIn();
       
-      console.log('✅ Google Sign-In successful:', userInfo.user.email);
+      // Handle the response structure - it can be either signInResult.data or signInResult directly
+      const userInfo = signInResult.data || signInResult;
+      
+      if (!userInfo || !userInfo.user) {
+        throw new Error('No user information received from Google');
+      }
+
+      const user = userInfo.user;
+      
+      console.log('✅ Google Sign-In successful:', user.email);
 
       // Get Google ID token
-      const { idToken } = userInfo;
+      const idToken = userInfo.idToken || signInResult.idToken;
 
       if (!idToken) {
         throw new Error('No ID token received from Google');
@@ -96,11 +105,11 @@ export const useFirebaseGoogleAuth = () => {
 
       // Prepare data for your backend
       const googleAuthDto: GoogleAuthDto = {
-        email: userInfo.user.email,
-        googleId: userInfo.user.id,
-        firstName: userInfo.user.givenName || userInfo.user.name?.split(' ')[0] || 'User',
-        lastName: userInfo.user.familyName || userInfo.user.name?.split(' ')[1] || '',
-        profilePicture: userInfo.user.photo || undefined,
+        email: user.email,
+        googleId: user.id,
+        firstName: user.givenName || user.name?.split(' ')[0] || 'User',
+        lastName: user.familyName || user.name?.split(' ')[1] || '',
+        profilePicture: user.photo || undefined,
         idToken: firebaseIdToken, // Use Firebase token (more secure)
         fcmToken: fcmToken,
         deviceInfo: deviceInfo,
@@ -132,7 +141,7 @@ export const useFirebaseGoogleAuth = () => {
         } else if (response.data.requiresVerification) {
           router.replace({
             pathname: '/(auth)/verify-email',
-            params: { email: userInfo.user.email },
+            params: { email: user.email },
           });
         }
         // Otherwise, AuthContext will handle navigation to main app

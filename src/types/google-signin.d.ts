@@ -10,20 +10,42 @@ declare module '@react-native-google-signin/google-signin' {
     photo?: string;
   }
 
+  export interface UserInfo {
+    user: User;
+    idToken: string | null;
+  }
+
   export interface SignInResponse {
-    data?: {
-      user: User;
-      idToken?: string;
-    };
+    data?: UserInfo;
     user?: User;
     idToken?: string;
   }
 
+  export interface ConfigureParams {
+    webClientId?: string;
+    offlineAccess?: boolean;
+    hostedDomain?: string;
+    forceCodeForRefreshToken?: boolean;
+    accountName?: string;
+    iosClientId?: string;
+    googleServicePlistPath?: string;
+    openIdRealm?: string;
+    profileImageSize?: number;
+  }
+
+  export interface HasPlayServicesParams {
+    showPlayServicesUpdateDialog?: boolean;
+  }
+
   export const GoogleSignin: {
-    configure(options: any): void;
-    hasPlayServices(): Promise<boolean>;
+    configure(options: ConfigureParams): void;
+    hasPlayServices(params?: HasPlayServicesParams): Promise<boolean>;
     signIn(): Promise<SignInResponse>;
     signOut(): Promise<void>;
+    isSignedIn(): Promise<boolean>;
+    getCurrentUser(): Promise<User | null>;
+    getTokens(): Promise<{ idToken: string; accessToken: string }>;
+    revokeAccess(): Promise<void>;
   };
 
   export const statusCodes: {
