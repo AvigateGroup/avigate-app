@@ -8,10 +8,12 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
+import { Loading } from '@/components/common/Loading';
 import { CountryPhonePicker } from '@/components/common/CountryPhonePicker';
 import { authApi } from '@/api/auth.api';
 import { validateEmail, validatePassword, validatePhoneNumber } from '@/utils/validation';
 import { getDeviceInfo, getFCMToken } from '@/utils/helpers';
+import { useFirebaseGoogleAuth } from '@/hooks/useFirebaseGoogleAuth';
 import { RegisterDto, UserSex } from '@/types/auth.types';
 import { typographyStyles, formStyles, layoutStyles, spacingStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
@@ -23,6 +25,8 @@ const PRIVACY_VERSION = '1.0';
 
 export const RegisterScreen: React.FC = () => {
   const router = useRouter();
+  const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
+  
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -433,6 +437,10 @@ export const RegisterScreen: React.FC = () => {
     }
   };
 
+  if (!isReady) {
+    return <Loading fullScreen message="Setting up authentication..." />;
+  }
+
   return (
     <AuthLayout showLogo={true}>
       <View style={authFeatureStyles.authContent}>
@@ -460,13 +468,14 @@ export const RegisterScreen: React.FC = () => {
               onPress={handleBack}
               variant="outline"
               style={authFeatureStyles.backButton}
+              disabled={loading || googleLoading}
             />
           )}
           <Button
             title={currentStep === totalSteps ? 'Sign Up' : 'Next'}
             onPress={handleNext}
             loading={loading}
-            disabled={loading}
+            disabled={loading || googleLoading}
             style={authFeatureStyles.nextButton}
           />
         </View>
@@ -481,12 +490,16 @@ export const RegisterScreen: React.FC = () => {
             </View>
 
             <TouchableOpacity
-              onPress={() => router.push('/(auth)/google-auth')}
+              onPress={signInWithGoogle}
+              disabled={loading || googleLoading}
               activeOpacity={0.8}
             >
               <Image
                 source={require('../../../assets/images/google-icon.png')}
-                style={authFeatureStyles.googleButtonImage}
+                style={[
+                  authFeatureStyles.googleButtonImage,
+                  (loading || googleLoading) && { opacity: 0.5 }
+                ]}
                 resizeMode="contain"
               />
             </TouchableOpacity>
