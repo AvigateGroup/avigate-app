@@ -36,7 +36,7 @@ function RootLayoutNav() {
     };
 
     checkOnboarding();
-    
+
     // Also check when we're on the login screen (in case we just came from onboarding)
     if (pathname === '/(auth)/login' || pathname === '/login') {
       setTimeout(checkOnboarding, 200);
@@ -94,29 +94,29 @@ function RootLayoutNav() {
         }}
       >
         {/* Onboarding Screen */}
-        <Stack.Screen 
-          name="onboarding/index" 
-          options={{ 
+        <Stack.Screen
+          name="onboarding/index"
+          options={{
             headerShown: false,
             gestureEnabled: false,
             animation: 'fade',
-          }} 
+          }}
         />
-        
-        <Stack.Screen 
-          name="(auth)" 
-          options={{ 
+
+        <Stack.Screen
+          name="(auth)"
+          options={{
             headerShown: false,
             animation: 'fade',
-          }} 
+          }}
         />
-        
-        <Stack.Screen 
-          name="(tabs)" 
-          options={{ 
+
+        <Stack.Screen
+          name="(tabs)"
+          options={{
             headerShown: false,
             animation: 'fade',
-          }} 
+          }}
         />
 
         {/* Settings Screen */}

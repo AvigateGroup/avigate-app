@@ -65,13 +65,11 @@ export const OnboardingScreen: React.FC = () => {
     }
   }, []);
 
-  const onViewableItemsChanged = useRef(
-    ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0 && !completedRef.current) {
-        setCurrentIndex(viewableItems[0].index || 0);
-      }
+  const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+    if (viewableItems.length > 0 && !completedRef.current) {
+      setCurrentIndex(viewableItems[0].index || 0);
     }
-  ).current;
+  }).current;
 
   const viewabilityConfig = useRef({
     itemVisiblePercentThreshold: 50,
@@ -79,7 +77,7 @@ export const OnboardingScreen: React.FC = () => {
 
   const handleNext = () => {
     if (isCompleting || completedRef.current) return;
-    
+
     if (currentIndex < slides.length - 1) {
       flatListRef.current?.scrollToIndex({
         index: currentIndex + 1,
@@ -99,20 +97,20 @@ export const OnboardingScreen: React.FC = () => {
     if (isCompleting || completedRef.current) {
       return;
     }
-    
+
     completedRef.current = true;
     setIsCompleting(true);
-    
+
     try {
       // Save to AsyncStorage with multiple attempts
       let saveSuccess = false;
       for (let attempt = 1; attempt <= 3; attempt++) {
         try {
           await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-          
+
           // Verify immediately
           const verification = await AsyncStorage.getItem('hasSeenOnboarding');
-          
+
           if (verification === 'true') {
             saveSuccess = true;
             break;
@@ -126,18 +124,17 @@ export const OnboardingScreen: React.FC = () => {
           }
         }
       }
-      
+
       if (saveSuccess) {
       } else {
         console.error(' Failed to save onboarding status after 3 attempts');
       }
-      
+
       // Navigate regardless of save success
       // Use setTimeout to ensure AsyncStorage operations complete
       setTimeout(() => {
         router.replace('/(auth)/login');
       }, 300);
-      
     } catch (error) {
       console.error(' Critical error in handleComplete:', error);
       // Navigate anyway
@@ -205,10 +202,7 @@ export const OnboardingScreen: React.FC = () => {
           {slides.map((_, index) => (
             <View
               key={index}
-              style={[
-                styles.paginationDot,
-                index === currentIndex && styles.paginationDotActive,
-              ]}
+              style={[styles.paginationDot, index === currentIndex && styles.paginationDotActive]}
             />
           ))}
         </View>
@@ -217,26 +211,18 @@ export const OnboardingScreen: React.FC = () => {
         <View style={styles.buttonContainer}>
           {/* Skip Button - Left Side */}
           {!isLastSlide && (
-            <TouchableOpacity 
-              onPress={handleSkip} 
+            <TouchableOpacity
+              onPress={handleSkip}
               style={styles.skipButton}
               disabled={isCompleting}
             >
-              <Text style={[
-                styles.skipText,
-                isCompleting && { opacity: 0.5 }
-              ]}>
-                Skip
-              </Text>
+              <Text style={[styles.skipText, isCompleting && { opacity: 0.5 }]}>Skip</Text>
             </TouchableOpacity>
           )}
 
           {/* Next/Complete Button - Right Side */}
           <TouchableOpacity
-            style={[
-              styles.nextButton,
-              isCompleting && { opacity: 0.5 }
-            ]}
+            style={[styles.nextButton, isCompleting && { opacity: 0.5 }]}
             onPress={handleNext}
             activeOpacity={0.8}
             disabled={isCompleting}
@@ -287,7 +273,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: SCREEN_WIDTH * 0.65,
-    height: SCREEN_HEIGHT * 0.30,
+    height: SCREEN_HEIGHT * 0.3,
     maxHeight: 300,
   },
   textContainer: {

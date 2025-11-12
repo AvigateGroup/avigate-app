@@ -30,20 +30,23 @@ export default function PrivacyScreen() {
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>1. Introduction</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Welcome to Avigate ("we," "our," or "us"). Avigate is a mobile application designed to help 
-          residents and visitors navigate Nigerian cities using local transportation systems including 
-          Keke Napep, commercial buses, taxis, and okada. We are committed to protecting your privacy 
-          and ensuring transparency about how we collect, use, and safeguard your personal information.
+          Welcome to Avigate ("we," "our," or "us"). Avigate is a mobile application designed to
+          help residents and visitors navigate Nigerian cities using local transportation systems
+          including Keke Napep, commercial buses, taxis, and okada. We are committed to protecting
+          your privacy and ensuring transparency about how we collect, use, and safeguard your
+          personal information.
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          This Privacy Policy explains what information we collect, how we use it, who we share it with, 
-          and your rights regarding your personal data. By using Avigate, you agree to the collection 
-          and use of information in accordance with this policy.
+          This Privacy Policy explains what information we collect, how we use it, who we share it
+          with, and your rights regarding your personal data. By using Avigate, you agree to the
+          collection and use of information in accordance with this policy.
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>2. Information We Collect</Text>
-        
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>2.1 Information You Provide</Text>
+
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          2.1 Information You Provide
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           When you create an account or use our services, we collect:
         </Text>
@@ -51,30 +54,37 @@ export default function PrivacyScreen() {
           • Personal identification: First name, last name, email address
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Contact information: Phone number (optional for local registration, required for Google sign-up users)
+          • Contact information: Phone number (optional for local registration, required for Google
+          sign-up users)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Demographic information: Sex/gender, country, preferred language
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Authentication credentials: Email and encrypted password (for local registration) or Google account information (for Google Sign-In)
+          • Authentication credentials: Email and encrypted password (for local registration) or
+          Google account information (for Google Sign-In)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Profile picture: If you choose to upload one
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>2.2 Automatically Collected Information</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          2.2 Automatically Collected Information
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           When you use Avigate, we automatically collect:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Device information: Device model, operating system, unique device identifiers, mobile network information
+          • Device information: Device model, operating system, unique device identifiers, mobile
+          network information
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Location data: Real-time GPS location when you use navigation features, search for routes, or request directions (only when app is in use and with your permission)
+          • Location data: Real-time GPS location when you use navigation features, search for
+          routes, or request directions (only when app is in use and with your permission)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Usage data: App features accessed, search queries, routes viewed, interaction with advertisements, session duration
+          • Usage data: App features accessed, search queries, routes viewed, interaction with
+          advertisements, session duration
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Device tokens: Firebase Cloud Messaging (FCM) tokens for push notifications
@@ -83,7 +93,9 @@ export default function PrivacyScreen() {
           • IP address and general location information for security and service improvement
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>2.3 Information from Third Parties</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          2.3 Information from Third Parties
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           If you sign in using Google Sign-In, we receive:
         </Text>
@@ -96,15 +108,15 @@ export default function PrivacyScreen() {
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Your Google profile picture (if available)
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Your Google account ID
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Your Google account ID</Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>3. How We Use Your Information</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          3. How We Use Your Information
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           We use the collected information for the following purposes:
         </Text>
-        
+
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>3.1 Service Provision</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Create and manage your account
@@ -130,7 +142,8 @@ export default function PrivacyScreen() {
           • Provide customer support and respond to your inquiries
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Send push notifications about service updates, new features, or transportation alerts (with your consent)
+          • Send push notifications about service updates, new features, or transportation alerts
+          (with your consent)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Communicate important changes to our Terms or Privacy Policy
@@ -150,7 +163,9 @@ export default function PrivacyScreen() {
           • Work with advertising partners to deliver targeted advertisements
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>3.4 Service Improvement</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          3.4 Service Improvement
+        </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Analyze usage patterns to improve app functionality
         </Text>
@@ -164,7 +179,9 @@ export default function PrivacyScreen() {
           • Optimize app performance and user experience
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>3.5 Security and Fraud Prevention</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          3.5 Security and Fraud Prevention
+        </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Verify user identity through email and phone verification
         </Text>
@@ -178,14 +195,18 @@ export default function PrivacyScreen() {
           • Comply with legal obligations and enforce our Terms of Service
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>4. Advertising and Third-Party Services</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          4. Advertising and Third-Party Services
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Avigate is a free service supported by advertising revenue. We work with third-party advertising 
-          partners to display ads within the app. These partners may collect information about your device 
-          and usage to serve relevant advertisements.
+          Avigate is a free service supported by advertising revenue. We work with third-party
+          advertising partners to display ads within the app. These partners may collect information
+          about your device and usage to serve relevant advertisements.
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.1 Advertising Partners</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.1 Advertising Partners
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           We may use the following types of advertising services:
         </Text>
@@ -199,10 +220,10 @@ export default function PrivacyScreen() {
           • Other advertising networks as we expand our services
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.2 Information Shared with Advertisers</Text>
-        <Text style={[styles.text, { color: colors.text }]}>
-          Advertising partners may receive:
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.2 Information Shared with Advertisers
         </Text>
+        <Text style={[styles.text, { color: colors.text }]}>Advertising partners may receive:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Anonymous device identifiers (Advertising ID)
         </Text>
@@ -216,7 +237,9 @@ export default function PrivacyScreen() {
           • Ad interaction data (views, clicks)
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.3 Controlling Personalized Ads</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.3 Controlling Personalized Ads
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           You can limit personalized advertising through:
         </Text>
@@ -230,9 +253,12 @@ export default function PrivacyScreen() {
           Note: Opting out will not remove ads but may make them less relevant to you.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>5. How We Share Your Information</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          5. How We Share Your Information
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          We do not sell your personal information. We share your information only in the following circumstances:
+          We do not sell your personal information. We share your information only in the following
+          circumstances:
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>5.1 Service Providers</Text>
@@ -242,18 +268,14 @@ export default function PrivacyScreen() {
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Cloud hosting and data storage
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Email delivery services
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Email delivery services</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Push notification services (Firebase Cloud Messaging)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Analytics and app performance monitoring
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Customer support tools
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Customer support tools</Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>5.2 Legal Requirements</Text>
         <Text style={[styles.text, { color: colors.text }]}>
@@ -277,16 +299,19 @@ export default function PrivacyScreen() {
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>5.3 Business Transfers</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          In the event of a merger, acquisition, or sale of assets, your information may be transferred 
-          to the new entity. We will notify you via email and/or prominent notice in the app before 
-          your information becomes subject to a different privacy policy.
+          In the event of a merger, acquisition, or sale of assets, your information may be
+          transferred to the new entity. We will notify you via email and/or prominent notice in the
+          app before your information becomes subject to a different privacy policy.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>6. Data Storage and Security</Text>
-        
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          6. Data Storage and Security
+        </Text>
+
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>6.1 Data Storage</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Your data is stored on secure servers. We use industry-standard security measures including:
+          Your data is stored on secure servers. We use industry-standard security measures
+          including:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Encrypted data transmission (HTTPS/TLS)
@@ -321,23 +346,23 @@ export default function PrivacyScreen() {
           • Maintain security and prevent fraud
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          When you delete your account, we will delete or anonymize your personal information within 
+          When you delete your account, we will delete or anonymize your personal information within
           30 days, except where we are required to retain it for legal purposes.
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>6.3 Security Measures</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          While we implement strong security measures, no system is completely secure. We cannot 
-          guarantee absolute security of your information. You are responsible for maintaining the 
+          While we implement strong security measures, no system is completely secure. We cannot
+          guarantee absolute security of your information. You are responsible for maintaining the
           confidentiality of your account credentials.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>7. Your Rights and Choices</Text>
-        
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>7.1 Access and Update</Text>
-        <Text style={[styles.text, { color: colors.text }]}>
-          You have the right to:
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          7. Your Rights and Choices
         </Text>
+
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>7.1 Access and Update</Text>
+        <Text style={[styles.text, { color: colors.text }]}>You have the right to:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Access your personal information through the app's Profile section
         </Text>
@@ -353,7 +378,7 @@ export default function PrivacyScreen() {
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>7.2 Data Portability</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          You can request a copy of your data by contacting us at hello@avigate.co. We will provide 
+          You can request a copy of your data by contacting us at hello@avigate.co. We will provide
           your data in a commonly used, machine-readable format within 30 days.
         </Text>
 
@@ -368,11 +393,13 @@ export default function PrivacyScreen() {
           • Contacting our support team at hello@avigate.co
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Upon deletion, we will remove your personal information except where retention is required 
+          Upon deletion, we will remove your personal information except where retention is required
           by law or for legitimate business purposes.
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>7.4 Location Permissions</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          7.4 Location Permissions
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           You can control location access through your device settings:
         </Text>
@@ -386,7 +413,9 @@ export default function PrivacyScreen() {
           Note: Disabling location access will limit core navigation features.
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>7.5 Marketing Communications</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          7.5 Marketing Communications
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           You can opt out of promotional emails by:
         </Text>
@@ -397,35 +426,37 @@ export default function PrivacyScreen() {
           • Adjusting notification settings in the app
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Note: You will still receive essential service-related communications (account verification, 
-          security alerts, policy changes).
+          Note: You will still receive essential service-related communications (account
+          verification, security alerts, policy changes).
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>8. Children's Privacy</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Avigate is not intended for children under 13 years of age. We do not knowingly collect 
-          personal information from children under 13. If we discover that we have collected information 
-          from a child under 13, we will promptly delete such information.
+          Avigate is not intended for children under 13 years of age. We do not knowingly collect
+          personal information from children under 13. If we discover that we have collected
+          information from a child under 13, we will promptly delete such information.
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          If you are a parent or guardian and believe your child has provided us with personal information, 
-          please contact us at helo@avigate.co.
+          If you are a parent or guardian and believe your child has provided us with personal
+          information, please contact us at helo@avigate.co.
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>9. International Users</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Avigate is designed primarily for users in Nigeria. If you access our services from outside 
-          Nigeria, your information may be transferred to, stored, and processed in Nigeria. By using 
-          our services, you consent to this transfer.
+          Avigate is designed primarily for users in Nigeria. If you access our services from
+          outside Nigeria, your information may be transferred to, stored, and processed in Nigeria.
+          By using our services, you consent to this transfer.
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          We comply with the Nigeria Data Protection Regulation (NDPR) 2019 and applicable data 
+          We comply with the Nigeria Data Protection Regulation (NDPR) 2019 and applicable data
           protection laws.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>10. Changes to This Privacy Policy</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          10. Changes to This Privacy Policy
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          We may update this Privacy Policy periodically to reflect changes in our practices or for 
+          We may update this Privacy Policy periodically to reflect changes in our practices or for
           legal, operational, or regulatory reasons. When we make changes, we will:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
@@ -438,33 +469,27 @@ export default function PrivacyScreen() {
           • Display a prominent notice in the app
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Your continued use of Avigate after changes become effective constitutes acceptance of the 
+          Your continued use of Avigate after changes become effective constitutes acceptance of the
           revised policy. We encourage you to review this policy periodically.
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>11. Contact Us</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          If you have questions, concerns, or requests regarding this Privacy Policy or our data practices, 
-          please contact us:
+          If you have questions, concerns, or requests regarding this Privacy Policy or our data
+          practices, please contact us:
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Email: helo@avigate.co
-        </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Support: hello@avigate.co
-        </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Address: Port Harcourt
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Email: helo@avigate.co</Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Support: hello@avigate.co</Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Address: Port Harcourt</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          For data protection inquiries specific to NDPR compliance, you may also contact the National 
-          Information Technology Development Agency (NITDA).
+          For data protection inquiries specific to NDPR compliance, you may also contact the
+          National Information Technology Development Agency (NITDA).
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>12. Consent</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          By creating an account and using Avigate, you acknowledge that you have read, understood, 
-          and agree to this Privacy Policy. You consent to the collection, use, and sharing of your 
+          By creating an account and using Avigate, you acknowledge that you have read, understood,
+          and agree to this Privacy Policy. You consent to the collection, use, and sharing of your
           information as described herein.
         </Text>
 

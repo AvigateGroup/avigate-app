@@ -29,7 +29,7 @@ export const useFirebaseGoogleAuth = () => {
         offlineAccess: true,
       });
       setIsConfigured(true);
-      
+
       console.log('🔥 Firebase Google Auth configured');
       console.log('📱 Platform:', Platform.OS);
       console.log('🔑 Web Client ID:', GOOGLE_CONFIG.WEB_CLIENT_ID?.substring(0, 20) + '...');
@@ -63,16 +63,16 @@ export const useFirebaseGoogleAuth = () => {
 
       // Sign in with Google
       const signInResult = await GoogleSignin.signIn();
-      
+
       // Handle the response structure - it can be either signInResult.data or signInResult directly
       const userInfo = signInResult.data || signInResult;
-      
+
       if (!userInfo || !userInfo.user) {
         throw new Error('No user information received from Google');
       }
 
       const user = userInfo.user;
-      
+
       console.log('✅ Google Sign-In successful:', user.email);
 
       // Get Google ID token
@@ -89,7 +89,7 @@ export const useFirebaseGoogleAuth = () => {
 
       // Sign in to Firebase
       const firebaseUserCredential = await auth().signInWithCredential(googleCredential);
-      
+
       console.log('✅ Firebase authentication successful');
 
       // Get fresh Firebase ID token to send to your backend

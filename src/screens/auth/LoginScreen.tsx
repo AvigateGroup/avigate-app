@@ -21,7 +21,7 @@ export const LoginScreen: React.FC = () => {
   const router = useRouter();
   const { login } = useAuth();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
-  
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -301,7 +301,7 @@ export const LoginScreen: React.FC = () => {
         </View>
 
         <View style={authFeatureStyles.socialButtonsContainer}>
-          <TouchableOpacity 
+          <TouchableOpacity
             onPress={signInWithGoogle}
             disabled={loading || googleLoading}
             activeOpacity={0.8}
@@ -310,7 +310,7 @@ export const LoginScreen: React.FC = () => {
               source={require('../../../assets/images/google-icon.png')}
               style={[
                 authFeatureStyles.googleButtonImage,
-                (loading || googleLoading) && { opacity: 0.5 }
+                (loading || googleLoading) && { opacity: 0.5 },
               ]}
               resizeMode="contain"
             />

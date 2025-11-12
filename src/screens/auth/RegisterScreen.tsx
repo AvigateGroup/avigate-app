@@ -26,7 +26,7 @@ const PRIVACY_VERSION = '1.0';
 export const RegisterScreen: React.FC = () => {
   const router = useRouter();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
-  
+
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -498,7 +498,7 @@ export const RegisterScreen: React.FC = () => {
                 source={require('../../../assets/images/google-icon.png')}
                 style={[
                   authFeatureStyles.googleButtonImage,
-                  (loading || googleLoading) && { opacity: 0.5 }
+                  (loading || googleLoading) && { opacity: 0.5 },
                 ]}
                 resizeMode="contain"
               />
