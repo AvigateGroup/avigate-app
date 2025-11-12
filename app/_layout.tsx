@@ -41,7 +41,7 @@ function RootLayoutNav() {
     if (pathname === '/(auth)/login' || pathname === '/login') {
       setTimeout(checkOnboarding, 200);
     }
-  }, [pathname]); // Re-check when pathname changes
+  }, [pathname]);
 
   // Handle navigation based on auth and onboarding status
   useEffect(() => {
@@ -52,9 +52,16 @@ function RootLayoutNav() {
     const inAuthGroup = segments[0] === '(auth)';
     const inOnboarding = segments[0] === 'onboarding';
     const inTabs = segments[0] === '(tabs)';
+    const inSettings = segments[0] === 'settings';
+    const inProfile = segments[0] === 'profile';
+    const inPrivacy = segments[0] === 'privacy';
+    const inTerms = segments[0] === 'terms';
+    
+    // Public routes that don't require authentication and shouldn't trigger redirects
+    const isPublicRoute = inPrivacy || inTerms;
 
     // First time user - show onboarding (but not if already navigating to login from onboarding)
-    if (!hasSeenOnboarding && !inOnboarding && !inAuthGroup) {
+    if (!hasSeenOnboarding && !inOnboarding && !inAuthGroup && !isPublicRoute) {
       setIsNavigating(true);
       router.replace('/onboarding');
       setTimeout(() => setIsNavigating(false), 1000);
@@ -62,16 +69,16 @@ function RootLayoutNav() {
     }
 
     // User has seen onboarding but not authenticated - redirect to login
-    // But ONLY if they're not already in the auth group
-    if (hasSeenOnboarding && !isAuthenticated && !inAuthGroup && !inOnboarding) {
+    // But ONLY if they're not already in the auth group OR viewing public routes
+    if (hasSeenOnboarding && !isAuthenticated && !inAuthGroup && !inOnboarding && !isPublicRoute) {
       setIsNavigating(true);
       router.replace('/(auth)/login');
       setTimeout(() => setIsNavigating(false), 1000);
       return;
     }
 
-    // User is authenticated but in auth screens or onboarding
-    if (isAuthenticated && (inAuthGroup || inOnboarding)) {
+    // User is authenticated but in auth screens or onboarding (not in public routes)
+    if (isAuthenticated && (inAuthGroup || inOnboarding) && !isPublicRoute) {
       setIsNavigating(true);
       router.replace('/(tabs)');
       setTimeout(() => setIsNavigating(false), 1000);
@@ -159,7 +166,7 @@ function RootLayoutNav() {
           }}
         />
 
-        {/* Privacy & Terms */}
+        {/* Privacy & Terms - Public Routes */}
         <Stack.Screen
           name="privacy/index"
           options={{
@@ -170,6 +177,7 @@ function RootLayoutNav() {
             },
             headerTintColor: colors.text,
             headerShadowVisible: false,
+            presentation: 'modal', // Open as modal for better UX
           }}
         />
         <Stack.Screen
@@ -182,6 +190,7 @@ function RootLayoutNav() {
             },
             headerTintColor: colors.text,
             headerShadowVisible: false,
+            presentation: 'modal', // Open as modal for better UX
           }}
         />
 
