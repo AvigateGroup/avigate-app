@@ -56,7 +56,7 @@ function RootLayoutNav() {
     const inProfile = segments[0] === 'profile';
     const inPrivacy = segments[0] === 'privacy';
     const inTerms = segments[0] === 'terms';
-    
+
     // Public routes that don't require authentication and shouldn't trigger redirects
     const isPublicRoute = inPrivacy || inTerms;
 
