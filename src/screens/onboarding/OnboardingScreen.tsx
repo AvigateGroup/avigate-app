@@ -10,9 +10,11 @@ import {
   TouchableOpacity,
   Image,
   ViewToken,
+  BackHandler,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Icon from 'react-native-vector-icons/Ionicons';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -48,10 +50,24 @@ export const OnboardingScreen: React.FC = () => {
   const router = useRouter();
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const completedRef = useRef(false);
+
+  // Prevent back button on Android
+  React.useEffect(() => {
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', () => true);
+    return () => backHandler.remove();
+  }, []);
+
+  // Prevent navigation loop - if we've completed, don't let the screen re-render
+  React.useEffect(() => {
+    if (completedRef.current) {
+    }
+  }, []);
 
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken[] }) => {
-      if (viewableItems.length > 0) {
+      if (viewableItems.length > 0 && !completedRef.current) {
         setCurrentIndex(viewableItems[0].index || 0);
       }
     }
@@ -62,6 +78,8 @@ export const OnboardingScreen: React.FC = () => {
   }).current;
 
   const handleNext = () => {
+    if (isCompleting || completedRef.current) return;
+    
     if (currentIndex < slides.length - 1) {
       flatListRef.current?.scrollToIndex({
         index: currentIndex + 1,
@@ -72,18 +90,60 @@ export const OnboardingScreen: React.FC = () => {
     }
   };
 
-  const handleSkip = async () => {
-    await handleComplete();
+  const handleSkip = () => {
+    if (isCompleting || completedRef.current) return;
+    handleComplete();
   };
 
   const handleComplete = async () => {
+    if (isCompleting || completedRef.current) {
+      return;
+    }
+    
+    completedRef.current = true;
+    setIsCompleting(true);
+    
     try {
-      // Mark onboarding as completed
-      await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-      router.replace('/(auth)/login');
+      // Save to AsyncStorage with multiple attempts
+      let saveSuccess = false;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          await AsyncStorage.setItem('hasSeenOnboarding', 'true');
+          
+          // Verify immediately
+          const verification = await AsyncStorage.getItem('hasSeenOnboarding');
+          
+          if (verification === 'true') {
+            saveSuccess = true;
+            break;
+          } else {
+            await new Promise(resolve => setTimeout(resolve, 100));
+          }
+        } catch (err) {
+          console.error(` Save failed on attempt ${attempt}:`, err);
+          if (attempt < 3) {
+            await new Promise(resolve => setTimeout(resolve, 100));
+          }
+        }
+      }
+      
+      if (saveSuccess) {
+      } else {
+        console.error(' Failed to save onboarding status after 3 attempts');
+      }
+      
+      // Navigate regardless of save success
+      // Use setTimeout to ensure AsyncStorage operations complete
+      setTimeout(() => {
+        router.replace('/(auth)/login');
+      }, 300);
+      
     } catch (error) {
-      console.error('Error saving onboarding status:', error);
-      router.replace('/(auth)/login');
+      console.error(' Critical error in handleComplete:', error);
+      // Navigate anyway
+      setTimeout(() => {
+        router.replace('/(auth)/login');
+      }, 300);
     }
   };
 
@@ -99,6 +159,17 @@ export const OnboardingScreen: React.FC = () => {
       </View>
     </View>
   );
+
+  const isLastSlide = currentIndex === slides.length - 1;
+
+  if (completedRef.current) {
+    // Show a blank screen while navigating to prevent flicker
+    return (
+      <View style={[styles.container, { justifyContent: 'center', alignItems: 'center' }]}>
+        <Text style={{ color: '#666666' }}>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -123,6 +194,8 @@ export const OnboardingScreen: React.FC = () => {
         onViewableItemsChanged={onViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
         bounces={false}
+        scrollEnabled={!isCompleting}
+        style={styles.flatList}
       />
 
       {/* Footer */}
@@ -142,18 +215,39 @@ export const OnboardingScreen: React.FC = () => {
 
         {/* Navigation Buttons */}
         <View style={styles.buttonContainer}>
+          {/* Skip Button - Left Side */}
+          {!isLastSlide && (
+            <TouchableOpacity 
+              onPress={handleSkip} 
+              style={styles.skipButton}
+              disabled={isCompleting}
+            >
+              <Text style={[
+                styles.skipText,
+                isCompleting && { opacity: 0.5 }
+              ]}>
+                Skip
+              </Text>
+            </TouchableOpacity>
+          )}
+
+          {/* Next/Complete Button - Right Side */}
           <TouchableOpacity
-            style={styles.nextButton}
+            style={[
+              styles.nextButton,
+              isCompleting && { opacity: 0.5 }
+            ]}
             onPress={handleNext}
             activeOpacity={0.8}
+            disabled={isCompleting}
           >
             <View style={styles.nextButtonInner}>
-              <Text style={styles.nextButtonIcon}>›</Text>
+              {isLastSlide ? (
+                <Icon name="checkmark" size={32} color="#FFFFFF" />
+              ) : (
+                <Icon name="chevron-forward" size={32} color="#FFFFFF" />
+              )}
             </View>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
-            <Text style={styles.skipText}>Skip</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -168,55 +262,59 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingTop: 50,
+    paddingBottom: 10,
   },
   logo: {
     width: 150,
     height: 40,
   },
+  flatList: {
+    flex: 1,
+  },
   slide: {
     width: SCREEN_WIDTH,
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     paddingHorizontal: 40,
+    paddingTop: 20,
   },
   imageContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     width: '100%',
-    marginTop: 20,
   },
   image: {
-    width: SCREEN_WIDTH * 0.7,
-    height: SCREEN_HEIGHT * 0.35,
+    width: SCREEN_WIDTH * 0.65,
+    height: SCREEN_HEIGHT * 0.30,
+    maxHeight: 300,
   },
   textContainer: {
     alignItems: 'center',
-    paddingBottom: 80,
+    paddingBottom: 40,
+    width: '100%',
   },
   title: {
     fontSize: 28,
     fontWeight: '700',
     color: '#1A1A1A',
     textAlign: 'center',
-    marginBottom: 16,
-    lineHeight: 36,
+    marginBottom: 12,
+    lineHeight: 34,
+    width: '100%',
+    maxWidth: 320,
   },
   description: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#666666',
     textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 20,
+    lineHeight: 22,
+    width: '100%',
+    maxWidth: 300,
   },
   footer: {
-    position: 'absolute',
-    bottom: 60,
-    left: 0,
-    right: 0,
+    paddingBottom: 50,
     alignItems: 'center',
   },
   pagination: {
@@ -235,11 +333,26 @@ const styles = StyleSheet.create({
   paginationDotActive: {
     width: 24,
     height: 8,
-    backgroundColor: '#1A1A1A',
+    backgroundColor: '#86B300',
   },
   buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    width: SCREEN_WIDTH,
+    paddingHorizontal: 40,
     position: 'relative',
+  },
+  skipButton: {
+    position: 'absolute',
+    left: 40,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+  },
+  skipText: {
+    fontSize: 16,
+    color: '#666666',
+    fontWeight: '500',
   },
   nextButton: {
     width: 64,
@@ -262,21 +375,5 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  nextButtonIcon: {
-    fontSize: 48,
-    color: '#FFFFFF',
-    fontWeight: '300',
-    marginTop: -4,
-  },
-  skipButton: {
-    position: 'absolute',
-    right: 40,
-    top: 20,
-  },
-  skipText: {
-    fontSize: 16,
-    color: '#666666',
-    fontWeight: '500',
   },
 });

@@ -1,6 +1,6 @@
 // app/_layout.tsx
 import { useEffect, useState, useCallback } from 'react';
-import { Stack, useRouter, useSegments } from 'expo-router';
+import { Stack, useRouter, useSegments, usePathname } from 'expo-router';
 import { StatusBar } from 'react-native';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,44 +18,66 @@ function RootLayoutNav() {
   const { isDark } = useTheme();
   const colors = useThemedColors();
   const segments = useSegments();
+  const pathname = usePathname();
   const router = useRouter();
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean | null>(null);
+  const [isNavigating, setIsNavigating] = useState(false);
 
-  // Check onboarding status
+  // Check onboarding status on mount and when pathname changes
   useEffect(() => {
     const checkOnboarding = async () => {
       try {
         const value = await AsyncStorage.getItem('hasSeenOnboarding');
-        setHasSeenOnboarding(value === 'true');
+        const hasCompleted = value === 'true';
+        setHasSeenOnboarding(hasCompleted);
       } catch (error) {
-        console.error('Error checking onboarding status:', error);
         setHasSeenOnboarding(false);
       }
     };
 
     checkOnboarding();
-  }, []);
+    
+    // Also check when we're on the login screen (in case we just came from onboarding)
+    if (pathname === '/(auth)/login' || pathname === '/login') {
+      setTimeout(checkOnboarding, 200);
+    }
+  }, [pathname]); // Re-check when pathname changes
 
   // Handle navigation based on auth and onboarding status
   useEffect(() => {
-    if (isLoading || hasSeenOnboarding === null) return;
-
-    const inAuthGroup = segments[0] === '(auth)';
-    const inOnboarding = segments[0] === 'onboarding';
-
-    // First time user - show onboarding
-    if (!hasSeenOnboarding && !inOnboarding) {
-      router.replace('/onboarding');
+    if (isLoading || hasSeenOnboarding === null || isNavigating) {
       return;
     }
 
-    // Regular authentication flow
-    if (!isAuthenticated && !inAuthGroup && !inOnboarding) {
-      router.replace('/(auth)/login');
-    } else if (isAuthenticated && inAuthGroup) {
-      router.replace('/');
+    const inAuthGroup = segments[0] === '(auth)';
+    const inOnboarding = segments[0] === 'onboarding';
+    const inTabs = segments[0] === '(tabs)';
+
+    // First time user - show onboarding (but not if already navigating to login from onboarding)
+    if (!hasSeenOnboarding && !inOnboarding && !inAuthGroup) {
+      setIsNavigating(true);
+      router.replace('/onboarding');
+      setTimeout(() => setIsNavigating(false), 1000);
+      return;
     }
-  }, [isAuthenticated, segments, isLoading, hasSeenOnboarding]);
+
+    // User has seen onboarding but not authenticated - redirect to login
+    // But ONLY if they're not already in the auth group
+    if (hasSeenOnboarding && !isAuthenticated && !inAuthGroup && !inOnboarding) {
+      setIsNavigating(true);
+      router.replace('/(auth)/login');
+      setTimeout(() => setIsNavigating(false), 1000);
+      return;
+    }
+
+    // User is authenticated but in auth screens or onboarding
+    if (isAuthenticated && (inAuthGroup || inOnboarding)) {
+      setIsNavigating(true);
+      router.replace('/(tabs)');
+      setTimeout(() => setIsNavigating(false), 1000);
+      return;
+    }
+  }, [isAuthenticated, segments, isLoading, hasSeenOnboarding, isNavigating, pathname]);
 
   return (
     <>
@@ -71,17 +93,31 @@ function RootLayoutNav() {
           },
         }}
       >
-        {/* Onboarding Screen - NEW */}
+        {/* Onboarding Screen */}
         <Stack.Screen 
           name="onboarding/index" 
           options={{ 
             headerShown: false,
             gestureEnabled: false,
+            animation: 'fade',
           }} 
         />
         
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen 
+          name="(auth)" 
+          options={{ 
+            headerShown: false,
+            animation: 'fade',
+          }} 
+        />
+        
+        <Stack.Screen 
+          name="(tabs)" 
+          options={{ 
+            headerShown: false,
+            animation: 'fade',
+          }} 
+        />
 
         {/* Settings Screen */}
         <Stack.Screen
