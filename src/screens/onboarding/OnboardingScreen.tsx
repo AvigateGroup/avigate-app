@@ -248,12 +248,12 @@ const styles = StyleSheet.create({
   },
   logoContainer: {
     alignItems: 'center',
-    paddingTop: 50,
-    paddingBottom: 10,
+    paddingTop: 100,
+    paddingBottom: 0,
   },
   logo: {
-    width: 150,
-    height: 40,
+    width: 100,
+    height: 32,
   },
   flatList: {
     flex: 1,
