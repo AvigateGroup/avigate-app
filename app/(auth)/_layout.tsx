@@ -21,7 +21,6 @@ export default function AuthLayout() {
       <Stack.Screen name="reset-password" />
       <Stack.Screen name="verify-email" />
       <Stack.Screen name="verify-login-otp" />
-      <Stack.Screen name="google-auth" />
       <Stack.Screen name="phone-verification" />
     </Stack>
   );
