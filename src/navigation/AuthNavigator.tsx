@@ -8,7 +8,6 @@ import { VerifyLoginOTPScreen } from '@/screens/auth/VerifyLoginOtpScreen';
 import { VerifyEmailScreen } from '@/screens/auth/VerifyEmailScreen';
 import { ForgotPasswordScreen } from '@/screens/auth/ForgotPasswordScreen';
 import { ResetPasswordScreen } from '@/screens/auth/ResetPasswordScreen';
-import { GoogleAuthScreen } from '@/screens/auth/GoogleAuthScreen';
 import { PhoneVerificationScreen } from '@/screens/auth/PhoneVerificationScreen';
 import { COLORS } from '@/constants/colors';
 import { AuthStackParamList } from '@/types/navigation.types';
@@ -82,16 +81,6 @@ export const AuthNavigator = () => {
         options={{
           title: 'Reset Password',
           gestureEnabled: false,
-        }}
-      />
-
-      {/* Google OAuth Screen */}
-      <Stack.Screen
-        name="GoogleAuth"
-        component={GoogleAuthScreen}
-        options={{
-          title: 'Google Sign In',
-          animation: 'slide_from_bottom',
         }}
       />
 
