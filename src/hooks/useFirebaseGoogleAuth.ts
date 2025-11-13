@@ -1,7 +1,7 @@
 // src/hooks/useFirebaseGoogleAuth.ts
 
 import { useState, useEffect } from 'react';
-import { Platform } from 'react-native';
+import { Platform, Alert } from 'react-native';
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
@@ -64,7 +64,7 @@ export const useFirebaseGoogleAuth = () => {
       // Sign in with Google
       const signInResult = await GoogleSignin.signIn();
 
-      // Handle the response structure - it can be either signInResult.data or signInResult directly
+      // Handle the response structure
       const userInfo = signInResult.data || signInResult;
 
       if (!userInfo || !userInfo.user) {
@@ -92,7 +92,7 @@ export const useFirebaseGoogleAuth = () => {
 
       console.log('✅ Firebase authentication successful');
 
-      // Get fresh Firebase ID token to send to your backend
+      // Get fresh Firebase ID token
       const firebaseIdToken = await firebaseUserCredential.user.getIdToken();
 
       // Get FCM token and device info
@@ -103,21 +103,24 @@ export const useFirebaseGoogleAuth = () => {
         language: 'en-US',
       };
 
-      // Prepare data for your backend
+      // Prepare data for backend
       const googleAuthDto: GoogleAuthDto = {
         email: user.email,
         googleId: user.id,
         firstName: user.givenName || user.name?.split(' ')[0] || 'User',
         lastName: user.familyName || user.name?.split(' ')[1] || '',
         profilePicture: user.photo || undefined,
-        idToken: firebaseIdToken, // Use Firebase token (more secure)
+        idToken: firebaseIdToken,
         fcmToken: fcmToken,
         deviceInfo: deviceInfo,
       };
 
-      console.log('📤 Sending auth data to backend...');
+      console.log('📤 Sending auth data to backend...', {
+        email: googleAuthDto.email,
+        googleId: googleAuthDto.googleId,
+      });
 
-      // Call your backend API
+      // Call backend API
       const response = await authApi.googleAuth(googleAuthDto);
 
       if (response.success && response.data.accessToken && response.data.refreshToken) {
@@ -144,51 +147,149 @@ export const useFirebaseGoogleAuth = () => {
             params: { email: user.email },
           });
         }
-        // Otherwise, AuthContext will handle navigation to main app
       }
     } catch (error: any) {
       console.error('❌ Firebase Google Sign-In Error:', error);
+      
+      // Extract status code and error message
+      const statusCode = error?.response?.status || error?.response?.data?.statusCode;
+      const errorMessage = error?.response?.data?.message || 
+                          error?.response?.data?.error || 
+                          error?.message || 
+                          'Authentication failed';
 
-      // Handle specific error codes
+      // Handle Google Sign-In SDK errors
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
         Toast.show({
           type: 'info',
           text1: 'Cancelled',
           text2: 'Sign in was cancelled',
         });
-      } else if (error.code === statusCodes.IN_PROGRESS) {
+        return;
+      } 
+      
+      if (error.code === statusCodes.IN_PROGRESS) {
         Toast.show({
           type: 'info',
           text1: 'In Progress',
           text2: 'Sign in is already in progress',
         });
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        return;
+      } 
+      
+      if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         Toast.show({
           type: 'error',
           text1: 'Play Services Required',
           text2: 'Google Play Services is not available on this device',
           visibilityTime: 5000,
         });
-      } else {
-        let errorMessage = handleApiError(error);
-        let errorTitle = 'Sign In Failed';
+        return;
+      }
 
-        // More specific error messages
-        if (error.message?.includes('DEVELOPER_ERROR')) {
-          errorTitle = 'Configuration Error';
-          errorMessage = 'Google Sign-In is not properly configured. Please check your setup.';
-        } else if (error.message?.includes('NETWORK_ERROR')) {
-          errorTitle = 'Network Error';
-          errorMessage = 'Please check your internet connection and try again.';
+      // Handle backend errors
+      if (statusCode === 409) {
+        // Conflict - Account exists with different credentials
+        const lowerMessage = errorMessage.toLowerCase();
+        
+        if (lowerMessage.includes('different google account')) {
+          Alert.alert(
+            'Account Already Exists',
+            'This email is already registered with different credentials. Would you like to sign in with email and password instead?',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Sign In',
+                onPress: () => {
+                  router.push('/(auth)/login');
+                },
+              },
+            ]
+          );
+          return;
         }
-
+        
+        if (lowerMessage.includes('phone') && lowerMessage.includes('already')) {
+          Toast.show({
+            type: 'error',
+            text1: 'Phone Number In Use',
+            text2: 'This phone number is already registered to another account',
+            visibilityTime: 5000,
+          });
+          return;
+        }
+        
+        // Generic conflict error
         Toast.show({
           type: 'error',
-          text1: errorTitle,
+          text1: 'Account Conflict',
           text2: errorMessage,
           visibilityTime: 5000,
         });
+        return;
       }
+
+      if (statusCode === 401) {
+        // Unauthorized - Token verification failed
+        Toast.show({
+          type: 'error',
+          text1: 'Authentication Failed',
+          text2: 'Unable to verify your Google account. Please try again.',
+          visibilityTime: 5000,
+        });
+        
+        // Sign out from Google and Firebase
+        try {
+          await GoogleSignin.signOut();
+          await auth().signOut();
+        } catch (signOutError) {
+          console.error('Sign out error:', signOutError);
+        }
+        return;
+      }
+
+      if (statusCode === 400) {
+        // Bad Request - Validation error
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Data',
+          text2: errorMessage,
+          visibilityTime: 5000,
+        });
+        return;
+      }
+
+      // Handle DEVELOPER_ERROR
+      if (error.message?.includes('DEVELOPER_ERROR')) {
+        Alert.alert(
+          'Configuration Error',
+          'Google Sign-In is not properly configured. Please contact support.',
+          [{ text: 'OK' }]
+        );
+        return;
+      }
+
+      // Handle NETWORK_ERROR
+      if (error.message?.includes('NETWORK_ERROR')) {
+        Toast.show({
+          type: 'error',
+          text1: 'Network Error',
+          text2: 'Please check your internet connection and try again.',
+          visibilityTime: 5000,
+        });
+        return;
+      }
+
+      // Generic error fallback
+      Toast.show({
+        type: 'error',
+        text1: 'Sign In Failed',
+        text2: errorMessage,
+        visibilityTime: 5000,
+      });
     } finally {
       setLoading(false);
     }

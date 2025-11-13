@@ -1,4 +1,8 @@
 // app/_layout.tsx
+// CRITICAL: Import Firebase modules DIRECTLY here to ensure initialization
+import '@react-native-firebase/app';
+import '@react-native-firebase/auth';
+
 import { useEffect, useState, useCallback } from 'react';
 import { Stack, useRouter, useSegments, usePathname } from 'expo-router';
 import { StatusBar } from 'react-native';
@@ -12,6 +16,9 @@ import * as SplashScreen from 'expo-splash-screen';
 
 // Prevent native splash from auto-hiding
 SplashScreen.preventAutoHideAsync();
+
+// Log to confirm Firebase is initialized
+console.log('🔥 Firebase modules imported and initialized');
 
 function RootLayoutNav() {
   const { isAuthenticated, isLoading } = useAuth();
