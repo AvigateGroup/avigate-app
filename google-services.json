@@ -1,0 +1,51 @@
+{
+  "project_info": {
+    "project_number": "162294874203",
+    "project_id": "avigate-app-f855c",
+    "storage_bucket": "avigate-app-f855c.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162294874203:android:371e4124661202a5167f7e",
+        "android_client_info": {
+          "package_name": "com.avigate.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "162294874203-e3rcdcbjj1ncubsfkekcsq4cvi5i6khq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.avigate.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "162294874203-ev2a6ul0ahohdj546i5v6jv519s9ulg9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.avigate.app",
+            "certificate_hash": "09fa50a7d5fd6118f6645a5d9574e29b2c034138"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgJN3rd4Hoh7fZqpI0Fsxj4eFv3N7QQGE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "162294874203-grlpvqerq74dttlg04gu0is3e3utle45.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
