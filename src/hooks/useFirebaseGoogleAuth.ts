@@ -7,7 +7,7 @@ import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
 import { authApi } from '@/api/auth.api';
-import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
+import { getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { GoogleAuthDto } from '@/types/auth.types';
 import { GOOGLE_CONFIG } from '@/constants/config';
@@ -30,11 +30,9 @@ export const useFirebaseGoogleAuth = () => {
       });
       setIsConfigured(true);
 
-      console.log('🔥 Firebase Google Auth configured');
-      console.log('📱 Platform:', Platform.OS);
-      console.log('🔑 Web Client ID:', GOOGLE_CONFIG.WEB_CLIENT_ID?.substring(0, 20) + '...');
+  
     } catch (error) {
-      console.error('❌ Failed to configure Google Sign-In:', error);
+      console.error(' Failed to configure Google Sign-In:', error);
       Toast.show({
         type: 'error',
         text1: 'Configuration Error',
@@ -59,8 +57,6 @@ export const useFirebaseGoogleAuth = () => {
       // Check if device supports Google Play Services
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-      console.log('📱 Starting Google Sign-In...');
-
       // Sign in with Google
       const signInResult = await GoogleSignin.signIn();
 
@@ -73,8 +69,6 @@ export const useFirebaseGoogleAuth = () => {
 
       const user = userInfo.user;
 
-      console.log('✅ Google Sign-In successful:', user.email);
-
       // Get Google ID token
       const idToken = userInfo.idToken || signInResult.idToken;
 
@@ -85,12 +79,10 @@ export const useFirebaseGoogleAuth = () => {
       // Create Firebase credential
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-      console.log('🔐 Authenticating with Firebase...');
 
       // Sign in to Firebase
       const firebaseUserCredential = await auth().signInWithCredential(googleCredential);
 
-      console.log('✅ Firebase authentication successful');
 
       // Get fresh Firebase ID token
       const firebaseIdToken = await firebaseUserCredential.user.getIdToken();
@@ -115,11 +107,6 @@ export const useFirebaseGoogleAuth = () => {
         deviceInfo: deviceInfo,
       };
 
-      console.log('📤 Sending auth data to backend...', {
-        email: googleAuthDto.email,
-        googleId: googleAuthDto.googleId,
-      });
-
       // Call backend API
       const response = await authApi.googleAuth(googleAuthDto);
 
@@ -136,35 +123,12 @@ export const useFirebaseGoogleAuth = () => {
           type: 'success',
           text1: welcomeMessage,
           text2: response.message || 'Successfully signed in with Google',
-        });
+        });   
 
-        console.log('✅ Login successful, checking navigation requirements...');
-        console.log('📋 Response data:', {
-          requiresPhoneNumber: response.data.requiresPhoneNumber,
-          requiresVerification: response.data.requiresVerification,
-          isNewUser: response.data.isNewUser,
-        });
 
-        // Handle additional verification if needed
-        if (response.data.requiresPhoneNumber) {
-          console.log('📱 Redirecting to phone verification...');
-          router.replace({
-            pathname: '/(auth)/phone-verification',
-            params: { fromGoogleAuth: 'true' },
-          });
-        } else if (response.data.requiresVerification) {
-          console.log('✉️ Redirecting to email verification...');
-          router.replace({
-            pathname: '/(auth)/verify-email',
-            params: { email: user.email },
-          });
-        } else {
-          console.log('🏠 Redirecting to main app...');
-          // AuthContext will handle navigation to main app
-        }
       }
     } catch (error: any) {
-      console.error('❌ Firebase Google Sign-In Error:', error);
+      console.error(' Firebase Google Sign-In Error:', error);
       
       // Extract status code and error message
       const statusCode = error?.response?.status || error?.response?.data?.statusCode;
@@ -314,9 +278,8 @@ export const useFirebaseGoogleAuth = () => {
     try {
       await GoogleSignin.signOut();
       await auth().signOut();
-      console.log('✅ Signed out successfully');
     } catch (error) {
-      console.error('❌ Sign out error:', error);
+      console.error('Sign out error:', error);
     }
   };
 

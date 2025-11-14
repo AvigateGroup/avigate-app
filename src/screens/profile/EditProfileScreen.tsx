@@ -287,7 +287,7 @@ export const EditProfileScreen: React.FC = () => {
 
           {/* Gender */}
           <View style={spacingStyles.marginBottom20}>
-            <Text style={formStyles.genderLabel}>Sex</Text>
+            <Text style={formStyles.genderLabel}>Gender </Text>
             <View style={formStyles.genderContainer}>
               <TouchableOpacity
                 style={[

@@ -17,11 +17,9 @@ import * as SplashScreen from 'expo-splash-screen';
 // Prevent native splash from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-// Log to confirm Firebase is initialized
-console.log('🔥 Firebase modules imported and initialized');
 
 function RootLayoutNav() {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const { isDark } = useTheme();
   const colors = useThemedColors();
   const segments = useSegments();
@@ -63,6 +61,11 @@ function RootLayoutNav() {
     const inProfile = segments[0] === 'profile';
     const inPrivacy = segments[0] === 'privacy';
     const inTerms = segments[0] === 'terms';
+    // Check both pathname and segments to catch phone verification screen
+    const inPhoneVerification = 
+      pathname === '/(auth)/phone-verification' || 
+      pathname === '/phone-verification' ||
+      (segments[0] === '(auth)' && segments[1] === 'phone-verification');
 
     // Public routes that don't require authentication and shouldn't trigger redirects
     const isPublicRoute = inPrivacy || inTerms;
@@ -84,14 +87,31 @@ function RootLayoutNav() {
       return;
     }
 
-    // User is authenticated but in auth screens or onboarding (not in public routes)
-    if (isAuthenticated && (inAuthGroup || inOnboarding) && !isPublicRoute) {
+    // CRITICAL: Check if authenticated user needs to add phone number
+    if (isAuthenticated && user && !user.phoneNumberCaptured && !inPhoneVerification) {
+      setIsNavigating(true);
+      router.replace({
+        pathname: '/(auth)/phone-verification',
+        params: { fromGoogleAuth: 'true' },
+      });
+      setTimeout(() => setIsNavigating(false), 1000);
+      return;
+    }
+
+    // User is authenticated, has phone, but in auth screens or onboarding (not in public routes or phone verification)
+    if (
+      isAuthenticated && 
+      user?.phoneNumberCaptured && 
+      (inAuthGroup || inOnboarding) && 
+      !isPublicRoute && 
+      !inPhoneVerification
+    ) {
       setIsNavigating(true);
       router.replace('/(tabs)');
       setTimeout(() => setIsNavigating(false), 1000);
       return;
     }
-  }, [isAuthenticated, segments, isLoading, hasSeenOnboarding, isNavigating, pathname]);
+  }, [isAuthenticated, segments, isLoading, hasSeenOnboarding, isNavigating, pathname, user]);
 
   return (
     <>

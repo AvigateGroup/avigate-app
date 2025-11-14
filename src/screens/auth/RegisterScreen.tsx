@@ -282,7 +282,7 @@ export const RegisterScreen: React.FC = () => {
             <Text style={authFeatureStyles.stepSubtitle}>Help us personalize your experience</Text>
 
             <View style={spacingStyles.marginBottom20}>
-              <Text style={formStyles.genderLabel}>Sex</Text>
+              <Text style={formStyles.genderLabel}>Gender</Text>
               <View style={formStyles.genderContainer}>
                 <TouchableOpacity
                   style={[
