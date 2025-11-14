@@ -6,15 +6,15 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
-import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
+import { CountryPhonePicker } from '@/components/common/CountryPhonePicker';
 import { authApi } from '@/api/auth.api';
 import { validatePhoneNumber } from '@/utils/validation';
-import { handleApiError } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { UserSex } from '@/types/auth.types';
 import { authStyles } from '@/styles';
+import { formStyles, spacingStyles } from '@/styles/base';
 
 export const PhoneVerificationScreen: React.FC = () => {
   const router = useRouter();
@@ -23,27 +23,47 @@ export const PhoneVerificationScreen: React.FC = () => {
 
   const { user, updateUser } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [countryCode, setCountryCode] = useState('+234');
+  const [country, setCountry] = useState('Nigeria');
   const [sex, setSex] = useState<UserSex | undefined>(undefined);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleSubmit = async () => {
+  const updateField = (field: string, value: string) => {
+    const newErrors = { ...errors };
+    delete newErrors[field];
+    setErrors(newErrors);
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
     if (!phoneNumber) {
-      setError('Phone number is required');
-      return;
+      newErrors.phoneNumber = 'Phone number is required';
+    } else if (!validatePhoneNumber(countryCode + phoneNumber)) {
+      newErrors.phoneNumber = 'Invalid phone number';
     }
 
-    if (!validatePhoneNumber(phoneNumber)) {
-      setError('Please enter a valid phone number');
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) {
+      Toast.show({
+        type: 'error',
+        text1: 'Validation Error',
+        text2: 'Please enter a valid phone number',
+      });
       return;
     }
 
     setLoading(true);
-    setError('');
 
     try {
+      const fullPhoneNumber = countryCode + phoneNumber;
       const response = await authApi.capturePhone({
-        phoneNumber,
+        phoneNumber: fullPhoneNumber,
         sex,
       });
 
@@ -59,16 +79,75 @@ export const PhoneVerificationScreen: React.FC = () => {
           updateUser(response.data.user);
         }
 
-        // Navigate to main app
-        // The navigation will be handled by AuthContext
+        // Navigation will be handled by AuthContext
+        // It will automatically redirect to main app
       }
     } catch (error: any) {
-      const errorMessage = handleApiError(error);
-      setError(errorMessage);
+      console.error('Phone capture error:', error);
+
+      // Extract error message from various possible error structures
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Failed to update phone number';
+
+      const statusCode = error?.response?.status || error?.response?.data?.statusCode;
+
+      // Handle 409 Conflict errors (duplicate phone number)
+      if (statusCode === 409) {
+        const lowerMessage = errorMessage.toLowerCase();
+
+        if (lowerMessage.includes('phone') && lowerMessage.includes('already in use')) {
+          setErrors({ phoneNumber: 'This phone number is already in use by another account' });
+          Toast.show({
+            type: 'error',
+            text1: 'Phone Number Already In Use',
+            text2: 'This phone number is already registered to another account',
+            visibilityTime: 6000,
+          });
+          return;
+        }
+
+        // Generic conflict error
+        Toast.show({
+          type: 'error',
+          text1: 'Phone Number Conflict',
+          text2: errorMessage,
+          visibilityTime: 5000,
+        });
+        return;
+      }
+
+      // Handle validation errors (400)
+      if (statusCode === 400) {
+        Toast.show({
+          type: 'error',
+          text1: 'Invalid Phone Number',
+          text2: errorMessage,
+          visibilityTime: 5000,
+        });
+        return;
+      }
+
+      // Handle authentication errors (401/403)
+      if (statusCode === 401 || statusCode === 403) {
+        Toast.show({
+          type: 'error',
+          text1: 'Authentication Error',
+          text2: 'Please log in again to continue',
+          visibilityTime: 5000,
+        });
+        // Optionally sign out user
+        return;
+      }
+
+      // Generic error fallback
       Toast.show({
         type: 'error',
         text1: 'Update Failed',
         text2: errorMessage,
+        visibilityTime: 5000,
       });
     } finally {
       setLoading(false);
@@ -77,13 +156,13 @@ export const PhoneVerificationScreen: React.FC = () => {
 
   const handleSkip = () => {
     if (fromGoogleAuth) {
-      // Navigate to main app
-      // The navigation will be handled by AuthContext
       Toast.show({
         type: 'info',
         text1: 'Skipped',
         text2: 'You can add your phone number later in settings',
       });
+      // Navigation will be handled by AuthContext
+      // The user will be redirected to main app
     }
   };
 
@@ -118,64 +197,71 @@ export const PhoneVerificationScreen: React.FC = () => {
           </View>
 
           <View style={authStyles.form}>
-            <Input
-              label="Phone Number"
-              placeholder="+234 800 000 0000"
-              value={phoneNumber}
-              onChangeText={text => {
-                setPhoneNumber(text);
-                setError('');
+            {/* Phone Number with Country Picker */}
+            <CountryPhonePicker
+              countryCode={countryCode}
+              phoneNumber={phoneNumber}
+              country={country}
+              onCountryChange={(code, countryName) => {
+                setCountryCode(code);
+                setCountry(countryName);
+                updateField('phoneNumber', '');
               }}
-              error={error}
-              keyboardType="phone-pad"
-              leftIcon="call-outline"
+              onPhoneChange={phone => {
+                setPhoneNumber(phone);
+                updateField('phoneNumber', '');
+              }}
+              error={errors.phoneNumber}
             />
 
-            <Text style={authStyles.genderLabel}>Gender (Optional)</Text>
-            <View style={authStyles.genderContainer}>
-              <TouchableOpacity
-                style={[
-                  authStyles.genderButton,
-                  sex === UserSex.MALE && authStyles.genderButtonActive,
-                ]}
-                onPress={() => setSex(UserSex.MALE)}
-              >
-                <Icon
-                  name="male"
-                  size={24}
-                  color={sex === UserSex.MALE ? COLORS.textWhite : COLORS.text}
-                />
-                <Text
+            {/* Gender (Optional) */}
+            <View style={spacingStyles.marginBottom20}>
+              <Text style={formStyles.genderLabel}>Gender (Optional)</Text>
+              <View style={formStyles.genderContainer}>
+                <TouchableOpacity
                   style={[
-                    authStyles.genderButtonText,
-                    sex === UserSex.MALE && authStyles.genderButtonTextActive,
+                    formStyles.genderButton,
+                    sex === UserSex.MALE && formStyles.genderButtonActive,
                   ]}
+                  onPress={() => setSex(UserSex.MALE)}
                 >
-                  Male
-                </Text>
-              </TouchableOpacity>
+                  <Icon
+                    name="male"
+                    size={24}
+                    color={sex === UserSex.MALE ? COLORS.textWhite : COLORS.text}
+                  />
+                  <Text
+                    style={[
+                      formStyles.genderButtonText,
+                      sex === UserSex.MALE && formStyles.genderButtonTextActive,
+                    ]}
+                  >
+                    Male
+                  </Text>
+                </TouchableOpacity>
 
-              <TouchableOpacity
-                style={[
-                  authStyles.genderButton,
-                  sex === UserSex.FEMALE && authStyles.genderButtonActive,
-                ]}
-                onPress={() => setSex(UserSex.FEMALE)}
-              >
-                <Icon
-                  name="female"
-                  size={24}
-                  color={sex === UserSex.FEMALE ? COLORS.textWhite : COLORS.text}
-                />
-                <Text
+                <TouchableOpacity
                   style={[
-                    authStyles.genderButtonText,
-                    sex === UserSex.FEMALE && authStyles.genderButtonTextActive,
+                    formStyles.genderButton,
+                    sex === UserSex.FEMALE && formStyles.genderButtonActive,
                   ]}
+                  onPress={() => setSex(UserSex.FEMALE)}
                 >
-                  Female
-                </Text>
-              </TouchableOpacity>
+                  <Icon
+                    name="female"
+                    size={24}
+                    color={sex === UserSex.FEMALE ? COLORS.textWhite : COLORS.text}
+                  />
+                  <Text
+                    style={[
+                      formStyles.genderButtonText,
+                      sex === UserSex.FEMALE && formStyles.genderButtonTextActive,
+                    ]}
+                  >
+                    Female
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
 
             <Button
