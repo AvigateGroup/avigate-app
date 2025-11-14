@@ -124,28 +124,43 @@ export const useFirebaseGoogleAuth = () => {
       const response = await authApi.googleAuth(googleAuthDto);
 
       if (response.success && response.data.accessToken && response.data.refreshToken) {
+        // Save tokens and user data first
+        await login(response.data.accessToken, response.data.refreshToken, response.data.user);
+
+        // Show appropriate success message
+        const welcomeMessage = response.data.isNewUser 
+          ? 'Welcome to Avigate!' 
+          : 'Welcome back!';
+        
         Toast.show({
           type: 'success',
-          text1: 'Welcome!',
+          text1: welcomeMessage,
           text2: response.message || 'Successfully signed in with Google',
         });
 
-        // Save tokens and user data
-        await login(response.data.accessToken, response.data.refreshToken, response.data.user);
-
-        console.log('✅ Login successful, redirecting...');
+        console.log('✅ Login successful, checking navigation requirements...');
+        console.log('📋 Response data:', {
+          requiresPhoneNumber: response.data.requiresPhoneNumber,
+          requiresVerification: response.data.requiresVerification,
+          isNewUser: response.data.isNewUser,
+        });
 
         // Handle additional verification if needed
         if (response.data.requiresPhoneNumber) {
+          console.log('📱 Redirecting to phone verification...');
           router.replace({
             pathname: '/(auth)/phone-verification',
             params: { fromGoogleAuth: 'true' },
           });
         } else if (response.data.requiresVerification) {
+          console.log('✉️ Redirecting to email verification...');
           router.replace({
             pathname: '/(auth)/verify-email',
             params: { email: user.email },
           });
+        } else {
+          console.log('🏠 Redirecting to main app...');
+          // AuthContext will handle navigation to main app
         }
       }
     } catch (error: any) {
