@@ -1,7 +1,14 @@
 // src/screens/auth/PhoneVerificationScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -67,7 +74,7 @@ export const PhoneVerificationScreen: React.FC = () => {
 
       if (response.success) {
         console.log('✅ Phone captured successfully:', response.data.user);
-        
+
         // CRITICAL: Update user in context with the new data
         if (response.data.user) {
           await updateUser(response.data.user);
@@ -158,7 +165,7 @@ export const PhoneVerificationScreen: React.FC = () => {
         text1: 'Skipped',
         text2: 'You can add your phone number later in settings',
       });
-      
+
       // Navigate to main app
       setTimeout(() => {
         console.log('🏠 Skipping phone verification, navigating to main app...');
@@ -173,7 +180,7 @@ export const PhoneVerificationScreen: React.FC = () => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={{ flex: 1 }}
       >
-        <ScrollView 
+        <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
           keyboardShouldPersistTaps="handled"
@@ -233,7 +240,7 @@ export const PhoneVerificationScreen: React.FC = () => {
                   marginBottom: 12,
                 }}
               >
-                Gender 
+                Gender
               </Text>
               <View
                 style={{
@@ -294,12 +301,7 @@ export const PhoneVerificationScreen: React.FC = () => {
             </View>
 
             {/* Continue Button */}
-            <Button
-              title="Continue"
-              onPress={handleSubmit}
-              loading={loading}
-              disabled={loading}
-            />
+            <Button title="Continue" onPress={handleSubmit} loading={loading} disabled={loading} />
 
             {/* Security Note */}
             <View

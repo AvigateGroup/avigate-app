@@ -30,11 +30,11 @@ export default function PrivacyScreen() {
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>1. Introduction</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Welcome to Avigate ("we," "our," or "us"). Avigate is a community-driven mobile application 
-          designed to help residents and visitors navigate Nigerian cities using local transportation systems
-          including Keke Napep, commercial buses, taxis, and okada. We are committed to protecting
-          your privacy and ensuring transparency about how we collect, use, and safeguard your
-          personal information.
+          Welcome to Avigate ("we," "our," or "us"). Avigate is a community-driven mobile
+          application designed to help residents and visitors navigate Nigerian cities using local
+          transportation systems including Keke Napep, commercial buses, taxis, and okada. We are
+          committed to protecting your privacy and ensuring transparency about how we collect, use,
+          and safeguard your personal information.
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           This Privacy Policy explains what information we collect, how we use it, who we share it
@@ -80,10 +80,12 @@ export default function PrivacyScreen() {
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Location data: Real-time GPS location when you use navigation features, search for
-          routes, request directions, or share your location (only when app is in use and with your permission)
+          routes, request directions, or share your location (only when app is in use and with your
+          permission)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Journey tracking: Real-time location tracking during active trips for navigation purposes
+          • Journey tracking: Real-time location tracking during active trips for navigation
+          purposes
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Usage data: App features accessed, search queries, routes viewed, interaction with
@@ -103,13 +105,15 @@ export default function PrivacyScreen() {
           When you participate in community features, we collect:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Route contributions: Routes, directions, stops, landmarks, and transportation details you submit
+          • Route contributions: Routes, directions, stops, landmarks, and transportation details
+          you submit
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Trip feedback: Fare ratings, route conditions, availability reports, and reviews
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Community posts: Traffic reports, safety alerts, event notifications, and updates you share
+          • Community posts: Traffic reports, safety alerts, event notifications, and updates you
+          share
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Photos: Images you upload for verification or community posts
@@ -134,7 +138,8 @@ export default function PrivacyScreen() {
           • Sharing duration: Time periods and expiration of shared locations
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Event details: Information about events, meetups, or gatherings associated with shared locations
+          • Event details: Information about events, meetups, or gatherings associated with shared
+          locations
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>
@@ -215,10 +220,12 @@ export default function PrivacyScreen() {
           • Provide customer support and respond to your inquiries
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Send smart notifications including proximity alerts, route updates, and alternative suggestions
+          • Send smart notifications including proximity alerts, route updates, and alternative
+          suggestions
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Deliver personalized notifications about favorite routes, commute optimization, and exploration recommendations
+          • Deliver personalized notifications about favorite routes, commute optimization, and
+          exploration recommendations
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Share community updates, safety alerts, and event notifications (if enabled)
@@ -289,7 +296,9 @@ export default function PrivacyScreen() {
           4. Location Data and Tracking
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.1 Location Collection</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.1 Location Collection
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           We collect your location data in several ways:
         </Text>
@@ -309,7 +318,9 @@ export default function PrivacyScreen() {
           • To display nearby transportation options
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.2 Real-Time Journey Tracking</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.2 Real-Time Journey Tracking
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           When you start a trip, we track your location in real-time to:
         </Text>
@@ -330,9 +341,7 @@ export default function PrivacyScreen() {
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.3 Location Sharing</Text>
-        <Text style={[styles.text, { color: colors.text }]}>
-          When you share your location:
-        </Text>
+        <Text style={[styles.text, { color: colors.text }]}>When you share your location:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Selected recipients can view your real-time location
         </Text>
@@ -346,10 +355,10 @@ export default function PrivacyScreen() {
           • Public event locations may be visible to all app users
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.4 Location Data Retention</Text>
-        <Text style={[styles.text, { color: colors.text }]}>
-          We retain location data for:
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.4 Location Data Retention
         </Text>
+        <Text style={[styles.text, { color: colors.text }]}>We retain location data for:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • 90 days for active journey tracking data
         </Text>
@@ -366,7 +375,7 @@ export default function PrivacyScreen() {
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>5.1 Content You Submit</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          When you contribute routes, post updates, or share feedback, this information becomes part 
+          When you contribute routes, post updates, or share feedback, this information becomes part
           of our community database. We use this content to:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
@@ -383,9 +392,7 @@ export default function PrivacyScreen() {
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>5.2 Content Visibility</Text>
-        <Text style={[styles.text, { color: colors.text }]}>
-          User-generated content may be:
-        </Text>
+        <Text style={[styles.text, { color: colors.text }]}>User-generated content may be:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Visible to all Avigate users once verified by admin
         </Text>
@@ -602,7 +609,8 @@ export default function PrivacyScreen() {
         <Text style={[styles.text, { color: colors.text }]}>
           While we implement strong security measures, no system is completely secure. We cannot
           guarantee absolute security of your information. You are responsible for maintaining the
-          confidentiality of your account credentials and managing your location sharing settings appropriately.
+          confidentiality of your account credentials and managing your location sharing settings
+          appropriately.
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>
@@ -663,7 +671,7 @@ export default function PrivacyScreen() {
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           Upon deletion, we will remove your personal information except where retention is required
-          by law or for legitimate business purposes. Note that verified community contributions may 
+          by law or for legitimate business purposes. Note that verified community contributions may
           remain in our database in anonymized form.
         </Text>
 
@@ -692,7 +700,8 @@ export default function PrivacyScreen() {
           • Turn off real-time journey tracking (may limit navigation features)
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Note: Disabling location access will significantly limit core navigation and community features.
+          Note: Disabling location access will significantly limit core navigation and community
+          features.
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>
@@ -708,7 +717,8 @@ export default function PrivacyScreen() {
           • Adjusting notification settings in the app
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Disabling specific notification types (commute suggestions, exploration recommendations, etc.)
+          • Disabling specific notification types (commute suggestions, exploration recommendations,
+          etc.)
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           Note: You will still receive essential service-related communications (account
@@ -764,7 +774,9 @@ export default function PrivacyScreen() {
           practices, please contact us:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>• Email: hello@avigate.co</Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>• Address: Port Harcourt, Nigeria</Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>
+          • Address: Port Harcourt, Nigeria
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           For data protection inquiries specific to NDPR compliance, you may also contact the
           National Information Technology Development Agency (NITDA).

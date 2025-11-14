@@ -17,7 +17,6 @@ import * as SplashScreen from 'expo-splash-screen';
 // Prevent native splash from auto-hiding
 SplashScreen.preventAutoHideAsync();
 
-
 function RootLayoutNav() {
   const { isAuthenticated, isLoading, user } = useAuth();
   const { isDark } = useTheme();
@@ -62,8 +61,8 @@ function RootLayoutNav() {
     const inPrivacy = segments[0] === 'privacy';
     const inTerms = segments[0] === 'terms';
     // Check both pathname and segments to catch phone verification screen
-    const inPhoneVerification = 
-      pathname === '/(auth)/phone-verification' || 
+    const inPhoneVerification =
+      pathname === '/(auth)/phone-verification' ||
       pathname === '/phone-verification' ||
       (segments[0] === '(auth)' && segments[1] === 'phone-verification');
 
@@ -100,10 +99,10 @@ function RootLayoutNav() {
 
     // User is authenticated, has phone, but in auth screens or onboarding (not in public routes or phone verification)
     if (
-      isAuthenticated && 
-      user?.phoneNumberCaptured && 
-      (inAuthGroup || inOnboarding) && 
-      !isPublicRoute && 
+      isAuthenticated &&
+      user?.phoneNumberCaptured &&
+      (inAuthGroup || inOnboarding) &&
+      !isPublicRoute &&
       !inPhoneVerification
     ) {
       setIsNavigating(true);

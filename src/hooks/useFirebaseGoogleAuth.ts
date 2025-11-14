@@ -29,8 +29,6 @@ export const useFirebaseGoogleAuth = () => {
         offlineAccess: true,
       });
       setIsConfigured(true);
-
-  
     } catch (error) {
       console.error(' Failed to configure Google Sign-In:', error);
       Toast.show({
@@ -79,10 +77,8 @@ export const useFirebaseGoogleAuth = () => {
       // Create Firebase credential
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
-
       // Sign in to Firebase
       const firebaseUserCredential = await auth().signInWithCredential(googleCredential);
-
 
       // Get fresh Firebase ID token
       const firebaseIdToken = await firebaseUserCredential.user.getIdToken();
@@ -115,27 +111,24 @@ export const useFirebaseGoogleAuth = () => {
         await login(response.data.accessToken, response.data.refreshToken, response.data.user);
 
         // Show appropriate success message
-        const welcomeMessage = response.data.isNewUser 
-          ? 'Welcome to Avigate!' 
-          : 'Welcome back!';
-        
+        const welcomeMessage = response.data.isNewUser ? 'Welcome to Avigate!' : 'Welcome back!';
+
         Toast.show({
           type: 'success',
           text1: welcomeMessage,
           text2: response.message || 'Successfully signed in with Google',
-        });   
-
-
+        });
       }
     } catch (error: any) {
       console.error(' Firebase Google Sign-In Error:', error);
-      
+
       // Extract status code and error message
       const statusCode = error?.response?.status || error?.response?.data?.statusCode;
-      const errorMessage = error?.response?.data?.message || 
-                          error?.response?.data?.error || 
-                          error?.message || 
-                          'Authentication failed';
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        'Authentication failed';
 
       // Handle Google Sign-In SDK errors
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -145,8 +138,8 @@ export const useFirebaseGoogleAuth = () => {
           text2: 'Sign in was cancelled',
         });
         return;
-      } 
-      
+      }
+
       if (error.code === statusCodes.IN_PROGRESS) {
         Toast.show({
           type: 'info',
@@ -154,8 +147,8 @@ export const useFirebaseGoogleAuth = () => {
           text2: 'Sign in is already in progress',
         });
         return;
-      } 
-      
+      }
+
       if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
         Toast.show({
           type: 'error',
@@ -170,7 +163,7 @@ export const useFirebaseGoogleAuth = () => {
       if (statusCode === 409) {
         // Conflict - Account exists with different credentials
         const lowerMessage = errorMessage.toLowerCase();
-        
+
         if (lowerMessage.includes('different google account')) {
           Alert.alert(
             'Account Already Exists',
@@ -186,11 +179,11 @@ export const useFirebaseGoogleAuth = () => {
                   router.push('/(auth)/login');
                 },
               },
-            ]
+            ],
           );
           return;
         }
-        
+
         if (lowerMessage.includes('phone') && lowerMessage.includes('already')) {
           Toast.show({
             type: 'error',
@@ -200,7 +193,7 @@ export const useFirebaseGoogleAuth = () => {
           });
           return;
         }
-        
+
         // Generic conflict error
         Toast.show({
           type: 'error',
@@ -219,7 +212,7 @@ export const useFirebaseGoogleAuth = () => {
           text2: 'Unable to verify your Google account. Please try again.',
           visibilityTime: 5000,
         });
-        
+
         // Sign out from Google and Firebase
         try {
           await GoogleSignin.signOut();
@@ -246,7 +239,7 @@ export const useFirebaseGoogleAuth = () => {
         Alert.alert(
           'Configuration Error',
           'Google Sign-In is not properly configured. Please contact support.',
-          [{ text: 'OK' }]
+          [{ text: 'OK' }],
         );
         return;
       }

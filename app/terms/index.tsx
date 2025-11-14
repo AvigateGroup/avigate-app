@@ -47,8 +47,8 @@ export default function TermsScreen() {
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>2. Description of Service</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Avigate is a community-driven mobile navigation application designed to help residents and visitors
-          navigate Nigerian cities using local transportation systems, including:
+          Avigate is a community-driven mobile navigation application designed to help residents and
+          visitors navigate Nigerian cities using local transportation systems, including:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>• Keke Napep (tricycles)</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
@@ -57,7 +57,7 @@ export default function TermsScreen() {
         <Text style={[styles.bulletText, { color: colors.text }]}>• Taxis</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>• Okada (motorcycle taxis)</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>• Walking directions</Text>
-        
+
         <Text style={[styles.text, { color: colors.text }]}>Avigate provides:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Real-time route planning and navigation with step-by-step local directions
@@ -89,10 +89,10 @@ export default function TermsScreen() {
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Smart notifications and proactive alerts
         </Text>
-        
+
         <Text style={[styles.text, { color: colors.text }]}>
           Important: Avigate is NOT an e-hailing or ride-booking platform. We do not arrange,
-          facilitate, or provide transportation services. We are a community-driven information and 
+          facilitate, or provide transportation services. We are a community-driven information and
           navigation tool that helps you use existing public transportation systems.
         </Text>
 
@@ -164,17 +164,25 @@ export default function TermsScreen() {
           activities.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>4. Community Features and User Contributions</Text>
-
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.1 Community-Driven Platform</Text>
-        <Text style={[styles.text, { color: colors.text }]}>
-          Avigate is a community-driven platform that relies on user contributions to improve and expand 
-          our services. By participating in community features, you help make navigation better for all users.
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          4. Community Features and User Contributions
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.2 Route Contributions</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.1 Community-Driven Platform
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          You may contribute new routes and directions to the Avigate database. When submitting routes, you agree to:
+          Avigate is a community-driven platform that relies on user contributions to improve and
+          expand our services. By participating in community features, you help make navigation
+          better for all users.
+        </Text>
+
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.2 Route Contributions
+        </Text>
+        <Text style={[styles.text, { color: colors.text }]}>
+          You may contribute new routes and directions to the Avigate database. When submitting
+          routes, you agree to:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Provide accurate, detailed route information including stops and landmarks
@@ -189,20 +197,17 @@ export default function TermsScreen() {
           • Not submit false, misleading, or intentionally inaccurate route information
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          All contributed routes undergo admin verification before being added to the public database. 
-          Contributors may receive recognition and rewards through our reputation system for verified contributions.
+          All contributed routes undergo admin verification before being added to the public
+          database. Contributors may receive recognition and rewards through our reputation system
+          for verified contributions.
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.3 Trip Feedback</Text>
         <Text style={[styles.text, { color: colors.text }]}>
           After completing a trip, you may optionally provide feedback including:
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Fare accuracy ratings
-        </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Route condition reports
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Fare accuracy ratings</Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Route condition reports</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Transportation availability updates
         </Text>
@@ -210,10 +215,13 @@ export default function TermsScreen() {
           • General experience reviews
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Your feedback helps improve route accuracy and assists other users in making informed decisions.
+          Your feedback helps improve route accuracy and assists other users in making informed
+          decisions.
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.4 Community Updates and Feeds</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          4.4 Community Updates and Feeds
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           You may post and view community feeds about:
         </Text>
@@ -230,8 +238,8 @@ export default function TermsScreen() {
           • Photo uploads for verification
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          You can control your feed preferences and opt out of receiving community updates in your city 
-          through the app settings. All community content is subject to moderation.
+          You can control your feed preferences and opt out of receiving community updates in your
+          city through the app settings. All community content is subject to moderation.
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.5 Content Guidelines</Text>
@@ -262,19 +270,23 @@ export default function TermsScreen() {
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>4.6 Content License</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          By submitting routes, feedback, posts, photos, or any other content to Avigate, you grant us 
-          a worldwide, perpetual, irrevocable, royalty-free, sublicensable license to use, reproduce, 
-          modify, adapt, publish, translate, distribute, and display such content for the operation and 
-          improvement of the Service. You retain ownership of your content but acknowledge that it may 
-          be used to benefit the entire Avigate community.
+          By submitting routes, feedback, posts, photos, or any other content to Avigate, you grant
+          us a worldwide, perpetual, irrevocable, royalty-free, sublicensable license to use,
+          reproduce, modify, adapt, publish, translate, distribute, and display such content for the
+          operation and improvement of the Service. You retain ownership of your content but
+          acknowledge that it may be used to benefit the entire Avigate community.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>5. Location Sharing Features</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          5. Location Sharing Features
+        </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>5.1 Personal Location Sharing</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          5.1 Personal Location Sharing
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Avigate allows you to share your location with friends, family, and other users. When you share 
-          your location:
+          Avigate allows you to share your location with friends, family, and other users. When you
+          share your location:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Recipients can view your real-time location
@@ -289,10 +301,10 @@ export default function TermsScreen() {
           • You can revoke location sharing at any time
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>5.2 Event and Group Sharing</Text>
-        <Text style={[styles.text, { color: colors.text }]}>
-          You may use location sharing for:
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          5.2 Event and Group Sharing
         </Text>
+        <Text style={[styles.text, { color: colors.text }]}>You may use location sharing for:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Social media sharing for public events
         </Text>
@@ -303,11 +315,14 @@ export default function TermsScreen() {
           • Group sharing for events and meetups
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          When sharing locations publicly or with groups, you acknowledge that multiple users may access 
-          your location information. You are responsible for managing your privacy settings appropriately.
+          When sharing locations publicly or with groups, you acknowledge that multiple users may
+          access your location information. You are responsible for managing your privacy settings
+          appropriately.
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>5.3 Location Sharing Safety</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          5.3 Location Sharing Safety
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           You acknowledge that sharing your location carries inherent risks. You should:
         </Text>
@@ -324,26 +339,24 @@ export default function TermsScreen() {
           • Report any misuse of location sharing features
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Avigate is not responsible for how recipients use your shared location information or for any 
-          incidents arising from location sharing.
+          Avigate is not responsible for how recipients use your shared location information or for
+          any incidents arising from location sharing.
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>6. Reputation System and Badges</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          6. Reputation System and Badges
+        </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>6.1 Reputation Points</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Avigate operates a reputation system to recognize and reward valuable community contributions. 
-          You can earn reputation points through:
+          Avigate operates a reputation system to recognize and reward valuable community
+          contributions. You can earn reputation points through:
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Providing trip feedback
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Providing trip feedback</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Contributing verified routes
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Submitting safety reports
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Submitting safety reports</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Creating helpful community posts
         </Text>
@@ -353,11 +366,11 @@ export default function TermsScreen() {
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Sharing directions with other users
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Completing trips
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Completing trips</Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>6.2 Reputation Penalties</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          6.2 Reputation Penalties
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           You may lose reputation points for:
         </Text>
@@ -374,17 +387,21 @@ export default function TermsScreen() {
           • Attempting to manipulate the reputation system
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>6.3 Badges and Achievements</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          6.3 Badges and Achievements
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          You can earn badges (bronze, silver, gold, platinum) based on your reputation level and 
-          contributions. Badges are visual recognition of your community participation and may unlock 
-          additional features or privileges. Badge requirements and rewards may change over time at our discretion.
+          You can earn badges (bronze, silver, gold, platinum) based on your reputation level and
+          contributions. Badges are visual recognition of your community participation and may
+          unlock additional features or privileges. Badge requirements and rewards may change over
+          time at our discretion.
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>6.4 No Monetary Value</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Reputation points and badges have no monetary value and cannot be transferred, sold, or redeemed 
-          for cash or other compensation. They are solely for recognition within the Avigate community.
+          Reputation points and badges have no monetary value and cannot be transferred, sold, or
+          redeemed for cash or other compensation. They are solely for recognition within the
+          Avigate community.
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>7. Smart Notifications</Text>
@@ -399,18 +416,14 @@ export default function TermsScreen() {
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Alternative route suggestions during delays
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Fare change notifications
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Fare change notifications</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Weather-related transport updates
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Special event transport information
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Favorite route updates
-        </Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>• Favorite route updates</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Morning commute optimization suggestions
         </Text>
@@ -418,10 +431,12 @@ export default function TermsScreen() {
           • Weekend exploration recommendations
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>7.2 Notification Preferences</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          7.2 Notification Preferences
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          You can customize your notification preferences in the app settings. However, certain service-related 
-          notifications (security alerts, policy changes) cannot be disabled.
+          You can customize your notification preferences in the app settings. However, certain
+          service-related notifications (security alerts, policy changes) cannot be disabled.
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>8. Acceptable Use</Text>
@@ -612,10 +627,10 @@ export default function TermsScreen() {
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>10.3 User Content</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Any feedback, suggestions, routes, posts, photos, or contributions you provide to Avigate may be 
-          used by us without compensation or attribution. By submitting such content, you grant us a worldwide,
-          perpetual, irrevocable, royalty-free license to use, modify, reproduce, and incorporate
-          such content into the Service.
+          Any feedback, suggestions, routes, posts, photos, or contributions you provide to Avigate
+          may be used by us without compensation or attribution. By submitting such content, you
+          grant us a worldwide, perpetual, irrevocable, royalty-free license to use, modify,
+          reproduce, and incorporate such content into the Service.
         </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>
@@ -626,8 +641,8 @@ export default function TermsScreen() {
           11.1 Location Permission
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Avigate requires access to your device's location services to provide navigation and location 
-          sharing features. You grant us permission to:
+          Avigate requires access to your device's location services to provide navigation and
+          location sharing features. You grant us permission to:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Access your real-time GPS location when using the app
@@ -653,8 +668,8 @@ export default function TermsScreen() {
           11.2 Information Accuracy
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          While we strive to provide accurate and up-to-date information, including community-contributed 
-          content, we cannot guarantee that:
+          While we strive to provide accurate and up-to-date information, including
+          community-contributed content, we cannot guarantee that:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Routes, directions, or navigation information are always accurate or current
@@ -1029,7 +1044,9 @@ export default function TermsScreen() {
           For questions, concerns, or notices regarding these Terms, please contact us:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>• Email: hello@avigate.co</Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>• Address: Port Harcourt, Nigeria</Text>
+        <Text style={[styles.bulletText, { color: colors.text }]}>
+          • Address: Port Harcourt, Nigeria
+        </Text>
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>
           19. Acknowledgment and Consent
