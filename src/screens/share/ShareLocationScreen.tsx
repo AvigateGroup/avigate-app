@@ -1,157 +1,328 @@
-// src/screens/share/ShareLocationScreen.tsx
+// src/screens/location-share/ShareLocationScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, Switch, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  ScrollView,
+  Switch,
+  Alert,
+  Share as RNShare,
+} from 'react-native';
+import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useAuth } from '@/store/AuthContext';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { useLocationShareService } from '@/hooks/useLocationShareService';
+import { useAuth } from '@/store/AuthContext';
+import { Button } from '@/components/common/Button';
 import { shareStyles } from '@/styles/features';
 
-interface SharedContact {
-  id: string;
-  name: string;
-  phone: string;
-  isActive: boolean;
-}
+type ShareType = 'public' | 'private' | 'event';
 
 export const ShareLocationScreen = () => {
-  const { user } = useAuth();
-  const [isSharing, setIsSharing] = useState(false);
+  const router = useRouter();
   const colors = useThemedColors();
-  const [sharedContacts, setSharedContacts] = useState<SharedContact[]>([
-    { id: '1', name: 'John Doe', phone: '+234 801 234 5678', isActive: true },
-    { id: '2', name: 'Jane Smith', phone: '+234 802 345 6789', isActive: false },
-  ]);
+  const { user } = useAuth();
+  const { createShare, isLoading } = useLocationShareService();
 
-  const handleToggleSharing = () => {
-    if (!isSharing) {
+  const [shareType, setShareType] = useState<ShareType>('public');
+  const [locationName, setLocationName] = useState('');
+  const [description, setDescription] = useState('');
+  const [hasExpiry, setHasExpiry] = useState(false);
+  const [expiryDate, setExpiryDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isEvent, setIsEvent] = useState(false);
+
+  const handleCreateShare = async () => {
+    if (!locationName.trim()) {
+      Alert.alert('Error', 'Please enter a location name');
+      return;
+    }
+
+    // In real app, you'd get current location here
+    const result = await createShare({
+      shareType,
+      locationName: locationName.trim(),
+      latitude: 4.815554, // Example coordinates
+      longitude: 7.0498, 
+      description: description.trim(),
+      expiresAt: hasExpiry ? expiryDate : undefined,
+    });
+
+    if (result.success) {
+      const shareUrl = result.data.shareUrl;
+      
       Alert.alert(
-        'Enable Location Sharing',
-        'This will allow your selected contacts to see your real-time location.',
+        'Location Shared!',
+        'Your location has been shared successfully.',
         [
-          { text: 'Cancel', style: 'cancel' },
           {
-            text: 'Enable',
-            onPress: () => setIsSharing(true),
+            text: 'Copy Link',
+            onPress: () => {
+              // Copy to clipboard
+              Alert.alert('Copied!', 'Share link copied to clipboard');
+            },
           },
-        ],
+          {
+            text: 'Share',
+            onPress: () => handleShareLink(shareUrl),
+          },
+          {
+            text: 'Done',
+            style: 'cancel',
+            onPress: () => router.back(),
+          },
+        ]
       );
-    } else {
-      setIsSharing(false);
     }
   };
 
-  const handleToggleContact = (contactId: string) => {
-    setSharedContacts(prev =>
-      prev.map(contact =>
-        contact.id === contactId ? { ...contact, isActive: !contact.isActive } : contact,
-      ),
-    );
+  const handleShareLink = async (url: string) => {
+    try {
+      await RNShare.share({
+        message: `${locationName}\n\nI'm sharing my location with you via Avigate:\n${url}`,
+        url,
+        title: 'Shared Location',
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
   };
 
-  const handleAddContact = () => {
-    Alert.alert('Add Contact', 'Contact selection feature coming soon!');
-  };
-
-  const handleShareLink = () => {
-    Alert.alert('Share Location Link', 'Generate a temporary link to share your location');
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setExpiryDate(selectedDate);
+    }
   };
 
   return (
-    <ScrollView style={[shareStyles.container, { backgroundColor: colors.background }]}>
-      {/* Header Section */}
+    <ScrollView
+      style={[shareStyles.container, { backgroundColor: colors.background }]}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Header */}
       <View style={[shareStyles.header, { backgroundColor: colors.white }]}>
-        <View style={[shareStyles.iconContainer, { backgroundColor: colors.primaryLight }]}>
-          <Icon name="location" size={40} color={colors.primary} />
-        </View>
-        <Text style={[shareStyles.headerTitle, { color: colors.text }]}>Share Your Location</Text>
+        <Icon name="location" size={48} color={colors.primary} />
+        <Text style={[shareStyles.headerTitle, { color: colors.text }]}>
+          Share Your Location
+        </Text>
         <Text style={[shareStyles.headerSubtitle, { color: colors.textMuted }]}>
-          Let your friends and family know where you are
+          Let others navigate to you using local transportation
         </Text>
       </View>
 
-      {/* Master Toggle */}
-      <View style={[shareStyles.card, { backgroundColor: colors.white }]}>
-        <View style={shareStyles.toggleRow}>
-          <View style={shareStyles.toggleInfo}>
-            <Text style={[shareStyles.toggleTitle, { color: colors.text }]}>Location Sharing</Text>
-            <Text style={[shareStyles.toggleSubtitle, { color: colors.textMuted }]}>
-              {isSharing ? 'Currently sharing' : 'Not sharing location'}
+      {/* Share Type Selection */}
+      <View style={shareStyles.section}>
+        <Text style={[shareStyles.sectionTitle, { color: colors.text }]}>Share Type</Text>
+        <View style={shareStyles.shareTypeContainer}>
+          <TouchableOpacity
+            style={[
+              shareStyles.shareTypeButton,
+              {
+                backgroundColor: shareType === 'public' ? colors.primary : colors.white,
+                borderColor: shareType === 'public' ? colors.primary : colors.border,
+              },
+            ]}
+            onPress={() => setShareType('public')}
+            activeOpacity={0.7}
+          >
+            <Icon
+              name="globe-outline"
+              size={24}
+              color={shareType === 'public' ? colors.textWhite : colors.text}
+            />
+            <Text
+              style={[
+                shareStyles.shareTypeText,
+                { color: shareType === 'public' ? colors.textWhite : colors.text },
+              ]}
+            >
+              Public
             </Text>
-          </View>
-          <Switch
-            value={isSharing}
-            onValueChange={handleToggleSharing}
-            trackColor={{ false: colors.border, true: colors.primaryLight }}
-            thumbColor={isSharing ? colors.primary : colors.textMuted}
+            <Text
+              style={[
+                shareStyles.shareTypeDesc,
+                { color: shareType === 'public' ? colors.textWhite : colors.textMuted },
+              ]}
+            >
+              Anyone with link
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              shareStyles.shareTypeButton,
+              {
+                backgroundColor: shareType === 'private' ? colors.primary : colors.white,
+                borderColor: shareType === 'private' ? colors.primary : colors.border,
+              },
+            ]}
+            onPress={() => setShareType('private')}
+            activeOpacity={0.7}
+          >
+            <Icon
+              name="lock-closed-outline"
+              size={24}
+              color={shareType === 'private' ? colors.textWhite : colors.text}
+            />
+            <Text
+              style={[
+                shareStyles.shareTypeText,
+                { color: shareType === 'private' ? colors.textWhite : colors.text },
+              ]}
+            >
+              Private
+            </Text>
+            <Text
+              style={[
+                shareStyles.shareTypeDesc,
+                { color: shareType === 'private' ? colors.textWhite : colors.textMuted },
+              ]}
+            >
+              Selected people
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              shareStyles.shareTypeButton,
+              {
+                backgroundColor: shareType === 'event' ? colors.primary : colors.white,
+                borderColor: shareType === 'event' ? colors.primary : colors.border,
+              },
+            ]}
+            onPress={() => {
+              setShareType('event');
+              setIsEvent(true);
+            }}
+            activeOpacity={0.7}
+          >
+            <Icon
+              name="calendar-outline"
+              size={24}
+              color={shareType === 'event' ? colors.textWhite : colors.text}
+            />
+            <Text
+              style={[
+                shareStyles.shareTypeText,
+                { color: shareType === 'event' ? colors.textWhite : colors.text },
+              ]}
+            >
+              Event
+            </Text>
+            <Text
+              style={[
+                shareStyles.shareTypeDesc,
+                { color: shareType === 'event' ? colors.textWhite : colors.textMuted },
+              ]}
+            >
+              Public event
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {/* Location Details */}
+      <View style={shareStyles.section}>
+        <Text style={[shareStyles.sectionTitle, { color: colors.text }]}>Location Details</Text>
+        
+        <View style={[shareStyles.inputContainer, { backgroundColor: colors.white }]}>
+          <Icon name="location-outline" size={20} color={colors.textMuted} />
+          <TextInput
+            style={[shareStyles.input, { color: colors.text }]}
+            placeholder="Location name (e.g., My Birthday Party)"
+            placeholderTextColor={colors.textMuted}
+            value={locationName}
+            onChangeText={setLocationName}
+          />
+        </View>
+
+        <View style={[shareStyles.inputContainer, { backgroundColor: colors.white, height: 100 }]}>
+          <Icon name="document-text-outline" size={20} color={colors.textMuted} />
+          <TextInput
+            style={[shareStyles.input, { color: colors.text, height: 80 }]}
+            placeholder="Description (optional)"
+            placeholderTextColor={colors.textMuted}
+            value={description}
+            onChangeText={setDescription}
+            multiline
+            textAlignVertical="top"
           />
         </View>
       </View>
 
-      {/* Quick Actions */}
+      {/* Expiry Settings */}
       <View style={shareStyles.section}>
-        <Text style={[shareStyles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
-        <View style={shareStyles.actionButtons}>
-          <TouchableOpacity
-            style={[shareStyles.actionButton, { backgroundColor: colors.white }]}
-            onPress={handleShareLink}
-            activeOpacity={0.7}
-          >
-            <Icon name="link" size={24} color={colors.primary} />
-            <Text style={[shareStyles.actionButtonText, { color: colors.text }]}>Share Link</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[shareStyles.actionButton, { backgroundColor: colors.white }]}
-            onPress={handleAddContact}
-            activeOpacity={0.7}
-          >
-            <Icon name="person-add" size={24} color={colors.primary} />
-            <Text style={[shareStyles.actionButtonText, { color: colors.text }]}>Add Contact</Text>
-          </TouchableOpacity>
+        <View style={shareStyles.settingRow}>
+          <View style={shareStyles.settingInfo}>
+            <Icon name="time-outline" size={24} color={colors.primary} />
+            <Text style={[shareStyles.settingText, { color: colors.text }]}>
+              Set Expiry Date
+            </Text>
+          </View>
+          <Switch
+            value={hasExpiry}
+            onValueChange={setHasExpiry}
+            trackColor={{ false: colors.border, true: colors.primaryLight }}
+            thumbColor={hasExpiry ? colors.primary : colors.disabled}
+          />
         </View>
+
+        {hasExpiry && (
+          <TouchableOpacity
+            style={[shareStyles.dateButton, { backgroundColor: colors.backgroundLight }]}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <Icon name="calendar-outline" size={20} color={colors.primary} />
+            <Text style={[shareStyles.dateText, { color: colors.text }]}>
+              {expiryDate.toLocaleDateString()} {expiryDate.toLocaleTimeString()}
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={expiryDate}
+            mode="datetime"
+            is24Hour={true}
+            onChange={handleDateChange}
+            minimumDate={new Date()}
+          />
+        )}
       </View>
 
-      {/* Shared With Section */}
-      {isSharing && (
-        <View style={shareStyles.section}>
-          <Text style={[shareStyles.sectionTitle, { color: colors.text }]}>Shared With</Text>
-          {sharedContacts.map(contact => (
-            <View
-              key={contact.id}
-              style={[shareStyles.contactCard, { backgroundColor: colors.white }]}
-            >
-              <View style={shareStyles.contactInfo}>
-                <View style={[shareStyles.contactAvatar, { backgroundColor: colors.primaryLight }]}>
-                  <Icon name="person" size={24} color={colors.primary} />
-                </View>
-                <View style={shareStyles.contactDetails}>
-                  <Text style={[shareStyles.contactName, { color: colors.text }]}>
-                    {contact.name}
-                  </Text>
-                  <Text style={[shareStyles.contactPhone, { color: colors.textMuted }]}>
-                    {contact.phone}
-                  </Text>
-                </View>
-              </View>
-              <Switch
-                value={contact.isActive}
-                onValueChange={() => handleToggleContact(contact.id)}
-                trackColor={{ false: colors.border, true: colors.primaryLight }}
-                thumbColor={contact.isActive ? colors.primary : colors.textMuted}
-              />
-            </View>
-          ))}
-        </View>
-      )}
-
-      {/* Info Section */}
+      {/* Info Card */}
       <View style={[shareStyles.infoCard, { backgroundColor: colors.infoLight }]}>
         <Icon name="information-circle" size={24} color={colors.info} />
         <Text style={[shareStyles.infoText, { color: colors.text }]}>
-          Your location will only be shared with people you choose. You can stop sharing at any
-          time.
+          {shareType === 'public' 
+            ? 'Anyone with the link will be able to get directions to your location using local transport.'
+            : shareType === 'private'
+            ? 'Only people you select will be able to access the shared location.'
+            : 'Your event location will be visible to anyone with the link. Perfect for parties, meetups, and gatherings!'}
         </Text>
+      </View>
+
+      {/* Action Buttons */}
+      <View style={shareStyles.actions}>
+        <Button
+          title="Cancel"
+          onPress={() => router.back()}
+          variant="outline"
+          disabled={isLoading}
+          style={{ flex: 1 }}
+        />
+        <Button
+          title="Share Location"
+          onPress={handleCreateShare}
+          loading={isLoading}
+          disabled={isLoading}
+          style={{ flex: 1 }}
+        />
       </View>
     </ScrollView>
   );
