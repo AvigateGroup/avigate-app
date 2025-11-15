@@ -37,44 +37,46 @@ export const ShareLocationScreen = () => {
   const [isEvent, setIsEvent] = useState(false);
 
   const handleCreateShare = async () => {
-    if (!locationName.trim()) {
-      Alert.alert('Error', 'Please enter a location name');
-      return;
-    }
+  if (!locationName.trim()) {
+    Alert.alert('Error', 'Please enter a location name');
+    return;
+  }
 
-    // In real app, you'd get current location here
-    const result = await createShare({
-      shareType,
-      locationName: locationName.trim(),
-      latitude: 4.815554, // Example coordinates
-      longitude: 7.0498,
-      description: description.trim(),
-      expiresAt: hasExpiry ? expiryDate : undefined,
-    });
+  // In real app, you'd get current location here
+  const result = await createShare({
+    shareType,
+    locationName: locationName.trim(),
+    latitude: 4.815554, // Example coordinates
+    longitude: 7.0498,
+    description: description.trim(),
+    expiresAt: hasExpiry ? expiryDate : undefined,
+  });
 
-    if (result.success) {
-      const shareUrl = result.data.shareUrl;
+  if (result.success && result.data) {
+    const shareUrl = result.data.shareUrl;
 
-      Alert.alert('Location Shared!', 'Your location has been shared successfully.', [
-        {
-          text: 'Copy Link',
-          onPress: () => {
-            // Copy to clipboard
-            Alert.alert('Copied!', 'Share link copied to clipboard');
-          },
+    Alert.alert('Location Shared!', 'Your location has been shared successfully.', [
+      {
+        text: 'Copy Link',
+        onPress: () => {
+          // Copy to clipboard
+          Alert.alert('Copied!', 'Share link copied to clipboard');
         },
-        {
-          text: 'Share',
-          onPress: () => handleShareLink(shareUrl),
-        },
-        {
-          text: 'Done',
-          style: 'cancel',
-          onPress: () => router.back(),
-        },
-      ]);
-    }
-  };
+      },
+      {
+        text: 'Share',
+        onPress: () => handleShareLink(shareUrl),
+      },
+      {
+        text: 'Done',
+        style: 'cancel',
+        onPress: () => router.back(),
+      },
+    ]);
+  } else {
+    Alert.alert('Error', result.error || 'Failed to share location');
+  }
+};
 
   const handleShareLink = async (url: string) => {
     try {
