@@ -47,36 +47,32 @@ export const ShareLocationScreen = () => {
       shareType,
       locationName: locationName.trim(),
       latitude: 4.815554, // Example coordinates
-      longitude: 7.0498, 
+      longitude: 7.0498,
       description: description.trim(),
       expiresAt: hasExpiry ? expiryDate : undefined,
     });
 
     if (result.success) {
       const shareUrl = result.data.shareUrl;
-      
-      Alert.alert(
-        'Location Shared!',
-        'Your location has been shared successfully.',
-        [
-          {
-            text: 'Copy Link',
-            onPress: () => {
-              // Copy to clipboard
-              Alert.alert('Copied!', 'Share link copied to clipboard');
-            },
+
+      Alert.alert('Location Shared!', 'Your location has been shared successfully.', [
+        {
+          text: 'Copy Link',
+          onPress: () => {
+            // Copy to clipboard
+            Alert.alert('Copied!', 'Share link copied to clipboard');
           },
-          {
-            text: 'Share',
-            onPress: () => handleShareLink(shareUrl),
-          },
-          {
-            text: 'Done',
-            style: 'cancel',
-            onPress: () => router.back(),
-          },
-        ]
-      );
+        },
+        {
+          text: 'Share',
+          onPress: () => handleShareLink(shareUrl),
+        },
+        {
+          text: 'Done',
+          style: 'cancel',
+          onPress: () => router.back(),
+        },
+      ]);
     }
   };
 
@@ -107,9 +103,7 @@ export const ShareLocationScreen = () => {
       {/* Header */}
       <View style={[shareStyles.header, { backgroundColor: colors.white }]}>
         <Icon name="location" size={48} color={colors.primary} />
-        <Text style={[shareStyles.headerTitle, { color: colors.text }]}>
-          Share Your Location
-        </Text>
+        <Text style={[shareStyles.headerTitle, { color: colors.text }]}>Share Your Location</Text>
         <Text style={[shareStyles.headerSubtitle, { color: colors.textMuted }]}>
           Let others navigate to you using local transportation
         </Text>
@@ -229,7 +223,7 @@ export const ShareLocationScreen = () => {
       {/* Location Details */}
       <View style={shareStyles.section}>
         <Text style={[shareStyles.sectionTitle, { color: colors.text }]}>Location Details</Text>
-        
+
         <View style={[shareStyles.inputContainer, { backgroundColor: colors.white }]}>
           <Icon name="location-outline" size={20} color={colors.textMuted} />
           <TextInput
@@ -260,9 +254,7 @@ export const ShareLocationScreen = () => {
         <View style={shareStyles.settingRow}>
           <View style={shareStyles.settingInfo}>
             <Icon name="time-outline" size={24} color={colors.primary} />
-            <Text style={[shareStyles.settingText, { color: colors.text }]}>
-              Set Expiry Date
-            </Text>
+            <Text style={[shareStyles.settingText, { color: colors.text }]}>Set Expiry Date</Text>
           </View>
           <Switch
             value={hasExpiry}
@@ -299,11 +291,11 @@ export const ShareLocationScreen = () => {
       <View style={[shareStyles.infoCard, { backgroundColor: colors.infoLight }]}>
         <Icon name="information-circle" size={24} color={colors.info} />
         <Text style={[shareStyles.infoText, { color: colors.text }]}>
-          {shareType === 'public' 
+          {shareType === 'public'
             ? 'Anyone with the link will be able to get directions to your location using local transport.'
             : shareType === 'private'
-            ? 'Only people you select will be able to access the shared location.'
-            : 'Your event location will be visible to anyone with the link. Perfect for parties, meetups, and gatherings!'}
+              ? 'Only people you select will be able to access the shared location.'
+              : 'Your event location will be visible to anyone with the link. Perfect for parties, meetups, and gatherings!'}
         </Text>
       </View>
 

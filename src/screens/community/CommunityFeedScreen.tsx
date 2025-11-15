@@ -96,21 +96,31 @@ export const CommunityFeedScreen = () => {
 
   const getPostTypeIcon = (type: string) => {
     switch (type) {
-      case 'traffic_update': return 'car-outline';
-      case 'route_alert': return 'warning-outline';
-      case 'safety_concern': return 'shield-outline';
-      case 'tip': return 'bulb-outline';
-      default: return 'chatbubble-outline';
+      case 'traffic_update':
+        return 'car-outline';
+      case 'route_alert':
+        return 'warning-outline';
+      case 'safety_concern':
+        return 'shield-outline';
+      case 'tip':
+        return 'bulb-outline';
+      default:
+        return 'chatbubble-outline';
     }
   };
 
   const getPostTypeColor = (type: string) => {
     switch (type) {
-      case 'traffic_update': return colors.warning;
-      case 'route_alert': return colors.error;
-      case 'safety_concern': return colors.error;
-      case 'tip': return colors.info;
-      default: return colors.text;
+      case 'traffic_update':
+        return colors.warning;
+      case 'route_alert':
+        return colors.error;
+      case 'safety_concern':
+        return colors.error;
+      case 'tip':
+        return colors.info;
+      default:
+        return colors.text;
     }
   };
 
@@ -140,9 +150,15 @@ export const CommunityFeedScreen = () => {
               style={communityStyles.authorAvatar}
             />
           ) : (
-            <View style={[communityStyles.authorAvatarPlaceholder, { backgroundColor: colors.primaryLight }]}>
+            <View
+              style={[
+                communityStyles.authorAvatarPlaceholder,
+                { backgroundColor: colors.primaryLight },
+              ]}
+            >
               <Text style={communityStyles.authorInitials}>
-                {item.author.firstName[0]}{item.author.lastName[0]}
+                {item.author.firstName[0]}
+                {item.author.lastName[0]}
               </Text>
             </View>
           )}
@@ -152,7 +168,12 @@ export const CommunityFeedScreen = () => {
                 {item.author.firstName} {item.author.lastName}
               </Text>
               {item.isVerified && (
-                <Icon name="checkmark-circle" size={16} color={colors.success} style={{ marginLeft: 4 }} />
+                <Icon
+                  name="checkmark-circle"
+                  size={16}
+                  color={colors.success}
+                  style={{ marginLeft: 4 }}
+                />
               )}
             </View>
             <Text style={[communityStyles.postTime, { color: colors.textMuted }]}>
@@ -168,9 +189,7 @@ export const CommunityFeedScreen = () => {
       </View>
 
       {/* Content */}
-      <Text style={[communityStyles.postTitle, { color: colors.text }]}>
-        {item.title}
-      </Text>
+      <Text style={[communityStyles.postTitle, { color: colors.text }]}>{item.title}</Text>
       <Text style={[communityStyles.postContent, { color: colors.textMuted }]} numberOfLines={3}>
         {item.content}
       </Text>
@@ -198,21 +217,15 @@ export const CommunityFeedScreen = () => {
       <View style={[communityStyles.postActions, { borderTopColor: colors.border }]}>
         <TouchableOpacity style={communityStyles.actionButton}>
           <Icon name="arrow-up-outline" size={20} color={colors.success} />
-          <Text style={[communityStyles.actionText, { color: colors.text }]}>
-            {item.upvotes}
-          </Text>
+          <Text style={[communityStyles.actionText, { color: colors.text }]}>{item.upvotes}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={communityStyles.actionButton}>
           <Icon name="arrow-down-outline" size={20} color={colors.error} />
-          <Text style={[communityStyles.actionText, { color: colors.text }]}>
-            {item.downvotes}
-          </Text>
+          <Text style={[communityStyles.actionText, { color: colors.text }]}>{item.downvotes}</Text>
         </TouchableOpacity>
         <TouchableOpacity style={communityStyles.actionButton}>
           <Icon name="chatbubble-outline" size={20} color={colors.textMuted} />
-          <Text style={[communityStyles.actionText, { color: colors.text }]}>
-            Comment
-          </Text>
+          <Text style={[communityStyles.actionText, { color: colors.text }]}>Comment</Text>
         </TouchableOpacity>
         <TouchableOpacity style={communityStyles.actionButton}>
           <Icon name="share-outline" size={20} color={colors.textMuted} />
@@ -292,9 +305,7 @@ export const CommunityFeedScreen = () => {
           !isLoading ? (
             <View style={communityStyles.emptyState}>
               <Icon name="chatbubbles-outline" size={64} color={colors.textMuted} />
-              <Text style={[communityStyles.emptyText, { color: colors.text }]}>
-                No posts yet
-              </Text>
+              <Text style={[communityStyles.emptyText, { color: colors.text }]}>No posts yet</Text>
               <Text style={[communityStyles.emptySubtext, { color: colors.textMuted }]}>
                 Be the first to share an update!
               </Text>
