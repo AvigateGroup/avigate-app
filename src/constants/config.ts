@@ -1,16 +1,33 @@
+// src/constants/config.ts
 import Constants from 'expo-constants';
 import { Platform } from 'react-native';
 
 // Helper to get environment variables with fallback
 const getEnvVar = (key: string, fallback: string = ''): string => {
-  return process.env[key] || Constants.expoConfig?.extra?.[key] || fallback;
+  // First try process.env (works in development)
+  if (process.env[key]) {
+    return process.env[key];
+  }
+  
+  // Then try expo-constants extra (works in production builds)
+  if (Constants.expoConfig?.extra?.[key]) {
+    return Constants.expoConfig.extra[key];
+  }
+  
+  // Finally use fallback
+  return fallback;
 };
 
 // Determine the correct API URL based on platform and environment
 const getApiBaseUrl = (): string => {
+  // Always use production URL in production builds
   if (!__DEV__) {
-    // Production
-    return getEnvVar('EXPO_PUBLIC_PRODUCTION_API_URL', 'https://your-production-api.com/api/v1');
+    const prodUrl = getEnvVar('EXPO_PUBLIC_PRODUCTION_API_URL', '');
+    if (prodUrl) {
+      return prodUrl;
+    }
+    // Fallback production URL
+    return 'https://avigate-api-production.up.railway.app/api/v1';
   }
 
   // Development - use different URLs based on platform
@@ -20,7 +37,7 @@ const getApiBaseUrl = (): string => {
     return customUrl;
   }
 
-  // Fallback URLs for different platforms
+  // Fallback URLs for different platforms in development
   if (Platform.OS === 'android') {
     // Android emulator
     return 'http://10.0.2.2:3000/api/v1';
@@ -39,13 +56,19 @@ export const API_CONFIG = {
 };
 
 export const GOOGLE_CONFIG = {
-  WEB_CLIENT_ID: getEnvVar('EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID', ''),
+  WEB_CLIENT_ID: getEnvVar(
+    'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
+    '162294874203-grlpvqerq74dttlg04gu0is3e3utle45.apps.googleusercontent.com'
+  ),
   IOS_CLIENT_ID: getEnvVar('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID', ''),
-  ANDROID_CLIENT_ID: getEnvVar('EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID', ''),
+  ANDROID_CLIENT_ID: getEnvVar(
+    'EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID',
+    '162294874203-e3rcdcbjj1ncubsfkekcsq4cvi5i6khq.apps.googleusercontent.com'
+  ),
 };
 
 export const GOOGLE_MAPS_CONFIG = {
-  API_KEY: getEnvVar('EXPO_PUBLIC_GOOGLE_MAPS_API_KEY', ''),
+  API_KEY: getEnvVar('EXPO_PUBLIC_GOOGLE_MAPS_API_KEY', 'AIzaSyAD8vXDmVwwexRYbZf63Fh5s'),
 };
 
 export const APP_CONFIG = {
@@ -63,12 +86,15 @@ export const STORAGE_KEYS = {
   FCM_TOKEN: '@avigate_fcm_token',
 };
 
-// Development logging
-if (__DEV__) {
-  console.log('🔧 API Configuration:');
-  console.log('  Platform:', Platform.OS);
-  console.log('  Base URL:', API_CONFIG.BASE_URL);
+// Development and Production logging
+console.log('🔧 API Configuration:');
+console.log('  Environment:', __DEV__ ? 'Development' : 'Production');
+console.log('  Platform:', Platform.OS);
+console.log('  Base URL:', API_CONFIG.BASE_URL);
+console.log('  Google Web Client ID:', GOOGLE_CONFIG.WEB_CLIENT_ID ? '✓ Set' : '✗ Missing');
+console.log('  Google Android Client ID:', GOOGLE_CONFIG.ANDROID_CLIENT_ID ? '✓ Set' : '✗ Missing');
 
+if (__DEV__) {
   const requiredVars = ['EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID'];
   const missing = requiredVars.filter(varName => !getEnvVar(varName));
 

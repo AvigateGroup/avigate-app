@@ -23,7 +23,7 @@
         "NSCameraUsageDescription": "Allow Avigate to use your camera to take profile pictures"
       },
       "config": {
-        "googleMapsApiKey": "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
+        "googleMapsApiKey": "AIzaSyAD8vXDmVwwexRYbZf63Fh5s"
       },
       "googleServicesFile": "./google-services.json"
     },
@@ -46,7 +46,7 @@
       ],
       "config": {
         "googleMaps": {
-          "apiKey": "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY"
+          "apiKey": "AIzaSyAD8vXDmVwwexRYbZf63Fh5s"
         }
       },
       "googleServicesFile": "./google-services.json"
@@ -118,7 +118,12 @@
       "router": {},
       "eas": {
         "projectId": "9c54a19d-b328-4fae-97e8-c8ed057b60d7"
-      }
+      },
+      "EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID": "162294874203-grlpvqerq74dttlg04gu0is3e3utle45.apps.googleusercontent.com",
+      "EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID": "162294874203-e3rcdcbjj1ncubsfkekcsq4cvi5i6khq.apps.googleusercontent.com",
+      "EXPO_PUBLIC_API_BASE_URL": "https://avigate-api-production.up.railway.app/api/v1",
+      "EXPO_PUBLIC_PRODUCTION_API_URL": "https://avigate-api-production.up.railway.app/api/v1",
+      "EXPO_PUBLIC_GOOGLE_MAPS_API_KEY": "AIzaSyAD8vXDmVwwexRYbZf63Fh5s"
     }
   }
 }
