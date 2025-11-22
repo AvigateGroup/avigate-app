@@ -1,6 +1,6 @@
-// src/screens/search/SearchDestinationScreen.tsx
+// src/screens/search/SearchDestinationScreen.tsx (ENHANCED)
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,71 +9,97 @@ import {
   FlatList,
   SafeAreaView,
   Keyboard,
+  ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useRouter } from 'expo-router';
 import { searchStyles } from '@/styles/features';
+import { useLocationSearch } from '@/hooks/useLocationSearch';
+import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 
 interface LocationSuggestion {
   id: string;
   name: string;
   address: string;
-  type: 'recent' | 'saved' | 'search';
+  coordinates?: {
+    lat: number;
+    lng: number;
+  };
+  type: 'recent' | 'saved' | 'search' | 'intermediate_stop';
+  segmentName?: string; // For intermediate stops
+  requiresWalking?: boolean; // NEW - indicates walking needed
+  walkingDistance?: number; // NEW - distance in meters
 }
-
-// Mock data - Replace with actual API calls
-const RECENT_SEARCHES: LocationSuggestion[] = [
-  {
-    id: '1',
-    name: 'University of Port Harcourt',
-    address: 'East-West Rd, Choba, Port Harcourt',
-    type: 'recent',
-  },
-  {
-    id: '2',
-    name: 'Port Harcourt International Airport',
-    address: 'Omagwa, Rivers State',
-    type: 'recent',
-  },
-];
-
-const SAVED_PLACES: LocationSuggestion[] = [
-  {
-    id: 's1',
-    name: 'Home',
-    address: 'VWQ8+M9G, Port Harcourt, Rivers',
-    type: 'saved',
-  },
-  {
-    id: 's2',
-    name: 'Work',
-    address: 'Plot 23, Trans Amadi Industrial Layout',
-    type: 'saved',
-  },
-];
 
 export const SearchDestinationScreen = () => {
   const router = useRouter();
+  const colors = useThemedColors();
+  const { currentLocation, getCurrentLocation } = useCurrentLocation();
+  const { 
+    searchLocations, 
+    getRecentSearches, 
+    getSavedPlaces,
+    searchNearbyIntermediateStops, // NEW - Search intermediate stops
+    isLoading 
+  } = useLocationSearch();
+
   const [searchQuery, setSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
+  const [recentSearches, setRecentSearches] = useState<LocationSuggestion[]>([]);
+  const [savedPlaces, setSavedPlaces] = useState<LocationSuggestion[]>([]);
   const [isSearching, setIsSearching] = useState(false);
-  const colors = useThemedColors();
 
-  const handleSearch = (text: string) => {
+  useEffect(() => {
+    loadInitialData();
+  }, []);
+
+  const loadInitialData = async () => {
+    const [recent, saved] = await Promise.all([
+      getRecentSearches(),
+      getSavedPlaces(),
+    ]);
+    setRecentSearches(recent);
+    setSavedPlaces(saved);
+  };
+
+  const handleSearch = async (text: string) => {
     setSearchQuery(text);
 
     if (text.length > 2) {
       setIsSearching(true);
-      // TODO: Implement actual location search API
-      // For now, just filter recent searches
-      const filtered = RECENT_SEARCHES.filter(
-        item =>
-          item.name.toLowerCase().includes(text.toLowerCase()) ||
-          item.address.toLowerCase().includes(text.toLowerCase()),
-      );
-      setSuggestions(filtered);
-      setIsSearching(false);
+      
+      try {
+        // Search both regular locations and intermediate stops
+        const [regularResults, intermediateStops] = await Promise.all([
+          searchLocations(text),
+          searchNearbyIntermediateStops(text, currentLocation),
+        ]);
+
+        // Combine results
+        const combined = [
+          ...regularResults.map(loc => ({
+            ...loc,
+            type: 'search' as const,
+          })),
+          ...intermediateStops.map(stop => ({
+            id: stop.id,
+            name: stop.stopName,
+            address: stop.segmentName,
+            coordinates: stop.coordinates,
+            type: 'intermediate_stop' as const,
+            segmentName: stop.segmentName,
+            requiresWalking: stop.requiresWalking,
+            walkingDistance: stop.walkingDistance,
+          })),
+        ];
+
+        setSuggestions(combined);
+      } catch (error) {
+        console.error('Search error:', error);
+      } finally {
+        setIsSearching(false);
+      }
     } else {
       setSuggestions([]);
     }
@@ -81,9 +107,33 @@ export const SearchDestinationScreen = () => {
 
   const handleSelectLocation = (location: LocationSuggestion) => {
     Keyboard.dismiss();
-    console.log('Selected location:', location);
-    // TODO: Navigate to route planning or show on map
-    router.back();
+
+    // Navigate to route planning with selected destination
+    router.push({
+      pathname: '/routes/plan',
+      params: {
+        destinationName: location.name,
+        destinationLat: location.coordinates?.lat,
+        destinationLng: location.coordinates?.lng,
+        destinationType: location.type,
+        requiresWalking: location.requiresWalking,
+        walkingDistance: location.walkingDistance,
+      },
+    });
+  };
+
+  const handleUseCurrentLocation = async () => {
+    const location = await getCurrentLocation();
+    if (location) {
+      router.push({
+        pathname: '/routes/plan',
+        params: {
+          destinationName: 'Current Location',
+          destinationLat: location.latitude,
+          destinationLng: location.longitude,
+        },
+      });
+    }
   };
 
   const handleClearSearch = () => {
@@ -92,13 +142,10 @@ export const SearchDestinationScreen = () => {
     Keyboard.dismiss();
   };
 
-  const handleBack = () => {
-    router.back();
-  };
-
   const renderLocationItem = ({ item }: { item: LocationSuggestion }) => {
     let iconName = 'location';
     let iconColor = colors.primary;
+    let badge = null;
 
     if (item.type === 'recent') {
       iconName = 'time-outline';
@@ -106,6 +153,28 @@ export const SearchDestinationScreen = () => {
     } else if (item.type === 'saved') {
       iconName = item.name === 'Home' ? 'home' : 'briefcase';
       iconColor = colors.primary;
+    } else if (item.type === 'intermediate_stop') {
+      iconName = 'bus-outline';
+      iconColor = colors.info;
+      badge = (
+        <View style={[shareStyles.badge, { backgroundColor: colors.infoLight }]}>
+          <Text style={[shareStyles.badgeText, { color: colors.info }]}>
+            On Route
+          </Text>
+        </View>
+      );
+    }
+
+    // NEW - Show walking indicator if needed
+    if (item.requiresWalking && item.walkingDistance) {
+      badge = (
+        <View style={[shareStyles.badge, { backgroundColor: colors.warningLight }]}>
+          <Icon name="walk-outline" size={12} color={colors.warning} />
+          <Text style={[shareStyles.badgeText, { color: colors.warning }]}>
+            {Math.round(item.walkingDistance)}m walk
+          </Text>
+        </View>
+      );
     }
 
     return (
@@ -118,13 +187,23 @@ export const SearchDestinationScreen = () => {
           <Icon name={iconName} size={24} color={iconColor} />
         </View>
         <View style={searchStyles.suggestionText}>
-          <Text style={[searchStyles.suggestionName, { color: colors.text }]}>{item.name}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text style={[searchStyles.suggestionName, { color: colors.text }]} numberOfLines={1}>
+              {item.name}
+            </Text>
+            {badge}
+          </View>
           <Text
             style={[searchStyles.suggestionAddress, { color: colors.textMuted }]}
             numberOfLines={1}
           >
             {item.address}
           </Text>
+          {item.type === 'intermediate_stop' && (
+            <Text style={[searchStyles.suggestionMeta, { color: colors.info }]}>
+              Stop on: {item.segmentName}
+            </Text>
+          )}
         </View>
         <Icon name="chevron-forward" size={20} color={colors.textMuted} />
       </TouchableOpacity>
@@ -135,6 +214,7 @@ export const SearchDestinationScreen = () => {
     if (isSearching) {
       return (
         <View style={searchStyles.emptyState}>
+          <ActivityIndicator size="large" color={colors.primary} />
           <Text style={[searchStyles.emptyText, { color: colors.text }]}>Searching...</Text>
         </View>
       );
@@ -146,7 +226,7 @@ export const SearchDestinationScreen = () => {
           <Icon name="search" size={48} color={colors.textMuted} />
           <Text style={[searchStyles.emptyText, { color: colors.text }]}>No results found</Text>
           <Text style={[searchStyles.emptySubtext, { color: colors.textMuted }]}>
-            Try searching for a different location
+            Try searching for landmarks, streets, or businesses
           </Text>
         </View>
       );
@@ -164,7 +244,7 @@ export const SearchDestinationScreen = () => {
           { backgroundColor: colors.white, borderBottomColor: colors.border },
         ]}
       >
-        <TouchableOpacity onPress={handleBack} style={searchStyles.backButton}>
+        <TouchableOpacity onPress={() => router.back()} style={searchStyles.backButton}>
           <Icon name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={[searchStyles.headerTitle, { color: colors.text }]}>Where to?</Text>
@@ -180,7 +260,7 @@ export const SearchDestinationScreen = () => {
         <Icon name="search" size={20} color={colors.textMuted} />
         <TextInput
           style={[searchStyles.searchInput, { color: colors.text }]}
-          placeholder="Search for a destination"
+          placeholder="Hotels, markets, streets, landmarks..."
           placeholderTextColor={colors.textMuted}
           value={searchQuery}
           onChangeText={handleSearch}
@@ -194,34 +274,67 @@ export const SearchDestinationScreen = () => {
         )}
       </View>
 
+      {/* Current Location Button */}
+      <TouchableOpacity
+        style={[searchStyles.currentLocationButton, { backgroundColor: colors.white }]}
+        onPress={handleUseCurrentLocation}
+        activeOpacity={0.7}
+      >
+        <View style={[searchStyles.iconContainer, { backgroundColor: colors.primaryLight }]}>
+          <Icon name="navigate" size={24} color={colors.primary} />
+        </View>
+        <Text style={[searchStyles.suggestionName, { color: colors.primary }]}>
+          Use Current Location
+        </Text>
+      </TouchableOpacity>
+
       {/* Content */}
       {!searchQuery ? (
-        // Show saved places and recent searches when not searching
         <View style={searchStyles.content}>
           {/* Saved Places */}
-          <View style={searchStyles.section}>
-            <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>Saved Places</Text>
-            <FlatList
-              data={SAVED_PLACES}
-              keyExtractor={item => item.id}
-              renderItem={renderLocationItem}
-              scrollEnabled={false}
-            />
-          </View>
+          {savedPlaces.length > 0 && (
+            <View style={searchStyles.section}>
+              <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>
+                Saved Places
+              </Text>
+              <FlatList
+                data={savedPlaces}
+                keyExtractor={item => item.id}
+                renderItem={renderLocationItem}
+                scrollEnabled={false}
+              />
+            </View>
+          )}
 
           {/* Recent Searches */}
-          <View style={searchStyles.section}>
-            <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>Recent</Text>
-            <FlatList
-              data={RECENT_SEARCHES}
-              keyExtractor={item => item.id}
-              renderItem={renderLocationItem}
-              scrollEnabled={false}
-            />
+          {recentSearches.length > 0 && (
+            <View style={searchStyles.section}>
+              <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>Recent</Text>
+              <FlatList
+                data={recentSearches}
+                keyExtractor={item => item.id}
+                renderItem={renderLocationItem}
+                scrollEnabled={false}
+              />
+            </View>
+          )}
+
+          {/* Quick Tips */}
+          <View style={[searchStyles.tipsCard, { backgroundColor: colors.infoLight }]}>
+            <Icon name="bulb-outline" size={24} color={colors.info} />
+            <View style={{ flex: 1, marginLeft: 12 }}>
+              <Text style={[searchStyles.tipsTitle, { color: colors.text }]}>
+                💡 Search Tips
+              </Text>
+              <Text style={[searchStyles.tipsText, { color: colors.textMuted }]}>
+                • Search for hotels, schools, or markets{'\n'}
+                • Use landmarks like "near Access Bank"{'\n'}
+                • Search intermediate stops like "Wimpy Junction"
+              </Text>
+            </View>
           </View>
         </View>
       ) : (
-        // Show search results
         <FlatList
           data={suggestions}
           keyExtractor={item => item.id}
