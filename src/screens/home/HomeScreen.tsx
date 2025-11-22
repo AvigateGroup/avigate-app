@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
-import { homeStyles } from '@/styles';
+import { homeFeatureStyles } from '@/styles/features';
 import { useRouter } from 'expo-router';
 
 interface LocationType {
@@ -169,9 +169,9 @@ export const HomeScreen = () => {
 
   if (loading) {
     return (
-      <View style={[homeStyles.loadingContainer, { backgroundColor: colors.background }]}>
+      <View style={[homeFeatureStyles.loadingContainer, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={[homeStyles.loadingText, { color: colors.text }]}>
+        <Text style={[homeFeatureStyles.loadingText, { color: colors.text }]}>
           Getting your location...
         </Text>
       </View>
@@ -179,10 +179,10 @@ export const HomeScreen = () => {
   }
 
   return (
-    <View style={homeStyles.container}>
+    <View style={homeFeatureStyles.container}>
       {/* Hamburger Menu Button */}
       <TouchableOpacity
-        style={[homeStyles.menuButton, { backgroundColor: colors.white }]}
+        style={[homeFeatureStyles.menuButton, { backgroundColor: colors.white }]}
         onPress={handleMenuPress}
         activeOpacity={0.7}
       >
@@ -193,7 +193,7 @@ export const HomeScreen = () => {
       {location && (
         <MapView
           ref={mapRef}
-          style={homeStyles.map}
+          style={homeFeatureStyles.map}
           initialRegion={location}
           showsUserLocation
           showsMyLocationButton={false}
@@ -209,8 +209,8 @@ export const HomeScreen = () => {
             title={`${user?.firstName}'s Location`}
             description={address}
           >
-            <View style={homeStyles.markerContainer}>
-              <View style={[homeStyles.marker, { backgroundColor: colors.primary }]}>
+            <View style={homeFeatureStyles.markerContainer}>
+              <View style={[homeFeatureStyles.marker, { backgroundColor: colors.primary }]}>
                 <Icon name="person" size={20} color={colors.textWhite} />
               </View>
             </View>
@@ -219,10 +219,10 @@ export const HomeScreen = () => {
       )}
 
       {/* Action Buttons - Repositioned */}
-      <View style={homeStyles.actionButtons}>
+      <View style={homeFeatureStyles.actionButtons}>
         {/* Center on User Button */}
         <TouchableOpacity
-          style={[homeStyles.actionButton, { backgroundColor: colors.primary }]}
+          style={[homeFeatureStyles.actionButton, { backgroundColor: colors.primary }]}
           onPress={centerMapOnUser}
           activeOpacity={0.7}
         >
@@ -231,7 +231,7 @@ export const HomeScreen = () => {
 
         {/* Refresh Location Button */}
         <TouchableOpacity
-          style={[homeStyles.actionButton, { backgroundColor: colors.primary }]}
+          style={[homeFeatureStyles.actionButton, { backgroundColor: colors.primary }]}
           onPress={refreshLocation}
           activeOpacity={0.7}
         >
@@ -240,14 +240,14 @@ export const HomeScreen = () => {
       </View>
 
       {/* Bottom Section - "Where to?" Search Field */}
-      <View style={homeStyles.bottomSection}>
+      <View style={homeFeatureStyles.bottomSection}>
         <TouchableOpacity
-          style={[homeStyles.searchContainer, { backgroundColor: colors.white }]}
+          style={[homeFeatureStyles.searchContainer, { backgroundColor: colors.white }]}
           onPress={handleSearchPress}
           activeOpacity={0.7}
         >
           <Icon name="search" size={24} color={colors.text} />
-          <Text style={[homeStyles.searchPlaceholder, { color: colors.textMuted }]}>Where to?</Text>
+          <Text style={[homeFeatureStyles.searchPlaceholder, { color: colors.textMuted }]}>Where to?</Text>
         </TouchableOpacity>
       </View>
     </View>
