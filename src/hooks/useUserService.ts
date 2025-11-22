@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { userApi } from '@/api/user.api';
-import { User, UpdateProfileDto } from '@/types/auth.types';
+import { UpdateProfileDto } from '@/types/auth.types';
 import { handleApiError } from '@/utils/helpers';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '@/store/AuthContext';

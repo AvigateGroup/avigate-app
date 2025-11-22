@@ -12,3 +12,5 @@ export * from './search';
 export * from './share';
 export * from './trip';
 export * from './route';
+export * from './community';
+export * from './contribute';
