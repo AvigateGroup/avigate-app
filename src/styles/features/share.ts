@@ -254,4 +254,94 @@ export const shareStyles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.textMuted,
   },
+  // NEW - QR Code modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  
+  modalContent: {
+    width: '100%',
+    maxWidth: 400,
+    borderRadius: 16,
+    padding: 20,
+  },
+  
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  
+  qrContainer: {
+    alignItems: 'center',
+    padding: 20,
+  },
+  
+  qrCodeImage: {
+    width: 250,
+    height: 250,
+    marginBottom: 16,
+  },
+  
+  qrLocationName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  
+  qrDescription: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  
+  qrInstructions: {
+    flexDirection: 'row',
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 16,
+    gap: 12,
+  },
+  
+  qrInstructionsText: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  
+  qrActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  
+  infoTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  
+  // NEW - Badges
+  badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
 });
