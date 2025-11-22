@@ -258,20 +258,6 @@ export const shareStyles = StyleSheet.create({
     marginTop: 8,
   },
   
-  // Badges
-  badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
-  },
-  
-  badgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
   
   // Legacy styles (kept for backward compatibility)
   card: {

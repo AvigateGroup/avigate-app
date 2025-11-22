@@ -36,6 +36,21 @@ export const searchStyles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
+
+  // Badges
+  badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
   searchInput: {
     flex: 1,
     fontSize: 16,

@@ -157,8 +157,8 @@ export const SearchDestinationScreen = () => {
       iconName = 'bus-outline';
       iconColor = colors.info;
       badge = (
-        <View style={[shareStyles.badge, { backgroundColor: colors.infoLight }]}>
-          <Text style={[shareStyles.badgeText, { color: colors.info }]}>
+        <View style={[searchStyles.badge, { backgroundColor: colors.infoLight }]}>
+          <Text style={[searchStyles.badgeText, { color: colors.info }]}>
             On Route
           </Text>
         </View>
@@ -168,9 +168,9 @@ export const SearchDestinationScreen = () => {
     // NEW - Show walking indicator if needed
     if (item.requiresWalking && item.walkingDistance) {
       badge = (
-        <View style={[shareStyles.badge, { backgroundColor: colors.warningLight }]}>
+        <View style={[searchStyles.badge, { backgroundColor: colors.warningLight }]}>
           <Icon name="walk-outline" size={12} color={colors.warning} />
-          <Text style={[shareStyles.badgeText, { color: colors.warning }]}>
+          <Text style={[searchStyles.badgeText, { color: colors.warning }]}>
             {Math.round(item.walkingDistance)}m walk
           </Text>
         </View>
