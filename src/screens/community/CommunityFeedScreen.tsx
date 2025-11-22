@@ -1,6 +1,6 @@
 // src/screens/community/CommunityFeedScreen.tsx
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -28,7 +28,7 @@ interface FeedPost {
     firstName: string;
     lastName: string;
     profilePicture?: string;
-    reputationScore?: number; // NEW - Show reputation
+    reputationScore?: number;
   };
   location?: {
     name: string;
@@ -36,10 +36,10 @@ interface FeedPost {
   images: string[];
   upvotes: number;
   downvotes: number;
-  commentCount: number; // NEW
+  commentCount: number;
   isVerified: boolean;
   createdAt: string;
-  userVote?: 'up' | 'down' | null; // NEW - Track user's vote
+  userVote?: 'up' | 'down' | null;
 }
 
 export const CommunityFeedScreen = () => {
@@ -49,7 +49,7 @@ export const CommunityFeedScreen = () => {
   const { 
     getFeed, 
     toggleRealTimeUpdates, 
-    votePost, // NEW - Voting functionality
+    votePost,
     isLoading 
   } = useCommunityService();
 
@@ -103,12 +103,10 @@ export const CommunityFeedScreen = () => {
     await toggleRealTimeUpdates(enabled);
   };
 
-  // NEW - Handle voting
   const handleVote = async (postId: string, voteType: 'up' | 'down') => {
     const result = await votePost(postId, voteType);
     
     if (result.success) {
-      // Update local state
       setPosts(posts.map(post => {
         if (post.id === postId) {
           const wasUpvoted = post.userVote === 'up';
@@ -142,7 +140,6 @@ export const CommunityFeedScreen = () => {
     }
   };
 
-  // NEW - Quick contribute action
   const handleQuickContribute = () => {
     Alert.alert(
       'Contribute to Avigate',
@@ -150,15 +147,15 @@ export const CommunityFeedScreen = () => {
       [
         {
           text: 'Route Improvement',
-          onPress: () => router.push('/community/contribute/route'),
+          onPress: () => router.push('/(tabs)/community/contribute' as any),
         },
         {
           text: 'Fare Update',
-          onPress: () => router.push('/community/contribute/fare'),
+          onPress: () => router.push('/(tabs)/community/contribute' as any),
         },
         {
           text: 'New Landmark',
-          onPress: () => router.push('/community/contribute/landmark'),
+          onPress: () => router.push('/(tabs)/community/contribute' as any),
         },
         {
           text: 'Cancel',
@@ -212,7 +209,7 @@ export const CommunityFeedScreen = () => {
   const renderPost = ({ item }: { item: FeedPost }) => (
     <TouchableOpacity
       style={[communityStyles.postCard, { backgroundColor: colors.white }]}
-      onPress={() => router.push(`/community/post/${item.id}`)}
+      onPress={() => router.push(`/(tabs)/community/${item.id}` as any)}
       activeOpacity={0.7}
     >
       {/* Header */}
@@ -244,7 +241,6 @@ export const CommunityFeedScreen = () => {
               {item.isVerified && (
                 <Icon name="checkmark-circle" size={16} color={colors.success} />
               )}
-              {/* NEW - Show reputation badge */}
               {item.author.reputationScore && item.author.reputationScore > 50 && (
                 <View style={[communityStyles.reputationBadge, { backgroundColor: colors.warningLight }]}>
                   <Icon name="star" size={12} color={colors.warning} />
@@ -295,7 +291,10 @@ export const CommunityFeedScreen = () => {
       <View style={[communityStyles.postActions, { borderTopColor: colors.border }]}>
         <TouchableOpacity 
           style={communityStyles.actionButton}
-          onPress={() => handleVote(item.id, 'up')}
+          onPress={(e) => {
+            e.stopPropagation();
+            handleVote(item.id, 'up');
+          }}
         >
           <Icon 
             name={item.userVote === 'up' ? 'arrow-up' : 'arrow-up-outline'} 
@@ -312,7 +311,10 @@ export const CommunityFeedScreen = () => {
 
         <TouchableOpacity 
           style={communityStyles.actionButton}
-          onPress={() => handleVote(item.id, 'down')}
+          onPress={(e) => {
+            e.stopPropagation();
+            handleVote(item.id, 'down');
+          }}
         >
           <Icon 
             name={item.userVote === 'down' ? 'arrow-down' : 'arrow-down-outline'} 
@@ -327,14 +329,26 @@ export const CommunityFeedScreen = () => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={communityStyles.actionButton}>
+        <TouchableOpacity 
+          style={communityStyles.actionButton}
+          onPress={(e) => {
+            e.stopPropagation();
+            router.push(`/(tabs)/community/${item.id}` as any);
+          }}
+        >
           <Icon name="chatbubble-outline" size={20} color={colors.textMuted} />
           <Text style={[communityStyles.actionText, { color: colors.text }]}>
             {item.commentCount || 0}
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={communityStyles.actionButton}>
+        <TouchableOpacity 
+          style={communityStyles.actionButton}
+          onPress={(e) => {
+            e.stopPropagation();
+            Alert.alert('Share', 'Share functionality coming soon');
+          }}
+        >
           <Icon name="share-outline" size={20} color={colors.textMuted} />
         </TouchableOpacity>
       </View>
@@ -359,7 +373,7 @@ export const CommunityFeedScreen = () => {
         />
       </View>
 
-      {/* NEW - Contribution CTA */}
+      {/* Contribution CTA */}
       <TouchableOpacity
         style={[communityStyles.contributionCTA, { backgroundColor: colors.successLight }]}
         onPress={handleQuickContribute}
@@ -445,7 +459,7 @@ export const CommunityFeedScreen = () => {
       {/* FAB for creating post */}
       <TouchableOpacity
         style={[communityStyles.fab, { backgroundColor: colors.primary }]}
-        onPress={() => router.push('/community/create-post')}
+        onPress={() => router.push('/(tabs)/community/create' as any)}
         activeOpacity={0.8}
       >
         <Icon name="add" size={28} color={colors.textWhite} />

@@ -120,7 +120,6 @@ export const CommunityPostDetailScreen = () => {
     const result = await votePost(post.id, voteType);
     
     if (result.success) {
-      // Update local state
       setPost(prev => {
         if (!prev) return prev;
         
@@ -200,7 +199,6 @@ export const CommunityPostDetailScreen = () => {
       setComments([result.data.comment, ...comments]);
       setCommentText('');
       
-      // Update comment count
       setPost(prev => prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev);
     } else {
       Alert.alert('Error', result.error || 'Failed to add comment');
@@ -210,7 +208,6 @@ export const CommunityPostDetailScreen = () => {
   };
 
   const handleShare = async () => {
-    // Implement share functionality
     Alert.alert('Share', 'Share functionality coming soon');
   };
 
@@ -259,12 +256,23 @@ export const CommunityPostDetailScreen = () => {
     );
   };
 
+  const handleEditPost = () => {
+    // For now, navigate back to feed since edit screen doesn't exist yet
+    Alert.alert(
+      'Edit Post',
+      'Post editing is coming soon! For now, you can delete and create a new post.',
+      [
+        { text: 'OK' },
+      ]
+    );
+  };
+
   const showMoreOptions = () => {
     const isOwner = post?.author.id === user?.id;
     
     const options = isOwner
       ? [
-          { text: 'Edit Post', onPress: () => router.push(`/community/edit-post/${postId}`) },
+          { text: 'Edit Post', onPress: handleEditPost },
           { text: 'Delete Post', onPress: handleDelete, style: 'destructive' },
           { text: 'Cancel', style: 'cancel' },
         ]
