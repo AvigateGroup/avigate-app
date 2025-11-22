@@ -92,56 +92,55 @@ export const ActiveTripScreen = () => {
       handleProgressAlerts(progress.alerts);
     }
   }, [progress?.alerts]);
+const loadActiveTrip = async () => {
+  const result = await getActiveTrip();
+  if (result.success && result.data?.trip) {
+    setTrip(result.data.trip);
+    updateCurrentStepIndex(result.data.trip);
+  } else {
+    Alert.alert('Error', 'No active trip found');
+    router.back();
+  }
+};
 
-  const loadActiveTrip = async () => {
-    const result = await getActiveTrip();
-    if (result.success && result.data.trip) {
-      setTrip(result.data.trip);
-      updateCurrentStepIndex(result.data.trip);
-    } else {
-      Alert.alert('Error', 'No active trip found');
-      router.back();
-    }
-  };
+const startLocationTracking = async () => {
+  const subscription = await watchLocation(async location => {
+    if (!trip) return;
 
-  const startLocationTracking = async () => {
-    const subscription = await watchLocation(async location => {
-      if (!trip) return;
-
-      // Update trip location on backend
-      const result = await updateTripLocation(trip.id, {
-        lat: location.latitude,
-        lng: location.longitude,
-        accuracy: location.accuracy || undefined,
-      });
-
-      if (result.success && result.data.progress) {
-        setProgress(result.data.progress);
-
-        // Update local trip state
-        setTrip(prev => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            currentLat: location.latitude,
-            currentLng: location.longitude,
-            estimatedArrival: new Date(result.data.progress.estimatedArrival),
-          };
-        });
-
-        // Handle step completion
-        if (result.data.progress.currentStepCompleted) {
-          handleStepCompletion();
-        }
-
-        // Update progress animation
-        updateProgressAnimation();
-      }
+    // Update trip location on backend
+    const result = await updateTripLocation(trip.id, {
+      lat: location.latitude,
+      lng: location.longitude,
+      accuracy: location.accuracy || undefined,
     });
 
-    // Store subscription for cleanup
-    return subscription;
-  };
+    if (result.success && result.data?.progress) {
+      setProgress(result.data.progress);
+
+      // Update local trip state
+      setTrip(prev => {
+        if (!prev || !result.data?.progress) return prev;
+        return {
+          ...prev,
+          currentLat: location.latitude,
+          currentLng: location.longitude,
+          estimatedArrival: new Date(result.data.progress.estimatedArrival),
+        };
+      });
+
+      // Handle step completion
+      if (result.data.progress.currentStepCompleted) {
+        handleStepCompletion();
+      }
+
+      // Update progress animation
+      updateProgressAnimation();
+    }
+  });
+
+  // Store subscription for cleanup
+  return subscription;
+};
 
   const updateCurrentStepIndex = (tripData: ActiveTrip) => {
     const currentStep = tripData.route.steps.find(

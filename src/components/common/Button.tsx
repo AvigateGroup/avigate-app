@@ -17,11 +17,12 @@ interface ButtonProps {
   onPress: () => void;
   loading?: boolean;
   disabled?: boolean;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'destructive';
   style?: ViewStyle;
   textStyle?: TextStyle;
   leftIcon?: string;
   rightIcon?: string;
+  icon?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({

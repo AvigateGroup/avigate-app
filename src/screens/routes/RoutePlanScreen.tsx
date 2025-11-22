@@ -124,7 +124,7 @@ export const RoutePlanScreen = () => {
     if (!selectedRoute) return;
 
     router.push({
-      pathname: '/trips/active',
+      pathname: '/trips/active' as any,
       params: {
         routeId: selectedRoute.routeId,
         routeData: JSON.stringify(selectedRoute),

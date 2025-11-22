@@ -68,7 +68,7 @@ export const GOOGLE_CONFIG = {
 };
 
 export const GOOGLE_MAPS_CONFIG = {
-  API_KEY: getEnvVar('EXPO_PUBLIC_GOOGLE_MAPS_API_KEY', 'AIzaSyAD8vXDmVwwexRYbZf63Fh5s'),
+  API_KEY: getEnvVar('EXPO_PUBLIC_GOOGLE_MAPS_API_KEY'),
 };
 
 export const APP_CONFIG = {
