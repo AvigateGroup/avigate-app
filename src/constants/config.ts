@@ -8,12 +8,12 @@ const getEnvVar = (key: string, fallback: string = ''): string => {
   if (process.env[key]) {
     return process.env[key];
   }
-  
+
   // Then try expo-constants extra (works in production builds)
   if (Constants.expoConfig?.extra?.[key]) {
     return Constants.expoConfig.extra[key];
   }
-  
+
   // Finally use fallback
   return fallback;
 };
@@ -58,12 +58,12 @@ export const API_CONFIG = {
 export const GOOGLE_CONFIG = {
   WEB_CLIENT_ID: getEnvVar(
     'EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID',
-    '162294874203-grlpvqerq74dttlg04gu0is3e3utle45.apps.googleusercontent.com'
+    '162294874203-grlpvqerq74dttlg04gu0is3e3utle45.apps.googleusercontent.com',
   ),
   IOS_CLIENT_ID: getEnvVar('EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID', ''),
   ANDROID_CLIENT_ID: getEnvVar(
     'EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID',
-    '162294874203-e3rcdcbjj1ncubsfkekcsq4cvi5i6khq.apps.googleusercontent.com'
+    '162294874203-e3rcdcbjj1ncubsfkekcsq4cvi5i6khq.apps.googleusercontent.com',
   ),
 };
 

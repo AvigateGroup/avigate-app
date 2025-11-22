@@ -46,7 +46,7 @@ export const shareStyles = StyleSheet.create({
     color: COLORS.text,
     marginBottom: 12,
   },
-  
+
   // Share Type Selection Styles
   shareTypeContainer: {
     flexDirection: 'row',
@@ -75,7 +75,7 @@ export const shareStyles = StyleSheet.create({
     marginTop: 4,
     textAlign: 'center',
   },
-  
+
   // Input Styles
   inputContainer: {
     flexDirection: 'row',
@@ -95,7 +95,7 @@ export const shareStyles = StyleSheet.create({
     marginLeft: 12,
     paddingVertical: 8,
   },
-  
+
   // Expiry Settings Styles
   settingRow: {
     flexDirection: 'row',
@@ -134,7 +134,7 @@ export const shareStyles = StyleSheet.create({
     marginLeft: 12,
     flex: 1,
   },
-  
+
   // Info Card
   infoCard: {
     flexDirection: 'row',
@@ -156,7 +156,7 @@ export const shareStyles = StyleSheet.create({
     color: COLORS.textMuted,
     lineHeight: 20,
   },
-  
+
   // Action Buttons
   actions: {
     flexDirection: 'row',
@@ -165,7 +165,7 @@ export const shareStyles = StyleSheet.create({
     marginBottom: 32,
     marginTop: 8,
   },
-  
+
   // QR Code Modal
   modalOverlay: {
     flex: 1,
@@ -174,7 +174,7 @@ export const shareStyles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  
+
   modalContent: {
     width: '100%',
     maxWidth: 400,
@@ -187,7 +187,7 @@ export const shareStyles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 8,
   },
-  
+
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -197,13 +197,13 @@ export const shareStyles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
-  
+
   modalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: COLORS.text,
   },
-  
+
   qrContainer: {
     alignItems: 'center',
     padding: 20,
@@ -211,7 +211,7 @@ export const shareStyles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
   },
-  
+
   qrCodeImage: {
     width: 250,
     height: 250,
@@ -220,7 +220,7 @@ export const shareStyles = StyleSheet.create({
     borderRadius: 8,
     padding: 8,
   },
-  
+
   qrLocationName: {
     fontSize: 18,
     fontWeight: 'bold',
@@ -228,14 +228,14 @@ export const shareStyles = StyleSheet.create({
     textAlign: 'center',
     color: COLORS.text,
   },
-  
+
   qrDescription: {
     fontSize: 14,
     textAlign: 'center',
     color: COLORS.textMuted,
     paddingHorizontal: 16,
   },
-  
+
   qrInstructions: {
     flexDirection: 'row',
     padding: 12,
@@ -244,21 +244,20 @@ export const shareStyles = StyleSheet.create({
     gap: 12,
     alignItems: 'flex-start',
   },
-  
+
   qrInstructionsText: {
     flex: 1,
     fontSize: 14,
     lineHeight: 20,
     color: COLORS.text,
   },
-  
+
   qrActions: {
     flexDirection: 'row',
     gap: 12,
     marginTop: 8,
   },
-  
-  
+
   // Legacy styles (kept for backward compatibility)
   card: {
     backgroundColor: COLORS.white,

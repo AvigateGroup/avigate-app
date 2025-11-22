@@ -1,15 +1,7 @@
 // src/screens/trips/ActiveTripScreen.tsx
 
 import React, { useState, useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-  Animated,
-  Vibration,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Alert, Animated, Vibration } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -60,14 +52,8 @@ export const ActiveTripScreen = () => {
   const colors = useThemedColors();
   const params = useLocalSearchParams();
   const { watchLocation } = useCurrentLocation();
-  const {
-    getActiveTrip,
-    updateTripLocation,
-    completeTrip,
-    cancelTrip,
-    endTrip,
-    isLoading,
-  } = useTripService();
+  const { getActiveTrip, updateTripLocation, completeTrip, cancelTrip, endTrip, isLoading } =
+    useTripService();
 
   const [trip, setTrip] = useState<ActiveTrip | null>(null);
   const [progress, setProgress] = useState<TripProgress | null>(null);
@@ -92,60 +78,58 @@ export const ActiveTripScreen = () => {
       handleProgressAlerts(progress.alerts);
     }
   }, [progress?.alerts]);
-const loadActiveTrip = async () => {
-  const result = await getActiveTrip();
-  if (result.success && result.data?.trip) {
-    setTrip(result.data.trip);
-    updateCurrentStepIndex(result.data.trip);
-  } else {
-    Alert.alert('Error', 'No active trip found');
-    router.back();
-  }
-};
+  const loadActiveTrip = async () => {
+    const result = await getActiveTrip();
+    if (result.success && result.data?.trip) {
+      setTrip(result.data.trip);
+      updateCurrentStepIndex(result.data.trip);
+    } else {
+      Alert.alert('Error', 'No active trip found');
+      router.back();
+    }
+  };
 
-const startLocationTracking = async () => {
-  const subscription = await watchLocation(async location => {
-    if (!trip) return;
+  const startLocationTracking = async () => {
+    const subscription = await watchLocation(async location => {
+      if (!trip) return;
 
-    // Update trip location on backend
-    const result = await updateTripLocation(trip.id, {
-      lat: location.latitude,
-      lng: location.longitude,
-      accuracy: location.accuracy || undefined,
-    });
-
-    if (result.success && result.data?.progress) {
-      setProgress(result.data.progress);
-
-      // Update local trip state
-      setTrip(prev => {
-        if (!prev || !result.data?.progress) return prev;
-        return {
-          ...prev,
-          currentLat: location.latitude,
-          currentLng: location.longitude,
-          estimatedArrival: new Date(result.data.progress.estimatedArrival),
-        };
+      // Update trip location on backend
+      const result = await updateTripLocation(trip.id, {
+        lat: location.latitude,
+        lng: location.longitude,
+        accuracy: location.accuracy || undefined,
       });
 
-      // Handle step completion
-      if (result.data.progress.currentStepCompleted) {
-        handleStepCompletion();
+      if (result.success && result.data?.progress) {
+        setProgress(result.data.progress);
+
+        // Update local trip state
+        setTrip(prev => {
+          if (!prev || !result.data?.progress) return prev;
+          return {
+            ...prev,
+            currentLat: location.latitude,
+            currentLng: location.longitude,
+            estimatedArrival: new Date(result.data.progress.estimatedArrival),
+          };
+        });
+
+        // Handle step completion
+        if (result.data.progress.currentStepCompleted) {
+          handleStepCompletion();
+        }
+
+        // Update progress animation
+        updateProgressAnimation();
       }
+    });
 
-      // Update progress animation
-      updateProgressAnimation();
-    }
-  });
-
-  // Store subscription for cleanup
-  return subscription;
-};
+    // Store subscription for cleanup
+    return subscription;
+  };
 
   const updateCurrentStepIndex = (tripData: ActiveTrip) => {
-    const currentStep = tripData.route.steps.find(
-      step => step.id === tripData.currentStepId,
-    );
+    const currentStep = tripData.route.steps.find(step => step.id === tripData.currentStepId);
     if (currentStep) {
       setCurrentStepIndex(currentStep.order - 1);
     }
@@ -197,27 +181,23 @@ const startLocationTracking = async () => {
   };
 
   const handleCompleteTrip = () => {
-    Alert.alert(
-      'Complete Trip',
-      'Have you arrived at your destination?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Yes, I Arrived',
-          onPress: async () => {
-            if (!trip) return;
-            const result = await completeTrip(trip.id);
-            if (result.success) {
-              Alert.alert(
-                'Trip Completed! 🎉',
-                'A summary has been sent to your email. Thanks for using Avigate!',
-                [{ text: 'OK', onPress: () => router.replace('/') }],
-              );
-            }
-          },
+    Alert.alert('Complete Trip', 'Have you arrived at your destination?', [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Yes, I Arrived',
+        onPress: async () => {
+          if (!trip) return;
+          const result = await completeTrip(trip.id);
+          if (result.success) {
+            Alert.alert(
+              'Trip Completed! 🎉',
+              'A summary has been sent to your email. Thanks for using Avigate!',
+              [{ text: 'OK', onPress: () => router.replace('/') }],
+            );
+          }
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const handleEndTrip = () => {
@@ -233,11 +213,9 @@ const startLocationTracking = async () => {
             if (!trip) return;
             const result = await endTrip(trip.id);
             if (result.success) {
-              Alert.alert(
-                'Trip Ended',
-                'A summary has been sent to your email.',
-                [{ text: 'OK', onPress: () => router.replace('/') }],
-              );
+              Alert.alert('Trip Ended', 'A summary has been sent to your email.', [
+                { text: 'OK', onPress: () => router.replace('/') },
+              ]);
             }
           },
         },
@@ -432,9 +410,7 @@ const startLocationTracking = async () => {
 
                 {isCurrent && (
                   <View style={[tripStyles.currentBadge, { backgroundColor: colors.primary }]}>
-                    <Text style={[tripStyles.currentBadgeText, { color: colors.white }]}>
-                      NOW
-                    </Text>
+                    <Text style={[tripStyles.currentBadgeText, { color: colors.white }]}>NOW</Text>
                   </View>
                 )}
               </View>
@@ -493,9 +469,7 @@ const startLocationTracking = async () => {
       <View style={[tripStyles.container, { backgroundColor: colors.background }]}>
         <View style={tripStyles.loadingContainer}>
           <Icon name="navigate-circle-outline" size={64} color={colors.primary} />
-          <Text style={[tripStyles.loadingText, { color: colors.text }]}>
-            Loading your trip...
-          </Text>
+          <Text style={[tripStyles.loadingText, { color: colors.text }]}>Loading your trip...</Text>
         </View>
       </View>
     );
@@ -563,9 +537,8 @@ const startLocationTracking = async () => {
           <View style={{ flex: 1, marginLeft: 12 }}>
             <Text style={[tripStyles.tipsTitle, { color: colors.text }]}>Safety Tips</Text>
             <Text style={[tripStyles.tipsText, { color: colors.textMuted }]}>
-              • Keep your belongings secure{'\n'}
-              • Tell the driver your stop early{'\n'}
-              • Share your trip with someone
+              • Keep your belongings secure{'\n'}• Tell the driver your stop early{'\n'}• Share your
+              trip with someone
             </Text>
           </View>
         </View>

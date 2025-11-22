@@ -36,12 +36,12 @@ export const SearchDestinationScreen = () => {
   const router = useRouter();
   const colors = useThemedColors();
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
-  const { 
-    searchLocations, 
-    getRecentSearches, 
+  const {
+    searchLocations,
+    getRecentSearches,
     getSavedPlaces,
     searchNearbyIntermediateStops, // NEW - Search intermediate stops
-    isLoading 
+    isLoading,
   } = useLocationSearch();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,50 +55,49 @@ export const SearchDestinationScreen = () => {
   }, []);
 
   const loadInitialData = async () => {
-  const [recent, saved] = await Promise.all([
-    getRecentSearches(),
-    getSavedPlaces(),
-  ]);
-  
-  // FIX: Map the results to match LocationSuggestion type
-  const mappedRecent: LocationSuggestion[] = recent.map(item => ({
-    id: item.id,
-    name: item.name,
-    address: item.address,
-    coordinates: item.coordinates,
-    type: 'recent' as const, // Convert to 'recent' type
-    segmentName: item.segmentName,
-    requiresWalking: item.requiresWalking,
-    walkingDistance: item.walkingDistance,
-  }));
+    const [recent, saved] = await Promise.all([getRecentSearches(), getSavedPlaces()]);
 
-  const mappedSaved: LocationSuggestion[] = saved.map(item => ({
-    id: item.id,
-    name: item.name,
-    address: item.address,
-    coordinates: item.coordinates,
-    type: 'saved' as const, // Convert to 'saved' type
-    segmentName: item.segmentName,
-    requiresWalking: item.requiresWalking,
-    walkingDistance: item.walkingDistance,
-  }));
+    // FIX: Map the results to match LocationSuggestion type
+    const mappedRecent: LocationSuggestion[] = recent.map(item => ({
+      id: item.id,
+      name: item.name,
+      address: item.address,
+      coordinates: item.coordinates,
+      type: 'recent' as const, // Convert to 'recent' type
+      segmentName: item.segmentName,
+      requiresWalking: item.requiresWalking,
+      walkingDistance: item.walkingDistance,
+    }));
 
-  setRecentSearches(mappedRecent);
-  setSavedPlaces(mappedSaved);
-};
+    const mappedSaved: LocationSuggestion[] = saved.map(item => ({
+      id: item.id,
+      name: item.name,
+      address: item.address,
+      coordinates: item.coordinates,
+      type: 'saved' as const, // Convert to 'saved' type
+      segmentName: item.segmentName,
+      requiresWalking: item.requiresWalking,
+      walkingDistance: item.walkingDistance,
+    }));
+
+    setRecentSearches(mappedRecent);
+    setSavedPlaces(mappedSaved);
+  };
 
   const handleSearch = async (text: string) => {
     setSearchQuery(text);
 
     if (text.length > 2) {
       setIsSearching(true);
-      
+
       try {
         // FIX 1: Convert currentLocation to the expected format
-        const locationForSearch = currentLocation ? {
-          latitude: currentLocation.latitude,
-          longitude: currentLocation.longitude,
-        } : undefined;
+        const locationForSearch = currentLocation
+          ? {
+              latitude: currentLocation.latitude,
+              longitude: currentLocation.longitude,
+            }
+          : undefined;
 
         // Search both regular locations and intermediate stops
         const [regularResults, intermediateStops] = await Promise.all([
@@ -191,9 +190,7 @@ export const SearchDestinationScreen = () => {
       iconColor = colors.info;
       badge = (
         <View style={[searchStyles.badge, { backgroundColor: colors.infoLight }]}>
-          <Text style={[searchStyles.badgeText, { color: colors.info }]}>
-            On Route
-          </Text>
+          <Text style={[searchStyles.badgeText, { color: colors.info }]}>On Route</Text>
         </View>
       );
     }
@@ -327,9 +324,7 @@ export const SearchDestinationScreen = () => {
           {/* Saved Places */}
           {savedPlaces.length > 0 && (
             <View style={searchStyles.section}>
-              <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>
-                Saved Places
-              </Text>
+              <Text style={[searchStyles.sectionTitle, { color: colors.text }]}>Saved Places</Text>
               <FlatList
                 data={savedPlaces}
                 keyExtractor={item => item.id}
@@ -356,13 +351,10 @@ export const SearchDestinationScreen = () => {
           <View style={[searchStyles.tipsCard, { backgroundColor: colors.infoLight }]}>
             <Icon name="bulb-outline" size={24} color={colors.info} />
             <View style={{ flex: 1, marginLeft: 12 }}>
-              <Text style={[searchStyles.tipsTitle, { color: colors.text }]}>
-                💡 Search Tips
-              </Text>
+              <Text style={[searchStyles.tipsTitle, { color: colors.text }]}>💡 Search Tips</Text>
               <Text style={[searchStyles.tipsText, { color: colors.textMuted }]}>
-                • Search for hotels, schools, or markets{'\n'}
-                • Use landmarks like "near Access Bank"{'\n'}
-                • Search intermediate stops like "Wimpy Junction"
+                • Search for hotels, schools, or markets{'\n'}• Use landmarks like "near Access
+                Bank"{'\n'}• Search intermediate stops like "Wimpy Junction"
               </Text>
             </View>
           </View>

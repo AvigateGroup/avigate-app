@@ -72,15 +72,15 @@ export const CommunityPostDetailScreen = () => {
   const postId = params.id as string;
   const colors = useThemedColors();
   const { user } = useAuth();
-  const { 
-    getPostById, 
-    votePost, 
-    getComments, 
-    addComment, 
+  const {
+    getPostById,
+    votePost,
+    getComments,
+    addComment,
     voteComment,
     deletePost,
     reportPost,
-    isLoading 
+    isLoading,
   } = useCommunityService();
 
   const [post, setPost] = useState<Post | null>(null);
@@ -118,17 +118,17 @@ export const CommunityPostDetailScreen = () => {
     if (!post) return;
 
     const result = await votePost(post.id, voteType);
-    
+
     if (result.success) {
       setPost(prev => {
         if (!prev) return prev;
-        
+
         const wasUpvoted = prev.userVote === 'up';
         const wasDownvoted = prev.userVote === 'down';
-        
+
         let upvotes = prev.upvotes;
         let downvotes = prev.downvotes;
-        
+
         if (voteType === 'up') {
           if (wasUpvoted) {
             upvotes -= 1;
@@ -154,38 +154,40 @@ export const CommunityPostDetailScreen = () => {
 
   const handleVoteComment = async (commentId: string, voteType: 'up' | 'down') => {
     const result = await voteComment(commentId, voteType);
-    
+
     if (result.success) {
-      setComments(comments.map(comment => {
-        if (comment.id === commentId) {
-          const wasUpvoted = comment.userVote === 'up';
-          const wasDownvoted = comment.userVote === 'down';
-          
-          let upvotes = comment.upvotes;
-          let downvotes = comment.downvotes;
-          
-          if (voteType === 'up') {
-            if (wasUpvoted) {
-              upvotes -= 1;
-              return { ...comment, upvotes, userVote: null };
+      setComments(
+        comments.map(comment => {
+          if (comment.id === commentId) {
+            const wasUpvoted = comment.userVote === 'up';
+            const wasDownvoted = comment.userVote === 'down';
+
+            let upvotes = comment.upvotes;
+            let downvotes = comment.downvotes;
+
+            if (voteType === 'up') {
+              if (wasUpvoted) {
+                upvotes -= 1;
+                return { ...comment, upvotes, userVote: null };
+              } else {
+                upvotes += 1;
+                if (wasDownvoted) downvotes -= 1;
+                return { ...comment, upvotes, downvotes, userVote: 'up' as const };
+              }
             } else {
-              upvotes += 1;
-              if (wasDownvoted) downvotes -= 1;
-              return { ...comment, upvotes, downvotes, userVote: 'up' as const };
-            }
-          } else {
-            if (wasDownvoted) {
-              downvotes -= 1;
-              return { ...comment, downvotes, userVote: null };
-            } else {
-              downvotes += 1;
-              if (wasUpvoted) upvotes -= 1;
-              return { ...comment, upvotes, downvotes, userVote: 'down' as const };
+              if (wasDownvoted) {
+                downvotes -= 1;
+                return { ...comment, downvotes, userVote: null };
+              } else {
+                downvotes += 1;
+                if (wasUpvoted) upvotes -= 1;
+                return { ...comment, upvotes, downvotes, userVote: 'down' as const };
+              }
             }
           }
-        }
-        return comment;
-      }));
+          return comment;
+        }),
+      );
     }
   };
 
@@ -194,16 +196,16 @@ export const CommunityPostDetailScreen = () => {
 
     setIsSubmitting(true);
     const result = await addComment(postId, commentText.trim());
-    
+
     if (result.success && result.data) {
       setComments([result.data.comment, ...comments]);
       setCommentText('');
-      
-      setPost(prev => prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev);
+
+      setPost(prev => (prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev));
     } else {
       Alert.alert('Error', result.error || 'Failed to add comment');
     }
-    
+
     setIsSubmitting(false);
   };
 
@@ -212,21 +214,17 @@ export const CommunityPostDetailScreen = () => {
   };
 
   const handleReport = async () => {
-    Alert.alert(
-      'Report Post',
-      'Why are you reporting this post?',
-      [
-        { text: 'Spam', onPress: () => submitReport('spam') },
-        { text: 'Inappropriate', onPress: () => submitReport('inappropriate') },
-        { text: 'Misinformation', onPress: () => submitReport('misinformation') },
-        { text: 'Cancel', style: 'cancel' },
-      ],
-    );
+    Alert.alert('Report Post', 'Why are you reporting this post?', [
+      { text: 'Spam', onPress: () => submitReport('spam') },
+      { text: 'Inappropriate', onPress: () => submitReport('inappropriate') },
+      { text: 'Misinformation', onPress: () => submitReport('misinformation') },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
   };
 
   const submitReport = async (reason: string) => {
     const result = await reportPost(postId, reason);
-    
+
     if (result.success) {
       Alert.alert('Success', 'Post reported. Thank you for helping keep Avigate safe.');
     } else {
@@ -261,15 +259,13 @@ export const CommunityPostDetailScreen = () => {
     Alert.alert(
       'Edit Post',
       'Post editing is coming soon! For now, you can delete and create a new post.',
-      [
-        { text: 'OK' },
-      ]
+      [{ text: 'OK' }],
     );
   };
 
   const showMoreOptions = () => {
     const isOwner = post?.author.id === user?.id;
-    
+
     const options = isOwner
       ? [
           { text: 'Edit Post', onPress: handleEditPost },
@@ -286,21 +282,31 @@ export const CommunityPostDetailScreen = () => {
 
   const getPostTypeIcon = (type: string) => {
     switch (type) {
-      case 'traffic_update': return 'car-outline';
-      case 'route_alert': return 'warning-outline';
-      case 'safety_concern': return 'shield-outline';
-      case 'tip': return 'bulb-outline';
-      default: return 'chatbubble-outline';
+      case 'traffic_update':
+        return 'car-outline';
+      case 'route_alert':
+        return 'warning-outline';
+      case 'safety_concern':
+        return 'shield-outline';
+      case 'tip':
+        return 'bulb-outline';
+      default:
+        return 'chatbubble-outline';
     }
   };
 
   const getPostTypeColor = (type: string) => {
     switch (type) {
-      case 'traffic_update': return colors.warning;
-      case 'route_alert': return colors.error;
-      case 'safety_concern': return colors.error;
-      case 'tip': return colors.info;
-      default: return colors.text;
+      case 'traffic_update':
+        return colors.warning;
+      case 'route_alert':
+        return colors.error;
+      case 'safety_concern':
+        return colors.error;
+      case 'tip':
+        return colors.info;
+      default:
+        return colors.text;
     }
   };
 
@@ -317,10 +323,7 @@ export const CommunityPostDetailScreen = () => {
   };
 
   const renderComment = (comment: Comment) => (
-    <View 
-      key={comment.id} 
-      style={[communityStyles.commentCard, { backgroundColor: colors.white }]}
-    >
+    <View key={comment.id} style={[communityStyles.commentCard, { backgroundColor: colors.white }]}>
       <View style={communityStyles.commentHeader}>
         {comment.author.profilePicture ? (
           <Image
@@ -335,18 +338,21 @@ export const CommunityPostDetailScreen = () => {
             ]}
           >
             <Text style={communityStyles.commentInitials}>
-              {comment.author.firstName[0]}{comment.author.lastName[0]}
+              {comment.author.firstName[0]}
+              {comment.author.lastName[0]}
             </Text>
           </View>
         )}
-        
+
         <View style={{ flex: 1 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
             <Text style={[communityStyles.commentAuthor, { color: colors.text }]}>
               {comment.author.firstName} {comment.author.lastName}
             </Text>
             {comment.author.reputationScore && comment.author.reputationScore > 50 && (
-              <View style={[communityStyles.reputationBadge, { backgroundColor: colors.warningLight }]}>
+              <View
+                style={[communityStyles.reputationBadge, { backgroundColor: colors.warningLight }]}
+              >
                 <Icon name="star" size={10} color={colors.warning} />
                 <Text style={[communityStyles.reputationText, { color: colors.warning }]}>
                   {comment.author.reputationScore}
@@ -365,36 +371,40 @@ export const CommunityPostDetailScreen = () => {
       </Text>
 
       <View style={communityStyles.commentActions}>
-        <TouchableOpacity 
+        <TouchableOpacity
           style={communityStyles.commentActionButton}
           onPress={() => handleVoteComment(comment.id, 'up')}
         >
-          <Icon 
-            name={comment.userVote === 'up' ? 'arrow-up' : 'arrow-up-outline'} 
-            size={16} 
-            color={comment.userVote === 'up' ? colors.success : colors.textMuted} 
+          <Icon
+            name={comment.userVote === 'up' ? 'arrow-up' : 'arrow-up-outline'}
+            size={16}
+            color={comment.userVote === 'up' ? colors.success : colors.textMuted}
           />
-          <Text style={[
-            communityStyles.commentActionText, 
-            { color: comment.userVote === 'up' ? colors.success : colors.textMuted }
-          ]}>
+          <Text
+            style={[
+              communityStyles.commentActionText,
+              { color: comment.userVote === 'up' ? colors.success : colors.textMuted },
+            ]}
+          >
             {comment.upvotes}
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
+        <TouchableOpacity
           style={communityStyles.commentActionButton}
           onPress={() => handleVoteComment(comment.id, 'down')}
         >
-          <Icon 
-            name={comment.userVote === 'down' ? 'arrow-down' : 'arrow-down-outline'} 
-            size={16} 
-            color={comment.userVote === 'down' ? colors.error : colors.textMuted} 
+          <Icon
+            name={comment.userVote === 'down' ? 'arrow-down' : 'arrow-down-outline'}
+            size={16}
+            color={comment.userVote === 'down' ? colors.error : colors.textMuted}
           />
-          <Text style={[
-            communityStyles.commentActionText, 
-            { color: comment.userVote === 'down' ? colors.error : colors.textMuted }
-          ]}>
+          <Text
+            style={[
+              communityStyles.commentActionText,
+              { color: comment.userVote === 'down' ? colors.error : colors.textMuted },
+            ]}
+          >
             {comment.downvotes}
           </Text>
         </TouchableOpacity>
@@ -427,12 +437,10 @@ export const CommunityPostDetailScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView 
+      <ScrollView
         style={communityStyles.detailContainer}
         showsVerticalScrollIndicator={false}
-        refreshControl={
-          <ActivityIndicator animating={refreshing} color={colors.primary} />
-        }
+        refreshControl={<ActivityIndicator animating={refreshing} color={colors.primary} />}
       >
         {/* Post Content */}
         <View style={[communityStyles.postDetailCard, { backgroundColor: colors.white }]}>
@@ -452,7 +460,8 @@ export const CommunityPostDetailScreen = () => {
                   ]}
                 >
                   <Text style={communityStyles.authorInitials}>
-                    {post.author.firstName[0]}{post.author.lastName[0]}
+                    {post.author.firstName[0]}
+                    {post.author.lastName[0]}
                   </Text>
                 </View>
               )}
@@ -465,7 +474,12 @@ export const CommunityPostDetailScreen = () => {
                     <Icon name="checkmark-circle" size={16} color={colors.success} />
                   )}
                   {post.author.reputationScore && post.author.reputationScore > 50 && (
-                    <View style={[communityStyles.reputationBadge, { backgroundColor: colors.warningLight }]}>
+                    <View
+                      style={[
+                        communityStyles.reputationBadge,
+                        { backgroundColor: colors.warningLight },
+                      ]}
+                    >
                       <Icon name="star" size={12} color={colors.warning} />
                       <Text style={[communityStyles.reputationText, { color: colors.warning }]}>
                         {post.author.reputationScore}
@@ -478,8 +492,17 @@ export const CommunityPostDetailScreen = () => {
                 </Text>
               </View>
             </View>
-            <View style={[communityStyles.postTypeBadge, { backgroundColor: getPostTypeColor(post.postType) + '20' }]}>
-              <Icon name={getPostTypeIcon(post.postType)} size={20} color={getPostTypeColor(post.postType)} />
+            <View
+              style={[
+                communityStyles.postTypeBadge,
+                { backgroundColor: getPostTypeColor(post.postType) + '20' },
+              ]}
+            >
+              <Icon
+                name={getPostTypeIcon(post.postType)}
+                size={20}
+                color={getPostTypeColor(post.postType)}
+              />
             </View>
           </View>
 
@@ -526,36 +549,37 @@ export const CommunityPostDetailScreen = () => {
 
           {/* Actions */}
           <View style={[communityStyles.postActions, { borderTopColor: colors.border }]}>
-            <TouchableOpacity 
-              style={communityStyles.actionButton}
-              onPress={() => handleVote('up')}
-            >
-              <Icon 
-                name={post.userVote === 'up' ? 'arrow-up' : 'arrow-up-outline'} 
-                size={22} 
-                color={post.userVote === 'up' ? colors.success : colors.textMuted} 
+            <TouchableOpacity style={communityStyles.actionButton} onPress={() => handleVote('up')}>
+              <Icon
+                name={post.userVote === 'up' ? 'arrow-up' : 'arrow-up-outline'}
+                size={22}
+                color={post.userVote === 'up' ? colors.success : colors.textMuted}
               />
-              <Text style={[
-                communityStyles.actionText, 
-                { color: post.userVote === 'up' ? colors.success : colors.text }
-              ]}>
+              <Text
+                style={[
+                  communityStyles.actionText,
+                  { color: post.userVote === 'up' ? colors.success : colors.text },
+                ]}
+              >
                 {post.upvotes}
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity 
+            <TouchableOpacity
               style={communityStyles.actionButton}
               onPress={() => handleVote('down')}
             >
-              <Icon 
-                name={post.userVote === 'down' ? 'arrow-down' : 'arrow-down-outline'} 
-                size={22} 
-                color={post.userVote === 'down' ? colors.error : colors.textMuted} 
+              <Icon
+                name={post.userVote === 'down' ? 'arrow-down' : 'arrow-down-outline'}
+                size={22}
+                color={post.userVote === 'down' ? colors.error : colors.textMuted}
               />
-              <Text style={[
-                communityStyles.actionText, 
-                { color: post.userVote === 'down' ? colors.error : colors.text }
-              ]}>
+              <Text
+                style={[
+                  communityStyles.actionText,
+                  { color: post.userVote === 'down' ? colors.error : colors.text },
+                ]}
+              >
                 {post.downvotes}
               </Text>
             </TouchableOpacity>
@@ -578,7 +602,7 @@ export const CommunityPostDetailScreen = () => {
           <Text style={[communityStyles.commentsTitle, { color: colors.text }]}>
             Comments ({comments.length})
           </Text>
-          
+
           {comments.map(renderComment)}
 
           {comments.length === 0 && (
@@ -596,9 +620,17 @@ export const CommunityPostDetailScreen = () => {
       </ScrollView>
 
       {/* Comment Input */}
-      <View style={[communityStyles.commentInputContainer, { backgroundColor: colors.white, borderTopColor: colors.border }]}>
+      <View
+        style={[
+          communityStyles.commentInputContainer,
+          { backgroundColor: colors.white, borderTopColor: colors.border },
+        ]}
+      >
         <TextInput
-          style={[communityStyles.commentInput, { color: colors.text, backgroundColor: colors.backgroundLight }]}
+          style={[
+            communityStyles.commentInput,
+            { color: colors.text, backgroundColor: colors.backgroundLight },
+          ]}
           placeholder="Add a comment..."
           placeholderTextColor={colors.textMuted}
           value={commentText}

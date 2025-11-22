@@ -159,7 +159,10 @@ export const SettingsScreen = () => {
   const renderSettingItem = (item: any, index: number) => {
     if (item.type === 'switch') {
       return (
-        <View key={index} style={[profileFeatureStyles.settingItem, { borderBottomColor: colors.border }]}>
+        <View
+          key={index}
+          style={[profileFeatureStyles.settingItem, { borderBottomColor: colors.border }]}
+        >
           <View
             style={[
               profileFeatureStyles.settingIconContainer,
@@ -169,7 +172,9 @@ export const SettingsScreen = () => {
             <Icon name={item.icon} size={24} color={colors.primary} />
           </View>
           <View style={profileFeatureStyles.settingContent}>
-            <Text style={[profileFeatureStyles.settingTitle, { color: colors.text }]}>{item.title}</Text>
+            <Text style={[profileFeatureStyles.settingTitle, { color: colors.text }]}>
+              {item.title}
+            </Text>
             <Text style={[profileFeatureStyles.settingSubtitle, { color: colors.textMuted }]}>
               {item.subtitle}
             </Text>
@@ -192,12 +197,17 @@ export const SettingsScreen = () => {
         activeOpacity={0.7}
       >
         <View
-          style={[profileFeatureStyles.settingIconContainer, { backgroundColor: colors.backgroundLight }]}
+          style={[
+            profileFeatureStyles.settingIconContainer,
+            { backgroundColor: colors.backgroundLight },
+          ]}
         >
           <Icon name={item.icon} size={24} color={colors.primary} />
         </View>
         <View style={profileFeatureStyles.settingContent}>
-          <Text style={[profileFeatureStyles.settingTitle, { color: colors.text }]}>{item.title}</Text>
+          <Text style={[profileFeatureStyles.settingTitle, { color: colors.text }]}>
+            {item.title}
+          </Text>
           <Text style={[profileFeatureStyles.settingSubtitle, { color: colors.textMuted }]}>
             {item.subtitle}
           </Text>
@@ -226,7 +236,9 @@ export const SettingsScreen = () => {
 
         {/* Danger Zone */}
         <View style={profileFeatureStyles.dangerZone}>
-          <Text style={[profileFeatureStyles.dangerZoneTitle, { color: colors.error }]}>Danger Zone</Text>
+          <Text style={[profileFeatureStyles.dangerZoneTitle, { color: colors.error }]}>
+            Danger Zone
+          </Text>
           <TouchableOpacity
             style={[
               profileFeatureStyles.deleteButton,

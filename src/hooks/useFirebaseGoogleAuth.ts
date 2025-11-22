@@ -24,7 +24,6 @@ export const useFirebaseGoogleAuth = () => {
 
   const configureGoogleSignIn = () => {
     try {
-
       // Validate that we have the required Web Client ID
       if (!GOOGLE_CONFIG.WEB_CLIENT_ID) {
         console.error(' CRITICAL: Google Web Client ID is missing!');
@@ -42,7 +41,7 @@ export const useFirebaseGoogleAuth = () => {
         webClientId: GOOGLE_CONFIG.WEB_CLIENT_ID,
         offlineAccess: true,
       });
-      
+
       setIsConfigured(true);
     } catch (error) {
       console.error(' Failed to configure Google Sign-In:', error);
@@ -97,9 +96,8 @@ export const useFirebaseGoogleAuth = () => {
       const firebaseUserCredential = await auth().signInWithCredential(googleCredential);
 
       // Get fresh Firebase ID token
-     
-      const firebaseIdToken = await firebaseUserCredential.user.getIdToken();
 
+      const firebaseIdToken = await firebaseUserCredential.user.getIdToken();
 
       // Get FCM token and device info
       const fcmToken = await getFCMToken();
@@ -125,7 +123,6 @@ export const useFirebaseGoogleAuth = () => {
 
       const response = await authApi.googleAuth(googleAuthDto);
 
-
       if (response.success && response.data.accessToken && response.data.refreshToken) {
         // Save tokens and user data first
         await login(response.data.accessToken, response.data.refreshToken, response.data.user);
@@ -138,8 +135,6 @@ export const useFirebaseGoogleAuth = () => {
           text1: welcomeMessage,
           text2: response.message || 'Successfully signed in with Google',
         });
-        
-
       }
     } catch (error: any) {
       console.error(' Firebase Google Sign-In Error:', error);
@@ -264,7 +259,7 @@ export const useFirebaseGoogleAuth = () => {
         console.error('  1. SHA-1 certificate not registered in Firebase Console');
         console.error('  2. Wrong OAuth Client ID being used');
         console.error('  3. google-services.json not properly configured');
-        
+
         Alert.alert(
           'Configuration Error',
           'Google Sign-In is not properly configured for this build. This usually means the SHA-1 certificate is not registered in Firebase Console.',

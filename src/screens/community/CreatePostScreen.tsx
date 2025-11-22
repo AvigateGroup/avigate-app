@@ -73,44 +73,44 @@ export const CreatePostScreen = () => {
   ];
 
   const handlePickImage = async () => {
-  try {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
-    if (status !== 'granted') {
-      Alert.alert('Permission needed', 'Please grant permission to access photos');
-      return;
-    }
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    const remainingSlots = 3 - images.length;
-    
-    if (remainingSlots === 0) {
-      Alert.alert('Maximum Images', 'You can only add up to 3 images');
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
-      quality: 0.8,
-    });
-
-    if (!result.canceled && result.assets) {
-      const newImages = result.assets.map(asset => asset.uri);
-      const imagesToAdd = newImages.slice(0, remainingSlots);
-      
-      setImages([...images, ...imagesToAdd]);
-      
-      if (newImages.length > remainingSlots) {
-        Alert.alert(
-          'Image Limit', 
-          `Only ${remainingSlots} more image(s) added. Maximum is 3 images total.`
-        );
+      if (status !== 'granted') {
+        Alert.alert('Permission needed', 'Please grant permission to access photos');
+        return;
       }
+
+      const remainingSlots = 3 - images.length;
+
+      if (remainingSlots === 0) {
+        Alert.alert('Maximum Images', 'You can only add up to 3 images');
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: true,
+        quality: 0.8,
+      });
+
+      if (!result.canceled && result.assets) {
+        const newImages = result.assets.map(asset => asset.uri);
+        const imagesToAdd = newImages.slice(0, remainingSlots);
+
+        setImages([...images, ...imagesToAdd]);
+
+        if (newImages.length > remainingSlots) {
+          Alert.alert(
+            'Image Limit',
+            `Only ${remainingSlots} more image(s) added. Maximum is 3 images total.`,
+          );
+        }
+      }
+    } catch (error) {
+      Alert.alert('Error', 'Failed to pick image');
     }
-  } catch (error) {
-    Alert.alert('Error', 'Failed to pick image');
-  }
-};
+  };
 
   const handleRemoveImage = (index: number) => {
     setImages(images.filter((_, i) => i !== index));
@@ -138,16 +138,12 @@ export const CreatePostScreen = () => {
       });
 
       if (result.success) {
-        Alert.alert(
-          'Success',
-          'Your post has been published!',
-          [
-            {
-              text: 'OK',
-              onPress: () => router.back(),
-            },
-          ],
-        );
+        Alert.alert('Success', 'Your post has been published!', [
+          {
+            text: 'OK',
+            onPress: () => router.back(),
+          },
+        ]);
       } else {
         Alert.alert('Error', result.error || 'Failed to create post');
       }
@@ -174,9 +170,7 @@ export const CreatePostScreen = () => {
           <TouchableOpacity onPress={() => router.back()}>
             <Icon name="close" size={24} color={colors.text} />
           </TouchableOpacity>
-          <Text style={[communityStyles.headerTitle, { color: colors.text }]}>
-            Create Post
-          </Text>
+          <Text style={[communityStyles.headerTitle, { color: colors.text }]}>Create Post</Text>
           <View style={{ width: 24 }} />
         </View>
 
@@ -298,7 +292,7 @@ export const CreatePostScreen = () => {
             <Text style={[communityStyles.commentsTitle, { color: colors.text, marginBottom: 8 }]}>
               Images (Optional)
             </Text>
-            
+
             {images.length > 0 && (
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 12 }}>
                 {images.map((image, index) => (
@@ -367,14 +361,14 @@ export const CreatePostScreen = () => {
             <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 8 }}>
               <Icon name="information-circle" size={20} color={colors.info} />
               <View style={{ flex: 1 }}>
-                <Text style={{ fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 4 }}>
+                <Text
+                  style={{ fontSize: 14, fontWeight: '600', color: colors.text, marginBottom: 4 }}
+                >
                   Posting Guidelines
                 </Text>
                 <Text style={{ fontSize: 13, color: colors.textMuted, lineHeight: 20 }}>
-                  • Be respectful and helpful{'\n'}
-                  • Provide accurate information{'\n'}
-                  • Avoid spam or self-promotion{'\n'}
-                  • Report issues, don't create them
+                  • Be respectful and helpful{'\n'}• Provide accurate information{'\n'}• Avoid spam
+                  or self-promotion{'\n'}• Report issues, don't create them
                 </Text>
               </View>
             </View>

@@ -41,12 +41,7 @@ export const ShareLocationScreen = () => {
   const router = useRouter();
   const colors = useThemedColors();
   const { user } = useAuth();
-  const { 
-    createShare, 
-    getQRCode,
-    getPrintableQRCode,
-    isLoading 
-  } = useLocationShareService();
+  const { createShare, getQRCode, getPrintableQRCode, isLoading } = useLocationShareService();
 
   const [shareType, setShareType] = useState<ShareType>('public');
   const [locationName, setLocationName] = useState('');
@@ -56,11 +51,11 @@ export const ShareLocationScreen = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isEvent, setIsEvent] = useState(false);
   const [eventDate, setEventDate] = useState<Date | null>(null);
-  
+
   // QR Code state
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrCodeData, setQRCodeData] = useState<ShareResult | null>(null);
-  
+
   // Location state
   const [currentLocation, setCurrentLocation] = useState<CurrentLocation | null>(null);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -74,14 +69,14 @@ export const ShareLocationScreen = () => {
     setLocationLoading(true);
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
-      
+
       if (status === 'granted') {
         const position = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.Balanced,
         });
 
         const { latitude, longitude } = position.coords;
-        
+
         // Get address
         const addresses = await Location.reverseGeocodeAsync({
           latitude,
@@ -91,17 +86,12 @@ export const ShareLocationScreen = () => {
         let address = 'Current Location';
         if (addresses && addresses.length > 0) {
           const addr = addresses[0];
-          const addressParts = [
-            addr.name,
-            addr.street,
-            addr.district,
-            addr.city,
-          ].filter(Boolean);
+          const addressParts = [addr.name, addr.street, addr.district, addr.city].filter(Boolean);
           address = addressParts.join(', ') || address;
         }
 
         setCurrentLocation({ latitude, longitude, address });
-        
+
         // Auto-fill location name if empty
         if (!locationName && addresses && addresses.length > 0) {
           const addr = addresses[0];
@@ -133,7 +123,7 @@ export const ShareLocationScreen = () => {
       } else {
         // Request permission and get location
         const { status } = await Location.requestForegroundPermissionsAsync();
-        
+
         if (status !== 'granted') {
           Alert.alert(
             'Permission Required',
@@ -141,7 +131,7 @@ export const ShareLocationScreen = () => {
             [
               { text: 'Cancel', style: 'cancel' },
               { text: 'Try Again', onPress: () => handleCreateShare() },
-            ]
+            ],
           );
           return;
         }
@@ -179,38 +169,34 @@ export const ShareLocationScreen = () => {
         [
           { text: 'Cancel', style: 'cancel' },
           { text: 'Retry', onPress: () => handleCreateShare() },
-        ]
+        ],
       );
     }
   };
 
   const showShareOptions = (shareData: ShareResult) => {
-    Alert.alert(
-      'Location Shared! 🎉',
-      'Your location has been shared successfully.',
-      [
-        {
-          text: 'View QR Code',
-          onPress: () => setShowQRModal(true),
+    Alert.alert('Location Shared! 🎉', 'Your location has been shared successfully.', [
+      {
+        text: 'View QR Code',
+        onPress: () => setShowQRModal(true),
+      },
+      {
+        text: 'Copy Link',
+        onPress: () => {
+          // TODO: Implement clipboard copy
+          Alert.alert('Copied!', 'Share link copied to clipboard');
         },
-        {
-          text: 'Copy Link',
-          onPress: () => {
-            // TODO: Implement clipboard copy
-            Alert.alert('Copied!', 'Share link copied to clipboard');
-          },
-        },
-        {
-          text: 'Share',
-          onPress: () => handleShareLink(shareData.shareUrl),
-        },
-        {
-          text: 'Done',
-          style: 'cancel',
-          onPress: () => router.back(),
-        },
-      ],
-    );
+      },
+      {
+        text: 'Share',
+        onPress: () => handleShareLink(shareData.shareUrl),
+      },
+      {
+        text: 'Done',
+        style: 'cancel',
+        onPress: () => router.back(),
+      },
+    ]);
   };
 
   const handleShareLink = async (url: string) => {
@@ -276,9 +262,7 @@ export const ShareLocationScreen = () => {
         <View style={[shareStyles.modalContent, { backgroundColor: colors.white }]}>
           {/* Header */}
           <View style={shareStyles.modalHeader}>
-            <Text style={[shareStyles.modalTitle, { color: colors.text }]}>
-              Share QR Code
-            </Text>
+            <Text style={[shareStyles.modalTitle, { color: colors.text }]}>Share QR Code</Text>
             <TouchableOpacity onPress={() => setShowQRModal(false)}>
               <Icon name="close" size={24} color={colors.text} />
             </TouchableOpacity>
@@ -351,7 +335,7 @@ export const ShareLocationScreen = () => {
         <Text style={[shareStyles.headerSubtitle, { color: colors.textMuted }]}>
           Generate QR codes and shareable links for easy navigation
         </Text>
-        
+
         {/* Current Location Display */}
         {currentLocation && (
           <View style={{ marginTop: 12, alignItems: 'center' }}>
@@ -490,7 +474,7 @@ export const ShareLocationScreen = () => {
           <Icon name="location-outline" size={20} color={colors.textMuted} />
           <TextInput
             style={[shareStyles.input, { color: colors.text }]}
-            placeholder={isEvent ? "Event name (e.g., John's Birthday)" : "Location name"}
+            placeholder={isEvent ? "Event name (e.g., John's Birthday)" : 'Location name'}
             placeholderTextColor={colors.textMuted}
             value={locationName}
             onChangeText={setLocationName}
@@ -501,7 +485,7 @@ export const ShareLocationScreen = () => {
           <Icon name="document-text-outline" size={20} color={colors.textMuted} />
           <TextInput
             style={[shareStyles.input, { color: colors.text, height: 80 }]}
-            placeholder={isEvent ? "Event details (optional)" : "Description (optional)"}
+            placeholder={isEvent ? 'Event details (optional)' : 'Description (optional)'}
             placeholderTextColor={colors.textMuted}
             value={description}
             onChangeText={setDescription}
@@ -527,7 +511,7 @@ export const ShareLocationScreen = () => {
           >
             <Icon name="calendar-outline" size={20} color={colors.primary} />
             <Text style={[shareStyles.dateText, { color: colors.text }]}>
-              {eventDate 
+              {eventDate
                 ? `${eventDate.toLocaleDateString()} ${eventDate.toLocaleTimeString()}`
                 : 'Set event date and time'}
             </Text>
@@ -566,7 +550,7 @@ export const ShareLocationScreen = () => {
 
         {showDatePicker && (
           <DateTimePicker
-            value={isEvent ? (eventDate || new Date()) : expiryDate}
+            value={isEvent ? eventDate || new Date() : expiryDate}
             mode="datetime"
             is24Hour={true}
             onChange={handleDateChange}
@@ -579,9 +563,7 @@ export const ShareLocationScreen = () => {
       <View style={[shareStyles.infoCard, { backgroundColor: colors.infoLight }]}>
         <Icon name="qr-code-outline" size={24} color={colors.info} />
         <View style={{ flex: 1, marginLeft: 12 }}>
-          <Text style={[shareStyles.infoTitle, { color: colors.text }]}>
-            QR Code Included
-          </Text>
+          <Text style={[shareStyles.infoTitle, { color: colors.text }]}>QR Code Included</Text>
           <Text style={[shareStyles.infoText, { color: colors.textMuted }]}>
             {shareType === 'event'
               ? 'Generate a QR code perfect for event flyers and invitations. Guests can scan to get walking directions!'

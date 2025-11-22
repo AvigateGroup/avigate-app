@@ -118,9 +118,8 @@ export const useTripService = () => {
     setError(null);
 
     try {
-      const response = await apiClient.get<ApiResponse<{ trip: ActiveTrip | null }>>(
-        '/routes/trips/active',
-      );
+      const response =
+        await apiClient.get<ApiResponse<{ trip: ActiveTrip | null }>>('/routes/trips/active');
 
       return {
         success: true,

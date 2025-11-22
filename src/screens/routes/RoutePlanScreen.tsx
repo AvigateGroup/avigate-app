@@ -1,14 +1,7 @@
 // src/screens/routes/RoutePlanScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  ActivityIndicator,
-  Alert,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -195,9 +188,7 @@ export const RoutePlanScreen = () => {
       >
         <View style={routeStyles.routeHeader}>
           <View style={{ flex: 1 }}>
-            <Text style={[routeStyles.routeName, { color: colors.text }]}>
-              {route.routeName}
-            </Text>
+            <Text style={[routeStyles.routeName, { color: colors.text }]}>{route.routeName}</Text>
             <View style={routeStyles.routeMeta}>
               <View style={routeStyles.metaItem}>
                 <Icon name="time-outline" size={16} color={colors.textMuted} />
@@ -274,10 +265,7 @@ export const RoutePlanScreen = () => {
     const isWalkingStep = step.transportMode === 'walk';
 
     return (
-      <View
-        key={step.order}
-        style={[routeStyles.stepCard, { backgroundColor: colors.white }]}
-      >
+      <View key={step.order} style={[routeStyles.stepCard, { backgroundColor: colors.white }]}>
         {/* Step Header */}
         <TouchableOpacity
           style={routeStyles.stepHeader}
@@ -323,7 +311,9 @@ export const RoutePlanScreen = () => {
         {isExpanded && (
           <View style={routeStyles.stepContent}>
             {/* Main Instructions */}
-            <View style={[routeStyles.instructionsCard, { backgroundColor: colors.backgroundLight }]}>
+            <View
+              style={[routeStyles.instructionsCard, { backgroundColor: colors.backgroundLight }]}
+            >
               <Text style={[routeStyles.instructionsText, { color: colors.text }]}>
                 {step.instructions}
               </Text>
@@ -360,10 +350,7 @@ export const RoutePlanScreen = () => {
                 {/* Alternative Transport (Okada/Keke) */}
                 {step.alternativeTransport && (
                   <View
-                    style={[
-                      routeStyles.alternativeCard,
-                      { backgroundColor: colors.successLight },
-                    ]}
+                    style={[routeStyles.alternativeCard, { backgroundColor: colors.successLight }]}
                   >
                     <View style={routeStyles.alternativeHeader}>
                       <Icon name="bicycle" size={20} color={colors.success} />
@@ -438,9 +425,7 @@ export const RoutePlanScreen = () => {
         {/* Selected Route Details */}
         {selectedRoute && (
           <View style={routeStyles.routeDetails}>
-            <Text style={[routeStyles.sectionTitle, { color: colors.text }]}>
-              Route Details
-            </Text>
+            <Text style={[routeStyles.sectionTitle, { color: colors.text }]}>Route Details</Text>
 
             {/* Summary Card */}
             <View style={[routeStyles.summaryCard, { backgroundColor: colors.white }]}>

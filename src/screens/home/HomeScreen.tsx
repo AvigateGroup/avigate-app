@@ -247,7 +247,9 @@ export const HomeScreen = () => {
           activeOpacity={0.7}
         >
           <Icon name="search" size={24} color={colors.text} />
-          <Text style={[homeFeatureStyles.searchPlaceholder, { color: colors.textMuted }]}>Where to?</Text>
+          <Text style={[homeFeatureStyles.searchPlaceholder, { color: colors.textMuted }]}>
+            Where to?
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

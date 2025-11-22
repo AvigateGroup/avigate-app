@@ -49,7 +49,12 @@ interface CreatePostParams {
 }
 
 interface ContributionParams {
-  contributionType: 'new_route' | 'route_update' | 'fare_correction' | 'new_intermediate_stop' | 'instructions_update';
+  contributionType:
+    | 'new_route'
+    | 'route_update'
+    | 'fare_correction'
+    | 'new_intermediate_stop'
+    | 'instructions_update';
   description: string;
   routeId?: string;
   startLocationId?: string;
@@ -159,7 +164,8 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Create post error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to create post';
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Failed to create post';
       setError(errorMessage);
       return {
         success: false,
@@ -175,10 +181,9 @@ export const useCommunityService = () => {
    */
   const votePost = async (postId: string, voteType: 'up' | 'down') => {
     try {
-      const response = await apiClient.post<ApiResponse>(
-        `/community/posts/${postId}/vote`,
-        { voteType }
-      );
+      const response = await apiClient.post<ApiResponse>(`/community/posts/${postId}/vote`, {
+        voteType,
+      });
 
       if (response.success) {
         return {
@@ -205,12 +210,9 @@ export const useCommunityService = () => {
    */
   const getComments = async (postId: string, page: number = 1, limit: number = 50) => {
     try {
-      const response = await apiClient.get<ApiResponse>(
-        `/community/posts/${postId}/comments`,
-        {
-          params: { page, limit },
-        }
-      );
+      const response = await apiClient.get<ApiResponse>(`/community/posts/${postId}/comments`, {
+        params: { page, limit },
+      });
 
       if (response.success) {
         return {
@@ -237,10 +239,9 @@ export const useCommunityService = () => {
    */
   const addComment = async (postId: string, content: string) => {
     try {
-      const response = await apiClient.post<ApiResponse>(
-        `/community/posts/${postId}/comments`,
-        { content }
-      );
+      const response = await apiClient.post<ApiResponse>(`/community/posts/${postId}/comments`, {
+        content,
+      });
 
       if (response.success) {
         return {
@@ -267,10 +268,9 @@ export const useCommunityService = () => {
    */
   const voteComment = async (commentId: string, voteType: 'up' | 'down') => {
     try {
-      const response = await apiClient.post<ApiResponse>(
-        `/community/comments/${commentId}/vote`,
-        { voteType }
-      );
+      const response = await apiClient.post<ApiResponse>(`/community/comments/${commentId}/vote`, {
+        voteType,
+      });
 
       if (response.success) {
         return {
@@ -324,10 +324,9 @@ export const useCommunityService = () => {
    */
   const reportPost = async (postId: string, reason: string) => {
     try {
-      const response = await apiClient.post<ApiResponse>(
-        `/community/posts/${postId}/report`,
-        { reason }
-      );
+      const response = await apiClient.post<ApiResponse>(`/community/posts/${postId}/report`, {
+        reason,
+      });
 
       if (response.success) {
         return {
@@ -359,7 +358,7 @@ export const useCommunityService = () => {
 
       const response = await apiClient.post<ApiResponse>(
         '/community/contributions',
-        contributionData
+        contributionData,
       );
 
       if (response.success) {
@@ -376,7 +375,8 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Submit contribution error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to submit contribution';
+      const errorMessage =
+        error.response?.data?.message || error.message || 'Failed to submit contribution';
       setError(errorMessage);
       return {
         success: false,
@@ -444,26 +444,26 @@ export const useCommunityService = () => {
     // Feed
     getFeed,
     getPostById,
-    
+
     // Post actions
     createPost,
     votePost,
     deletePost,
     reportPost,
-    
+
     // Comments
     getComments,
     addComment,
     voteComment,
-    
+
     // Contributions
     submitContribution,
     getMyContributions,
-    
+
     // Settings
     toggleRealTimeUpdates,
     getRealTimeUpdatesStatus,
-    
+
     // State
     isLoading,
     error,

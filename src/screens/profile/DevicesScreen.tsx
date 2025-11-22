@@ -106,8 +106,12 @@ export const DevicesScreen: React.FC = () => {
       }
     >
       <View style={profileFeatureStyles.section}>
-        <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>Your Devices</Text>
-        <Text style={[profileFeatureStyles.menuSubtitle, { color: colors.textMuted, marginBottom: 12 }]}>
+        <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>
+          Your Devices
+        </Text>
+        <Text
+          style={[profileFeatureStyles.menuSubtitle, { color: colors.textMuted, marginBottom: 12 }]}
+        >
           Manage devices that have access to your account
         </Text>
 
@@ -123,7 +127,9 @@ export const DevicesScreen: React.FC = () => {
             ]}
           >
             <Icon name="phone-portrait-outline" size={48} color={colors.textMuted} />
-            <Text style={[profileFeatureStyles.menuTitle, { color: colors.textMuted, marginTop: 12 }]}>
+            <Text
+              style={[profileFeatureStyles.menuTitle, { color: colors.textMuted, marginTop: 12 }]}
+            >
               No devices found
             </Text>
           </View>
@@ -189,7 +195,10 @@ export const DevicesScreen: React.FC = () => {
 
                 {device.appVersion && (
                   <Text
-                    style={[profileFeatureStyles.menuSubtitle, { color: colors.textMuted, fontSize: 11 }]}
+                    style={[
+                      profileFeatureStyles.menuSubtitle,
+                      { color: colors.textMuted, fontSize: 11 },
+                    ]}
                   >
                     Version: {device.appVersion}
                   </Text>
@@ -219,7 +228,9 @@ export const DevicesScreen: React.FC = () => {
           <View style={{ flexDirection: 'row', gap: 12 }}>
             <Icon name="information-circle" size={20} color={colors.info} />
             <View style={{ flex: 1 }}>
-              <Text style={[profileFeatureStyles.menuTitle, { color: colors.info, marginBottom: 4 }]}>
+              <Text
+                style={[profileFeatureStyles.menuTitle, { color: colors.info, marginBottom: 4 }]}
+              >
                 About Device Management
               </Text>
               <Text style={[profileFeatureStyles.menuSubtitle, { color: colors.info }]}>

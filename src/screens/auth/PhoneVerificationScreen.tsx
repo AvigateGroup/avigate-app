@@ -73,12 +73,9 @@ export const PhoneVerificationScreen: React.FC = () => {
       });
 
       if (response.success) {
-        console.log('✅ Phone captured successfully:', response.data.user);
-
         // CRITICAL: Update user in context with the new data
         if (response.data.user) {
           await updateUser(response.data.user);
-          console.log('✅ User context updated with phone number');
         }
 
         Toast.show({
@@ -89,7 +86,6 @@ export const PhoneVerificationScreen: React.FC = () => {
 
         // Small delay to allow context to update, then navigate
         setTimeout(() => {
-          console.log('🏠 Navigating to main app...');
           router.replace('/(tabs)');
         }, 500);
       }
@@ -168,7 +164,6 @@ export const PhoneVerificationScreen: React.FC = () => {
 
       // Navigate to main app
       setTimeout(() => {
-        console.log('🏠 Skipping phone verification, navigating to main app...');
         router.replace('/(tabs)');
       }, 500);
     }

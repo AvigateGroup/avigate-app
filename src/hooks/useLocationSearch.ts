@@ -28,7 +28,7 @@ export const useLocationSearch = () => {
   const searchLocations = async (query: string): Promise<LocationSearchResult[]> => {
     try {
       setIsLoading(true);
-      
+
       const response = await apiClient.get<ApiResponse>('/locations/search', {
         params: { q: query },
       });
@@ -62,14 +62,16 @@ export const useLocationSearch = () => {
   const searchNearbyIntermediateStops = async (
     query: string,
     currentLocation?: { latitude: number; longitude: number },
-  ): Promise<Array<{
-    id: string;
-    stopName: string;
-    segmentName: string;
-    coordinates: { lat: number; lng: number };
-    requiresWalking: boolean;
-    walkingDistance?: number;
-  }>> => {
+  ): Promise<
+    Array<{
+      id: string;
+      stopName: string;
+      segmentName: string;
+      coordinates: { lat: number; lng: number };
+      requiresWalking: boolean;
+      walkingDistance?: number;
+    }>
+  > => {
     try {
       // This would call a new backend endpoint
       // For now, return empty array
@@ -100,7 +102,7 @@ export const useLocationSearch = () => {
   const saveToRecentSearches = async (location: LocationSearchResult) => {
     try {
       const recent = await getRecentSearches();
-      
+
       // Remove duplicates and add to front
       const filtered = recent.filter(item => item.id !== location.id);
       const updated = [location, ...filtered].slice(0, 10); // Keep last 10
@@ -127,25 +129,17 @@ export const useLocationSearch = () => {
   /**
    * Save a place (home, work, or favorite)
    */
-  const savePlace = async (
-    location: LocationSearchResult,
-    label: 'home' | 'work' | 'favorite',
-  ) => {
+  const savePlace = async (location: LocationSearchResult, label: 'home' | 'work' | 'favorite') => {
     try {
       const saved = await getSavedPlaces();
-      
+
       // Remove existing entry with same label
-      const filtered = saved.filter(
-        item => !(item.id === location.id || item.name === label),
-      );
-      
-      const updated = [
-        { ...location, name: label, type: 'saved' as const },
-        ...filtered,
-      ];
+      const filtered = saved.filter(item => !(item.id === location.id || item.name === label));
+
+      const updated = [{ ...location, name: label, type: 'saved' as const }, ...filtered];
 
       await AsyncStorage.setItem('saved_places', JSON.stringify(updated));
-      
+
       return { success: true };
     } catch (error) {
       console.error('Error saving place:', error);

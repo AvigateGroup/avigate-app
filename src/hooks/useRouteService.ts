@@ -137,14 +137,11 @@ export const useRouteService = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await apiClient.post<ApiResponse>(
-        '/routes/trips/start',
-        {
-          routeId,
-          currentLat,
-          currentLng,
-        }
-      );
+      const response = await apiClient.post<ApiResponse>('/routes/trips/start', {
+        routeId,
+        currentLat,
+        currentLng,
+      });
 
       if (response.success && response.data?.trip) {
         return {
@@ -198,12 +195,18 @@ export const useRouteService = () => {
   /**
    * Update trip location
    */
-  const updateTripLocation = async (tripId: string, lat: number, lng: number, accuracy?: number) => {
+  const updateTripLocation = async (
+    tripId: string,
+    lat: number,
+    lng: number,
+    accuracy?: number,
+  ) => {
     try {
-      const response = await apiClient.patch<ApiResponse>(
-        `/routes/trips/${tripId}/location`,
-        { lat, lng, accuracy }
-      );
+      const response = await apiClient.patch<ApiResponse>(`/routes/trips/${tripId}/location`, {
+        lat,
+        lng,
+        accuracy,
+      });
 
       if (response.success && response.data?.progress) {
         return {
@@ -229,10 +232,7 @@ export const useRouteService = () => {
    */
   const completeTrip = async (tripId: string) => {
     try {
-      const response = await apiClient.post<ApiResponse>(
-        `/routes/trips/${tripId}/complete`,
-        {}
-      );
+      const response = await apiClient.post<ApiResponse>(`/routes/trips/${tripId}/complete`, {});
 
       if (response.success && response.data?.trip) {
         return {
@@ -258,10 +258,7 @@ export const useRouteService = () => {
    */
   const endTrip = async (tripId: string) => {
     try {
-      const response = await apiClient.post<ApiResponse>(
-        `/routes/trips/${tripId}/end`,
-        {}
-      );
+      const response = await apiClient.post<ApiResponse>(`/routes/trips/${tripId}/end`, {});
 
       if (response.success && response.data?.trip) {
         return {
@@ -287,10 +284,9 @@ export const useRouteService = () => {
    */
   const cancelTrip = async (tripId: string, reason?: string) => {
     try {
-      const response = await apiClient.post<ApiResponse>(
-        `/routes/trips/${tripId}/cancel`,
-        { reason }
-      );
+      const response = await apiClient.post<ApiResponse>(`/routes/trips/${tripId}/cancel`, {
+        reason,
+      });
 
       if (response.success && response.data?.trip) {
         return {

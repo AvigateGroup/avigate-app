@@ -19,7 +19,12 @@ import { useCommunityService } from '@/hooks/useCommunityService';
 import { Button } from '@/components/common/Button';
 import { contributeStyles } from '@/styles/features';
 
-type ContributionType = 'new_route' | 'route_update' | 'fare_correction' | 'new_intermediate_stop' | 'instructions_update';
+type ContributionType =
+  | 'new_route'
+  | 'route_update'
+  | 'fare_correction'
+  | 'new_intermediate_stop'
+  | 'instructions_update';
 
 export const ContributeRouteScreen = () => {
   const router = useRouter();
@@ -28,7 +33,7 @@ export const ContributeRouteScreen = () => {
 
   const [contributionType, setContributionType] = useState<ContributionType>('route_update');
   const [description, setDescription] = useState('');
-  
+
   // Route data
   const [routeName, setRouteName] = useState('');
   const [startLocation, setStartLocation] = useState('');
@@ -39,7 +44,7 @@ export const ContributeRouteScreen = () => {
   const [minFare, setMinFare] = useState('');
   const [maxFare, setMaxFare] = useState('');
   const [instructions, setInstructions] = useState('');
-  
+
   // Intermediate stop data
   const [stopName, setStopName] = useState('');
   const [segmentName, setSegmentName] = useState('');
@@ -148,7 +153,10 @@ export const ContributeRouteScreen = () => {
           stopName,
           segmentName,
           isOptional,
-          landmarks: landmarks.split(',').map(l => l.trim()).filter(Boolean),
+          landmarks: landmarks
+            .split(',')
+            .map(l => l.trim())
+            .filter(Boolean),
         };
         break;
 
@@ -159,7 +167,10 @@ export const ContributeRouteScreen = () => {
         }
         proposedData = {
           instructions: instructions.trim(),
-          landmarks: landmarks.split(',').map(l => l.trim()).filter(Boolean),
+          landmarks: landmarks
+            .split(',')
+            .map(l => l.trim())
+            .filter(Boolean),
         };
         break;
     }
@@ -202,7 +213,8 @@ export const ContributeRouteScreen = () => {
             style={[
               contributeStyles.typeCard,
               {
-                backgroundColor: contributionType === type.type ? colors.primaryLight : colors.white,
+                backgroundColor:
+                  contributionType === type.type ? colors.primaryLight : colors.white,
                 borderColor: contributionType === type.type ? colors.primary : colors.border,
               },
             ]}
@@ -242,10 +254,7 @@ export const ContributeRouteScreen = () => {
         Description <Text style={{ color: colors.error }}>*</Text>
       </Text>
       <View
-        style={[
-          contributeStyles.inputContainer,
-          { backgroundColor: colors.white, height: 120 },
-        ]}
+        style={[contributeStyles.inputContainer, { backgroundColor: colors.white, height: 120 }]}
       >
         <TextInput
           style={[contributeStyles.input, { color: colors.text, height: 100 }]}
@@ -270,9 +279,7 @@ export const ContributeRouteScreen = () => {
     return (
       <>
         <View style={contributeStyles.section}>
-          <Text style={[contributeStyles.sectionTitle, { color: colors.text }]}>
-            Route Details
-          </Text>
+          <Text style={[contributeStyles.sectionTitle, { color: colors.text }]}>Route Details</Text>
 
           {contributionType === 'new_route' && (
             <View style={[contributeStyles.inputContainer, { backgroundColor: colors.white }]}>
@@ -288,7 +295,9 @@ export const ContributeRouteScreen = () => {
           )}
 
           <View style={{ flexDirection: 'row', gap: 12, marginTop: 12 }}>
-            <View style={[contributeStyles.inputContainer, { backgroundColor: colors.white, flex: 1 }]}>
+            <View
+              style={[contributeStyles.inputContainer, { backgroundColor: colors.white, flex: 1 }]}
+            >
               <Icon name="flag-outline" size={20} color={colors.textMuted} />
               <TextInput
                 style={[contributeStyles.input, { color: colors.text, marginLeft: 12 }]}
@@ -299,7 +308,9 @@ export const ContributeRouteScreen = () => {
               />
             </View>
 
-            <View style={[contributeStyles.inputContainer, { backgroundColor: colors.white, flex: 1 }]}>
+            <View
+              style={[contributeStyles.inputContainer, { backgroundColor: colors.white, flex: 1 }]}
+            >
               <Icon name="location-outline" size={20} color={colors.textMuted} />
               <TextInput
                 style={[contributeStyles.input, { color: colors.text, marginLeft: 12 }]}
@@ -321,7 +332,9 @@ export const ContributeRouteScreen = () => {
                 style={[
                   contributeStyles.transportChip,
                   {
-                    backgroundColor: transportModes.includes(mode) ? colors.primaryLight : colors.backgroundLight,
+                    backgroundColor: transportModes.includes(mode)
+                      ? colors.primaryLight
+                      : colors.backgroundLight,
                     borderColor: transportModes.includes(mode) ? colors.primary : colors.border,
                   },
                 ]}
@@ -461,9 +474,7 @@ export const ContributeRouteScreen = () => {
 
     return (
       <View style={contributeStyles.section}>
-        <Text style={[contributeStyles.sectionTitle, { color: colors.text }]}>
-          Stop Details
-        </Text>
+        <Text style={[contributeStyles.sectionTitle, { color: colors.text }]}>Stop Details</Text>
 
         <View style={[contributeStyles.inputContainer, { backgroundColor: colors.white }]}>
           <Icon name="location-outline" size={20} color={colors.textMuted} />
@@ -476,7 +487,12 @@ export const ContributeRouteScreen = () => {
           />
         </View>
 
-        <View style={[contributeStyles.inputContainer, { backgroundColor: colors.white, marginTop: 12 }]}>
+        <View
+          style={[
+            contributeStyles.inputContainer,
+            { backgroundColor: colors.white, marginTop: 12 },
+          ]}
+        >
           <Icon name="map-outline" size={20} color={colors.textMuted} />
           <TextInput
             style={[contributeStyles.input, { color: colors.text, marginLeft: 12 }]}
@@ -487,7 +503,12 @@ export const ContributeRouteScreen = () => {
           />
         </View>
 
-        <View style={[contributeStyles.inputContainer, { backgroundColor: colors.white, marginTop: 12 }]}>
+        <View
+          style={[
+            contributeStyles.inputContainer,
+            { backgroundColor: colors.white, marginTop: 12 },
+          ]}
+        >
           <Icon name="eye-outline" size={20} color={colors.textMuted} />
           <TextInput
             style={[contributeStyles.input, { color: colors.text, marginLeft: 12 }]}
@@ -516,19 +537,24 @@ export const ContributeRouteScreen = () => {
   };
 
   const renderInstructionsFields = () => {
-    if (contributionType !== 'instructions_update' && contributionType !== 'new_route' && contributionType !== 'route_update') return null;
+    if (
+      contributionType !== 'instructions_update' &&
+      contributionType !== 'new_route' &&
+      contributionType !== 'route_update'
+    )
+      return null;
 
     return (
       <View style={contributeStyles.section}>
         <Text style={[contributeStyles.sectionTitle, { color: colors.text }]}>
-          Directions {contributionType === 'instructions_update' && <Text style={{ color: colors.error }}>*</Text>}
+          Directions{' '}
+          {contributionType === 'instructions_update' && (
+            <Text style={{ color: colors.error }}>*</Text>
+          )}
         </Text>
 
         <View
-          style={[
-            contributeStyles.inputContainer,
-            { backgroundColor: colors.white, height: 150 },
-          ]}
+          style={[contributeStyles.inputContainer, { backgroundColor: colors.white, height: 150 }]}
         >
           <TextInput
             style={[contributeStyles.input, { color: colors.text, height: 130 }]}
@@ -541,7 +567,12 @@ export const ContributeRouteScreen = () => {
           />
         </View>
 
-        <View style={[contributeStyles.inputContainer, { backgroundColor: colors.white, marginTop: 12 }]}>
+        <View
+          style={[
+            contributeStyles.inputContainer,
+            { backgroundColor: colors.white, marginTop: 12 },
+          ]}
+        >
           <Icon name="eye-outline" size={20} color={colors.textMuted} />
           <TextInput
             style={[contributeStyles.input, { color: colors.text, marginLeft: 12 }]}
@@ -563,9 +594,7 @@ export const ContributeRouteScreen = () => {
           Earn Reputation Points!
         </Text>
         <Text style={[contributeStyles.rewardText, { color: colors.textMuted }]}>
-          • Submit: +15 points{'\n'}
-          • Approved: +25 bonus{'\n'}
-          • Implemented: +50 bonus{'\n'}
+          • Submit: +15 points{'\n'}• Approved: +25 bonus{'\n'}• Implemented: +50 bonus{'\n'}
           Total possible: 90 points!
         </Text>
       </View>

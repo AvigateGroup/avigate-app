@@ -46,7 +46,7 @@ export const searchStyles = StyleSheet.create({
     borderRadius: 12,
     gap: 4,
   },
-  
+
   badgeText: {
     fontSize: 12,
     fontWeight: '600',
@@ -123,7 +123,7 @@ export const searchStyles = StyleSheet.create({
     textAlign: 'center',
     paddingHorizontal: 32,
   },
-  
+
   // Current location button
   currentLocationButton: {
     flexDirection: 'row',
@@ -138,7 +138,7 @@ export const searchStyles = StyleSheet.create({
     borderColor: COLORS.border,
     gap: 12,
   },
-  
+
   // Tips card
   tipsCard: {
     flexDirection: 'row',
@@ -148,20 +148,20 @@ export const searchStyles = StyleSheet.create({
     marginTop: 16,
     alignItems: 'flex-start',
   },
-  
+
   tipsTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
     color: COLORS.text,
   },
-  
+
   tipsText: {
     fontSize: 14,
     lineHeight: 22,
     color: COLORS.textMuted,
   },
-  
+
   // Meta info for intermediate stops
   suggestionMeta: {
     fontSize: 12,

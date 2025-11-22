@@ -23,7 +23,7 @@ export const useCurrentLocation = () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       setLocationPermission(status === 'granted');
-      
+
       if (status === 'granted') {
         getCurrentLocation();
       }
@@ -79,7 +79,7 @@ export const useCurrentLocation = () => {
             longitude: location.coords.longitude,
             accuracy: location.coords.accuracy,
           };
-          
+
           setCurrentLocation(coords);
           callback(coords);
         },

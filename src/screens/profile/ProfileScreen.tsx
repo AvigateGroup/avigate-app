@@ -103,7 +103,9 @@ export const ProfileScreen: React.FC = () => {
       showsVerticalScrollIndicator={false}
     >
       {/* Profile Header */}
-      <View style={[profileFeatureStyles.header, { backgroundColor: colors.white, paddingTop: 60 }]}>
+      <View
+        style={[profileFeatureStyles.header, { backgroundColor: colors.white, paddingTop: 60 }]}
+      >
         <View style={profileFeatureStyles.avatarContainer}>
           {user?.profilePicture ? (
             <Image
@@ -112,7 +114,9 @@ export const ProfileScreen: React.FC = () => {
               resizeMode="cover"
             />
           ) : (
-            <View style={[profileFeatureStyles.avatarPlaceholder, { backgroundColor: colors.primary }]}>
+            <View
+              style={[profileFeatureStyles.avatarPlaceholder, { backgroundColor: colors.primary }]}
+            >
               <Text style={profileFeatureStyles.avatarText}>
                 {getInitials(user?.firstName || '', user?.lastName || '')}
               </Text>
@@ -161,7 +165,9 @@ export const ProfileScreen: React.FC = () => {
             <Text style={[profileFeatureStyles.statValue, { color: colors.text }]}>
               {user?.reputationScore || 100}
             </Text>
-            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>Rating</Text>
+            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>
+              Rating
+            </Text>
           </View>
           <View style={[profileFeatureStyles.statDivider, { backgroundColor: colors.border }]} />
           <View style={profileFeatureStyles.statItem}>
@@ -189,7 +195,9 @@ export const ProfileScreen: React.FC = () => {
         </Text>
         <View style={[profileFeatureStyles.infoCard, { backgroundColor: colors.white }]}>
           <View style={profileFeatureStyles.infoRow}>
-            <Text style={[profileFeatureStyles.infoLabel, { color: colors.textMuted }]}>Member Since</Text>
+            <Text style={[profileFeatureStyles.infoLabel, { color: colors.textMuted }]}>
+              Member Since
+            </Text>
             <Text style={[profileFeatureStyles.infoValue, { color: colors.text }]}>
               {user?.createdAt ? formatDate(user.createdAt) : 'N/A'}
             </Text>
@@ -208,7 +216,9 @@ export const ProfileScreen: React.FC = () => {
           </View>
           <View style={[profileFeatureStyles.infoDivider, { backgroundColor: colors.border }]} />
           <View style={profileFeatureStyles.infoRow}>
-            <Text style={[profileFeatureStyles.infoLabel, { color: colors.textMuted }]}>Country</Text>
+            <Text style={[profileFeatureStyles.infoLabel, { color: colors.textMuted }]}>
+              Country
+            </Text>
             <Text style={[profileFeatureStyles.infoValue, { color: colors.text }]}>
               {user?.country || 'Nigeria'}
             </Text>
@@ -218,7 +228,9 @@ export const ProfileScreen: React.FC = () => {
 
       {/* Menu Items */}
       <View style={profileFeatureStyles.section}>
-        <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
+        <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>
+          Quick Actions
+        </Text>
         {menuItems.map((item, index) => (
           <TouchableOpacity
             key={index}
@@ -227,12 +239,17 @@ export const ProfileScreen: React.FC = () => {
             activeOpacity={0.7}
           >
             <View
-              style={[profileFeatureStyles.menuIconContainer, { backgroundColor: colors.backgroundLight }]}
+              style={[
+                profileFeatureStyles.menuIconContainer,
+                { backgroundColor: colors.backgroundLight },
+              ]}
             >
               <Icon name={item.icon} size={24} color={colors.primary} />
             </View>
             <View style={profileFeatureStyles.menuContent}>
-              <Text style={[profileFeatureStyles.menuTitle, { color: colors.text }]}>{item.title}</Text>
+              <Text style={[profileFeatureStyles.menuTitle, { color: colors.text }]}>
+                {item.title}
+              </Text>
               <Text style={[profileFeatureStyles.menuSubtitle, { color: colors.textMuted }]}>
                 {item.subtitle}
               </Text>
@@ -259,7 +276,9 @@ export const ProfileScreen: React.FC = () => {
       </TouchableOpacity>
 
       <View style={profileFeatureStyles.footer}>
-        <Text style={[profileFeatureStyles.footerText, { color: colors.textMuted }]}>Avigate v1.0.0</Text>
+        <Text style={[profileFeatureStyles.footerText, { color: colors.textMuted }]}>
+          Avigate v1.0.0
+        </Text>
       </View>
     </ScrollView>
   );
