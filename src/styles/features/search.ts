@@ -105,4 +105,41 @@ export const searchStyles = StyleSheet.create({
     color: COLORS.textMuted,
     textAlign: 'center',
   },
+ // NEW - Current location button
+  currentLocationButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    marginHorizontal: 16,
+    marginTop: 8,
+    borderRadius: 12,
+    gap: 12,
+  },
+  
+  // NEW - Tips card
+  tipsCard: {
+    flexDirection: 'row',
+    padding: 16,
+    borderRadius: 12,
+    marginHorizontal: 16,
+    marginTop: 16,
+  },
+  
+  tipsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  
+  tipsText: {
+    fontSize: 14,
+    lineHeight: 22,
+  },
+  
+  // NEW - Meta info for intermediate stops
+  suggestionMeta: {
+    fontSize: 12,
+    marginTop: 4,
+  },
+
 });
