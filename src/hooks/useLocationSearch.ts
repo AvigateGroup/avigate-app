@@ -1,7 +1,6 @@
 // src/hooks/useLocationSearch.ts
 
 import { useState } from 'react';
-import axios from 'axios';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -30,12 +29,12 @@ export const useLocationSearch = () => {
     try {
       setIsLoading(true);
       
-      const response = await axios.get(`${API_BASE_URL}/locations/search`, {
+      const response = await apiClient.get<ApiResponse>('/locations/search', {
         params: { q: query },
       });
 
-      if (response.data.success) {
-        return response.data.data.locations.map((loc: any) => ({
+      if (response.success && response.data?.locations) {
+        return response.data.locations.map((loc: any) => ({
           id: loc.id,
           name: loc.name,
           address: `${loc.city}, ${loc.state}`,

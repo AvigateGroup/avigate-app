@@ -1,7 +1,6 @@
 // src/hooks/useRouteService.ts
 
 import { useState } from 'react';
-import axios from 'axios';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
 
@@ -31,7 +30,7 @@ export const useRouteService = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.post(`${API_BASE_URL}/routes/search/smart`, {
+      const response = await apiClient.post<ApiResponse>('/routes/search/smart', {
         startLat,
         startLng,
         endLat,
@@ -39,16 +38,16 @@ export const useRouteService = () => {
         endAddress: endLocationName, // Optional for better matching
       });
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
       return {
         success: false,
-        error: response.data.message || 'Failed to find routes',
+        error: response.message || 'Failed to find routes',
       };
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || 'An error occurred';
@@ -70,14 +69,14 @@ export const useRouteService = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.get(`${API_BASE_URL}/routes/popular`, {
+      const response = await apiClient.get<ApiResponse>('/routes/popular', {
         params: { city, limit },
       });
 
-      if (response.data.success) {
+      if (response.success && response.data?.routes) {
         return {
           success: true,
-          data: response.data.data.routes,
+          data: response.data.routes,
         };
       }
 
@@ -105,12 +104,12 @@ export const useRouteService = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.get(`${API_BASE_URL}/routes/${routeId}`);
+      const response = await apiClient.get<ApiResponse>(`/routes/${routeId}`);
 
-      if (response.data.success) {
+      if (response.success && response.data?.route) {
         return {
           success: true,
-          data: response.data.data.route,
+          data: response.data.route,
         };
       }
 
@@ -138,24 +137,19 @@ export const useRouteService = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.post(
-        `${API_BASE_URL}/routes/trips/start`,
+      const response = await apiClient.post<ApiResponse>(
+        '/routes/trips/start',
         {
           routeId,
           currentLat,
           currentLng,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${await getAuthToken()}`,
-          },
-        },
+        }
       );
 
-      if (response.data.success) {
+      if (response.success && response.data?.trip) {
         return {
           success: true,
-          data: response.data.data.trip,
+          data: response.data.trip,
         };
       }
 
@@ -180,16 +174,12 @@ export const useRouteService = () => {
    */
   const getActiveTrip = async () => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/routes/trips/active`, {
-        headers: {
-          Authorization: `Bearer ${await getAuthToken()}`,
-        },
-      });
+      const response = await apiClient.get<ApiResponse>('/routes/trips/active');
 
-      if (response.data.success) {
+      if (response.success && response.data?.trip) {
         return {
           success: true,
-          data: response.data.data.trip,
+          data: response.data.trip,
         };
       }
 
@@ -210,20 +200,15 @@ export const useRouteService = () => {
    */
   const updateTripLocation = async (tripId: string, lat: number, lng: number, accuracy?: number) => {
     try {
-      const response = await axios.patch(
-        `${API_BASE_URL}/routes/trips/${tripId}/location`,
-        { lat, lng, accuracy },
-        {
-          headers: {
-            Authorization: `Bearer ${await getAuthToken()}`,
-          },
-        },
+      const response = await apiClient.patch<ApiResponse>(
+        `/routes/trips/${tripId}/location`,
+        { lat, lng, accuracy }
       );
 
-      if (response.data.success) {
+      if (response.success && response.data?.progress) {
         return {
           success: true,
-          data: response.data.data.progress,
+          data: response.data.progress,
         };
       }
 
@@ -244,20 +229,15 @@ export const useRouteService = () => {
    */
   const completeTrip = async (tripId: string) => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/routes/trips/${tripId}/complete`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${await getAuthToken()}`,
-          },
-        },
+      const response = await apiClient.post<ApiResponse>(
+        `/routes/trips/${tripId}/complete`,
+        {}
       );
 
-      if (response.data.success) {
+      if (response.success && response.data?.trip) {
         return {
           success: true,
-          data: response.data.data.trip,
+          data: response.data.trip,
         };
       }
 
@@ -278,20 +258,15 @@ export const useRouteService = () => {
    */
   const endTrip = async (tripId: string) => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/routes/trips/${tripId}/end`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${await getAuthToken()}`,
-          },
-        },
+      const response = await apiClient.post<ApiResponse>(
+        `/routes/trips/${tripId}/end`,
+        {}
       );
 
-      if (response.data.success) {
+      if (response.success && response.data?.trip) {
         return {
           success: true,
-          data: response.data.data.trip,
+          data: response.data.trip,
         };
       }
 
@@ -312,20 +287,15 @@ export const useRouteService = () => {
    */
   const cancelTrip = async (tripId: string, reason?: string) => {
     try {
-      const response = await axios.post(
-        `${API_BASE_URL}/routes/trips/${tripId}/cancel`,
-        { reason },
-        {
-          headers: {
-            Authorization: `Bearer ${await getAuthToken()}`,
-          },
-        },
+      const response = await apiClient.post<ApiResponse>(
+        `/routes/trips/${tripId}/cancel`,
+        { reason }
       );
 
-      if (response.data.success) {
+      if (response.success && response.data?.trip) {
         return {
           success: true,
-          data: response.data.data.trip,
+          data: response.data.trip,
         };
       }
 
@@ -346,17 +316,14 @@ export const useRouteService = () => {
    */
   const getTripHistory = async (limit: number = 20) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/routes/trips/history`, {
+      const response = await apiClient.get<ApiResponse>('/routes/trips/history', {
         params: { limit },
-        headers: {
-          Authorization: `Bearer ${await getAuthToken()}`,
-        },
       });
 
-      if (response.data.success) {
+      if (response.success && response.data?.trips) {
         return {
           success: true,
-          data: response.data.data.trips,
+          data: response.data.trips,
         };
       }
 
@@ -370,17 +337,6 @@ export const useRouteService = () => {
         error: err.message,
       };
     }
-  };
-
-  /**
-   * Helper: Get auth token
-   */
-  const getAuthToken = async (): Promise<string> => {
-    // Implement your auth token retrieval here
-    // This might come from AsyncStorage, SecureStore, or a context
-    const AsyncStorage = require('@react-native-async-storage/async-storage').default;
-    const token = await AsyncStorage.getItem('auth_token');
-    return token || '';
   };
 
   return {

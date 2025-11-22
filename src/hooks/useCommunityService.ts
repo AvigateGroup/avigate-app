@@ -1,7 +1,6 @@
 // src/hooks/useCommunityService.ts
 
 import { useState } from 'react';
-import axios from 'axios';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -63,18 +62,6 @@ export const useCommunityService = () => {
   const [error, setError] = useState<string | null>(null);
 
   /**
-   * Get authentication token
-   */
-  const getAuthToken = async (): Promise<string | null> => {
-    try {
-      return await AsyncStorage.getItem('auth_token');
-    } catch (error) {
-      console.error('Error getting auth token:', error);
-      return null;
-    }
-  };
-
-  /**
    * Get community feed
    */
   const getFeed = async (params: FeedParams = {}) => {
@@ -82,7 +69,7 @@ export const useCommunityService = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.get(`${API_BASE_URL}/community/posts`, {
+      const response = await apiClient.get<ApiResponse>('/community/posts', {
         params: {
           page: params.page || 1,
           limit: params.limit || 20,
@@ -91,10 +78,10 @@ export const useCommunityService = () => {
         },
       });
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -104,10 +91,11 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Get feed error:', error);
-      setError(error.message);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to load feed';
+      setError(errorMessage);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to load feed',
+        error: errorMessage,
       };
     } finally {
       setIsLoading(false);
@@ -122,12 +110,12 @@ export const useCommunityService = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await axios.get(`${API_BASE_URL}/community/posts/${postId}`);
+      const response = await apiClient.get<ApiResponse>(`/community/posts/${postId}`);
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -137,10 +125,11 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Get post error:', error);
-      setError(error.message);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to load post';
+      setError(errorMessage);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to load post',
+        error: errorMessage,
       };
     } finally {
       setIsLoading(false);
@@ -155,28 +144,12 @@ export const useCommunityService = () => {
       setIsLoading(true);
       setError(null);
 
-      const token = await getAuthToken();
-      if (!token) {
-        return {
-          success: false,
-          error: 'Authentication required',
-        };
-      }
+      const response = await apiClient.post<ApiResponse>('/community/posts', postData);
 
-      const response = await axios.post(
-        `${API_BASE_URL}/community/posts`,
-        postData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -186,10 +159,11 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Create post error:', error);
-      setError(error.message);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to create post';
+      setError(errorMessage);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to create post',
+        error: errorMessage,
       };
     } finally {
       setIsLoading(false);
@@ -201,28 +175,15 @@ export const useCommunityService = () => {
    */
   const votePost = async (postId: string, voteType: 'up' | 'down') => {
     try {
-      const token = await getAuthToken();
-      if (!token) {
-        return {
-          success: false,
-          error: 'Authentication required',
-        };
-      }
-
-      const response = await axios.post(
-        `${API_BASE_URL}/community/posts/${postId}/vote`,
-        { voteType },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const response = await apiClient.post<ApiResponse>(
+        `/community/posts/${postId}/vote`,
+        { voteType }
       );
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -244,17 +205,17 @@ export const useCommunityService = () => {
    */
   const getComments = async (postId: string, page: number = 1, limit: number = 50) => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/community/posts/${postId}/comments`,
+      const response = await apiClient.get<ApiResponse>(
+        `/community/posts/${postId}/comments`,
         {
           params: { page, limit },
-        },
+        }
       );
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -276,28 +237,15 @@ export const useCommunityService = () => {
    */
   const addComment = async (postId: string, content: string) => {
     try {
-      const token = await getAuthToken();
-      if (!token) {
-        return {
-          success: false,
-          error: 'Authentication required',
-        };
-      }
-
-      const response = await axios.post(
-        `${API_BASE_URL}/community/posts/${postId}/comments`,
-        { content },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const response = await apiClient.post<ApiResponse>(
+        `/community/posts/${postId}/comments`,
+        { content }
       );
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -319,28 +267,15 @@ export const useCommunityService = () => {
    */
   const voteComment = async (commentId: string, voteType: 'up' | 'down') => {
     try {
-      const token = await getAuthToken();
-      if (!token) {
-        return {
-          success: false,
-          error: 'Authentication required',
-        };
-      }
-
-      const response = await axios.post(
-        `${API_BASE_URL}/community/comments/${commentId}/vote`,
-        { voteType },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const response = await apiClient.post<ApiResponse>(
+        `/community/comments/${commentId}/vote`,
+        { voteType }
       );
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -362,27 +297,12 @@ export const useCommunityService = () => {
    */
   const deletePost = async (postId: string) => {
     try {
-      const token = await getAuthToken();
-      if (!token) {
-        return {
-          success: false,
-          error: 'Authentication required',
-        };
-      }
+      const response = await apiClient.delete<ApiResponse>(`/community/posts/${postId}`);
 
-      const response = await axios.delete(
-        `${API_BASE_URL}/community/posts/${postId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -404,28 +324,15 @@ export const useCommunityService = () => {
    */
   const reportPost = async (postId: string, reason: string) => {
     try {
-      const token = await getAuthToken();
-      if (!token) {
-        return {
-          success: false,
-          error: 'Authentication required',
-        };
-      }
-
-      const response = await axios.post(
-        `${API_BASE_URL}/community/posts/${postId}/report`,
-        { reason },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const response = await apiClient.post<ApiResponse>(
+        `/community/posts/${postId}/report`,
+        { reason }
       );
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
@@ -450,29 +357,16 @@ export const useCommunityService = () => {
       setIsLoading(true);
       setError(null);
 
-      const token = await getAuthToken();
-      if (!token) {
-        return {
-          success: false,
-          error: 'Authentication required',
-        };
-      }
-
-      const response = await axios.post(
-        `${API_BASE_URL}/community/contributions`,
-        contributionData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
+      const response = await apiClient.post<ApiResponse>(
+        '/community/contributions',
+        contributionData
       );
 
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
-          message: response.data.message,
+          data: response.data,
+          message: response.message,
         };
       }
 
@@ -482,10 +376,11 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Submit contribution error:', error);
-      setError(error.message);
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to submit contribution';
+      setError(errorMessage);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to submit contribution',
+        error: errorMessage,
       };
     } finally {
       setIsLoading(false);
@@ -497,27 +392,12 @@ export const useCommunityService = () => {
    */
   const getMyContributions = async () => {
     try {
-      const token = await getAuthToken();
-      if (!token) {
-        return {
-          success: false,
-          error: 'Authentication required',
-        };
-      }
+      const response = await apiClient.get<ApiResponse>('/community/contributions/my');
 
-      const response = await axios.get(
-        `${API_BASE_URL}/community/contributions/my`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-
-      if (response.data.success) {
+      if (response.success) {
         return {
           success: true,
-          data: response.data.data,
+          data: response.data,
         };
       }
 
