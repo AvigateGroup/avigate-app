@@ -13,7 +13,7 @@ import {
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useUserService } from '@/hooks/useUserService';
-import { profileStyles } from '@/styles';
+import { profileFeatureStyles } from '@/styles/features';
 import { getRelativeTime } from '@/utils/helpers';
 
 interface UserDevice {
@@ -80,12 +80,12 @@ export const DevicesScreen: React.FC = () => {
     return (
       <View
         style={[
-          profileStyles.container,
+          profileFeatureStyles.container,
           { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' },
         ]}
       >
         <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={[profileStyles.footerText, { color: colors.textMuted, marginTop: 16 }]}>
+        <Text style={[profileFeatureStyles.footerText, { color: colors.textMuted, marginTop: 16 }]}>
           Loading devices...
         </Text>
       </View>
@@ -94,7 +94,7 @@ export const DevicesScreen: React.FC = () => {
 
   return (
     <ScrollView
-      style={[profileStyles.container, { backgroundColor: colors.background }]}
+      style={[profileFeatureStyles.container, { backgroundColor: colors.background }]}
       showsVerticalScrollIndicator={false}
       refreshControl={
         <RefreshControl
@@ -105,16 +105,16 @@ export const DevicesScreen: React.FC = () => {
         />
       }
     >
-      <View style={profileStyles.section}>
-        <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>Your Devices</Text>
-        <Text style={[profileStyles.menuSubtitle, { color: colors.textMuted, marginBottom: 12 }]}>
+      <View style={profileFeatureStyles.section}>
+        <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>Your Devices</Text>
+        <Text style={[profileFeatureStyles.menuSubtitle, { color: colors.textMuted, marginBottom: 12 }]}>
           Manage devices that have access to your account
         </Text>
 
         {devices.length === 0 ? (
           <View
             style={[
-              profileStyles.infoCard,
+              profileFeatureStyles.infoCard,
               {
                 backgroundColor: colors.white,
                 paddingVertical: 32,
@@ -123,7 +123,7 @@ export const DevicesScreen: React.FC = () => {
             ]}
           >
             <Icon name="phone-portrait-outline" size={48} color={colors.textMuted} />
-            <Text style={[profileStyles.menuTitle, { color: colors.textMuted, marginTop: 12 }]}>
+            <Text style={[profileFeatureStyles.menuTitle, { color: colors.textMuted, marginTop: 12 }]}>
               No devices found
             </Text>
           </View>
@@ -132,7 +132,7 @@ export const DevicesScreen: React.FC = () => {
             <View
               key={device.id}
               style={[
-                profileStyles.menuItem,
+                profileFeatureStyles.menuItem,
                 {
                   backgroundColor: colors.white,
                   marginBottom: 8,
@@ -142,7 +142,7 @@ export const DevicesScreen: React.FC = () => {
             >
               <View
                 style={[
-                  profileStyles.menuIconContainer,
+                  profileFeatureStyles.menuIconContainer,
                   { backgroundColor: colors.backgroundLight },
                 ]}
               >
@@ -153,9 +153,9 @@ export const DevicesScreen: React.FC = () => {
                 />
               </View>
 
-              <View style={profileStyles.menuContent}>
+              <View style={profileFeatureStyles.menuContent}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                  <Text style={[profileStyles.menuTitle, { color: colors.text }]}>
+                  <Text style={[profileFeatureStyles.menuTitle, { color: colors.text }]}>
                     {device.deviceInfo || 'Unknown Device'}
                   </Text>
                   {!device.isActive && (
@@ -174,13 +174,13 @@ export const DevicesScreen: React.FC = () => {
                   )}
                 </View>
 
-                <Text style={[profileStyles.menuSubtitle, { color: colors.textMuted }]}>
+                <Text style={[profileFeatureStyles.menuSubtitle, { color: colors.textMuted }]}>
                   {device.platform} • {device.deviceType}
                 </Text>
 
                 <Text
                   style={[
-                    profileStyles.menuSubtitle,
+                    profileFeatureStyles.menuSubtitle,
                     { color: colors.textMuted, fontSize: 11, marginTop: 2 },
                   ]}
                 >
@@ -189,7 +189,7 @@ export const DevicesScreen: React.FC = () => {
 
                 {device.appVersion && (
                   <Text
-                    style={[profileStyles.menuSubtitle, { color: colors.textMuted, fontSize: 11 }]}
+                    style={[profileFeatureStyles.menuSubtitle, { color: colors.textMuted, fontSize: 11 }]}
                   >
                     Version: {device.appVersion}
                   </Text>
@@ -209,20 +209,20 @@ export const DevicesScreen: React.FC = () => {
         )}
       </View>
 
-      <View style={[profileStyles.section, { marginTop: 8 }]}>
+      <View style={[profileFeatureStyles.section, { marginTop: 8 }]}>
         <View
           style={[
-            profileStyles.infoCard,
+            profileFeatureStyles.infoCard,
             { backgroundColor: colors.infoLight, borderLeftWidth: 4, borderLeftColor: colors.info },
           ]}
         >
           <View style={{ flexDirection: 'row', gap: 12 }}>
             <Icon name="information-circle" size={20} color={colors.info} />
             <View style={{ flex: 1 }}>
-              <Text style={[profileStyles.menuTitle, { color: colors.info, marginBottom: 4 }]}>
+              <Text style={[profileFeatureStyles.menuTitle, { color: colors.info, marginBottom: 4 }]}>
                 About Device Management
               </Text>
-              <Text style={[profileStyles.menuSubtitle, { color: colors.info }]}>
+              <Text style={[profileFeatureStyles.menuSubtitle, { color: colors.info }]}>
                 Deactivating a device will log it out and prevent it from accessing your account
                 until you log in again on that device.
               </Text>
@@ -231,8 +231,8 @@ export const DevicesScreen: React.FC = () => {
         </View>
       </View>
 
-      <View style={profileStyles.footer}>
-        <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>
+      <View style={profileFeatureStyles.footer}>
+        <Text style={[profileFeatureStyles.footerText, { color: colors.textMuted }]}>
           {devices.filter(d => d.isActive).length} active device(s)
         </Text>
       </View>

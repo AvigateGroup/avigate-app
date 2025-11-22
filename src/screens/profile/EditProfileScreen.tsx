@@ -19,7 +19,7 @@ import { Button } from '@/components/common/Button';
 import { CountryPhonePicker } from '@/components/common/CountryPhonePicker';
 import { UserSex } from '@/types/auth.types';
 import { validateEmail, validatePhoneNumber } from '@/utils/validation';
-import { profileStyles } from '@/styles';
+import { profileFeatureStyles } from '@/styles/features';
 import { formStyles, spacingStyles, typographyStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
@@ -227,12 +227,12 @@ export const EditProfileScreen: React.FC = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
-        style={[profileStyles.container, { backgroundColor: colors.background }]}
+        style={[profileFeatureStyles.container, { backgroundColor: colors.background }]}
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
-        <View style={[profileStyles.section, { marginTop: 0 }]}>
-          <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>
+        <View style={[profileFeatureStyles.section, { marginTop: 0 }]}>
+          <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>
             Personal Information
           </Text>
 

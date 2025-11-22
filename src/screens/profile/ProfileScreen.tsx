@@ -17,7 +17,7 @@ import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useUserService } from '@/hooks/useUserService';
 import { getInitials, formatDate } from '@/utils/helpers';
-import { profileStyles } from '@/styles';
+import { profileFeatureStyles } from '@/styles/features';
 
 export const ProfileScreen: React.FC = () => {
   const router = useRouter();
@@ -99,21 +99,21 @@ export const ProfileScreen: React.FC = () => {
 
   return (
     <ScrollView
-      style={[profileStyles.container, { backgroundColor: colors.background }]}
+      style={[profileFeatureStyles.container, { backgroundColor: colors.background }]}
       showsVerticalScrollIndicator={false}
     >
       {/* Profile Header */}
-      <View style={[profileStyles.header, { backgroundColor: colors.white, paddingTop: 60 }]}>
-        <View style={profileStyles.avatarContainer}>
+      <View style={[profileFeatureStyles.header, { backgroundColor: colors.white, paddingTop: 60 }]}>
+        <View style={profileFeatureStyles.avatarContainer}>
           {user?.profilePicture ? (
             <Image
               source={{ uri: user.profilePicture }}
-              style={profileStyles.avatar}
+              style={profileFeatureStyles.avatar}
               resizeMode="cover"
             />
           ) : (
-            <View style={[profileStyles.avatarPlaceholder, { backgroundColor: colors.primary }]}>
-              <Text style={profileStyles.avatarText}>
+            <View style={[profileFeatureStyles.avatarPlaceholder, { backgroundColor: colors.primary }]}>
+              <Text style={profileFeatureStyles.avatarText}>
                 {getInitials(user?.firstName || '', user?.lastName || '')}
               </Text>
             </View>
@@ -128,7 +128,7 @@ export const ProfileScreen: React.FC = () => {
           )}
 
           <TouchableOpacity
-            style={[profileStyles.cameraButton, { backgroundColor: colors.primary }]}
+            style={[profileFeatureStyles.cameraButton, { backgroundColor: colors.primary }]}
             activeOpacity={0.7}
             onPress={handleUploadPicture}
             disabled={isUploadingImage}
@@ -141,75 +141,75 @@ export const ProfileScreen: React.FC = () => {
           </TouchableOpacity>
         </View>
 
-        <Text style={[profileStyles.name, { color: colors.text, marginTop: 0 }]}>
+        <Text style={[profileFeatureStyles.name, { color: colors.text, marginTop: 0 }]}>
           {user?.firstName} {user?.lastName}
         </Text>
-        <Text style={[profileStyles.email, { color: colors.textMuted }]}>{user?.email}</Text>
+        <Text style={[profileFeatureStyles.email, { color: colors.textMuted }]}>{user?.email}</Text>
 
         {user?.phoneNumber && (
-          <View style={profileStyles.phoneContainer}>
+          <View style={profileFeatureStyles.phoneContainer}>
             <Icon name="call-outline" size={16} color={colors.textMuted} />
-            <Text style={[profileStyles.phone, { color: colors.textMuted }]}>
+            <Text style={[profileFeatureStyles.phone, { color: colors.textMuted }]}>
               {user.phoneNumber}
             </Text>
           </View>
         )}
 
         {/* Stats */}
-        <View style={[profileStyles.statsContainer, { borderTopColor: colors.border }]}>
-          <View style={profileStyles.statItem}>
-            <Text style={[profileStyles.statValue, { color: colors.text }]}>
+        <View style={[profileFeatureStyles.statsContainer, { borderTopColor: colors.border }]}>
+          <View style={profileFeatureStyles.statItem}>
+            <Text style={[profileFeatureStyles.statValue, { color: colors.text }]}>
               {user?.reputationScore || 100}
             </Text>
-            <Text style={[profileStyles.statLabel, { color: colors.textMuted }]}>Rating</Text>
+            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>Rating</Text>
           </View>
-          <View style={[profileStyles.statDivider, { backgroundColor: colors.border }]} />
-          <View style={profileStyles.statItem}>
-            <Text style={[profileStyles.statValue, { color: colors.text }]}>
+          <View style={[profileFeatureStyles.statDivider, { backgroundColor: colors.border }]} />
+          <View style={profileFeatureStyles.statItem}>
+            <Text style={[profileFeatureStyles.statValue, { color: colors.text }]}>
               {user?.totalContributions || 0}
             </Text>
-            <Text style={[profileStyles.statLabel, { color: colors.textMuted }]}>Trips</Text>
+            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>Trips</Text>
           </View>
-          <View style={[profileStyles.statDivider, { backgroundColor: colors.border }]} />
-          <View style={profileStyles.statItem}>
-            <Text style={[profileStyles.statValue, { color: colors.text }]}>
+          <View style={[profileFeatureStyles.statDivider, { backgroundColor: colors.border }]} />
+          <View style={profileFeatureStyles.statItem}>
+            <Text style={[profileFeatureStyles.statValue, { color: colors.text }]}>
               {user?.createdAt
                 ? new Date().getFullYear() - new Date(user.createdAt).getFullYear()
                 : 0}
             </Text>
-            <Text style={[profileStyles.statLabel, { color: colors.textMuted }]}>Years</Text>
+            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>Years</Text>
           </View>
         </View>
       </View>
 
       {/* Account Info */}
-      <View style={profileStyles.section}>
-        <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>
+      <View style={profileFeatureStyles.section}>
+        <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>
           Account Information
         </Text>
-        <View style={[profileStyles.infoCard, { backgroundColor: colors.white }]}>
-          <View style={profileStyles.infoRow}>
-            <Text style={[profileStyles.infoLabel, { color: colors.textMuted }]}>Member Since</Text>
-            <Text style={[profileStyles.infoValue, { color: colors.text }]}>
+        <View style={[profileFeatureStyles.infoCard, { backgroundColor: colors.white }]}>
+          <View style={profileFeatureStyles.infoRow}>
+            <Text style={[profileFeatureStyles.infoLabel, { color: colors.textMuted }]}>Member Since</Text>
+            <Text style={[profileFeatureStyles.infoValue, { color: colors.text }]}>
               {user?.createdAt ? formatDate(user.createdAt) : 'N/A'}
             </Text>
           </View>
-          <View style={[profileStyles.infoDivider, { backgroundColor: colors.border }]} />
-          <View style={profileStyles.infoRow}>
-            <Text style={[profileStyles.infoLabel, { color: colors.textMuted }]}>
+          <View style={[profileFeatureStyles.infoDivider, { backgroundColor: colors.border }]} />
+          <View style={profileFeatureStyles.infoRow}>
+            <Text style={[profileFeatureStyles.infoLabel, { color: colors.textMuted }]}>
               Account Status
             </Text>
-            <View style={profileStyles.statusBadge}>
+            <View style={profileFeatureStyles.statusBadge}>
               <Icon name="checkmark-circle" size={16} color={colors.success} />
-              <Text style={[profileStyles.statusText, { color: colors.success }]}>
+              <Text style={[profileFeatureStyles.statusText, { color: colors.success }]}>
                 {user?.isVerified ? 'Verified' : 'Unverified'}
               </Text>
             </View>
           </View>
-          <View style={[profileStyles.infoDivider, { backgroundColor: colors.border }]} />
-          <View style={profileStyles.infoRow}>
-            <Text style={[profileStyles.infoLabel, { color: colors.textMuted }]}>Country</Text>
-            <Text style={[profileStyles.infoValue, { color: colors.text }]}>
+          <View style={[profileFeatureStyles.infoDivider, { backgroundColor: colors.border }]} />
+          <View style={profileFeatureStyles.infoRow}>
+            <Text style={[profileFeatureStyles.infoLabel, { color: colors.textMuted }]}>Country</Text>
+            <Text style={[profileFeatureStyles.infoValue, { color: colors.text }]}>
               {user?.country || 'Nigeria'}
             </Text>
           </View>
@@ -217,23 +217,23 @@ export const ProfileScreen: React.FC = () => {
       </View>
 
       {/* Menu Items */}
-      <View style={profileStyles.section}>
-        <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
+      <View style={profileFeatureStyles.section}>
+        <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>Quick Actions</Text>
         {menuItems.map((item, index) => (
           <TouchableOpacity
             key={index}
-            style={[profileStyles.menuItem, { backgroundColor: colors.white }]}
+            style={[profileFeatureStyles.menuItem, { backgroundColor: colors.white }]}
             onPress={item.onPress}
             activeOpacity={0.7}
           >
             <View
-              style={[profileStyles.menuIconContainer, { backgroundColor: colors.backgroundLight }]}
+              style={[profileFeatureStyles.menuIconContainer, { backgroundColor: colors.backgroundLight }]}
             >
               <Icon name={item.icon} size={24} color={colors.primary} />
             </View>
-            <View style={profileStyles.menuContent}>
-              <Text style={[profileStyles.menuTitle, { color: colors.text }]}>{item.title}</Text>
-              <Text style={[profileStyles.menuSubtitle, { color: colors.textMuted }]}>
+            <View style={profileFeatureStyles.menuContent}>
+              <Text style={[profileFeatureStyles.menuTitle, { color: colors.text }]}>{item.title}</Text>
+              <Text style={[profileFeatureStyles.menuSubtitle, { color: colors.textMuted }]}>
                 {item.subtitle}
               </Text>
             </View>
@@ -245,7 +245,7 @@ export const ProfileScreen: React.FC = () => {
       {/* Logout Button */}
       <TouchableOpacity
         style={[
-          profileStyles.logoutButton,
+          profileFeatureStyles.logoutButton,
           {
             backgroundColor: colors.white,
             borderColor: colors.error,
@@ -255,11 +255,11 @@ export const ProfileScreen: React.FC = () => {
         activeOpacity={0.7}
       >
         <Icon name="log-out-outline" size={20} color={colors.error} />
-        <Text style={[profileStyles.logoutText, { color: colors.error }]}>Logout</Text>
+        <Text style={[profileFeatureStyles.logoutText, { color: colors.error }]}>Logout</Text>
       </TouchableOpacity>
 
-      <View style={profileStyles.footer}>
-        <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>Avigate v1.0.0</Text>
+      <View style={profileFeatureStyles.footer}>
+        <Text style={[profileFeatureStyles.footerText, { color: colors.textMuted }]}>Avigate v1.0.0</Text>
       </View>
     </ScrollView>
   );

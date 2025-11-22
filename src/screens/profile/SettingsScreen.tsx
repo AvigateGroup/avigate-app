@@ -10,7 +10,7 @@ import { useUserService } from '@/hooks/useUserService';
 import { useAuth } from '@/store/AuthContext';
 import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
-import { profileStyles } from '@/styles';
+import { profileFeatureStyles } from '@/styles/features';
 
 export const SettingsScreen = () => {
   const router = useRouter();
@@ -159,18 +159,18 @@ export const SettingsScreen = () => {
   const renderSettingItem = (item: any, index: number) => {
     if (item.type === 'switch') {
       return (
-        <View key={index} style={[profileStyles.settingItem, { borderBottomColor: colors.border }]}>
+        <View key={index} style={[profileFeatureStyles.settingItem, { borderBottomColor: colors.border }]}>
           <View
             style={[
-              profileStyles.settingIconContainer,
+              profileFeatureStyles.settingIconContainer,
               { backgroundColor: colors.backgroundLight },
             ]}
           >
             <Icon name={item.icon} size={24} color={colors.primary} />
           </View>
-          <View style={profileStyles.settingContent}>
-            <Text style={[profileStyles.settingTitle, { color: colors.text }]}>{item.title}</Text>
-            <Text style={[profileStyles.settingSubtitle, { color: colors.textMuted }]}>
+          <View style={profileFeatureStyles.settingContent}>
+            <Text style={[profileFeatureStyles.settingTitle, { color: colors.text }]}>{item.title}</Text>
+            <Text style={[profileFeatureStyles.settingSubtitle, { color: colors.textMuted }]}>
               {item.subtitle}
             </Text>
           </View>
@@ -187,18 +187,18 @@ export const SettingsScreen = () => {
     return (
       <TouchableOpacity
         key={index}
-        style={[profileStyles.settingItem, { borderBottomColor: colors.border }]}
+        style={[profileFeatureStyles.settingItem, { borderBottomColor: colors.border }]}
         onPress={item.onPress}
         activeOpacity={0.7}
       >
         <View
-          style={[profileStyles.settingIconContainer, { backgroundColor: colors.backgroundLight }]}
+          style={[profileFeatureStyles.settingIconContainer, { backgroundColor: colors.backgroundLight }]}
         >
           <Icon name={item.icon} size={24} color={colors.primary} />
         </View>
-        <View style={profileStyles.settingContent}>
-          <Text style={[profileStyles.settingTitle, { color: colors.text }]}>{item.title}</Text>
-          <Text style={[profileStyles.settingSubtitle, { color: colors.textMuted }]}>
+        <View style={profileFeatureStyles.settingContent}>
+          <Text style={[profileFeatureStyles.settingTitle, { color: colors.text }]}>{item.title}</Text>
+          <Text style={[profileFeatureStyles.settingSubtitle, { color: colors.textMuted }]}>
             {item.subtitle}
           </Text>
         </View>
@@ -210,26 +210,26 @@ export const SettingsScreen = () => {
   return (
     <>
       <ScrollView
-        style={[profileStyles.container, { backgroundColor: colors.background }]}
+        style={[profileFeatureStyles.container, { backgroundColor: colors.background }]}
         showsVerticalScrollIndicator={false}
       >
         {settingsSections.map((section, sectionIndex) => (
-          <View key={sectionIndex} style={profileStyles.section}>
-            <Text style={[profileStyles.sectionTitle, { color: colors.text }]}>
+          <View key={sectionIndex} style={profileFeatureStyles.section}>
+            <Text style={[profileFeatureStyles.sectionTitle, { color: colors.text }]}>
               {section.title}
             </Text>
-            <View style={[profileStyles.sectionContent, { backgroundColor: colors.white }]}>
+            <View style={[profileFeatureStyles.sectionContent, { backgroundColor: colors.white }]}>
               {section.items.map((item, itemIndex) => renderSettingItem(item, itemIndex))}
             </View>
           </View>
         ))}
 
         {/* Danger Zone */}
-        <View style={profileStyles.dangerZone}>
-          <Text style={[profileStyles.dangerZoneTitle, { color: colors.error }]}>Danger Zone</Text>
+        <View style={profileFeatureStyles.dangerZone}>
+          <Text style={[profileFeatureStyles.dangerZoneTitle, { color: colors.error }]}>Danger Zone</Text>
           <TouchableOpacity
             style={[
-              profileStyles.deleteButton,
+              profileFeatureStyles.deleteButton,
               {
                 backgroundColor: colors.white,
                 borderColor: colors.error,
@@ -239,14 +239,14 @@ export const SettingsScreen = () => {
             activeOpacity={0.7}
           >
             <Icon name="trash-outline" size={20} color={colors.error} />
-            <Text style={[profileStyles.deleteButtonText, { color: colors.error }]}>
+            <Text style={[profileFeatureStyles.deleteButtonText, { color: colors.error }]}>
               Delete Account
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View style={profileStyles.footer}>
-          <Text style={[profileStyles.footerText, { color: colors.textMuted }]}>
+        <View style={profileFeatureStyles.footer}>
+          <Text style={[profileFeatureStyles.footerText, { color: colors.textMuted }]}>
             Avigate v1.0.0
           </Text>
         </View>
@@ -291,12 +291,12 @@ export const SettingsScreen = () => {
               >
                 <Icon name="warning" size={32} color={colors.error} />
               </View>
-              <Text style={[profileStyles.name, { color: colors.text, fontSize: 20 }]}>
+              <Text style={[profileFeatureStyles.name, { color: colors.text, fontSize: 20 }]}>
                 Delete Account
               </Text>
               <Text
                 style={[
-                  profileStyles.menuSubtitle,
+                  profileFeatureStyles.menuSubtitle,
                   { color: colors.textMuted, textAlign: 'center', marginTop: 8 },
                 ]}
               >

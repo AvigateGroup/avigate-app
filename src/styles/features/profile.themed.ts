@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
  * Generate themed profile styles
  * Use this with useThemedColors hook for dynamic theming
  */
-export const createProfileStyles = (colors: any) =>
+export const createprofileFeatureStyles = (colors: any) =>
   StyleSheet.create({
     // ========== CONTAINERS ==========
     container: {
