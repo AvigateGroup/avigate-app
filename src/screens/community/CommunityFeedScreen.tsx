@@ -10,6 +10,7 @@ import {
   Image,
   ActivityIndicator,
   Switch,
+  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -27,6 +28,7 @@ interface FeedPost {
     firstName: string;
     lastName: string;
     profilePicture?: string;
+    reputationScore?: number; // NEW - Show reputation
   };
   location?: {
     name: string;
@@ -34,15 +36,22 @@ interface FeedPost {
   images: string[];
   upvotes: number;
   downvotes: number;
+  commentCount: number; // NEW
   isVerified: boolean;
   createdAt: string;
+  userVote?: 'up' | 'down' | null; // NEW - Track user's vote
 }
 
 export const CommunityFeedScreen = () => {
   const router = useRouter();
   const colors = useThemedColors();
   const { user } = useAuth();
-  const { getFeed, toggleRealTimeUpdates, isLoading } = useCommunityService();
+  const { 
+    getFeed, 
+    toggleRealTimeUpdates, 
+    votePost, // NEW - Voting functionality
+    isLoading 
+  } = useCommunityService();
 
   const [posts, setPosts] = useState<FeedPost[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -92,6 +101,71 @@ export const CommunityFeedScreen = () => {
   const handleToggleRealTime = async (enabled: boolean) => {
     setRealTimeEnabled(enabled);
     await toggleRealTimeUpdates(enabled);
+  };
+
+  // NEW - Handle voting
+  const handleVote = async (postId: string, voteType: 'up' | 'down') => {
+    const result = await votePost(postId, voteType);
+    
+    if (result.success) {
+      // Update local state
+      setPosts(posts.map(post => {
+        if (post.id === postId) {
+          const wasUpvoted = post.userVote === 'up';
+          const wasDownvoted = post.userVote === 'down';
+          
+          let upvotes = post.upvotes;
+          let downvotes = post.downvotes;
+          
+          if (voteType === 'up') {
+            if (wasUpvoted) {
+              upvotes -= 1;
+              return { ...post, upvotes, userVote: null };
+            } else {
+              upvotes += 1;
+              if (wasDownvoted) downvotes -= 1;
+              return { ...post, upvotes, downvotes, userVote: 'up' as const };
+            }
+          } else {
+            if (wasDownvoted) {
+              downvotes -= 1;
+              return { ...post, downvotes, userVote: null };
+            } else {
+              downvotes += 1;
+              if (wasUpvoted) upvotes -= 1;
+              return { ...post, upvotes, downvotes, userVote: 'down' as const };
+            }
+          }
+        }
+        return post;
+      }));
+    }
+  };
+
+  // NEW - Quick contribute action
+  const handleQuickContribute = () => {
+    Alert.alert(
+      'Contribute to Avigate',
+      'What would you like to share?',
+      [
+        {
+          text: 'Route Improvement',
+          onPress: () => router.push('/community/contribute/route'),
+        },
+        {
+          text: 'Fare Update',
+          onPress: () => router.push('/community/contribute/fare'),
+        },
+        {
+          text: 'New Landmark',
+          onPress: () => router.push('/community/contribute/landmark'),
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ],
+    );
   };
 
   const getPostTypeIcon = (type: string) => {
@@ -163,17 +237,21 @@ export const CommunityFeedScreen = () => {
             </View>
           )}
           <View style={communityStyles.authorDetails}>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               <Text style={[communityStyles.authorName, { color: colors.text }]}>
                 {item.author.firstName} {item.author.lastName}
               </Text>
               {item.isVerified && (
-                <Icon
-                  name="checkmark-circle"
-                  size={16}
-                  color={colors.success}
-                  style={{ marginLeft: 4 }}
-                />
+                <Icon name="checkmark-circle" size={16} color={colors.success} />
+              )}
+              {/* NEW - Show reputation badge */}
+              {item.author.reputationScore && item.author.reputationScore > 50 && (
+                <View style={[communityStyles.reputationBadge, { backgroundColor: colors.warningLight }]}>
+                  <Icon name="star" size={12} color={colors.warning} />
+                  <Text style={[communityStyles.reputationText, { color: colors.warning }]}>
+                    {item.author.reputationScore}
+                  </Text>
+                </View>
               )}
             </View>
             <Text style={[communityStyles.postTime, { color: colors.textMuted }]}>
@@ -215,18 +293,47 @@ export const CommunityFeedScreen = () => {
 
       {/* Actions */}
       <View style={[communityStyles.postActions, { borderTopColor: colors.border }]}>
-        <TouchableOpacity style={communityStyles.actionButton}>
-          <Icon name="arrow-up-outline" size={20} color={colors.success} />
-          <Text style={[communityStyles.actionText, { color: colors.text }]}>{item.upvotes}</Text>
+        <TouchableOpacity 
+          style={communityStyles.actionButton}
+          onPress={() => handleVote(item.id, 'up')}
+        >
+          <Icon 
+            name={item.userVote === 'up' ? 'arrow-up' : 'arrow-up-outline'} 
+            size={20} 
+            color={item.userVote === 'up' ? colors.success : colors.textMuted} 
+          />
+          <Text style={[
+            communityStyles.actionText, 
+            { color: item.userVote === 'up' ? colors.success : colors.text }
+          ]}>
+            {item.upvotes}
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={communityStyles.actionButton}>
-          <Icon name="arrow-down-outline" size={20} color={colors.error} />
-          <Text style={[communityStyles.actionText, { color: colors.text }]}>{item.downvotes}</Text>
+
+        <TouchableOpacity 
+          style={communityStyles.actionButton}
+          onPress={() => handleVote(item.id, 'down')}
+        >
+          <Icon 
+            name={item.userVote === 'down' ? 'arrow-down' : 'arrow-down-outline'} 
+            size={20} 
+            color={item.userVote === 'down' ? colors.error : colors.textMuted} 
+          />
+          <Text style={[
+            communityStyles.actionText, 
+            { color: item.userVote === 'down' ? colors.error : colors.text }
+          ]}>
+            {item.downvotes}
+          </Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={communityStyles.actionButton}>
           <Icon name="chatbubble-outline" size={20} color={colors.textMuted} />
-          <Text style={[communityStyles.actionText, { color: colors.text }]}>Comment</Text>
+          <Text style={[communityStyles.actionText, { color: colors.text }]}>
+            {item.commentCount || 0}
+          </Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={communityStyles.actionButton}>
           <Icon name="share-outline" size={20} color={colors.textMuted} />
         </TouchableOpacity>
@@ -252,6 +359,24 @@ export const CommunityFeedScreen = () => {
         />
       </View>
 
+      {/* NEW - Contribution CTA */}
+      <TouchableOpacity
+        style={[communityStyles.contributionCTA, { backgroundColor: colors.successLight }]}
+        onPress={handleQuickContribute}
+        activeOpacity={0.8}
+      >
+        <Icon name="add-circle-outline" size={24} color={colors.success} />
+        <View style={{ flex: 1, marginLeft: 12 }}>
+          <Text style={[communityStyles.ctaTitle, { color: colors.text }]}>
+            Help Improve Avigate
+          </Text>
+          <Text style={[communityStyles.ctaText, { color: colors.textMuted }]}>
+            Share route updates, fares, or landmarks. Earn reputation points!
+          </Text>
+        </View>
+        <Icon name="chevron-forward" size={20} color={colors.success} />
+      </TouchableOpacity>
+
       {/* Filter buttons */}
       <View style={communityStyles.filterContainer}>
         {['all', 'traffic_update', 'route_alert', 'safety_concern', 'tip'].map(type => (
@@ -272,7 +397,7 @@ export const CommunityFeedScreen = () => {
                 { color: filterType === type ? colors.textWhite : colors.text },
               ]}
             >
-              {type.replace('_', ' ').toUpperCase()}
+              {type === 'all' ? 'ALL' : type.replace('_', ' ').toUpperCase()}
             </Text>
           </TouchableOpacity>
         ))}
@@ -305,7 +430,9 @@ export const CommunityFeedScreen = () => {
           !isLoading ? (
             <View style={communityStyles.emptyState}>
               <Icon name="chatbubbles-outline" size={64} color={colors.textMuted} />
-              <Text style={[communityStyles.emptyText, { color: colors.text }]}>No posts yet</Text>
+              <Text style={[communityStyles.emptyText, { color: colors.text }]}>
+                No posts yet
+              </Text>
               <Text style={[communityStyles.emptySubtext, { color: colors.textMuted }]}>
                 Be the first to share an update!
               </Text>
