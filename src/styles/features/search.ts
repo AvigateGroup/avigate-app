@@ -1,3 +1,4 @@
+// src/styles/features/searchStyles.ts
 import { StyleSheet } from 'react-native';
 import { COLORS } from '@/constants/colors';
 
@@ -26,13 +27,14 @@ export const searchStyles = StyleSheet.create({
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.backgroundLight,
-    margin: 16,
+    backgroundColor: COLORS.white,
+    marginHorizontal: 16,
+    marginTop: 16,
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: COLORS.border,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
   },
   searchInput: {
     flex: 1,
@@ -104,42 +106,51 @@ export const searchStyles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.textMuted,
     textAlign: 'center',
+    paddingHorizontal: 32,
   },
- // NEW - Current location button
+  
+  // Current location button
   currentLocationButton: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
     marginHorizontal: 16,
     marginTop: 8,
+    marginBottom: 8,
     borderRadius: 12,
+    backgroundColor: COLORS.white,
+    borderWidth: 1,
+    borderColor: COLORS.border,
     gap: 12,
   },
   
-  // NEW - Tips card
+  // Tips card
   tipsCard: {
     flexDirection: 'row',
     padding: 16,
     borderRadius: 12,
     marginHorizontal: 16,
     marginTop: 16,
+    alignItems: 'flex-start',
   },
   
   tipsTitle: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
+    color: COLORS.text,
   },
   
   tipsText: {
     fontSize: 14,
     lineHeight: 22,
+    color: COLORS.textMuted,
   },
   
-  // NEW - Meta info for intermediate stops
+  // Meta info for intermediate stops
   suggestionMeta: {
     fontSize: 12,
     marginTop: 4,
+    fontStyle: 'italic',
   },
-
 });

@@ -1,3 +1,4 @@
+// src/styles/features/shareStyles.ts
 import { StyleSheet } from 'react-native';
 import { COLORS } from '@/constants/colors';
 
@@ -33,6 +34,7 @@ export const shareStyles = StyleSheet.create({
     color: COLORS.textMuted,
     textAlign: 'center',
     paddingHorizontal: 16,
+    lineHeight: 20,
   },
   section: {
     marginHorizontal: 16,
@@ -143,11 +145,15 @@ export const shareStyles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'flex-start',
   },
-  infoText: {
-    flex: 1,
+  infoTitle: {
     fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
     color: COLORS.text,
-    marginLeft: 12,
+  },
+  infoText: {
+    fontSize: 14,
+    color: COLORS.textMuted,
     lineHeight: 20,
   },
   
@@ -160,7 +166,114 @@ export const shareStyles = StyleSheet.create({
     marginTop: 8,
   },
   
-  // Legacy styles (kept for compatibility)
+  // QR Code Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  
+  modalContent: {
+    width: '100%',
+    maxWidth: 400,
+    backgroundColor: COLORS.white,
+    borderRadius: 16,
+    padding: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+    paddingBottom: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.border,
+  },
+  
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.text,
+  },
+  
+  qrContainer: {
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: COLORS.backgroundLight,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  
+  qrCodeImage: {
+    width: 250,
+    height: 250,
+    marginBottom: 16,
+    backgroundColor: COLORS.white,
+    borderRadius: 8,
+    padding: 8,
+  },
+  
+  qrLocationName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+    color: COLORS.text,
+  },
+  
+  qrDescription: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: COLORS.textMuted,
+    paddingHorizontal: 16,
+  },
+  
+  qrInstructions: {
+    flexDirection: 'row',
+    padding: 12,
+    borderRadius: 8,
+    marginVertical: 16,
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  
+  qrInstructionsText: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+    color: COLORS.text,
+  },
+  
+  qrActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 8,
+  },
+  
+  // Badges
+  badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    gap: 4,
+  },
+  
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  
+  // Legacy styles (kept for backward compatibility)
   card: {
     backgroundColor: COLORS.white,
     marginHorizontal: 16,
@@ -253,95 +366,5 @@ export const shareStyles = StyleSheet.create({
   contactPhone: {
     fontSize: 14,
     color: COLORS.textMuted,
-  },
-  // NEW - QR Code modal
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  
-  modalContent: {
-    width: '100%',
-    maxWidth: 400,
-    borderRadius: 16,
-    padding: 20,
-  },
-  
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  
-  qrContainer: {
-    alignItems: 'center',
-    padding: 20,
-  },
-  
-  qrCodeImage: {
-    width: 250,
-    height: 250,
-    marginBottom: 16,
-  },
-  
-  qrLocationName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  
-  qrDescription: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  
-  qrInstructions: {
-    flexDirection: 'row',
-    padding: 12,
-    borderRadius: 8,
-    marginVertical: 16,
-    gap: 12,
-  },
-  
-  qrInstructionsText: {
-    flex: 1,
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  
-  qrActions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  
-  infoTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  
-  // NEW - Badges
-  badge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    gap: 4,
-  },
-  
-  badgeText: {
-    fontSize: 12,
-    fontWeight: '600',
   },
 });
