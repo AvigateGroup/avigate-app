@@ -1,6 +1,6 @@
 // src/screens/location-share/ShareLocationScreen.tsx
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import {
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import * as Location from 'expo-location';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useLocationShareService } from '@/hooks/useLocationShareService';
 import { useAuth } from '@/store/AuthContext';
@@ -26,8 +27,14 @@ type ShareType = 'public' | 'private' | 'event' | 'business';
 
 interface ShareResult {
   shareUrl: string;
-  qrCodeDataUrl?: string; // NEW - QR code image
-  qrCodeImageUrl?: string; // NEW - QR code S3 URL
+  qrCodeDataUrl?: string;
+  qrCodeImageUrl?: string;
+}
+
+interface CurrentLocation {
+  latitude: number;
+  longitude: number;
+  address?: string;
 }
 
 export const ShareLocationScreen = () => {
@@ -36,8 +43,8 @@ export const ShareLocationScreen = () => {
   const { user } = useAuth();
   const { 
     createShare, 
-    getQRCode, // NEW - Get QR code
-    getPrintableQRCode, // NEW - Get printable version
+    getQRCode,
+    getPrintableQRCode,
     isLoading 
   } = useLocationShareService();
 
@@ -50,9 +57,64 @@ export const ShareLocationScreen = () => {
   const [isEvent, setIsEvent] = useState(false);
   const [eventDate, setEventDate] = useState<Date | null>(null);
   
-  // NEW - QR Code state
+  // QR Code state
   const [showQRModal, setShowQRModal] = useState(false);
   const [qrCodeData, setQRCodeData] = useState<ShareResult | null>(null);
+  
+  // Location state
+  const [currentLocation, setCurrentLocation] = useState<CurrentLocation | null>(null);
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  // Get location on mount
+  useEffect(() => {
+    getInitialLocation();
+  }, []);
+
+  const getInitialLocation = async () => {
+    setLocationLoading(true);
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      
+      if (status === 'granted') {
+        const position = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+
+        const { latitude, longitude } = position.coords;
+        
+        // Get address
+        const addresses = await Location.reverseGeocodeAsync({
+          latitude,
+          longitude,
+        });
+
+        let address = 'Current Location';
+        if (addresses && addresses.length > 0) {
+          const addr = addresses[0];
+          const addressParts = [
+            addr.name,
+            addr.street,
+            addr.district,
+            addr.city,
+          ].filter(Boolean);
+          address = addressParts.join(', ') || address;
+        }
+
+        setCurrentLocation({ latitude, longitude, address });
+        
+        // Auto-fill location name if empty
+        if (!locationName && addresses && addresses.length > 0) {
+          const addr = addresses[0];
+          const suggestedName = addr.name || addr.street || 'My Location';
+          setLocationName(suggestedName);
+        }
+      }
+    } catch (error) {
+      console.error('Error getting initial location:', error);
+    } finally {
+      setLocationLoading(false);
+    }
+  };
 
   const handleCreateShare = async () => {
     if (!locationName.trim()) {
@@ -60,26 +122,68 @@ export const ShareLocationScreen = () => {
       return;
     }
 
-    // In real app, you'd get current location here
-    const result = await createShare({
-      shareType,
-      locationName: locationName.trim(),
-      latitude: 4.815554, // Example coordinates
-      longitude: 7.0498,
-      description: description.trim(),
-      expiresAt: hasExpiry ? expiryDate : undefined,
-      eventDate: isEvent ? eventDate : undefined,
-    });
+    try {
+      let latitude: number;
+      let longitude: number;
 
-    if (result.success && result.data) {
-      setQRCodeData(result.data);
-      showShareOptions(result.data);
-    } else {
-      Alert.alert('Error', result.error || 'Failed to share location');
+      // Use cached location if available, otherwise get fresh location
+      if (currentLocation) {
+        latitude = currentLocation.latitude;
+        longitude = currentLocation.longitude;
+      } else {
+        // Request permission and get location
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        
+        if (status !== 'granted') {
+          Alert.alert(
+            'Permission Required',
+            'Location permission is needed to share your location. Please enable it in settings.',
+            [
+              { text: 'Cancel', style: 'cancel' },
+              { text: 'Try Again', onPress: () => handleCreateShare() },
+            ]
+          );
+          return;
+        }
+
+        const position = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.High,
+        });
+
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+      }
+
+      // Create the share with real coordinates
+      const result = await createShare({
+        shareType,
+        locationName: locationName.trim(),
+        latitude,
+        longitude,
+        description: description.trim(),
+        expiresAt: hasExpiry ? expiryDate : undefined,
+        eventDate: isEvent && eventDate ? eventDate : undefined,
+      });
+
+      if (result.success && result.data) {
+        setQRCodeData(result.data);
+        showShareOptions(result.data);
+      } else {
+        Alert.alert('Error', result.error || 'Failed to share location');
+      }
+    } catch (error) {
+      console.error('Error creating share:', error);
+      Alert.alert(
+        'Location Error',
+        'Could not get your current location. Please check your location settings and try again.',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Retry', onPress: () => handleCreateShare() },
+        ]
+      );
     }
   };
 
-  // NEW - Show share options with QR code
   const showShareOptions = (shareData: ShareResult) => {
     Alert.alert(
       'Location Shared! 🎉',
@@ -92,7 +196,7 @@ export const ShareLocationScreen = () => {
         {
           text: 'Copy Link',
           onPress: () => {
-            // Copy to clipboard
+            // TODO: Implement clipboard copy
             Alert.alert('Copied!', 'Share link copied to clipboard');
           },
         },
@@ -112,8 +216,8 @@ export const ShareLocationScreen = () => {
   const handleShareLink = async (url: string) => {
     try {
       const shareMessage = isEvent
-        ? ` ${locationName}\n\n${description}\n\nEvent Date: ${eventDate?.toLocaleDateString()}\n\nGet directions via Avigate:\n${url}`
-        : `${locationName}\n\n${description}\n\nGet directions via Avigate:\n${url}`;
+        ? `📍 ${locationName}\n\n${description}\n\n📅 Event Date: ${eventDate?.toLocaleDateString()}\n\nGet directions via Avigate:\n${url}`
+        : `📍 ${locationName}\n\n${description}\n\nGet directions via Avigate:\n${url}`;
 
       await RNShare.share({
         message: shareMessage,
@@ -125,25 +229,25 @@ export const ShareLocationScreen = () => {
     }
   };
 
-  // NEW - Download QR code
   const handleDownloadQR = async () => {
     if (!qrCodeData?.shareUrl) return;
 
     try {
-      // In real app, implement download to device
+      // TODO: Implement actual download functionality
+      // This would involve saving the QR code image to device
       Alert.alert('Success', 'QR code saved to your device');
     } catch (error) {
       Alert.alert('Error', 'Failed to download QR code');
     }
   };
 
-  // NEW - Print QR code
   const handlePrintQR = async () => {
     if (!qrCodeData?.shareUrl) return;
 
     try {
       const printableHTML = await getPrintableQRCode(qrCodeData.shareUrl);
-      // In real app, open print dialog or share PDF
+      // TODO: Implement print functionality
+      // This could open a web view with print dialog or share as PDF
       Alert.alert('Print', 'QR code prepared for printing');
     } catch (error) {
       Alert.alert('Error', 'Failed to prepare QR code for printing');
@@ -247,6 +351,18 @@ export const ShareLocationScreen = () => {
         <Text style={[shareStyles.headerSubtitle, { color: colors.textMuted }]}>
           Generate QR codes and shareable links for easy navigation
         </Text>
+        
+        {/* Current Location Display */}
+        {currentLocation && (
+          <View style={{ marginTop: 12, alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Icon name="locate" size={16} color={colors.success} />
+              <Text style={{ color: colors.textMuted, marginLeft: 6, fontSize: 13 }}>
+                {currentLocation.address || 'Current location detected'}
+              </Text>
+            </View>
+          </View>
+        )}
       </View>
 
       {/* Share Type Selection */}
@@ -482,14 +598,14 @@ export const ShareLocationScreen = () => {
           title="Cancel"
           onPress={() => router.back()}
           variant="outline"
-          disabled={isLoading}
+          disabled={isLoading || locationLoading}
           style={{ flex: 1 }}
         />
         <Button
           title="Generate & Share"
           onPress={handleCreateShare}
-          loading={isLoading}
-          disabled={isLoading}
+          loading={isLoading || locationLoading}
+          disabled={isLoading || locationLoading}
           icon="qr-code-outline"
           style={{ flex: 1 }}
         />
