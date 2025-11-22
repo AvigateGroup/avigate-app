@@ -613,7 +613,6 @@ export const ContributeRouteScreen = () => {
               onPress={handleSubmit}
               loading={isLoading}
               disabled={isLoading || !description.trim()}
-              icon="checkmark-circle-outline"
             />
           </View>
         </ScrollView>
