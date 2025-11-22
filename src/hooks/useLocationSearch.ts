@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import axios from 'axios';
-import { API_BASE_URL } from '@/config/api';
+import { apiClient } from '@/api/client';
+import { ApiResponse } from '@/types/auth.types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface LocationSearchResult {
