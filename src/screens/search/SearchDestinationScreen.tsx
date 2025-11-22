@@ -1,4 +1,4 @@
-// src/screens/search/SearchDestinationScreen.tsx (ENHANCED)
+// src/screens/search/SearchDestinationScreen.tsx (FIXED)
 
 import React, { useState, useEffect } from 'react';
 import {
@@ -55,13 +55,37 @@ export const SearchDestinationScreen = () => {
   }, []);
 
   const loadInitialData = async () => {
-    const [recent, saved] = await Promise.all([
-      getRecentSearches(),
-      getSavedPlaces(),
-    ]);
-    setRecentSearches(recent);
-    setSavedPlaces(saved);
-  };
+  const [recent, saved] = await Promise.all([
+    getRecentSearches(),
+    getSavedPlaces(),
+  ]);
+  
+  // FIX: Map the results to match LocationSuggestion type
+  const mappedRecent: LocationSuggestion[] = recent.map(item => ({
+    id: item.id,
+    name: item.name,
+    address: item.address,
+    coordinates: item.coordinates,
+    type: 'recent' as const, // Convert to 'recent' type
+    segmentName: item.segmentName,
+    requiresWalking: item.requiresWalking,
+    walkingDistance: item.walkingDistance,
+  }));
+
+  const mappedSaved: LocationSuggestion[] = saved.map(item => ({
+    id: item.id,
+    name: item.name,
+    address: item.address,
+    coordinates: item.coordinates,
+    type: 'saved' as const, // Convert to 'saved' type
+    segmentName: item.segmentName,
+    requiresWalking: item.requiresWalking,
+    walkingDistance: item.walkingDistance,
+  }));
+
+  setRecentSearches(mappedRecent);
+  setSavedPlaces(mappedSaved);
+};
 
   const handleSearch = async (text: string) => {
     setSearchQuery(text);
@@ -70,17 +94,26 @@ export const SearchDestinationScreen = () => {
       setIsSearching(true);
       
       try {
+        // FIX 1: Convert currentLocation to the expected format
+        const locationForSearch = currentLocation ? {
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+        } : undefined;
+
         // Search both regular locations and intermediate stops
         const [regularResults, intermediateStops] = await Promise.all([
           searchLocations(text),
-          searchNearbyIntermediateStops(text, currentLocation),
+          searchNearbyIntermediateStops(text, locationForSearch),
         ]);
 
-        // Combine results
-        const combined = [
+        // FIX 2: Properly map the type from 'location' to 'search'
+        const combined: LocationSuggestion[] = [
           ...regularResults.map(loc => ({
-            ...loc,
-            type: 'search' as const,
+            id: loc.id,
+            name: loc.name,
+            address: loc.address,
+            coordinates: loc.coordinates,
+            type: 'search' as const, // Explicitly set to 'search' type
           })),
           ...intermediateStops.map(stop => ({
             id: stop.id,
@@ -108,16 +141,16 @@ export const SearchDestinationScreen = () => {
   const handleSelectLocation = (location: LocationSuggestion) => {
     Keyboard.dismiss();
 
-    // Navigate to route planning with selected destination
+    // FIX 3 & 4: Use correct route path and convert booleans to strings
     router.push({
-      pathname: '/routes/plan',
+      pathname: '/(tabs)/routes/plan' as any, // Adjust this to your actual route path
       params: {
         destinationName: location.name,
-        destinationLat: location.coordinates?.lat,
-        destinationLng: location.coordinates?.lng,
+        destinationLat: location.coordinates?.lat?.toString() || '',
+        destinationLng: location.coordinates?.lng?.toString() || '',
         destinationType: location.type,
-        requiresWalking: location.requiresWalking,
-        walkingDistance: location.walkingDistance,
+        requiresWalking: location.requiresWalking ? '1' : '0', // Convert boolean to string
+        walkingDistance: location.walkingDistance?.toString() || '0',
       },
     });
   };
@@ -126,11 +159,11 @@ export const SearchDestinationScreen = () => {
     const location = await getCurrentLocation();
     if (location) {
       router.push({
-        pathname: '/routes/plan',
+        pathname: '/(tabs)/routes/plan' as any, // Adjust this to your actual route path
         params: {
           destinationName: 'Current Location',
-          destinationLat: location.latitude,
-          destinationLng: location.longitude,
+          destinationLat: location.latitude.toString(),
+          destinationLng: location.longitude.toString(),
         },
       });
     }
