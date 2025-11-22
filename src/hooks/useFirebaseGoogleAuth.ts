@@ -24,13 +24,10 @@ export const useFirebaseGoogleAuth = () => {
 
   const configureGoogleSignIn = () => {
     try {
-      console.log('🔧 Configuring Google Sign-In...');
-      console.log('  Web Client ID:', GOOGLE_CONFIG.WEB_CLIENT_ID ? '✓ Available' : '✗ Missing');
-      console.log('  Platform:', Platform.OS);
 
       // Validate that we have the required Web Client ID
       if (!GOOGLE_CONFIG.WEB_CLIENT_ID) {
-        console.error('❌ CRITICAL: Google Web Client ID is missing!');
+        console.error(' CRITICAL: Google Web Client ID is missing!');
         Toast.show({
           type: 'error',
           text1: 'Configuration Error',
@@ -46,10 +43,9 @@ export const useFirebaseGoogleAuth = () => {
         offlineAccess: true,
       });
       
-      console.log('✅ Google Sign-In configured successfully');
       setIsConfigured(true);
     } catch (error) {
-      console.error('❌ Failed to configure Google Sign-In:', error);
+      console.error(' Failed to configure Google Sign-In:', error);
       Toast.show({
         type: 'error',
         text1: 'Configuration Error',
@@ -61,7 +57,7 @@ export const useFirebaseGoogleAuth = () => {
 
   const signInWithGoogle = async () => {
     if (!isConfigured) {
-      console.warn('⚠️  Google Sign-In not configured yet');
+      console.warn(' Google Sign-In not configured yet');
       Toast.show({
         type: 'error',
         text1: 'Not Ready',
@@ -71,18 +67,13 @@ export const useFirebaseGoogleAuth = () => {
     }
 
     setLoading(true);
-    console.log('🚀 Starting Google Sign-In flow...');
 
     try {
       // Check if device supports Google Play Services
-      console.log('  Checking Google Play Services...');
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
-      console.log('  ✓ Google Play Services available');
 
       // Sign in with Google
-      console.log('  Initiating Google Sign-In...');
       const signInResult = await GoogleSignin.signIn();
-      console.log('  ✓ Google Sign-In successful');
 
       // Handle the response structure
       const userInfo = signInResult.data || signInResult;
@@ -92,29 +83,23 @@ export const useFirebaseGoogleAuth = () => {
       }
 
       const user = userInfo.user;
-      console.log('  ✓ User info received:', user.email);
-
       // Get Google ID token
       const idToken = userInfo.idToken || signInResult.idToken;
 
       if (!idToken) {
         throw new Error('No ID token received from Google');
       }
-      console.log('  ✓ ID Token received');
 
       // Create Firebase credential
-      console.log('  Creating Firebase credential...');
       const googleCredential = auth.GoogleAuthProvider.credential(idToken);
 
       // Sign in to Firebase
-      console.log('  Signing in to Firebase...');
       const firebaseUserCredential = await auth().signInWithCredential(googleCredential);
-      console.log('  ✓ Firebase sign-in successful');
 
       // Get fresh Firebase ID token
-      console.log('  Getting Firebase ID token...');
+     
       const firebaseIdToken = await firebaseUserCredential.user.getIdToken();
-      console.log('  ✓ Firebase ID token received');
+
 
       // Get FCM token and device info
       const fcmToken = await getFCMToken();
@@ -137,9 +122,9 @@ export const useFirebaseGoogleAuth = () => {
       };
 
       // Call backend API
-      console.log('  Calling backend API...');
+
       const response = await authApi.googleAuth(googleAuthDto);
-      console.log('  ✓ Backend API call successful');
+
 
       if (response.success && response.data.accessToken && response.data.refreshToken) {
         // Save tokens and user data first
@@ -154,10 +139,10 @@ export const useFirebaseGoogleAuth = () => {
           text2: response.message || 'Successfully signed in with Google',
         });
         
-        console.log('✅ Google authentication completed successfully');
+
       }
     } catch (error: any) {
-      console.error('❌ Firebase Google Sign-In Error:', error);
+      console.error(' Firebase Google Sign-In Error:', error);
       console.error('  Error Code:', error.code);
       console.error('  Error Message:', error.message);
 
@@ -275,7 +260,7 @@ export const useFirebaseGoogleAuth = () => {
 
       // Handle DEVELOPER_ERROR
       if (error.message?.includes('DEVELOPER_ERROR') || error.code === '12501') {
-        console.error('❌ DEVELOPER_ERROR - This usually means:');
+        console.error(' DEVELOPER_ERROR - This usually means:');
         console.error('  1. SHA-1 certificate not registered in Firebase Console');
         console.error('  2. Wrong OAuth Client ID being used');
         console.error('  3. google-services.json not properly configured');
