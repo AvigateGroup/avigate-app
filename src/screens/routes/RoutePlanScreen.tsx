@@ -9,50 +9,9 @@ import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 import { useRouteService } from '@/hooks/useRouteService';
 import { Button } from '@/components/common/Button';
 import { routeStyles } from '@/styles/features';
+// ADD THIS IMPORT
+import { Route, RouteStep } from '@/types/route';
 
-interface RouteStep {
-  order: number;
-  fromLocation: string;
-  toLocation: string;
-  transportMode: 'bus' | 'taxi' | 'keke' | 'okada' | 'walk';
-  instructions: string;
-  duration: number;
-  distance: number;
-  estimatedFare?: number;
-  walkingDirections?: {
-    distance: number;
-    duration: number;
-    steps: Array<{
-      instruction: string;
-      distance: number;
-      duration: number;
-    }>;
-  };
-  alternativeTransport?: {
-    type: 'okada' | 'keke';
-    estimatedFare: number;
-    instructions: string;
-  };
-}
-
-interface Route {
-  routeId?: string;
-  routeName: string;
-  source: 'database' | 'google_maps' | 'intermediate_stop' | 'with_walking';
-  distance: number;
-  duration: number;
-  minFare?: number;
-  maxFare?: number;
-  steps: RouteStep[];
-  confidence: number;
-  requiresWalking?: boolean;
-  finalDestinationInfo?: {
-    needsWalking: boolean;
-    dropOffLocation: any;
-    walkingDirections: any;
-    alternativeTransport: any;
-  };
-}
 
 export const RoutePlanScreen = () => {
   const router = useRouter();
@@ -65,12 +24,12 @@ export const RoutePlanScreen = () => {
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
 
+
   useEffect(() => {
     loadRoutes();
   }, []);
 
   const loadRoutes = async () => {
-    // Get current location if not provided
     let startLat = params.startLat ? Number(params.startLat) : undefined;
     let startLng = params.startLng ? Number(params.startLng) : undefined;
 
@@ -94,7 +53,6 @@ export const RoutePlanScreen = () => {
       return;
     }
 
-    // Call smart route API
     const result = await findSmartRoutes(
       startLat,
       startLng,
@@ -215,7 +173,6 @@ export const RoutePlanScreen = () => {
           {isSelected && <Icon name="checkmark-circle" size={24} color={colors.success} />}
         </View>
 
-        {/* Transport modes */}
         <View style={routeStyles.transportModes}>
           {route.steps.map((step, idx) => (
             <View key={idx} style={routeStyles.transportMode}>
@@ -228,7 +185,6 @@ export const RoutePlanScreen = () => {
           ))}
         </View>
 
-        {/* Walking indicator if needed */}
         {route.requiresWalking && (
           <View style={[routeStyles.walkingBadge, { backgroundColor: colors.warningLight }]}>
             <Icon name="walk-outline" size={16} color={colors.warning} />
@@ -239,7 +195,6 @@ export const RoutePlanScreen = () => {
           </View>
         )}
 
-        {/* Confidence indicator */}
         <View style={routeStyles.confidenceBar}>
           <View
             style={[
@@ -260,9 +215,11 @@ export const RoutePlanScreen = () => {
     );
   };
 
+  // CONSOLIDATED renderStep method
   const renderStep = (step: RouteStep, index: number) => {
     const isExpanded = expandedSteps.has(step.order);
     const isWalkingStep = step.transportMode === 'walk';
+    const hasVehicleData = step.dataAvailability?.hasVehicleData ?? true;
 
     return (
       <View key={step.order} style={[routeStyles.stepCard, { backgroundColor: colors.white }]}>
@@ -292,6 +249,19 @@ export const RoutePlanScreen = () => {
             <Text style={[routeStyles.stepSubtitle, { color: colors.textMuted }]}>
               {step.fromLocation} → {step.toLocation}
             </Text>
+            
+            {/* Data Availability Badge */}
+            {!hasVehicleData && (
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
+                <View style={[routeStyles.dataAvailabilityBadge, { backgroundColor: colors.warningLight }]}>
+                  <Icon name="information-circle-outline" size={14} color={colors.warning} />
+                  <Text style={[routeStyles.dataAvailabilityText, { color: colors.warning }]}>
+                    No vehicle data - Ask locals
+                  </Text>
+                </View>
+              </View>
+            )}
+
             <View style={routeStyles.stepMeta}>
               <Text style={[routeStyles.stepMetaText, { color: colors.textMuted }]}>
                 {Math.round(step.duration)} min • {step.distance.toFixed(1)} km
@@ -318,6 +288,44 @@ export const RoutePlanScreen = () => {
                 {step.instructions}
               </Text>
             </View>
+
+            {/* Alternative Options Card (for steps without vehicle data) */}
+            {!hasVehicleData && step.alternativeOptions && (
+              <View style={[routeStyles.alternativeOptionsCard, { backgroundColor: colors.infoLight }]}>
+                <View style={routeStyles.alternativeOptionsHeader}>
+                  <Icon name="people-outline" size={24} color={colors.info} />
+                  <Text style={[routeStyles.alternativeOptionsTitle, { color: colors.text }]}>
+                    Need Help? Ask Locals
+                  </Text>
+                </View>
+
+                <Text style={[routeStyles.alternativeOptionsDescription, { color: colors.textMuted }]}>
+                  Avigate doesn't have vehicle data for this area. Here's what you can say:
+                </Text>
+
+                {/* Local Phrases */}
+                <View style={routeStyles.localPhrases}>
+                  {step.alternativeOptions.localPhrases.map((phrase, idx) => (
+                    <View key={idx} style={[routeStyles.phraseItem, { backgroundColor: colors.white }]}>
+                      <Icon name="chatbubble-outline" size={16} color={colors.primary} />
+                      <Text style={[routeStyles.phraseText, { color: colors.text }]}>
+                        "{phrase}"
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+
+                {/* Walkable Indicator */}
+                {step.alternativeOptions.walkable && (
+                  <View style={routeStyles.walkableNotice}>
+                    <Icon name="walk-outline" size={16} color={colors.success} />
+                    <Text style={[routeStyles.walkableText, { color: colors.success }]}>
+                      This distance is walkable if no vehicle is available
+                    </Text>
+                  </View>
+                )}
+              </View>
+            )}
 
             {/* Walking Directions (if walking step) */}
             {isWalkingStep && step.walkingDirections && (
@@ -379,6 +387,8 @@ export const RoutePlanScreen = () => {
     );
   };
 
+  // ... rest of the component remains the same ...
+
   if (isLoading) {
     return (
       <View style={[routeStyles.container, { backgroundColor: colors.background }]}>
@@ -394,7 +404,6 @@ export const RoutePlanScreen = () => {
 
   return (
     <View style={[routeStyles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
       <View style={[routeStyles.header, { backgroundColor: colors.white }]}>
         <TouchableOpacity onPress={() => router.back()} style={routeStyles.backButton}>
           <Icon name="arrow-back" size={24} color={colors.text} />
@@ -412,7 +421,6 @@ export const RoutePlanScreen = () => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Route Options */}
         {routes.length > 1 && (
           <View style={routeStyles.routeOptions}>
             <Text style={[routeStyles.sectionTitle, { color: colors.text }]}>
@@ -422,12 +430,10 @@ export const RoutePlanScreen = () => {
           </View>
         )}
 
-        {/* Selected Route Details */}
         {selectedRoute && (
           <View style={routeStyles.routeDetails}>
             <Text style={[routeStyles.sectionTitle, { color: colors.text }]}>Route Details</Text>
 
-            {/* Summary Card */}
             <View style={[routeStyles.summaryCard, { backgroundColor: colors.white }]}>
               <View style={routeStyles.summaryRow}>
                 <View style={routeStyles.summaryItem}>
@@ -462,12 +468,10 @@ export const RoutePlanScreen = () => {
               </View>
             </View>
 
-            {/* Steps */}
             <View style={routeStyles.steps}>
               {selectedRoute.steps.map((step, index) => renderStep(step, index))}
             </View>
 
-            {/* Info Cards */}
             {selectedRoute.requiresWalking && (
               <View style={[routeStyles.infoCard, { backgroundColor: colors.warningLight }]}>
                 <Icon name="information-circle" size={24} color={colors.warning} />
@@ -501,7 +505,6 @@ export const RoutePlanScreen = () => {
         )}
       </ScrollView>
 
-      {/* Bottom Action */}
       {selectedRoute && (
         <View style={[routeStyles.bottomAction, { backgroundColor: colors.white }]}>
           <Button

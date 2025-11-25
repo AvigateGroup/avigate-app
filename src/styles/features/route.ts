@@ -21,6 +21,81 @@ export const routeStyles = StyleSheet.create({
     color: COLORS.text,
   },
 
+   dataAvailabilityBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    alignSelf: 'flex-start',
+  },
+
+  dataAvailabilityText: {
+    fontSize: 11,
+    fontWeight: '600',
+    marginLeft: 4,
+  },
+
+  alternativeOptionsCard: {
+    padding: 16,
+    borderRadius: 12,
+    marginTop: 12,
+  },
+
+  alternativeOptionsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+
+  alternativeOptionsTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+
+  alternativeOptionsDescription: {
+    fontSize: 14,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+
+  localPhrases: {
+    gap: 8,
+  },
+
+  phraseItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+  },
+
+  phraseText: {
+    fontSize: 14,
+    flex: 1,
+    fontStyle: 'italic',
+  },
+
+  walkableNotice: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+  },
+
+  walkableText: {
+    fontSize: 13,
+    fontWeight: '500',
+  },
+
   // Header
   header: {
     flexDirection: 'row',
