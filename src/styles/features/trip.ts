@@ -21,6 +21,21 @@ export const tripStyles = StyleSheet.create({
     color: COLORS.text,
   },
 
+  warningBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 12,
+    gap: 8,
+  },
+
+  warningText: {
+    fontSize: 13,
+    fontWeight: '500',
+    flex: 1,
+  },
+
   // Header
   header: {
     backgroundColor: COLORS.primary,
