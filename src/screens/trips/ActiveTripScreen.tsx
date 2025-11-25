@@ -9,6 +9,8 @@ import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 import { useTripService } from '@/hooks/useTripService';
 import { Button } from '@/components/common/Button';
 import { tripStyles } from '@/styles/features';
+// ADD THIS IMPORT
+import { RouteStep } from '@/types/route';
 
 interface TripProgress {
   currentStepCompleted: boolean;
@@ -33,17 +35,7 @@ interface ActiveTrip {
     estimatedDuration: number;
     minFare?: number;
     maxFare?: number;
-    steps: Array<{
-      id: string;
-      order: number;
-      fromLocation: string;
-      toLocation: string;
-      transportMode: string;
-      instructions: string;
-      duration: number;
-      distance: number;
-      estimatedFare?: number;
-    }>;
+    steps: RouteStep[]; // CHANGED to use imported type
   };
 }
 
@@ -60,17 +52,12 @@ export const ActiveTripScreen = () => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
 
-  // Animation values
   const progressAnim = useRef(new Animated.Value(0)).current;
   const pulseAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     loadActiveTrip();
     startLocationTracking();
-
-    return () => {
-      // Cleanup location tracking on unmount
-    };
   }, []);
 
   useEffect(() => {
@@ -78,6 +65,7 @@ export const ActiveTripScreen = () => {
       handleProgressAlerts(progress.alerts);
     }
   }, [progress?.alerts]);
+
   const loadActiveTrip = async () => {
     const result = await getActiveTrip();
     if (result.success && result.data?.trip) {
@@ -93,7 +81,6 @@ export const ActiveTripScreen = () => {
     const subscription = await watchLocation(async location => {
       if (!trip) return;
 
-      // Update trip location on backend
       const result = await updateTripLocation(trip.id, {
         lat: location.latitude,
         lng: location.longitude,
@@ -103,7 +90,6 @@ export const ActiveTripScreen = () => {
       if (result.success && result.data?.progress) {
         setProgress(result.data.progress);
 
-        // Update local trip state
         setTrip(prev => {
           if (!prev || !result.data?.progress) return prev;
           return {
@@ -114,17 +100,14 @@ export const ActiveTripScreen = () => {
           };
         });
 
-        // Handle step completion
         if (result.data.progress.currentStepCompleted) {
           handleStepCompletion();
         }
 
-        // Update progress animation
         updateProgressAnimation();
       }
     });
 
-    // Store subscription for cleanup
     return subscription;
   };
 
@@ -137,10 +120,8 @@ export const ActiveTripScreen = () => {
 
   const handleProgressAlerts = (alerts: string[]) => {
     alerts.forEach(alert => {
-      // Vibrate for important alerts
       Vibration.vibrate(400);
 
-      // Show alert notification
       if (alert.includes('Approaching') || alert.includes('arrived')) {
         Alert.alert('Trip Update', alert);
       }
@@ -264,7 +245,7 @@ export const ActiveTripScreen = () => {
     const currentStep = trip.route.steps[currentStepIndex];
     if (!currentStep) return null;
 
-    const status = getStepStatus(currentStepIndex);
+    const hasVehicleData = currentStep.dataAvailability?.hasVehicleData ?? true;
 
     return (
       <View style={[tripStyles.currentStepCard, { backgroundColor: colors.white }]}>
@@ -293,29 +274,24 @@ export const ActiveTripScreen = () => {
           </View>
         </View>
 
+        {/* Data Availability Warning */}
+        {!hasVehicleData && (
+          <View style={[tripStyles.warningBanner, { backgroundColor: colors.warningLight }]}>
+            <Icon name="alert-circle-outline" size={20} color={colors.warning} />
+            <Text style={[tripStyles.warningText, { color: colors.warning }]}>
+              No vehicle data for this area - Ask locals for help
+            </Text>
+          </View>
+        )}
+
         {/* Progress to next waypoint */}
         {progress && (
           <View style={tripStyles.waypointProgress}>
-            <View style={tripStyles.progressRow}>
-              <Icon name="location-outline" size={16} color={colors.textMuted} />
-              <Text style={[tripStyles.progressText, { color: colors.textMuted }]}>
-                {Math.round(progress.distanceToNextWaypoint)}m to next stop
-              </Text>
-            </View>
-            <View style={[tripStyles.progressBarContainer, { backgroundColor: colors.border }]}>
-              <Animated.View
-                style={[
-                  tripStyles.progressBarFill,
-                  {
-                    backgroundColor: colors.primary,
-                    width: progressAnim.interpolate({
-                      inputRange: [0, 100],
-                      outputRange: ['0%', '100%'],
-                    }),
-                  },
-                ]}
-              />
-            </View>
+            <Text style={[tripStyles.progressLabel, { color: colors.textMuted }]}>
+              {progress.distanceToNextWaypoint < 100
+                ? 'Almost there!'
+                : `${Math.round(progress.distanceToNextWaypoint)}m to next point`}
+            </Text>
           </View>
         )}
 
@@ -332,7 +308,7 @@ export const ActiveTripScreen = () => {
           <TouchableOpacity
             style={[tripStyles.quickAction, { backgroundColor: colors.backgroundLight }]}
             onPress={() => {
-              /* TODO: Show full instructions */
+              Alert.alert('Full Instructions', currentStep.instructions);
             }}
           >
             <Icon name="book-outline" size={20} color={colors.primary} />
@@ -340,6 +316,25 @@ export const ActiveTripScreen = () => {
               Full Instructions
             </Text>
           </TouchableOpacity>
+
+          {/* Quick Help Button (if no vehicle data) */}
+          {!hasVehicleData && currentStep.alternativeOptions && (
+            <TouchableOpacity
+              style={[tripStyles.quickAction, { backgroundColor: colors.primaryLight }]}
+              onPress={() => {
+                Alert.alert(
+                  '🗣️ Ask Locals',
+                  currentStep.alternativeOptions?.localPhrases.join('\n\n') || '',
+                  [{ text: 'Got it!' }]
+                );
+              }}
+            >
+              <Icon name="people" size={20} color={colors.primary} />
+              <Text style={[tripStyles.quickActionText, { color: colors.primary }]}>
+                Show me what to say
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     );
@@ -477,7 +472,6 @@ export const ActiveTripScreen = () => {
 
   return (
     <View style={[tripStyles.container, { backgroundColor: colors.background }]}>
-      {/* Header */}
       <View style={[tripStyles.header, { backgroundColor: colors.primary }]}>
         <View style={tripStyles.headerTop}>
           <TouchableOpacity onPress={handleCancelTrip} style={tripStyles.headerButton}>
@@ -494,7 +488,6 @@ export const ActiveTripScreen = () => {
           </TouchableOpacity>
         </View>
 
-        {/* ETA Card */}
         <View style={[tripStyles.etaCard, { backgroundColor: colors.white }]}>
           <View style={tripStyles.etaRow}>
             <View style={tripStyles.etaItem}>
@@ -525,13 +518,9 @@ export const ActiveTripScreen = () => {
       </View>
 
       <ScrollView showsVerticalScrollIndicator={false} style={tripStyles.content}>
-        {/* Current Step Card */}
         {renderCurrentStep()}
-
-        {/* All Steps */}
         {renderAllSteps()}
 
-        {/* Safety Tips */}
         <View style={[tripStyles.tipsCard, { backgroundColor: colors.infoLight }]}>
           <Icon name="shield-checkmark-outline" size={24} color={colors.info} />
           <View style={{ flex: 1, marginLeft: 12 }}>
@@ -544,7 +533,6 @@ export const ActiveTripScreen = () => {
         </View>
       </ScrollView>
 
-      {/* Bottom Actions */}
       <View style={[tripStyles.bottomActions, { backgroundColor: colors.white }]}>
         <Button
           title="I've Arrived"
@@ -554,7 +542,6 @@ export const ActiveTripScreen = () => {
         />
       </View>
 
-      {/* Cancel Confirm Modal */}
       {renderCancelConfirmModal()}
     </View>
   );
