@@ -1,4 +1,4 @@
-// src/types/route.ts 
+// src/types/route.ts
 
 export interface DataAvailability {
   hasVehicleData: boolean;
@@ -29,6 +29,7 @@ export interface AlternativeTransport {
 }
 
 export interface RouteStep {
+  id?: string; // ADD THIS - optional for backward compatibility
   order: number;
   fromLocation: string;
   toLocation: string;
@@ -37,7 +38,7 @@ export interface RouteStep {
   duration: number;
   distance: number;
   estimatedFare?: number;
-  dataAvailability?: DataAvailability; // Optional for backward compatibility
+  dataAvailability?: DataAvailability;
   walkingDirections?: WalkingDirections;
   alternativeTransport?: AlternativeTransport;
   alternativeOptions?: AlternativeOptions;

@@ -9,7 +9,6 @@ import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 import { useTripService } from '@/hooks/useTripService';
 import { Button } from '@/components/common/Button';
 import { tripStyles } from '@/styles/features';
-// ADD THIS IMPORT
 import { RouteStep } from '@/types/route';
 
 interface TripProgress {
@@ -35,7 +34,7 @@ interface ActiveTrip {
     estimatedDuration: number;
     minFare?: number;
     maxFare?: number;
-    steps: RouteStep[]; // CHANGED to use imported type
+    steps: RouteStep[];
   };
 }
 
@@ -69,8 +68,34 @@ export const ActiveTripScreen = () => {
   const loadActiveTrip = async () => {
     const result = await getActiveTrip();
     if (result.success && result.data?.trip) {
-      setTrip(result.data.trip);
-      updateCurrentStepIndex(result.data.trip);
+      // Type assertion to handle potential API response mismatch
+      const apiTrip = result.data.trip as any;
+      
+      // Transform the trip data to match our type
+      const transformedTrip: ActiveTrip = {
+        ...apiTrip,
+        route: {
+          ...apiTrip.route,
+          steps: apiTrip.route.steps.map((step: any, index: number) => ({
+            id: step.id || `step-${index}`,
+            order: step.order,
+            fromLocation: step.fromLocation,
+            toLocation: step.toLocation,
+            transportMode: step.transportMode as RouteStep['transportMode'],
+            instructions: step.instructions,
+            duration: step.duration,
+            distance: step.distance,
+            estimatedFare: step.estimatedFare,
+            dataAvailability: step.dataAvailability,
+            walkingDirections: step.walkingDirections,
+            alternativeTransport: step.alternativeTransport,
+            alternativeOptions: step.alternativeOptions,
+          })),
+        },
+      };
+      
+      setTrip(transformedTrip);
+      updateCurrentStepIndex(transformedTrip);
     } else {
       Alert.alert('Error', 'No active trip found');
       router.back();
@@ -112,7 +137,9 @@ export const ActiveTripScreen = () => {
   };
 
   const updateCurrentStepIndex = (tripData: ActiveTrip) => {
-    const currentStep = tripData.route.steps.find(step => step.id === tripData.currentStepId);
+    const currentStep = tripData.route.steps.find(
+      step => step.id === tripData.currentStepId
+    );
     if (currentStep) {
       setCurrentStepIndex(currentStep.order - 1);
     }
@@ -287,7 +314,7 @@ export const ActiveTripScreen = () => {
         {/* Progress to next waypoint */}
         {progress && (
           <View style={tripStyles.waypointProgress}>
-            <Text style={[tripStyles.progressLabel, { color: colors.textMuted }]}>
+            <Text style={[{ color: colors.textMuted, fontSize: 14, marginTop: 8 }]}>
               {progress.distanceToNextWaypoint < 100
                 ? 'Almost there!'
                 : `${Math.round(progress.distanceToNextWaypoint)}m to next point`}
@@ -354,7 +381,7 @@ export const ActiveTripScreen = () => {
 
           return (
             <View
-              key={step.id}
+              key={step.id || `step-${index}`}
               style={[
                 tripStyles.stepItem,
                 {
