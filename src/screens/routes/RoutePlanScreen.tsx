@@ -12,7 +12,6 @@ import { routeStyles } from '@/styles/features';
 // ADD THIS IMPORT
 import { Route, RouteStep } from '@/types/route';
 
-
 export const RoutePlanScreen = () => {
   const router = useRouter();
   const colors = useThemedColors();
@@ -23,7 +22,6 @@ export const RoutePlanScreen = () => {
   const [routes, setRoutes] = useState<Route[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
   const [expandedSteps, setExpandedSteps] = useState<Set<number>>(new Set());
-
 
   useEffect(() => {
     loadRoutes();
@@ -249,11 +247,16 @@ export const RoutePlanScreen = () => {
             <Text style={[routeStyles.stepSubtitle, { color: colors.textMuted }]}>
               {step.fromLocation} → {step.toLocation}
             </Text>
-            
+
             {/* Data Availability Badge */}
             {!hasVehicleData && (
               <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 4 }}>
-                <View style={[routeStyles.dataAvailabilityBadge, { backgroundColor: colors.warningLight }]}>
+                <View
+                  style={[
+                    routeStyles.dataAvailabilityBadge,
+                    { backgroundColor: colors.warningLight },
+                  ]}
+                >
                   <Icon name="information-circle-outline" size={14} color={colors.warning} />
                   <Text style={[routeStyles.dataAvailabilityText, { color: colors.warning }]}>
                     No vehicle data - Ask locals
@@ -291,7 +294,9 @@ export const RoutePlanScreen = () => {
 
             {/* Alternative Options Card (for steps without vehicle data) */}
             {!hasVehicleData && step.alternativeOptions && (
-              <View style={[routeStyles.alternativeOptionsCard, { backgroundColor: colors.infoLight }]}>
+              <View
+                style={[routeStyles.alternativeOptionsCard, { backgroundColor: colors.infoLight }]}
+              >
                 <View style={routeStyles.alternativeOptionsHeader}>
                   <Icon name="people-outline" size={24} color={colors.info} />
                   <Text style={[routeStyles.alternativeOptionsTitle, { color: colors.text }]}>
@@ -299,14 +304,19 @@ export const RoutePlanScreen = () => {
                   </Text>
                 </View>
 
-                <Text style={[routeStyles.alternativeOptionsDescription, { color: colors.textMuted }]}>
+                <Text
+                  style={[routeStyles.alternativeOptionsDescription, { color: colors.textMuted }]}
+                >
                   Avigate doesn't have vehicle data for this area. Here's what you can say:
                 </Text>
 
                 {/* Local Phrases */}
                 <View style={routeStyles.localPhrases}>
                   {step.alternativeOptions.localPhrases.map((phrase, idx) => (
-                    <View key={idx} style={[routeStyles.phraseItem, { backgroundColor: colors.white }]}>
+                    <View
+                      key={idx}
+                      style={[routeStyles.phraseItem, { backgroundColor: colors.white }]}
+                    >
                       <Icon name="chatbubble-outline" size={16} color={colors.primary} />
                       <Text style={[routeStyles.phraseText, { color: colors.text }]}>
                         "{phrase}"

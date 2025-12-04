@@ -70,7 +70,7 @@ export const ActiveTripScreen = () => {
     if (result.success && result.data?.trip) {
       // Type assertion to handle potential API response mismatch
       const apiTrip = result.data.trip as any;
-      
+
       // Transform the trip data to match our type
       const transformedTrip: ActiveTrip = {
         ...apiTrip,
@@ -93,7 +93,7 @@ export const ActiveTripScreen = () => {
           })),
         },
       };
-      
+
       setTrip(transformedTrip);
       updateCurrentStepIndex(transformedTrip);
     } else {
@@ -137,9 +137,7 @@ export const ActiveTripScreen = () => {
   };
 
   const updateCurrentStepIndex = (tripData: ActiveTrip) => {
-    const currentStep = tripData.route.steps.find(
-      step => step.id === tripData.currentStepId
-    );
+    const currentStep = tripData.route.steps.find(step => step.id === tripData.currentStepId);
     if (currentStep) {
       setCurrentStepIndex(currentStep.order - 1);
     }
@@ -352,7 +350,7 @@ export const ActiveTripScreen = () => {
                 Alert.alert(
                   '🗣️ Ask Locals',
                   currentStep.alternativeOptions?.localPhrases.join('\n\n') || '',
-                  [{ text: 'Got it!' }]
+                  [{ text: 'Got it!' }],
                 );
               }}
             >

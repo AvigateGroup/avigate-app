@@ -21,7 +21,7 @@ export const routeStyles = StyleSheet.create({
     color: COLORS.text,
   },
 
-   dataAvailabilityBadge: {
+  dataAvailabilityBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
