@@ -186,7 +186,7 @@ export const useFirebaseGoogleAuth = () => {
         if (lowerMessage.includes('different google account')) {
           Alert.alert(
             'Account Already Exists',
-            'This email is already registered with different credentials. Would you like to sign in with email and password instead?',
+            'This email is already registered with different credentials. Would you like to sign in with email instead?',
             [
               {
                 text: 'Cancel',

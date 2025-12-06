@@ -8,8 +8,6 @@ export type AuthStackParamList = {
   Register: undefined;
   VerifyLoginOTP: { email: string };
   VerifyEmail: { email: string; userId?: string };
-  ForgotPassword: undefined;
-  ResetPassword: { email: string };
   GoogleAuth: undefined;
   PhoneVerification: { fromGoogleAuth?: boolean };
 };
@@ -28,14 +26,6 @@ export type VerifyEmailScreenNavigationProp = NativeStackNavigationProp<
   AuthStackParamList,
   'VerifyEmail'
 >;
-export type ForgotPasswordScreenNavigationProp = NativeStackNavigationProp<
-  AuthStackParamList,
-  'ForgotPassword'
->;
-export type ResetPasswordScreenNavigationProp = NativeStackNavigationProp<
-  AuthStackParamList,
-  'ResetPassword'
->;
 export type GoogleAuthScreenNavigationProp = NativeStackNavigationProp<
   AuthStackParamList,
   'GoogleAuth'
@@ -48,5 +38,4 @@ export type PhoneVerificationScreenNavigationProp = NativeStackNavigationProp<
 // Route prop types for each screen
 export type VerifyLoginOTPScreenRouteProp = RouteProp<AuthStackParamList, 'VerifyLoginOTP'>;
 export type VerifyEmailScreenRouteProp = RouteProp<AuthStackParamList, 'VerifyEmail'>;
-export type ResetPasswordScreenRouteProp = RouteProp<AuthStackParamList, 'ResetPassword'>;
 export type PhoneVerificationScreenRouteProp = RouteProp<AuthStackParamList, 'PhoneVerification'>;

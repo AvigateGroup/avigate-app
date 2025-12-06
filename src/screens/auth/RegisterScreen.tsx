@@ -11,7 +11,7 @@ import { Button } from '@/components/common/Button';
 import { Loading } from '@/components/common/Loading';
 import { CountryPhonePicker } from '@/components/common/CountryPhonePicker';
 import { authApi } from '@/api/auth.api';
-import { validateEmail, validatePassword, validatePhoneNumber } from '@/utils/validation';
+import { validateEmail, validatePhoneNumber } from '@/utils/validation';
 import { getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useFirebaseGoogleAuth } from '@/hooks/useFirebaseGoogleAuth';
 import { RegisterDto, UserSex } from '@/types/auth.types';
@@ -19,9 +19,6 @@ import { typographyStyles, formStyles, layoutStyles, spacingStyles } from '@/sty
 import { authFeatureStyles } from '@/styles/features/auth';
 import { COLORS } from '@/constants/colors';
 
-// Terms and Privacy Policy Version Configuration
-const TERMS_VERSION = '1.0';
-const PRIVACY_VERSION = '1.0';
 
 export const RegisterScreen: React.FC = () => {
   const router = useRouter();
@@ -40,12 +37,10 @@ export const RegisterScreen: React.FC = () => {
     country: 'Nigeria',
     sex: '' as UserSex | '',
     language: 'English',
-    password: '',
-    confirmPassword: '',
     agreedToTerms: false,
   });
 
-  const totalSteps = 5;
+  const totalSteps = 4; 
 
   const updateField = (field: string, value: string | boolean) => {
     setFormData({ ...formData, [field]: value });
@@ -90,22 +85,6 @@ export const RegisterScreen: React.FC = () => {
         } else if (!validatePhoneNumber(formData.countryCode + formData.phoneNumber)) {
           newErrors.phoneNumber = 'Invalid phone number';
         }
-        break;
-
-      case 5:
-        if (!formData.password) {
-          newErrors.password = 'Password is required';
-        } else {
-          const passwordValidation = validatePassword(formData.password);
-          if (!passwordValidation.isValid) {
-            newErrors.password = passwordValidation.errors[0];
-          }
-        }
-        if (!formData.confirmPassword) {
-          newErrors.confirmPassword = 'Please confirm your password';
-        } else if (formData.password !== formData.confirmPassword) {
-          newErrors.confirmPassword = 'Passwords do not match';
-        }
         if (!formData.agreedToTerms) {
           newErrors.agreedToTerms = 'You must agree to the terms and conditions to continue';
         }
@@ -134,7 +113,7 @@ export const RegisterScreen: React.FC = () => {
   };
 
   const handleRegister = async () => {
-    if (!validateStep(5)) return;
+    if (!validateStep(4)) return;
 
     setLoading(true);
     try {
@@ -143,7 +122,6 @@ export const RegisterScreen: React.FC = () => {
 
       const registerDto: RegisterDto = {
         email: formData.email.toLowerCase().trim(),
-        password: formData.password,
         firstName: formData.firstName.trim(),
         lastName: formData.lastName.trim(),
         sex: formData.sex as UserSex,
@@ -171,7 +149,6 @@ export const RegisterScreen: React.FC = () => {
     } catch (error: any) {
       console.error('Registration error:', error);
 
-      // Extract error message from various possible error structures
       const errorMessage =
         error?.response?.data?.message ||
         error?.response?.data?.error ||
@@ -180,13 +157,12 @@ export const RegisterScreen: React.FC = () => {
 
       const statusCode = error?.response?.status || error?.response?.data?.statusCode;
 
-      // Handle 409 Conflict errors (duplicate email/phone)
       if (statusCode === 409) {
         const lowerMessage = errorMessage.toLowerCase();
 
         if (lowerMessage.includes('email') && lowerMessage.includes('already')) {
           setErrors({ email: 'This email is already registered' });
-          setCurrentStep(1); // Go back to email step
+          setCurrentStep(1);
           Toast.show({
             type: 'error',
             text1: 'Email Already Registered',
@@ -197,7 +173,7 @@ export const RegisterScreen: React.FC = () => {
 
         if (lowerMessage.includes('phone') && lowerMessage.includes('already')) {
           setErrors({ phoneNumber: 'This phone number is already registered' });
-          setCurrentStep(4); // Go back to phone step
+          setCurrentStep(4);
           Toast.show({
             type: 'error',
             text1: 'Phone Number Already Registered',
@@ -207,7 +183,6 @@ export const RegisterScreen: React.FC = () => {
         }
       }
 
-      // Handle validation errors (400)
       if (statusCode === 400) {
         Toast.show({
           type: 'error',
@@ -215,7 +190,6 @@ export const RegisterScreen: React.FC = () => {
           text2: errorMessage,
         });
       } else {
-        // Generic error handling
         Toast.show({
           type: 'error',
           text1: 'Registration Failed',
@@ -234,7 +208,7 @@ export const RegisterScreen: React.FC = () => {
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>What's your email?</Text>
             <Text style={authFeatureStyles.stepSubtitle}>
-              We'll use this to create your account
+              We'll use this to create your account and send you a verification code
             </Text>
 
             <Input
@@ -351,8 +325,10 @@ export const RegisterScreen: React.FC = () => {
       case 4:
         return (
           <View style={authFeatureStyles.stepContainer}>
-            <Text style={authFeatureStyles.stepTitle}>What's your phone number?</Text>
-            <Text style={authFeatureStyles.stepSubtitle}>We'll use this for account security</Text>
+            <Text style={authFeatureStyles.stepTitle}>Complete your profile</Text>
+            <Text style={authFeatureStyles.stepSubtitle}>
+              We'll use this for account security
+            </Text>
 
             <CountryPhonePicker
               countryCode={formData.countryCode}
@@ -365,40 +341,6 @@ export const RegisterScreen: React.FC = () => {
               onPhoneChange={phone => updateField('phoneNumber', phone)}
               error={errors.phoneNumber}
             />
-          </View>
-        );
-
-      case 5:
-        return (
-          <View style={authFeatureStyles.stepContainer}>
-            <Text style={authFeatureStyles.stepTitle}>Create a password</Text>
-            <Text style={authFeatureStyles.stepSubtitle}>Make sure it's secure</Text>
-
-            <Input
-              placeholder="Password"
-              value={formData.password}
-              onChangeText={text => updateField('password', text)}
-              error={errors.password}
-              secureTextEntry
-              leftIcon="lock-closed-outline"
-              autoFocus
-            />
-
-            <Input
-              placeholder="Confirm password"
-              value={formData.confirmPassword}
-              onChangeText={text => updateField('confirmPassword', text)}
-              error={errors.confirmPassword}
-              secureTextEntry
-              leftIcon="lock-closed-outline"
-            />
-
-            <View style={formStyles.passwordRequirements}>
-              <Text style={formStyles.requirementsTitle}>Password must contain:</Text>
-              <Text style={formStyles.requirementItem}>• At least 8 characters</Text>
-              <Text style={formStyles.requirementItem}>• At least 1 number</Text>
-              <Text style={formStyles.requirementItem}>• Both upper and lowercase letters</Text>
-            </View>
 
             <TouchableOpacity
               style={authFeatureStyles.checkboxContainer}

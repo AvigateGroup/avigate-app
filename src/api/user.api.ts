@@ -37,9 +37,9 @@ export const userApi = {
   // Get user statistics
   getUserStats: () => apiClient.get<ApiResponse>('/users/stats'),
 
-  // Delete account
-  deleteAccount: (password: string, confirmDelete: string) =>
+  // Delete account 
+  deleteAccount: (confirmDelete: string) =>
     apiClient.delete<ApiResponse>('/users/account', {
-      data: { password, confirmDelete },
+      data: { confirmDelete },
     }),
 };

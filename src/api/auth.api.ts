@@ -3,22 +3,21 @@
 import { apiClient } from './client';
 import {
   RegisterDto,
-  LoginDto,
+  RequestLoginOtpDto,
   VerifyLoginOtpDto,
   VerifyEmailDto,
   GoogleAuthDto,
-  ForgotPasswordDto,
-  ResetPasswordDto,
   AuthResponse,
   ApiResponse,
 } from '@/types/auth.types';
 
 export const authApi = {
-  // Register new user
+  // Register new user 
   register: (data: RegisterDto) => apiClient.post<AuthResponse>('/auth/register', data),
 
-  // Step 1: Login with email and password
-  login: (data: LoginDto) => apiClient.post<AuthResponse>('/auth/login', data),
+  // Step 1: Request login OTP 
+  requestLoginOtp: (data: RequestLoginOtpDto) =>
+    apiClient.post<AuthResponse>('/auth/login/request-otp', data),
 
   // Step 2: Verify login OTP
   verifyLoginOtp: (data: VerifyLoginOtpDto) =>
@@ -41,14 +40,6 @@ export const authApi = {
   // Resend verification email
   resendVerification: (email: string) =>
     apiClient.post<ApiResponse>('/auth/resend-verification', { email }),
-
-  // Forgot password
-  forgotPassword: (data: ForgotPasswordDto) =>
-    apiClient.post<ApiResponse>('/auth/forgot-password', data),
-
-  // Reset password
-  resetPassword: (data: ResetPasswordDto) =>
-    apiClient.post<ApiResponse>('/auth/reset-password', data),
 
   // Refresh access token
   refreshToken: (refreshToken: string) =>

@@ -61,7 +61,7 @@ export default function PrivacyScreen() {
           • Demographic information: Sex/gender, country, preferred language
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Authentication credentials: Email and encrypted password (for local registration) or
+          • Authentication credentials: Email (for local registration) or
           Google account information (for Google Sign-In)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
@@ -560,9 +560,6 @@ export default function PrivacyScreen() {
           • Encrypted data transmission (HTTPS/TLS)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Encrypted password storage using bcrypt hashing
-        </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
           • Secure database with access controls
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
@@ -630,9 +627,6 @@ export default function PrivacyScreen() {
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Manage your location sharing settings
-        </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Change your password and security settings
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Update your communication and notification preferences

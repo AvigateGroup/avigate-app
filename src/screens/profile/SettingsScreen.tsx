@@ -8,7 +8,6 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useUserService } from '@/hooks/useUserService';
 import { useAuth } from '@/store/AuthContext';
-import { Input } from '@/components/common/Input';
 import { Button } from '@/components/common/Button';
 import { profileFeatureStyles } from '@/styles/features';
 
@@ -22,41 +21,24 @@ export const SettingsScreen = () => {
   const [notifications, setNotifications] = useState(true);
   const [locationSharing, setLocationSharing] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [deletePassword, setDeletePassword] = useState('');
 
   const handleDeleteAccount = async () => {
-    // Check if user is Google OAuth user
-    if (user?.authProvider === 'google') {
-      Alert.alert(
-        'Delete Account',
-        'Are you absolutely sure you want to delete your account? This action cannot be undone.',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          {
-            text: 'Delete',
-            style: 'destructive',
-            onPress: async () => {
-              const success = await deleteAccount('');
-              if (success) {
-                await logout();
-                router.replace('/(auth)/login');
-              }
-            },
-          },
-        ],
-      );
-    } else {
-      setShowDeleteModal(true);
-    }
+    Alert.alert(
+      'Delete Account',
+      'Are you absolutely sure you want to delete your account? This action cannot be undone.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => setShowDeleteModal(true),
+        },
+      ],
+    );
   };
 
   const confirmDeleteAccount = async () => {
-    if (!deletePassword.trim()) {
-      Alert.alert('Error', 'Please enter your password');
-      return;
-    }
-
-    const success = await deleteAccount(deletePassword);
+    const success = await deleteAccount();
     if (success) {
       setShowDeleteModal(false);
       await logout();
@@ -316,23 +298,21 @@ export const SettingsScreen = () => {
               </Text>
             </View>
 
-            {/* Password Input */}
-            <Input
-              placeholder="Enter your password"
-              value={deletePassword}
-              onChangeText={setDeletePassword}
-              secureTextEntry
-              leftIcon="lock-closed-outline"
-            />
+            {/* Confirmation Text */}
+            <Text
+              style={[
+                profileFeatureStyles.menuSubtitle,
+                { color: colors.text, textAlign: 'center', marginBottom: 20 },
+              ]}
+            >
+              Type <Text style={{ fontWeight: 'bold' }}>DELETE_MY_ACCOUNT</Text> to confirm
+            </Text>
 
             {/* Action Buttons */}
             <View style={{ flexDirection: 'row', gap: 12, marginTop: 20 }}>
               <Button
                 title="Cancel"
-                onPress={() => {
-                  setShowDeleteModal(false);
-                  setDeletePassword('');
-                }}
+                onPress={() => setShowDeleteModal(false)}
                 variant="outline"
                 disabled={isLoading}
                 style={{ flex: 1 }}

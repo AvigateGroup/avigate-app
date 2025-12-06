@@ -46,9 +46,9 @@ class ApiClient {
           originalRequest?.url?.includes('/auth/register') ||
           originalRequest?.url?.includes('/auth/google') ||
           originalRequest?.url?.includes('/auth/verify-email') ||
-          originalRequest?.url?.includes('/auth/forgot-password') ||
-          originalRequest?.url?.includes('/auth/reset-password') ||
-          originalRequest?.url?.includes('/auth/refresh-token');
+          originalRequest?.url?.includes('/auth/resend-verification') ||
+          originalRequest?.url?.includes('/auth/refresh-token') ||
+          originalRequest?.url?.includes('/auth/logout');
 
         // If it's an auth endpoint, just reject the error without trying to refresh
         if (isAuthEndpoint) {

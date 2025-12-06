@@ -76,7 +76,6 @@ export const APP_CONFIG = {
   VERSION: '1.0.0',
   OTP_LENGTH: 6,
   OTP_TIMEOUT: 600,
-  PASSWORD_MIN_LENGTH: 8,
 };
 
 export const STORAGE_KEYS = {

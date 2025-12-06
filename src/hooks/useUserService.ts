@@ -277,11 +277,11 @@ export const useUserService = () => {
     }
   };
 
-  // Delete account
-  const deleteAccount = async (password: string): Promise<boolean> => {
+  // Delete account (passwordless)
+  const deleteAccount = async (): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const response = await userApi.deleteAccount(password, 'DELETE_MY_ACCOUNT');
+      const response = await userApi.deleteAccount('DELETE_MY_ACCOUNT');
       if (response.success) {
         Toast.show({
           type: 'success',

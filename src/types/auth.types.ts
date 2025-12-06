@@ -36,7 +36,6 @@ export interface User {
 
 export interface RegisterDto {
   email: string;
-  password: string;
   firstName: string;
   lastName: string;
   sex?: UserSex;
@@ -47,11 +46,8 @@ export interface RegisterDto {
   deviceInfo?: string;
 }
 
-export interface LoginDto {
+export interface RequestLoginOtpDto {
   email: string;
-  password: string;
-  fcmToken?: string;
-  deviceInfo?: string;
 }
 
 export interface VerifyLoginOtpDto {
@@ -81,17 +77,6 @@ export interface GoogleAuthDto {
   idToken?: string;
 }
 
-export interface ForgotPasswordDto {
-  email: string;
-}
-
-export interface ResetPasswordDto {
-  email: string;
-  otpCode: string;
-  newPassword: string;
-  confirmPassword: string;
-}
-
 export interface UpdateProfileDto {
   firstName?: string;
   lastName?: string;
@@ -103,7 +88,6 @@ export interface UpdateProfileDto {
 }
 
 export interface DeleteAccountDto {
-  password: string;
   confirmDelete: string;
 }
 

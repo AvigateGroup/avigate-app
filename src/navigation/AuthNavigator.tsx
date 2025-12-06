@@ -6,8 +6,6 @@ import { LoginScreen } from '@/screens/auth/LoginScreen';
 import { RegisterScreen } from '@/screens/auth/RegisterScreen';
 import { VerifyLoginOTPScreen } from '@/screens/auth/VerifyLoginOtpScreen';
 import { VerifyEmailScreen } from '@/screens/auth/VerifyEmailScreen';
-import { ForgotPasswordScreen } from '@/screens/auth/ForgotPasswordScreen';
-import { ResetPasswordScreen } from '@/screens/auth/ResetPasswordScreen';
 import { PhoneVerificationScreen } from '@/screens/auth/PhoneVerificationScreen';
 import { COLORS } from '@/constants/colors';
 import { AuthStackParamList } from '@/types/navigation.types';
@@ -61,25 +59,6 @@ export const AuthNavigator = () => {
         component={VerifyEmailScreen}
         options={{
           title: 'Verify Email',
-          gestureEnabled: false,
-        }}
-      />
-
-      {/* Forgot Password Screen */}
-      <Stack.Screen
-        name="ForgotPassword"
-        component={ForgotPasswordScreen}
-        options={{
-          title: 'Forgot Password',
-        }}
-      />
-
-      {/* Reset Password Screen */}
-      <Stack.Screen
-        name="ResetPassword"
-        component={ResetPasswordScreen}
-        options={{
-          title: 'Reset Password',
           gestureEnabled: false,
         }}
       />

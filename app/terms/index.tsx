@@ -104,9 +104,7 @@ export default function TermsScreen() {
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>• A valid email address</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>• Your first and last name</Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • A secure password (for local registration)
-        </Text>
+      
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Optional: Phone number, gender, preferred language
         </Text>
@@ -126,12 +124,10 @@ export default function TermsScreen() {
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Notifying us immediately of any unauthorized access or security breach
         </Text>
-        <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Using a strong, unique password
-        </Text>
+    
         <Text style={[styles.text, { color: colors.text }]}>
           We implement security measures including email verification, OTP verification, device
-          tracking, and password encryption. However, you acknowledge that no system is completely
+          tracking. However, you acknowledge that no system is completely
           secure, and we cannot guarantee absolute security of your account.
         </Text>
 

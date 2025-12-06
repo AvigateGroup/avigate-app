@@ -22,19 +22,7 @@ export const formStyles = StyleSheet.create({
     lineHeight: LINE_HEIGHTS.base,
   },
 
-  // ========== LINKS ==========
-  forgotPassword: {
-    alignSelf: 'flex-end',
-    marginBottom: SPACING.xl,
-  },
-
-  forgotPasswordText: {
-    fontSize: FONT_SIZES.base,
-    color: COLORS.primary,
-    fontWeight: '600',
-    lineHeight: LINE_HEIGHTS.base,
-  },
-
+ 
   // ========== GENDER SELECTION ==========
   genderLabel: {
     fontSize: FONT_SIZES.base,
@@ -77,14 +65,6 @@ export const formStyles = StyleSheet.create({
 
   genderButtonTextActive: {
     color: COLORS.textWhite,
-  },
-
-  // ========== PASSWORD REQUIREMENTS ==========
-  passwordRequirements: {
-    backgroundColor: COLORS.backgroundLight,
-    padding: SPACING.base,
-    borderRadius: BORDER_RADIUS.base,
-    marginBottom: SPACING.xl,
   },
 
   requirementsTitle: {

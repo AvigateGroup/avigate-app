@@ -10,20 +10,17 @@ import { Button } from '@/components/common/Button';
 import { Loading } from '@/components/common/Loading';
 import { authApi } from '@/api/auth.api';
 import { validateEmail } from '@/utils/validation';
-import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
-import { useAuth } from '@/store/AuthContext';
+import { handleApiError } from '@/utils/helpers';
 import { useFirebaseGoogleAuth } from '@/hooks/useFirebaseGoogleAuth';
-import { LoginDto } from '@/types/auth.types';
+import { RequestLoginOtpDto } from '@/types/auth.types';
 import { buttonStyles, formStyles, layoutStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
 export const LoginScreen: React.FC = () => {
   const router = useRouter();
-  const { login } = useAuth();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
 
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -36,97 +33,35 @@ export const LoginScreen: React.FC = () => {
       newErrors.email = 'Invalid email address';
     }
 
-    if (!password) {
-      newErrors.password = 'Password is required';
-    }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleLogin = async () => {
+  const handleRequestOTP = async () => {
     if (!validate()) return;
 
     setLoading(true);
     try {
-      const fcmToken = await getFCMToken();
-      const deviceInfo = getDeviceInfo();
-
-      const loginDto: LoginDto = {
+      const requestOtpDto: RequestLoginOtpDto = {
         email: email.toLowerCase().trim(),
-        password: password,
-        fcmToken: fcmToken,
-        deviceInfo: deviceInfo,
       };
 
-      const response = await authApi.login(loginDto);
+      const response = await authApi.requestLoginOtp(requestOtpDto);
 
       if (response.success) {
-        const {
-          accessToken,
-          refreshToken,
-          user,
-          requiresOtpVerification,
-          requiresVerification,
-          requiresPhoneNumber,
-        } = response.data;
-
-        if (requiresOtpVerification) {
-          Toast.show({
-            type: 'success',
-            text1: 'Verification Code Sent',
-            text2: 'Please check your email for the login code',
-          });
-
-          router.push({
-            pathname: '/(auth)/verify-login-otp',
-            params: { email: email.toLowerCase().trim() },
-          });
-          return;
-        }
-
-        if (accessToken && refreshToken && user) {
-          Toast.show({
-            type: 'success',
-            text1: 'Welcome Back!',
-            text2: response.message || 'Login successful',
-          });
-
-          await login(accessToken, refreshToken, user);
-
-          if (requiresVerification) {
-            router.replace({
-              pathname: '/(auth)/verify-email',
-              params: { email: email.toLowerCase().trim() },
-            });
-          } else if (requiresPhoneNumber) {
-            router.replace('/(auth)/phone-verification');
-          }
-          return;
-        }
-
-        if (requiresVerification) {
-          Toast.show({
-            type: 'info',
-            text1: 'Email Verification Required',
-            text2: response.message || 'Please verify your email to continue',
-          });
-
-          router.replace({
-            pathname: '/(auth)/verify-email',
-            params: { email: email.toLowerCase().trim() },
-          });
-          return;
-        }
-
         Toast.show({
-          type: 'error',
-          text1: 'Login Error',
-          text2: 'Unexpected response from server. Please try again.',
+          type: 'success',
+          text1: 'Verification Code Sent',
+          text2: response.message || 'Please check your email for the login code',
+        });
+
+        router.push({
+          pathname: '/(auth)/verify-login-otp',
+          params: { email: email.toLowerCase().trim() },
         });
       }
     } catch (error: any) {
-      console.error('Login error:', error);
+      console.error('Request OTP error:', error);
 
       const errorMessage = handleApiError(error);
       const statusCode = error?.response?.status;
@@ -141,7 +76,7 @@ export const LoginScreen: React.FC = () => {
           Toast.show({
             type: 'error',
             text1: 'Account Not Found',
-            text2: errorMessage,
+            text2: 'No account found with this email. Would you like to sign up?',
             visibilityTime: 6000,
             onPress: () => {
               Toast.hide();
@@ -151,24 +86,6 @@ export const LoginScreen: React.FC = () => {
 
           setErrors({
             email: 'No account found with this email',
-            password: '',
-          });
-        } else if (lowerErrorMessage.includes('incorrect password')) {
-          Toast.show({
-            type: 'error',
-            text1: 'Incorrect Password',
-            text2: errorMessage,
-            visibilityTime: 5000,
-            onPress: () => {
-              Toast.hide();
-              router.push('/(auth)/forgot-password');
-            },
-          });
-
-          setPassword('');
-          setErrors({
-            email: '',
-            password: 'Incorrect password',
           });
         } else if (lowerErrorMessage.includes('deactivated')) {
           Toast.show({
@@ -180,20 +97,13 @@ export const LoginScreen: React.FC = () => {
 
           setErrors({
             email: 'Account deactivated',
-            password: '',
           });
         } else {
           Toast.show({
             type: 'error',
             text1: 'Login Failed',
-            text2: errorMessage || 'Invalid email or password.',
+            text2: errorMessage,
             visibilityTime: 4000,
-          });
-
-          setPassword('');
-          setErrors({
-            email: ' ',
-            password: ' ',
           });
         }
       } else if (statusCode === 429) {
@@ -211,20 +121,19 @@ export const LoginScreen: React.FC = () => {
           visibilityTime: 5000,
         });
       } else if (
-        errorMessage.toLowerCase().includes('verification code') ||
-        errorMessage.toLowerCase().includes('check your email') ||
-        errorMessage.toLowerCase().includes('otp')
+        errorMessage.toLowerCase().includes('verification') ||
+        errorMessage.toLowerCase().includes('verify your email')
       ) {
         Toast.show({
           type: 'info',
-          text1: 'Verification Required',
+          text1: 'Email Verification Required',
           text2: errorMessage,
           visibilityTime: 3000,
         });
 
         setTimeout(() => {
           router.push({
-            pathname: '/(auth)/verify-login-otp',
+            pathname: '/(auth)/verify-email',
             params: { email: email.toLowerCase().trim() },
           });
         }, 1500);
@@ -249,7 +158,9 @@ export const LoginScreen: React.FC = () => {
     <AuthLayout showLogo={true}>
       <View style={authFeatureStyles.authContent}>
         <Text style={authFeatureStyles.welcomeTitle}>Welcome to Avigate</Text>
-        <Text style={authFeatureStyles.welcomeSubtitle}>Sign up or login below to continue.</Text>
+        <Text style={authFeatureStyles.welcomeSubtitle}>
+          Enter your email to receive a login code
+        </Text>
 
         <View style={formStyles.form}>
           <Input
@@ -265,29 +176,9 @@ export const LoginScreen: React.FC = () => {
             leftIcon="mail-outline"
           />
 
-          <Input
-            placeholder="Enter your password"
-            value={password}
-            onChangeText={text => {
-              setPassword(text);
-              setErrors({ ...errors, password: '' });
-            }}
-            error={errors.password}
-            secureTextEntry
-            leftIcon="lock-closed-outline"
-            rightIcon="eye-outline"
-          />
-
-          <TouchableOpacity
-            onPress={() => router.push('/(auth)/forgot-password')}
-            style={formStyles.forgotPassword}
-          >
-            <Text style={formStyles.forgotPasswordText}>Forgot Password?</Text>
-          </TouchableOpacity>
-
           <Button
-            title="Login"
-            onPress={handleLogin}
+            title="Continue"
+            onPress={handleRequestOTP}
             loading={loading}
             disabled={googleLoading}
             style={buttonStyles.submitButton}
