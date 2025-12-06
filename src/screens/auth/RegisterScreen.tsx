@@ -19,7 +19,6 @@ import { typographyStyles, formStyles, layoutStyles, spacingStyles } from '@/sty
 import { authFeatureStyles } from '@/styles/features/auth';
 import { COLORS } from '@/constants/colors';
 
-
 export const RegisterScreen: React.FC = () => {
   const router = useRouter();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
@@ -40,7 +39,7 @@ export const RegisterScreen: React.FC = () => {
     agreedToTerms: false,
   });
 
-  const totalSteps = 4; 
+  const totalSteps = 4;
 
   const updateField = (field: string, value: string | boolean) => {
     setFormData({ ...formData, [field]: value });
@@ -326,9 +325,7 @@ export const RegisterScreen: React.FC = () => {
         return (
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>Complete your profile</Text>
-            <Text style={authFeatureStyles.stepSubtitle}>
-              We'll use this for account security
-            </Text>
+            <Text style={authFeatureStyles.stepSubtitle}>We'll use this for account security</Text>
 
             <CountryPhonePicker
               countryCode={formData.countryCode}

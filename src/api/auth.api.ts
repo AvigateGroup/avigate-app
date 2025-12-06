@@ -12,10 +12,10 @@ import {
 } from '@/types/auth.types';
 
 export const authApi = {
-  // Register new user 
+  // Register new user
   register: (data: RegisterDto) => apiClient.post<AuthResponse>('/auth/register', data),
 
-  // Step 1: Request login OTP 
+  // Step 1: Request login OTP
   requestLoginOtp: (data: RequestLoginOtpDto) =>
     apiClient.post<AuthResponse>('/auth/login/request-otp', data),
 

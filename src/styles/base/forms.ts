@@ -22,7 +22,6 @@ export const formStyles = StyleSheet.create({
     lineHeight: LINE_HEIGHTS.base,
   },
 
- 
   // ========== GENDER SELECTION ==========
   genderLabel: {
     fontSize: FONT_SIZES.base,

@@ -61,8 +61,8 @@ export default function PrivacyScreen() {
           • Demographic information: Sex/gender, country, preferred language
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Authentication credentials: Email (for local registration) or
-          Google account information (for Google Sign-In)
+          • Authentication credentials: Email (for local registration) or Google account information
+          (for Google Sign-In)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Profile picture: If you choose to upload one
