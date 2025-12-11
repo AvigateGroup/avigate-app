@@ -98,6 +98,6 @@ if (__DEV__) {
   const missing = requiredVars.filter(varName => !getEnvVar(varName));
 
   if (missing.length > 0) {
-    console.warn('⚠️  Missing required environment variables:', missing.join(', '));
+    console.warn('  Missing required environment variables:', missing.join(', '));
   }
 }
