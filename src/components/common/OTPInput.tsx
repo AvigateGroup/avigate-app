@@ -26,6 +26,12 @@ export const OTPInput: React.FC<OTPInputProps> = ({
   }, [value]);
 
   const handleChange = (text: string, index: number) => {
+    // Handle paste - if multiple characters are entered at once
+    if (text.length > 1) {
+      handlePaste(text, index);
+      return;
+    }
+
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
@@ -35,6 +41,32 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     if (text && index < length - 1) {
       inputs.current[index + 1]?.focus();
     }
+  };
+
+  const handlePaste = (pastedText: string, startIndex: number) => {
+    // Remove non-numeric characters
+    const cleanedText = pastedText.replace(/[^0-9]/g, '');
+    
+    if (cleanedText.length === 0) return;
+
+    const newOtp = [...otp];
+    const chars = cleanedText.split('');
+
+    // Fill from the current index
+    for (let i = 0; i < chars.length && startIndex + i < length; i++) {
+      newOtp[startIndex + i] = chars[i];
+    }
+
+    setOtp(newOtp);
+    onChange(newOtp.join(''));
+
+    // Focus the next empty field or the last field
+    const nextEmptyIndex = newOtp.findIndex((digit, idx) => !digit && idx > startIndex);
+    const focusIndex = nextEmptyIndex !== -1 ? nextEmptyIndex : Math.min(startIndex + chars.length, length - 1);
+    
+    setTimeout(() => {
+      inputs.current[focusIndex]?.focus();
+    }, 0);
   };
 
   const handleKeyPress = (e: any, index: number) => {
@@ -60,6 +92,8 @@ export const OTPInput: React.FC<OTPInputProps> = ({
             onKeyPress={e => handleKeyPress(e, index)}
             autoFocus={index === 0}
             selectTextOnFocus
+            textContentType="oneTimeCode" // iOS autofill support
+            autoComplete="sms-otp" // Android autofill support
           />
         ))}
       </View>
