@@ -9,7 +9,6 @@ import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 import { useRouteService } from '@/hooks/useRouteService';
 import { Button } from '@/components/common/Button';
 import { routeStyles } from '@/styles/features';
-// ADD THIS IMPORT
 import { Route, RouteStep } from '@/types/route';
 
 export const RoutePlanScreen = () => {
