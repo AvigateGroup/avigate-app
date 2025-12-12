@@ -10,7 +10,6 @@ import { Button } from '@/components/common/Button';
 import { validateOTP } from '@/utils/validation';
 import { useUserService } from '@/hooks/useUserService';
 import { APP_CONFIG } from '@/constants/config';
-import { COLORS } from '@/constants/colors';
 import { authFeatureStyles } from '@/styles/features/auth';
 import { buttonStyles } from '@/styles/base';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -124,17 +123,10 @@ export const VerifyEmailChangeScreen: React.FC = () => {
   return (
     <ScrollView
       style={{ flex: 1, backgroundColor: colors.background }}
-      contentContainerStyle={{ flexGrow: 1, padding: 20, justifyContent: 'center' }}
+      contentContainerStyle={{ flexGrow: 1, padding: 20, paddingTop: 60, justifyContent: 'center' }}
       showsVerticalScrollIndicator={false}
     >
       <View>
-        {/* Icon Section */}
-        <View style={authFeatureStyles.verifyIconContainer}>
-          <View style={authFeatureStyles.verifyIconCircle}>
-            <Icon name="mail" size={32} color={COLORS.primary} />
-          </View>
-        </View>
-
         {/* Title and Email */}
         <Text style={[authFeatureStyles.titleCentered, { color: colors.text }]}>
           Verify Your New Email

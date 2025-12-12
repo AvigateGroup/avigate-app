@@ -113,15 +113,9 @@ export const VerifyEmailScreen: React.FC = () => {
   };
 
   return (
-    <AuthLayout showLogo={true}>
+    <AuthLayout showLogo={false}>
       <View style={authFeatureStyles.authContent}>
         <View>
-          <View style={authFeatureStyles.verifyIconContainer}>
-            <View style={authFeatureStyles.verifyIconCircle}>
-              <Icon name="mail" size={32} color={COLORS.primary} />
-            </View>
-          </View>
-
           <Text style={authFeatureStyles.titleCentered}>Verify Your Email</Text>
           <Text style={authFeatureStyles.subtitleCentered}>We've sent a verification code to</Text>
           <Text style={authFeatureStyles.emailText}>{email}</Text>

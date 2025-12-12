@@ -107,16 +107,10 @@ export const VerifyLoginOTPScreen: React.FC = () => {
   };
 
   return (
-    <AuthLayout showLogo={true}>
+    <AuthLayout showLogo={false}>
       <View style={authFeatureStyles.authContent}>
         {/* TOP SECTION */}
         <View>
-          <View style={authFeatureStyles.verifyIconContainer}>
-            <View style={authFeatureStyles.verifyIconCircle}>
-              <Icon name="shield-checkmark" size={32} color={COLORS.primary} />
-            </View>
-          </View>
-
           <Text style={authFeatureStyles.titleCentered}>Verify Your Login</Text>
 
           <Text style={authFeatureStyles.subtitleCentered}>Enter the 6-digit code sent to</Text>

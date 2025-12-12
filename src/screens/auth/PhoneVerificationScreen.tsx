@@ -180,7 +180,7 @@ export const PhoneVerificationScreen: React.FC = () => {
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
           keyboardShouldPersistTaps="handled"
         >
-          <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
+          <View style={{ paddingHorizontal: 20, paddingTop: 40 }}>
             {/* Header */}
             <View style={{ alignItems: 'center', marginBottom: 32 }}>
               <Text
