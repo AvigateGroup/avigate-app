@@ -1,8 +1,10 @@
 // src/screens/auth/RegisterScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/types/navigation.types';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -19,8 +21,10 @@ import { typographyStyles, formStyles, layoutStyles, spacingStyles } from '@/sty
 import { authFeatureStyles } from '@/styles/features/auth';
 import { COLORS } from '@/constants/colors';
 
+type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
+
 export const RegisterScreen: React.FC = () => {
-  const router = useRouter();
+  const navigation = useNavigation<RegisterScreenNavigationProp>();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -140,10 +144,7 @@ export const RegisterScreen: React.FC = () => {
           text2: response.message,
         });
 
-        router.push({
-          pathname: '/(auth)/verify-email',
-          params: { email: formData.email.toLowerCase().trim() },
-        });
+        navigation.navigate('VerifyEmail', { email: formData.email.toLowerCase().trim() });
       }
     } catch (error: any) {
       console.error('Registration error:', error);
@@ -356,11 +357,11 @@ export const RegisterScreen: React.FC = () => {
               </View>
               <Text style={authFeatureStyles.checkboxLabel}>
                 I agree to the{' '}
-                <Text style={typographyStyles.linkText} onPress={() => router.push('/terms')}>
+                <Text style={typographyStyles.linkText} onPress={() => Alert.alert('Terms of Service', 'Terms of Service will be displayed here.')}>
                   Terms of Service
                 </Text>{' '}
                 and{' '}
-                <Text style={typographyStyles.linkText} onPress={() => router.push('/privacy')}>
+                <Text style={typographyStyles.linkText} onPress={() => Alert.alert('Privacy Policy', 'Privacy Policy will be displayed here.')}>
                   Privacy Policy
                 </Text>
               </Text>
@@ -448,7 +449,7 @@ export const RegisterScreen: React.FC = () => {
         {/* Footer */}
         <View style={layoutStyles.footer}>
           <Text style={layoutStyles.footerText}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={layoutStyles.footerLink}>Sign In</Text>
           </TouchableOpacity>
         </View>

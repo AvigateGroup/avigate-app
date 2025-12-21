@@ -2,7 +2,9 @@
 
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/types/navigation.types';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { Input } from '@/components/common/Input';
@@ -16,8 +18,10 @@ import { RequestLoginOtpDto } from '@/types/auth.types';
 import { buttonStyles, formStyles, layoutStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
+type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
+
 export const LoginScreen: React.FC = () => {
-  const router = useRouter();
+  const navigation = useNavigation<LoginScreenNavigationProp>();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
 
   const [email, setEmail] = useState('');
@@ -55,10 +59,7 @@ export const LoginScreen: React.FC = () => {
           text2: response.message || 'Please check your email for the login code',
         });
 
-        router.push({
-          pathname: '/(auth)/verify-login-otp',
-          params: { email: email.toLowerCase().trim() },
-        });
+        navigation.navigate('VerifyLoginOTP', { email: email.toLowerCase().trim() });
       }
     } catch (error: any) {
       console.error('Request OTP error:', error);
@@ -80,7 +81,7 @@ export const LoginScreen: React.FC = () => {
             visibilityTime: 6000,
             onPress: () => {
               Toast.hide();
-              router.push('/(auth)/register');
+              navigation.navigate('Register');
             },
           });
 
@@ -132,10 +133,7 @@ export const LoginScreen: React.FC = () => {
         });
 
         setTimeout(() => {
-          router.push({
-            pathname: '/(auth)/verify-email',
-            params: { email: email.toLowerCase().trim() },
-          });
+          navigation.navigate('VerifyEmail', { email: email.toLowerCase().trim() });
         }, 1500);
       } else {
         Toast.show({
@@ -211,7 +209,7 @@ export const LoginScreen: React.FC = () => {
         <View style={layoutStyles.footer}>
           <Text style={layoutStyles.footerText}>
             Don't have an account?{' '}
-            <Text style={layoutStyles.footerLink} onPress={() => router.push('/(auth)/register')}>
+            <Text style={layoutStyles.footerLink} onPress={() => navigation.navigate('Register')}>
               Sign Up
             </Text>
           </Text>
