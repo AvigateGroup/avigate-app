@@ -18,6 +18,8 @@ type ProfileStackParamList = {
   EditProfile: undefined;
   Devices: undefined;
   VerifyEmailChange: { email: string };
+  TermsOfService: undefined;
+  PrivacyPolicy: undefined;
 };
 
 type SettingsScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
@@ -116,14 +118,14 @@ export const SettingsScreen = () => {
           title: 'Terms of Service',
           subtitle: 'Read our terms',
           type: 'navigation',
-          onPress: () => Alert.alert('Terms of Service', 'Terms of Service will be displayed here.'),
+          onPress: () => navigation.navigate('TermsOfService'),
         },
         {
           icon: 'shield-outline',
           title: 'Privacy Policy',
           subtitle: 'Read our privacy policy',
           type: 'navigation',
-          onPress: () => Alert.alert('Privacy Policy', 'Privacy Policy will be displayed here.'),
+          onPress: () => navigation.navigate('PrivacyPolicy'),
         },
       ],
     },

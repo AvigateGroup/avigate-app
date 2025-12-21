@@ -30,6 +30,8 @@ type ProfileStackParamList = {
   EditProfile: undefined;
   Devices: undefined;
   VerifyEmailChange: { email: string };
+  TermsOfService: undefined;
+  PrivacyPolicy: undefined;
 };
 
 type EditProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;

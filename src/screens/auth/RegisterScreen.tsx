@@ -357,11 +357,17 @@ export const RegisterScreen: React.FC = () => {
               </View>
               <Text style={authFeatureStyles.checkboxLabel}>
                 I agree to the{' '}
-                <Text style={typographyStyles.linkText} onPress={() => Alert.alert('Terms of Service', 'Terms of Service will be displayed here.')}>
+                <Text style={typographyStyles.linkText} onPress={() => {
+                  // TODO: Navigate to Terms of Service when added to Auth stack
+                  Alert.alert('Terms of Service', 'Please see the full Terms of Service in Settings after registration.');
+                }}>
                   Terms of Service
                 </Text>{' '}
                 and{' '}
-                <Text style={typographyStyles.linkText} onPress={() => Alert.alert('Privacy Policy', 'Privacy Policy will be displayed here.')}>
+                <Text style={typographyStyles.linkText} onPress={() => {
+                  // TODO: Navigate to Privacy Policy when added to Auth stack
+                  Alert.alert('Privacy Policy', 'Please see the full Privacy Policy in Settings after registration.');
+                }}>
                   Privacy Policy
                 </Text>
               </Text>

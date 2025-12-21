@@ -15,6 +15,8 @@ import { DevicesScreen } from '@/screens/profile/DevicesScreen';
 import { VerifyEmailChangeScreen } from '@/screens/profile/VerifyEmailChangeScreen';
 import { ShareLocationScreen } from '@/screens/share/ShareLocationScreen';
 import { SearchDestinationScreen } from '@/screens/search/SearchDestinationScreen';
+import { TermsOfServiceScreen } from '@/screens/legal/TermsOfServiceScreen';
+import { PrivacyPolicyScreen } from '@/screens/legal/PrivacyPolicyScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -123,6 +125,20 @@ const ProfileStack = () => (
       options={{
         title: 'Verify Email',
         gestureEnabled: false, // Prevent swipe back
+      }}
+    />
+    <Stack.Screen
+      name="TermsOfService"
+      component={TermsOfServiceScreen}
+      options={{
+        title: 'Terms of Service',
+      }}
+    />
+    <Stack.Screen
+      name="PrivacyPolicy"
+      component={PrivacyPolicyScreen}
+      options={{
+        title: 'Privacy Policy',
       }}
     />
   </Stack.Navigator>
