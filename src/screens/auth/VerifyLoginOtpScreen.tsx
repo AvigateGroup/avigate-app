@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/types/navigation.types';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -17,10 +19,13 @@ import { COLORS } from '@/constants/colors';
 import { authFeatureStyles } from '@/styles/features/auth';
 import { buttonStyles } from '@/styles/base';
 
+type VerifyLoginOTPScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'VerifyLoginOTP'>;
+type VerifyLoginOTPScreenRouteProp = RouteProp<AuthStackParamList, 'VerifyLoginOTP'>;
+
 export const VerifyLoginOTPScreen: React.FC = () => {
-  const router = useRouter();
-  const params = useLocalSearchParams();
-  const email = params.email as string;
+  const navigation = useNavigation<VerifyLoginOTPScreenNavigationProp>();
+  const route = useRoute<VerifyLoginOTPScreenRouteProp>();
+  const email = route.params.email;
 
   const { login } = useAuth();
   const [otp, setOtp] = useState('');
@@ -148,7 +153,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
           </View>
 
           <TouchableOpacity
-            onPress={() => router.back()}
+            onPress={() => navigation.goBack()}
             style={authFeatureStyles.changeEmailButton}
           >
             <Icon name="arrow-back" size={18} color={COLORS.primary} />

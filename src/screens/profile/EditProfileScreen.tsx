@@ -9,7 +9,8 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -23,8 +24,18 @@ import { profileFeatureStyles } from '@/styles/features';
 import { formStyles, spacingStyles, typographyStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
+type ProfileStackParamList = {
+  ProfileMain: undefined;
+  Settings: undefined;
+  EditProfile: undefined;
+  Devices: undefined;
+  VerifyEmailChange: { email: string };
+};
+
+type EditProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
+
 export const EditProfileScreen: React.FC = () => {
-  const router = useRouter();
+  const navigation = useNavigation<EditProfileScreenNavigationProp>();
   const { user } = useAuth();
   const colors = useThemedColors();
   const { updateProfile, isLoading } = useUserService();
@@ -130,7 +141,7 @@ export const EditProfileScreen: React.FC = () => {
           text1: 'No Changes',
           text2: 'No changes were made to your profile',
         });
-        router.back();
+        navigation.goBack();
         return;
       }
 
@@ -144,11 +155,8 @@ export const EditProfileScreen: React.FC = () => {
           text2: 'Please verify your new email address',
         });
 
-        // Use Expo Router to navigate
-        router.push({
-          pathname: '/profile/verify-email-change',
-          params: { email: formData.email.toLowerCase().trim() },
-        });
+        // Navigate to email verification screen
+        navigation.navigate('VerifyEmailChange', { email: formData.email.toLowerCase().trim() });
         return;
       }
 
@@ -159,7 +167,7 @@ export const EditProfileScreen: React.FC = () => {
         text2: 'Your profile has been successfully updated',
       });
 
-      router.back();
+      navigation.goBack();
     } catch (error: any) {
       console.error('Update profile error:', error);
 
@@ -338,7 +346,7 @@ export const EditProfileScreen: React.FC = () => {
 
           <Button
             title="Cancel"
-            onPress={() => router.back()}
+            onPress={() => navigation.goBack()}
             variant="outline"
             disabled={isLoading}
             style={{ marginTop: 12 }}

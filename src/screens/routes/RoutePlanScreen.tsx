@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
@@ -12,9 +12,10 @@ import { routeStyles } from '@/styles/features';
 import { Route, RouteStep } from '@/types/route';
 
 export const RoutePlanScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const colors = useThemedColors();
-  const params = useLocalSearchParams();
+  // TODO: Get params from route when this screen is added to navigator
+  const params = {}; // useLocalSearchParams();
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const { findSmartRoutes, isLoading } = useRouteService();
 
@@ -71,13 +72,8 @@ export const RoutePlanScreen = () => {
   const handleStartTrip = () => {
     if (!selectedRoute) return;
 
-    router.push({
-      pathname: '/trips/active' as any,
-      params: {
-        routeId: selectedRoute.routeId,
-        routeData: JSON.stringify(selectedRoute),
-      },
-    });
+    // TODO: Navigate to active trip screen when added to navigator
+    Alert.alert('Start Trip', 'Trip tracking feature will be available soon.');
   };
 
   const toggleStepExpansion = (stepOrder: number) => {
@@ -414,7 +410,7 @@ export const RoutePlanScreen = () => {
   return (
     <View style={[routeStyles.container, { backgroundColor: colors.background }]}>
       <View style={[routeStyles.header, { backgroundColor: colors.white }]}>
-        <TouchableOpacity onPress={() => router.back()} style={routeStyles.backButton}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={routeStyles.backButton}>
           <Icon name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <View style={{ flex: 1 }}>

@@ -12,7 +12,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
@@ -23,7 +23,7 @@ import * as ImagePicker from 'expo-image-picker';
 type PostType = 'traffic_update' | 'route_alert' | 'safety_concern' | 'tip' | 'general';
 
 export const CreatePostScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const colors = useThemedColors();
   const { createPost, isLoading } = useCommunityService();
 
@@ -141,7 +141,7 @@ export const CreatePostScreen = () => {
         Alert.alert('Success', 'Your post has been published!', [
           {
             text: 'OK',
-            onPress: () => router.back(),
+            onPress: () => navigation.goBack(),
           },
         ]);
       } else {
@@ -167,7 +167,7 @@ export const CreatePostScreen = () => {
             { backgroundColor: colors.white, borderBottomColor: colors.border },
           ]}
         >
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="close" size={24} color={colors.text} />
           </TouchableOpacity>
           <Text style={[communityStyles.headerTitle, { color: colors.text }]}>Create Post</Text>

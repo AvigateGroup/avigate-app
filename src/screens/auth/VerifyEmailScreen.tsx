@@ -2,7 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/types/navigation.types';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -17,10 +19,13 @@ import { COLORS } from '@/constants/colors';
 import { authFeatureStyles } from '@/styles/features/auth';
 import { buttonStyles } from '@/styles/base';
 
+type VerifyEmailScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'VerifyEmail'>;
+type VerifyEmailScreenRouteProp = RouteProp<AuthStackParamList, 'VerifyEmail'>;
+
 export const VerifyEmailScreen: React.FC = () => {
-  const router = useRouter();
-  const params = useLocalSearchParams();
-  const email = params.email as string;
+  const navigation = useNavigation<VerifyEmailScreenNavigationProp>();
+  const route = useRoute<VerifyEmailScreenRouteProp>();
+  const email = route.params.email;
 
   const { login } = useAuth();
   const [otp, setOtp] = useState('');
@@ -67,7 +72,10 @@ export const VerifyEmailScreen: React.FC = () => {
           // AuthContext will handle navigation to main app
         } else {
           // Navigate to login
-          router.replace('/(auth)/login');
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+          });
         }
       }
     } catch (error: any) {
@@ -161,7 +169,7 @@ export const VerifyEmailScreen: React.FC = () => {
           </View>
 
           <TouchableOpacity
-            onPress={() => router.push('/(auth)/login')}
+            onPress={() => navigation.navigate('Login')}
             style={authFeatureStyles.backLink}
           >
             <Text style={authFeatureStyles.backLinkText}>Back to Login</Text>

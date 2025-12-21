@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Alert, Animated, Vibration } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
@@ -39,9 +39,10 @@ interface ActiveTrip {
 }
 
 export const ActiveTripScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const colors = useThemedColors();
-  const params = useLocalSearchParams();
+  // TODO: Get params from route when this screen is added to navigator
+  const params = {}; // useLocalSearchParams();
   const { watchLocation } = useCurrentLocation();
   const { getActiveTrip, updateTripLocation, completeTrip, cancelTrip, endTrip, isLoading } =
     useTripService();
@@ -98,7 +99,7 @@ export const ActiveTripScreen = () => {
       updateCurrentStepIndex(transformedTrip);
     } else {
       Alert.alert('Error', 'No active trip found');
-      router.back();
+      navigation.goBack();
     }
   };
 
@@ -198,7 +199,7 @@ export const ActiveTripScreen = () => {
             Alert.alert(
               'Trip Completed! 🎉',
               'A summary has been sent to your email. Thanks for using Avigate!',
-              [{ text: 'OK', onPress: () => router.replace('/') }],
+              [{ text: 'OK', onPress: () => navigation.navigate('Home' as never) }],
             );
           }
         },
@@ -220,7 +221,7 @@ export const ActiveTripScreen = () => {
             const result = await endTrip(trip.id);
             if (result.success) {
               Alert.alert('Trip Ended', 'A summary has been sent to your email.', [
-                { text: 'OK', onPress: () => router.replace('/') },
+                { text: 'OK', onPress: () => navigation.navigate('Home' as never) },
               ]);
             }
           },
@@ -241,7 +242,7 @@ export const ActiveTripScreen = () => {
       Alert.alert(
         'Trip Cancelled',
         'Your trip has been cancelled. A confirmation has been sent to your email.',
-        [{ text: 'OK', onPress: () => router.replace('/') }],
+        [{ text: 'OK', onPress: () => navigation.navigate('Home' as never) }],
       );
     }
   };

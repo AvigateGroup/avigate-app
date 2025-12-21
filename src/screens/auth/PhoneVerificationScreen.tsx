@@ -9,7 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AuthStackParamList } from '@/types/navigation.types';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -21,10 +23,13 @@ import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { UserSex } from '@/types/auth.types';
 
+type PhoneVerificationScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'PhoneVerification'>;
+type PhoneVerificationScreenRouteProp = RouteProp<AuthStackParamList, 'PhoneVerification'>;
+
 export const PhoneVerificationScreen: React.FC = () => {
-  const router = useRouter();
-  const params = useLocalSearchParams();
-  const fromGoogleAuth = params.fromGoogleAuth === 'true';
+  const navigation = useNavigation<PhoneVerificationScreenNavigationProp>();
+  const route = useRoute<PhoneVerificationScreenRouteProp>();
+  const fromGoogleAuth = route.params?.fromGoogleAuth || false;
 
   const { user, updateUser } = useAuth();
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -84,10 +89,8 @@ export const PhoneVerificationScreen: React.FC = () => {
           text2: 'Phone number added successfully',
         });
 
-        // Small delay to allow context to update, then navigate
-        setTimeout(() => {
-          router.replace('/(tabs)');
-        }, 500);
+        // Note: Navigation to main app will be handled automatically by AuthContext
+        // when user state is updated. No manual navigation needed.
       }
     } catch (error: any) {
       console.error('Phone capture error:', error);
@@ -162,10 +165,7 @@ export const PhoneVerificationScreen: React.FC = () => {
         text2: 'You can add your phone number later in settings',
       });
 
-      // Navigate to main app
-      setTimeout(() => {
-        router.replace('/(tabs)');
-      }, 500);
+      // Note: Navigation to main app will be handled automatically by AuthContext
     }
   };
 

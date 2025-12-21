@@ -10,6 +10,8 @@ import { COLORS } from '@/constants/colors';
 import { HomeScreen } from '@/screens/home/HomeScreen';
 import { ProfileScreen } from '@/screens/profile/ProfileScreen';
 import { SettingsScreen } from '@/screens/profile/SettingsScreen';
+import { EditProfileScreen } from '@/screens/profile/EditProfileScreen';
+import { DevicesScreen } from '@/screens/profile/DevicesScreen';
 import { VerifyEmailChangeScreen } from '@/screens/profile/VerifyEmailChangeScreen';
 import { ShareLocationScreen } from '@/screens/share/ShareLocationScreen';
 import { SearchDestinationScreen } from '@/screens/search/SearchDestinationScreen';
@@ -99,6 +101,20 @@ const ProfileStack = () => (
       component={SettingsScreen}
       options={{
         title: 'Settings',
+      }}
+    />
+    <Stack.Screen
+      name="EditProfile"
+      component={EditProfileScreen}
+      options={{
+        title: 'Edit Profile',
+      }}
+    />
+    <Stack.Screen
+      name="Devices"
+      component={DevicesScreen}
+      options={{
+        title: 'My Devices',
       }}
     />
     <Stack.Screen

@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Switch, Alert, Modal } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -11,8 +12,18 @@ import { useAuth } from '@/store/AuthContext';
 import { Button } from '@/components/common/Button';
 import { profileFeatureStyles } from '@/styles/features';
 
+type ProfileStackParamList = {
+  ProfileMain: undefined;
+  Settings: undefined;
+  EditProfile: undefined;
+  Devices: undefined;
+  VerifyEmailChange: { email: string };
+};
+
+type SettingsScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
+
 export const SettingsScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<SettingsScreenNavigationProp>();
   const { setThemeMode, isDark } = useTheme();
   const colors = useThemedColors();
   const { deleteAccount, isLoading } = useUserService();
@@ -42,7 +53,7 @@ export const SettingsScreen = () => {
     if (success) {
       setShowDeleteModal(false);
       await logout();
-      router.replace('/(auth)/login');
+      // Note: Navigation to login will be handled automatically by AuthContext
     }
   };
 
@@ -105,14 +116,14 @@ export const SettingsScreen = () => {
           title: 'Terms of Service',
           subtitle: 'Read our terms',
           type: 'navigation',
-          onPress: () => router.push('/terms'),
+          onPress: () => Alert.alert('Terms of Service', 'Terms of Service will be displayed here.'),
         },
         {
           icon: 'shield-outline',
           title: 'Privacy Policy',
           subtitle: 'Read our privacy policy',
           type: 'navigation',
-          onPress: () => router.push('/privacy'),
+          onPress: () => Alert.alert('Privacy Policy', 'Privacy Policy will be displayed here.'),
         },
       ],
     },

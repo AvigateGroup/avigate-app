@@ -13,7 +13,7 @@ import {
   Image,
   Modal,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Location from 'expo-location';
@@ -38,7 +38,7 @@ interface CurrentLocation {
 }
 
 export const ShareLocationScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const colors = useThemedColors();
   const { user } = useAuth();
   const { createShare, getQRCode, getPrintableQRCode, isLoading } = useLocationShareService();
@@ -194,7 +194,7 @@ export const ShareLocationScreen = () => {
       {
         text: 'Done',
         style: 'cancel',
-        onPress: () => router.back(),
+        onPress: () => navigation.goBack(),
       },
     ]);
   };
@@ -578,7 +578,7 @@ export const ShareLocationScreen = () => {
       <View style={shareStyles.actions}>
         <Button
           title="Cancel"
-          onPress={() => router.back()}
+          onPress={() => navigation.goBack()}
           variant="outline"
           disabled={isLoading || locationLoading}
           style={{ flex: 1 }}

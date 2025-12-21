@@ -12,7 +12,7 @@ import {
   Platform,
   KeyboardAvoidingView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
@@ -27,7 +27,7 @@ type ContributionType =
   | 'instructions_update';
 
 export const ContributeRouteScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const colors = useThemedColors();
   const { submitContribution, isLoading } = useCommunityService();
 
@@ -189,7 +189,7 @@ export const ContributeRouteScreen = () => {
           [
             {
               text: 'Done',
-              onPress: () => router.back(),
+              onPress: () => navigation.goBack(),
             },
           ],
         );
@@ -614,7 +614,7 @@ export const ContributeRouteScreen = () => {
             { backgroundColor: colors.white, borderBottomColor: colors.border },
           ]}
         >
-          <TouchableOpacity onPress={() => router.back()}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <Icon name="arrow-back" size={24} color={colors.text} />
           </TouchableOpacity>
           <Text style={[contributeStyles.headerTitle, { color: colors.text }]}>

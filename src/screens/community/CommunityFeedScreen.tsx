@@ -12,7 +12,7 @@ import {
   Switch,
   Alert,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
@@ -43,7 +43,7 @@ interface FeedPost {
 }
 
 export const CommunityFeedScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<any>();
   const colors = useThemedColors();
   const { user } = useAuth();
   const { getFeed, toggleRealTimeUpdates, votePost, isLoading } = useCommunityService();
@@ -141,15 +141,15 @@ export const CommunityFeedScreen = () => {
     Alert.alert('Contribute to Avigate', 'What would you like to share?', [
       {
         text: 'Route Improvement',
-        onPress: () => router.push('/(tabs)/community/contribute' as any),
+        onPress: () => navigation.navigate('/(tabs)/community/contribute' as any),
       },
       {
         text: 'Fare Update',
-        onPress: () => router.push('/(tabs)/community/contribute' as any),
+        onPress: () => navigation.navigate('/(tabs)/community/contribute' as any),
       },
       {
         text: 'New Landmark',
-        onPress: () => router.push('/(tabs)/community/contribute' as any),
+        onPress: () => navigation.navigate('/(tabs)/community/contribute' as any),
       },
       {
         text: 'Cancel',
@@ -202,7 +202,7 @@ export const CommunityFeedScreen = () => {
   const renderPost = ({ item }: { item: FeedPost }) => (
     <TouchableOpacity
       style={[communityStyles.postCard, { backgroundColor: colors.white }]}
-      onPress={() => router.push(`/(tabs)/community/${item.id}` as any)}
+      onPress={() => navigation.navigate(`/(tabs)/community/${item.id}` as any)}
       activeOpacity={0.7}
     >
       {/* Header */}
@@ -333,7 +333,7 @@ export const CommunityFeedScreen = () => {
           style={communityStyles.actionButton}
           onPress={e => {
             e.stopPropagation();
-            router.push(`/(tabs)/community/${item.id}` as any);
+            navigation.navigate(`/(tabs)/community/${item.id}` as any);
           }}
         >
           <Icon name="chatbubble-outline" size={20} color={colors.textMuted} />
@@ -457,7 +457,7 @@ export const CommunityFeedScreen = () => {
       {/* FAB for creating post */}
       <TouchableOpacity
         style={[communityStyles.fab, { backgroundColor: colors.primary }]}
-        onPress={() => router.push('/(tabs)/community/create' as any)}
+        onPress={() => navigation.navigate('/(tabs)/community/create' as any)}
         activeOpacity={0.8}
       >
         <Icon name="add" size={28} color={colors.textWhite} />

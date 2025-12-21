@@ -11,7 +11,8 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -19,8 +20,18 @@ import { useUserService } from '@/hooks/useUserService';
 import { getInitials, formatDate } from '@/utils/helpers';
 import { profileFeatureStyles } from '@/styles/features';
 
+type ProfileStackParamList = {
+  ProfileMain: undefined;
+  Settings: undefined;
+  EditProfile: undefined;
+  Devices: undefined;
+  VerifyEmailChange: { email: string };
+};
+
+type ProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
+
 export const ProfileScreen: React.FC = () => {
-  const router = useRouter();
+  const navigation = useNavigation<ProfileScreenNavigationProp>();
   const { user, logout } = useAuth();
   const colors = useThemedColors();
   const { pickAndUploadProfilePicture, takeCameraPhoto, isUploadingImage, uploadProgress } =
@@ -40,7 +51,7 @@ export const ProfileScreen: React.FC = () => {
   };
 
   const handleEditProfile = () => {
-    router.push('/profile/edit');
+    navigation.navigate('EditProfile');
   };
 
   const handleUploadPicture = () => {
@@ -71,7 +82,7 @@ export const ProfileScreen: React.FC = () => {
       icon: 'settings-outline',
       title: 'Settings',
       subtitle: 'App preferences and settings',
-      onPress: () => router.push('/settings'),
+      onPress: () => navigation.navigate('Settings'),
     },
     {
       icon: 'time-outline',
@@ -85,7 +96,7 @@ export const ProfileScreen: React.FC = () => {
       icon: 'phone-portrait-outline',
       title: 'My Devices',
       subtitle: 'Manage your logged-in devices',
-      onPress: () => router.push('/profile/devices'),
+      onPress: () => navigation.navigate('Devices'),
     },
     {
       icon: 'help-circle-outline',

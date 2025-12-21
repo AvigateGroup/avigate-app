@@ -10,10 +10,12 @@ import {
   SafeAreaView,
   Keyboard,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
-import { useRouter } from 'expo-router';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { searchStyles } from '@/styles/features';
 import { useLocationSearch } from '@/hooks/useLocationSearch';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
@@ -32,8 +34,15 @@ interface LocationSuggestion {
   walkingDistance?: number; // NEW - distance in meters
 }
 
+type HomeStackParamList = {
+  HomeMain: undefined;
+  SearchDestination: undefined;
+};
+
+type SearchDestinationScreenNavigationProp = NativeStackNavigationProp<HomeStackParamList>;
+
 export const SearchDestinationScreen = () => {
-  const router = useRouter();
+  const navigation = useNavigation<SearchDestinationScreenNavigationProp>();
   const colors = useThemedColors();
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const {
@@ -140,31 +149,16 @@ export const SearchDestinationScreen = () => {
   const handleSelectLocation = (location: LocationSuggestion) => {
     Keyboard.dismiss();
 
-    // FIX 3 & 4: Use correct route path and convert booleans to strings
-    router.push({
-      pathname: '/(tabs)/routes/plan' as any, // Adjust this to your actual route path
-      params: {
-        destinationName: location.name,
-        destinationLat: location.coordinates?.lat?.toString() || '',
-        destinationLng: location.coordinates?.lng?.toString() || '',
-        destinationType: location.type,
-        requiresWalking: location.requiresWalking ? '1' : '0', // Convert boolean to string
-        walkingDistance: location.walkingDistance?.toString() || '0',
-      },
-    });
+    // TODO: Navigate to route planning screen when it's added to the navigator
+    // For now, just show a placeholder alert
+    Alert.alert('Route Planning', `Selected destination: ${location.name}\n\nRoute planning feature will be available soon.`);
   };
 
   const handleUseCurrentLocation = async () => {
     const location = await getCurrentLocation();
     if (location) {
-      router.push({
-        pathname: '/(tabs)/routes/plan' as any, // Adjust this to your actual route path
-        params: {
-          destinationName: 'Current Location',
-          destinationLat: location.latitude.toString(),
-          destinationLng: location.longitude.toString(),
-        },
-      });
+      // TODO: Navigate to route planning screen when it's added to the navigator
+      Alert.alert('Route Planning', 'Use current location feature will be available soon.');
     }
   };
 
@@ -274,7 +268,7 @@ export const SearchDestinationScreen = () => {
           { backgroundColor: colors.white, borderBottomColor: colors.border },
         ]}
       >
-        <TouchableOpacity onPress={() => router.back()} style={searchStyles.backButton}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={searchStyles.backButton}>
           <Icon name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={[searchStyles.headerTitle, { color: colors.text }]}>Where to?</Text>
