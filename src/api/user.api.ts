@@ -3,6 +3,19 @@
 import { apiClient } from './client';
 import { UpdateProfileDto, ApiResponse, User, VerifyEmailDto } from '@/types/auth.types';
 
+// Legal update types
+export interface LegalStatusResponse {
+  needsUpdate: boolean;
+  needsTermsUpdate: boolean;
+  needsPrivacyUpdate: boolean;
+  currentTermsVersion: string;
+  currentPrivacyVersion: string;
+  userTermsVersion: string | null;
+  userPrivacyVersion: string | null;
+  termsAcceptedAt: string | null;
+  privacyAcceptedAt: string | null;
+}
+
 export const userApi = {
   // Get user profile
   getProfile: () => apiClient.get<ApiResponse<{ user: User }>>('/users/profile'),
@@ -42,4 +55,12 @@ export const userApi = {
     apiClient.delete<ApiResponse>('/users/account', {
       data: { confirmDelete },
     }),
+
+  // Check legal documents status
+  checkLegalStatus: () =>
+    apiClient.get<ApiResponse<LegalStatusResponse>>('/users/legal/status'),
+
+  // Accept updated legal documents
+  acceptLegalUpdate: (data: { acceptTerms?: boolean; acceptPrivacy?: boolean }) =>
+    apiClient.post<ApiResponse>('/users/legal/accept', data),
 };

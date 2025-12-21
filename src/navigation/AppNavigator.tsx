@@ -7,6 +7,7 @@ import { useAuth } from '@/store/AuthContext';
 import { AuthNavigator } from './AuthNavigator';
 import { MainNavigator } from './MainNavigator';
 import { Loading } from '@/components/common/Loading';
+import { LegalUpdateWrapper } from './LegalUpdateWrapper';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,9 @@ export const AppNavigator = () => {
           <Stack.Screen name="Auth" component={AuthNavigator} />
         )}
       </Stack.Navigator>
+
+      {/* Legal Update Modal - Shows automatically when user needs to accept updated Terms/Privacy */}
+      <LegalUpdateWrapper />
     </NavigationContainer>
   );
 };
