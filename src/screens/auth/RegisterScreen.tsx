@@ -2,9 +2,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '@/types/navigation.types';
+import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
@@ -21,10 +19,8 @@ import { typographyStyles, formStyles, layoutStyles, spacingStyles } from '@/sty
 import { authFeatureStyles } from '@/styles/features/auth';
 import { COLORS } from '@/constants/colors';
 
-type RegisterScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Register'>;
-
 export const RegisterScreen: React.FC = () => {
-  const navigation = useNavigation<RegisterScreenNavigationProp>();
+  const router = useRouter();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -144,7 +140,10 @@ export const RegisterScreen: React.FC = () => {
           text2: response.message,
         });
 
-        navigation.navigate('VerifyEmail', { email: formData.email.toLowerCase().trim() });
+        router.push({
+          pathname: '/(auth)/verify-email',
+          params: { email: formData.email.toLowerCase().trim() },
+        });
       }
     } catch (error: any) {
       console.error('Registration error:', error);
@@ -455,7 +454,7 @@ export const RegisterScreen: React.FC = () => {
         {/* Footer */}
         <View style={layoutStyles.footer}>
           <Text style={layoutStyles.footerText}>Already have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+          <TouchableOpacity onPress={() => router.push('/(auth)/login')}>
             <Text style={layoutStyles.footerLink}>Sign In</Text>
           </TouchableOpacity>
         </View>
