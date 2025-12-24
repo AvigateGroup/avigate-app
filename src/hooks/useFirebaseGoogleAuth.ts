@@ -39,7 +39,7 @@ export const useFirebaseGoogleAuth = () => {
       // Check if native modules are available
       if (!GoogleSignin || !auth) {
         console.warn('Native modules not available. Skipping Google Sign-In configuration.');
-        setIsConfigured(false);
+        setIsConfigured(true); // Set to true so app can proceed without Google Sign-In
         return;
       }
 
@@ -52,7 +52,7 @@ export const useFirebaseGoogleAuth = () => {
           text2: 'Google Sign-In is not properly configured. Please reinstall the app.',
           visibilityTime: 8000,
         });
-        setIsConfigured(false);
+        setIsConfigured(true); // Set to true so app can proceed without Google Sign-In
         return;
       }
 
@@ -69,11 +69,21 @@ export const useFirebaseGoogleAuth = () => {
         text1: 'Configuration Error',
         text2: 'Failed to initialize Google Sign-In',
       });
-      setIsConfigured(false);
+      setIsConfigured(true); // Set to true so app can proceed without Google Sign-In
     }
   };
 
   const signInWithGoogle = async () => {
+    // Check if native modules are available
+    if (!GoogleSignin || !auth) {
+      Toast.show({
+        type: 'error',
+        text1: 'Not Available',
+        text2: 'Google Sign-In is not available on this device',
+      });
+      return;
+    }
+
     if (!isConfigured) {
       console.warn(' Google Sign-In not configured yet');
       Toast.show({
