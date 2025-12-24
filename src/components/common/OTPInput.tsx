@@ -1,7 +1,7 @@
 // src/components/common/OTPInput.tsx
 
 import React, { useState, useRef, useEffect } from 'react';
-import { View, TextInput, StyleSheet, Text } from 'react-native';
+import { View, TextInput, StyleSheet, Text, Platform } from 'react-native';
 import { COLORS } from '@/constants/colors';
 import { APP_CONFIG } from '@/constants/config';
 
@@ -32,6 +32,11 @@ export const OTPInput: React.FC<OTPInputProps> = ({
       return;
     }
 
+    // Only allow numeric input
+    if (text && !/^\d$/.test(text)) {
+      return;
+    }
+
     const newOtp = [...otp];
     newOtp[index] = text;
     setOtp(newOtp);
@@ -43,30 +48,29 @@ export const OTPInput: React.FC<OTPInputProps> = ({
     }
   };
 
-  const handlePaste = (pastedText: string, startIndex: number) => {
-    // Remove non-numeric characters
+  const handlePaste = (pastedText: string, startIndex: number = 0) => {
+    // Remove non-numeric characters and get only digits
     const cleanedText = pastedText.replace(/[^0-9]/g, '');
-    
+
     if (cleanedText.length === 0) return;
 
-    const newOtp = [...otp];
-    const chars = cleanedText.split('');
+    const newOtp = Array(length).fill('');
+    const chars = cleanedText.split('').slice(0, length);
 
-    // Fill from the current index
-    for (let i = 0; i < chars.length && startIndex + i < length; i++) {
-      newOtp[startIndex + i] = chars[i];
-    }
+    // Fill OTP boxes from the start
+    chars.forEach((char, i) => {
+      newOtp[i] = char;
+    });
 
     setOtp(newOtp);
     onChange(newOtp.join(''));
 
-    // Focus the next empty field or the last field
-    const nextEmptyIndex = newOtp.findIndex((digit, idx) => !digit && idx > startIndex);
-    const focusIndex = nextEmptyIndex !== -1 ? nextEmptyIndex : Math.min(startIndex + chars.length, length - 1);
-    
+    // Focus the last filled box or the next empty one
+    const focusIndex = Math.min(chars.length, length - 1);
+
     setTimeout(() => {
       inputs.current[focusIndex]?.focus();
-    }, 0);
+    }, 100);
   };
 
   const handleKeyPress = (e: any, index: number) => {
@@ -86,7 +90,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
             }}
             style={[styles.input, error && styles.inputError]}
             keyboardType="number-pad"
-            maxLength={1}
+            maxLength={index === 0 ? length : 1} // First box accepts full OTP for paste
             value={otp[index] || ''}
             onChangeText={text => handleChange(text, index)}
             onKeyPress={e => handleKeyPress(e, index)}
@@ -94,6 +98,7 @@ export const OTPInput: React.FC<OTPInputProps> = ({
             selectTextOnFocus
             textContentType="oneTimeCode" // iOS autofill support
             autoComplete="sms-otp" // Android autofill support
+            importantForAutofill="yes"
           />
         ))}
       </View>
