@@ -60,16 +60,29 @@ export const VerifyLoginOTPScreen: React.FC = () => {
         deviceInfo: getDeviceInfo(),
       });
 
-      if (response.success && response.data.accessToken && response.data.refreshToken) {
-        Toast.show({
-          type: 'success',
-          text1: 'Success',
-          text2: 'Login successful!',
-        });
+      console.log('OTP Verification Response:', JSON.stringify(response, null, 2));
 
-        await login(response.data.accessToken, response.data.refreshToken, response.data.user);
+      if (!response || !response.success) {
+        throw new Error(response?.message || 'Verification failed');
       }
+
+      if (!response.data?.accessToken || !response.data?.refreshToken || !response.data?.user) {
+        console.error('Missing data in response:', response);
+        throw new Error('Invalid response from server. Please try again.');
+      }
+
+      // Login successful - update auth state
+      console.log('Calling login with tokens...');
+      login(response.data.accessToken, response.data.refreshToken, response.data.user);
+      console.log('Login completed - navigation should trigger automatically');
+
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Login successful!',
+      });
     } catch (error: any) {
+      console.error('OTP Verification Error:', error);
       const errorMessage = handleApiError(error);
       setError(errorMessage);
       Toast.show({

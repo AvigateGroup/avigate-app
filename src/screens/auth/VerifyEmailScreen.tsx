@@ -25,7 +25,7 @@ type VerifyEmailScreenRouteProp = RouteProp<AuthStackParamList, 'VerifyEmail'>;
 export const VerifyEmailScreen: React.FC = () => {
   const navigation = useNavigation<VerifyEmailScreenNavigationProp>();
   const route = useRoute<VerifyEmailScreenRouteProp>();
-  const email = route.params.email;
+  const email = route.params?.email || '';
 
   const { login } = useAuth();
   const [otp, setOtp] = useState('');

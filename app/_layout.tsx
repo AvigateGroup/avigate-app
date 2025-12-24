@@ -1,7 +1,11 @@
 // app/_layout.tsx
 // CRITICAL: Import Firebase modules DIRECTLY here to ensure initialization
-import '@react-native-firebase/app';
-import '@react-native-firebase/auth';
+try {
+  require('@react-native-firebase/app');
+  require('@react-native-firebase/auth');
+} catch (error) {
+  console.warn('Firebase native modules not available. Some features may be disabled.', error);
+}
 
 import { useEffect, useState, useCallback } from 'react';
 import { Stack, useRouter, useSegments, usePathname } from 'expo-router';

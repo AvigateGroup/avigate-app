@@ -8,18 +8,18 @@ interface AnimatedSplashScreenProps {
 
 const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete }) => {
   // Animation values
-  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const logoOpacity = useRef(new Animated.Value(0)).current;
   const scaleAnim = useRef(new Animated.Value(0.5)).current;
-  const containerOpacity = useRef(new Animated.Value(1)).current;
+  const backgroundOpacity = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     // Start animation sequence
     Animated.sequence([
-      // 1. Logo fades in and scales up (faster, smoother)
+      // 1. Logo fades in and scales up
       Animated.parallel([
-        Animated.timing(fadeAnim, {
+        Animated.timing(logoOpacity, {
           toValue: 1,
-          duration: 600, // Reduced from 1800ms
+          duration: 400,
           useNativeDriver: true,
         }),
         Animated.spring(scaleAnim, {
@@ -31,12 +31,19 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
       ]),
 
       // 2. Hold the logo briefly
-      Animated.delay(400), // Reduced from 1800ms
+      Animated.delay(400),
 
-      // 3. Fade out the entire splash screen
-      Animated.timing(containerOpacity, {
-        toValue: 0, // Changed from 1 to 0 to actually fade out
-        duration: 400, // Reduced from 1800ms
+      // 3. Fade out the logo first
+      Animated.timing(logoOpacity, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+
+      // 4. Then fade out the background
+      Animated.timing(backgroundOpacity, {
+        toValue: 0,
+        duration: 400,
         useNativeDriver: true,
       }),
     ]).start(() => {
@@ -45,12 +52,12 @@ const AnimatedSplashScreen: React.FC<AnimatedSplashScreenProps> = ({ onComplete 
   }, []);
 
   return (
-    <Animated.View style={[styles.container, { opacity: containerOpacity }]}>
+    <Animated.View style={[styles.container, { opacity: backgroundOpacity }]}>
       <Animated.View
         style={[
           styles.logoContainer,
           {
-            opacity: fadeAnim,
+            opacity: logoOpacity,
             transform: [{ scale: scaleAnim }],
           },
         ]}
