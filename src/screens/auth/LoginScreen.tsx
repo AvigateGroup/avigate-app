@@ -132,7 +132,10 @@ export const LoginScreen: React.FC = () => {
         });
 
         setTimeout(() => {
-          navigation.navigate('VerifyEmail', { email: email.toLowerCase().trim() });
+          router.push({
+            pathname: '/(auth)/verify-email',
+            params: { email: email.toLowerCase().trim() },
+          });
         }, 1500);
       } else {
         Toast.show({

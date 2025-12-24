@@ -11,8 +11,7 @@ import {
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -20,20 +19,8 @@ import { useUserService } from '@/hooks/useUserService';
 import { getInitials, formatDate } from '@/utils/helpers';
 import { profileFeatureStyles } from '@/styles/features';
 
-type ProfileStackParamList = {
-  ProfileMain: undefined;
-  Settings: undefined;
-  EditProfile: undefined;
-  Devices: undefined;
-  VerifyEmailChange: { email: string };
-  TermsOfService: undefined;
-  PrivacyPolicy: undefined;
-};
-
-type ProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
-
 export const ProfileScreen: React.FC = () => {
-  const navigation = useNavigation<ProfileScreenNavigationProp>();
+  const router = useRouter();
   const { user, logout } = useAuth();
   const colors = useThemedColors();
   const { pickAndUploadProfilePicture, takeCameraPhoto, isUploadingImage, uploadProgress } =
@@ -53,7 +40,7 @@ export const ProfileScreen: React.FC = () => {
   };
 
   const handleEditProfile = () => {
-    navigation.navigate('EditProfile');
+    router.push('/profile/edit');
   };
 
   const handleUploadPicture = () => {
@@ -84,7 +71,7 @@ export const ProfileScreen: React.FC = () => {
       icon: 'settings-outline',
       title: 'Settings',
       subtitle: 'App preferences and settings',
-      onPress: () => navigation.navigate('Settings'),
+      onPress: () => router.push('/settings'),
     },
     {
       icon: 'time-outline',
@@ -98,7 +85,7 @@ export const ProfileScreen: React.FC = () => {
       icon: 'phone-portrait-outline',
       title: 'My Devices',
       subtitle: 'Manage your logged-in devices',
-      onPress: () => navigation.navigate('Devices'),
+      onPress: () => router.push('/profile/devices'),
     },
     {
       icon: 'help-circle-outline',

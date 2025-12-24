@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { OTPInput } from '@/components/common/OTPInput';
@@ -15,10 +15,9 @@ import { buttonStyles } from '@/styles/base';
 import { useThemedColors } from '@/hooks/useThemedColors';
 
 export const VerifyEmailChangeScreen: React.FC = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-  const params = route.params as { email?: string } | undefined;
-  const newEmail = params?.email || '';
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  const newEmail = (params.email as string) || '';
   const colors = useThemedColors();
 
   const { verifyEmailChange, resendEmailChangeOTP, isLoading } = useUserService();
@@ -59,7 +58,7 @@ export const VerifyEmailChangeScreen: React.FC = () => {
           text2: 'Your email has been successfully updated!',
         });
 
-        navigation.goBack();
+        router.back();
       }
     } catch (error: any) {
       console.error('Email verification error:', error);
@@ -117,7 +116,7 @@ export const VerifyEmailChangeScreen: React.FC = () => {
   };
 
   const handleCancel = () => {
-    navigation.goBack();
+    router.back();
   };
 
   return (

@@ -1,11 +1,10 @@
 // src/screens/auth/VerifyEmailScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { OTPInput } from '@/components/common/OTPInput';
 import { Button } from '@/components/common/Button';
 import { authApi } from '@/api/auth.api';
@@ -13,14 +12,15 @@ import { validateOTP } from '@/utils/validation';
 import { handleApiError } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { APP_CONFIG } from '@/constants/config';
-import { COLORS } from '@/constants/colors';
 import { authFeatureStyles } from '@/styles/features/auth';
 import { buttonStyles } from '@/styles/base';
+import { useThemedColors } from '@/hooks/useThemedColors';
 
 export const VerifyEmailScreen: React.FC = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const email = (params.email as string) || '';
+  const colors = useThemedColors();
 
   const { login } = useAuth();
   const [otp, setOtp] = useState('');
@@ -113,61 +113,77 @@ export const VerifyEmailScreen: React.FC = () => {
   };
 
   return (
-    <AuthLayout showLogo={false}>
-      <View style={authFeatureStyles.authContent}>
-        <View>
-          <Text style={authFeatureStyles.titleCentered}>Verify Your Email</Text>
-          <Text style={authFeatureStyles.subtitleCentered}>We've sent a verification code to</Text>
-          <Text style={authFeatureStyles.emailText}>{email}</Text>
+    <ScrollView
+      style={{ flex: 1, backgroundColor: colors.background }}
+      contentContainerStyle={{ flexGrow: 1, padding: 20, paddingTop: 60, justifyContent: 'center' }}
+      showsVerticalScrollIndicator={false}
+    >
+      <View>
+        {/* Title and Email */}
+        <Text style={[authFeatureStyles.titleCentered, { color: colors.text }]}>
+          Verify Your Email
+        </Text>
+        <Text style={[authFeatureStyles.subtitleCentered, { color: colors.textMuted }]}>
+          We've sent a verification code to
+        </Text>
+        <Text style={authFeatureStyles.emailText}>{email}</Text>
 
-          <Text style={authFeatureStyles.instructionText}>
-            Enter the 6-digit code to verify your email
-          </Text>
+        <Text style={[authFeatureStyles.instructionText, { color: colors.textMuted }]}>
+          Enter the 6-digit code to verify your email
+        </Text>
 
-          <View style={authFeatureStyles.otpWrapper}>
-            <OTPInput value={otp} onChange={setOtp} error={error} />
-          </View>
+        {/* OTP Input */}
+        <View style={authFeatureStyles.otpWrapper}>
+          <OTPInput value={otp} onChange={setOtp} error={error} />
         </View>
 
-        <View>
-          <Button
-            title="Verify Email"
-            onPress={handleVerify}
-            loading={loading}
-            disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
-            style={buttonStyles.submitButton}
-          />
+        {/* Verify Button */}
+        <Button
+          title="Verify Email"
+          onPress={handleVerify}
+          loading={loading}
+          disabled={otp.length !== APP_CONFIG.OTP_LENGTH || loading}
+          style={buttonStyles.submitButton}
+        />
 
-          <View style={authFeatureStyles.resendSection}>
-            {canResend ? (
-              <View style={authFeatureStyles.resendRow}>
-                <Text style={authFeatureStyles.resendLabel}>Didn't receive the code? </Text>
-                <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
-                  <Text style={authFeatureStyles.resendLink}>
-                    {resendLoading ? 'Sending...' : 'Resend'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ) : (
-              <Text style={authFeatureStyles.countdownText}>Resend code in {countdown}s</Text>
-            )}
-          </View>
-
-          <View style={authFeatureStyles.helpNote}>
-            <Icon name="information-circle-outline" size={14} color={COLORS.textMuted} />
-            <Text style={authFeatureStyles.helpText}>
-              Check your spam folder if you don't see it
+        {/* Resend Section */}
+        <View style={authFeatureStyles.resendSection}>
+          {canResend ? (
+            <View style={authFeatureStyles.resendRow}>
+              <Text style={[authFeatureStyles.resendLabel, { color: colors.textMuted }]}>
+                Didn't receive the code?{' '}
+              </Text>
+              <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
+                <Text style={authFeatureStyles.resendLink}>
+                  {resendLoading ? 'Sending...' : 'Resend'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <Text style={[authFeatureStyles.countdownText, { color: colors.textMuted }]}>
+              Resend code in {countdown}s
             </Text>
-          </View>
-
-          <TouchableOpacity
-            onPress={() => router.push('/(auth)/login')}
-            style={authFeatureStyles.backLink}
-          >
-            <Text style={authFeatureStyles.backLinkText}>Back to Login</Text>
-          </TouchableOpacity>
+          )}
         </View>
+
+        {/* Help Note */}
+        <View style={authFeatureStyles.helpNote}>
+          <Icon name="information-circle-outline" size={14} color={colors.textMuted} />
+          <Text style={[authFeatureStyles.helpText, { color: colors.textMuted }]}>
+            Check your spam folder if you don't see it
+          </Text>
+        </View>
+
+        {/* Back to Login */}
+        <TouchableOpacity
+          onPress={() => router.push('/(auth)/login')}
+          style={authFeatureStyles.backLink}
+        >
+          <Text style={[authFeatureStyles.backLinkText, { color: colors.primary }]}>
+            Back to Login
+          </Text>
+        </TouchableOpacity>
       </View>
-    </AuthLayout>
+    </ScrollView>
   );
 };
