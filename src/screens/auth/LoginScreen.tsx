@@ -80,7 +80,7 @@ export const LoginScreen: React.FC = () => {
             visibilityTime: 6000,
             onPress: () => {
               Toast.hide();
-              navigation.navigate('Register');
+              router.push('/(auth)/register');
             },
           });
 

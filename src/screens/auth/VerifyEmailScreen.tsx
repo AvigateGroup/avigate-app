@@ -67,10 +67,7 @@ export const VerifyEmailScreen: React.FC = () => {
           // AuthContext will handle navigation to main app
         } else {
           // Navigate to login
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Login' }],
-          });
+          router.replace('/(auth)/login');
         }
       }
     } catch (error: any) {
