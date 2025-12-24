@@ -73,7 +73,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
 
       // Login successful - update auth state
       console.log('Calling login with tokens...');
-      login(response.data.accessToken, response.data.refreshToken, response.data.user);
+      await login(response.data.accessToken, response.data.refreshToken, response.data.user);
       console.log('Login completed - navigation should trigger automatically');
 
       Toast.show({
