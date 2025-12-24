@@ -17,12 +17,13 @@ export const LegalUpdateWrapper: React.FC = () => {
   const handleViewTerms = () => {
     try {
       // Navigate to Terms of Service in Profile stack
-      navigation.navigate('Main' as never, {
+      // @ts-expect-error - Nested navigation typing is complex
+      navigation.navigate('Main', {
         screen: 'Profile',
         params: {
           screen: 'TermsOfService',
         },
-      } as never);
+      });
     } catch (error) {
       console.error('Navigation error:', error);
       Toast.show({
@@ -36,12 +37,13 @@ export const LegalUpdateWrapper: React.FC = () => {
   const handleViewPrivacy = () => {
     try {
       // Navigate to Privacy Policy in Profile stack
-      navigation.navigate('Main' as never, {
+      // @ts-expect-error - Nested navigation typing is complex
+      navigation.navigate('Main', {
         screen: 'Profile',
         params: {
           screen: 'PrivacyPolicy',
         },
-      } as never);
+      });
     } catch (error) {
       console.error('Navigation error:', error);
       Toast.show({
