@@ -1,7 +1,7 @@
 // src/screens/auth/VerifyLoginOTPScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -16,6 +16,7 @@ import { APP_CONFIG } from '@/constants/config';
 import { COLORS } from '@/constants/colors';
 import { authFeatureStyles } from '@/styles/features/auth';
 import { buttonStyles } from '@/styles/base';
+import { SPACING } from '@/utils/responsive';
 
 export const VerifyLoginOTPScreen: React.FC = () => {
   const router = useRouter();
@@ -121,54 +122,79 @@ export const VerifyLoginOTPScreen: React.FC = () => {
 
   return (
     <AuthLayout showLogo={false}>
-      <View style={authFeatureStyles.authContent}>
-        {/* TOP SECTION */}
-        <View>
-          <Text style={authFeatureStyles.titleCentered}>Verify Your Login</Text>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.centeredContainer}>
+          {/* TOP SECTION */}
+          <View style={styles.topSection}>
+            <Text style={authFeatureStyles.titleCentered}>Verify Your Login</Text>
 
-          <Text style={authFeatureStyles.subtitleCentered}>Enter the 6-digit code sent to</Text>
+            <Text style={authFeatureStyles.subtitleCentered}>Enter the 6-digit code sent to</Text>
 
-          {/* ENHANCED EMAIL DISPLAY WITH CONTAINER */}
-          <View style={authFeatureStyles.emailContainer}>
-            <Text style={authFeatureStyles.emailText}>{email}</Text>
+            {/* ENHANCED EMAIL DISPLAY WITH CONTAINER */}
+            <View style={authFeatureStyles.emailContainer}>
+              <Text style={authFeatureStyles.emailText}>{email}</Text>
+            </View>
+
+            <View style={authFeatureStyles.otpWrapper}>
+              <OTPInput value={otp} onChange={setOtp} error={error} />
+            </View>
           </View>
 
-          <View style={authFeatureStyles.otpWrapper}>
-            <OTPInput value={otp} onChange={setOtp} error={error} />
+          {/* BOTTOM SECTION */}
+          <View style={styles.bottomSection}>
+            <Button
+              title="Verify"
+              onPress={handleVerify}
+              loading={loading}
+              disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
+              style={buttonStyles.submitButton}
+            />
+
+            <View style={authFeatureStyles.resendSection}>
+              {canResend ? (
+                <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
+                  <Text style={authFeatureStyles.resendLink}>
+                    {resendLoading ? 'Sending...' : 'Resend Code'}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={authFeatureStyles.countdownText}>Resend code in {countdown}s</Text>
+              )}
+            </View>
+
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={authFeatureStyles.changeEmailButton}
+            >
+              <Icon name="arrow-back" size={18} color={COLORS.primary} />
+              <Text style={authFeatureStyles.changeEmailText}>Change Email</Text>
+            </TouchableOpacity>
           </View>
         </View>
-
-        {/* BOTTOM SECTION */}
-        <View>
-          <Button
-            title="Verify"
-            onPress={handleVerify}
-            loading={loading}
-            disabled={otp.length !== APP_CONFIG.OTP_LENGTH}
-            style={buttonStyles.submitButton}
-          />
-
-          <View style={authFeatureStyles.resendSection}>
-            {canResend ? (
-              <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
-                <Text style={authFeatureStyles.resendLink}>
-                  {resendLoading ? 'Sending...' : 'Resend Code'}
-                </Text>
-              </TouchableOpacity>
-            ) : (
-              <Text style={authFeatureStyles.countdownText}>Resend code in {countdown}s</Text>
-            )}
-          </View>
-
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={authFeatureStyles.changeEmailButton}
-          >
-            <Icon name="arrow-back" size={18} color={COLORS.primary} />
-            <Text style={authFeatureStyles.changeEmailText}>Change Email</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </ScrollView>
     </AuthLayout>
   );
 };
+
+const styles = StyleSheet.create({
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingVertical: SPACING.xl,
+  },
+  centeredContainer: {
+    flex: 1,
+    justifyContent: 'space-between',
+    minHeight: 500,
+  },
+  topSection: {
+    paddingTop: SPACING.lg,
+  },
+  bottomSection: {
+    paddingBottom: SPACING.lg,
+  },
+});
