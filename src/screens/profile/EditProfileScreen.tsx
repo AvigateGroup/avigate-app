@@ -9,8 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -24,20 +23,8 @@ import { profileFeatureStyles } from '@/styles/features';
 import { formStyles, spacingStyles, typographyStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
-type ProfileStackParamList = {
-  ProfileMain: undefined;
-  Settings: undefined;
-  EditProfile: undefined;
-  Devices: undefined;
-  VerifyEmailChange: { email: string };
-  TermsOfService: undefined;
-  PrivacyPolicy: undefined;
-};
-
-type EditProfileScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
-
 export const EditProfileScreen: React.FC = () => {
-  const navigation = useNavigation<EditProfileScreenNavigationProp>();
+  const router = useRouter();
   const { user } = useAuth();
   const colors = useThemedColors();
   const { updateProfile, isLoading } = useUserService();
@@ -143,7 +130,7 @@ export const EditProfileScreen: React.FC = () => {
           text1: 'No Changes',
           text2: 'No changes were made to your profile',
         });
-        navigation.goBack();
+        router.back();
         return;
       }
 
@@ -158,7 +145,10 @@ export const EditProfileScreen: React.FC = () => {
         });
 
         // Navigate to email verification screen
-        navigation.navigate('VerifyEmailChange', { email: formData.email.toLowerCase().trim() });
+        router.push({
+          pathname: '/profile/verify-email-change',
+          params: { email: formData.email.toLowerCase().trim() },
+        });
         return;
       }
 
@@ -169,7 +159,7 @@ export const EditProfileScreen: React.FC = () => {
         text2: 'Your profile has been successfully updated',
       });
 
-      navigation.goBack();
+      router.back();
     } catch (error: any) {
       console.error('Update profile error:', error);
 
@@ -348,7 +338,7 @@ export const EditProfileScreen: React.FC = () => {
 
           <Button
             title="Cancel"
-            onPress={() => navigation.goBack()}
+            onPress={() => router.back()}
             variant="outline"
             disabled={isLoading}
             style={{ marginTop: 12 }}

@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Switch, Alert, Modal } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -12,20 +11,8 @@ import { useAuth } from '@/store/AuthContext';
 import { Button } from '@/components/common/Button';
 import { profileFeatureStyles } from '@/styles/features';
 
-type ProfileStackParamList = {
-  ProfileMain: undefined;
-  Settings: undefined;
-  EditProfile: undefined;
-  Devices: undefined;
-  VerifyEmailChange: { email: string };
-  TermsOfService: undefined;
-  PrivacyPolicy: undefined;
-};
-
-type SettingsScreenNavigationProp = NativeStackNavigationProp<ProfileStackParamList>;
-
 export const SettingsScreen = () => {
-  const navigation = useNavigation<SettingsScreenNavigationProp>();
+  const router = useRouter();
   const { setThemeMode, isDark } = useTheme();
   const colors = useThemedColors();
   const { deleteAccount, isLoading } = useUserService();
@@ -118,14 +105,14 @@ export const SettingsScreen = () => {
           title: 'Terms of Service',
           subtitle: 'Read our terms',
           type: 'navigation',
-          onPress: () => navigation.navigate('TermsOfService'),
+          onPress: () => router.push('/terms'),
         },
         {
           icon: 'shield-outline',
           title: 'Privacy Policy',
           subtitle: 'Read our privacy policy',
           type: 'navigation',
-          onPress: () => navigation.navigate('PrivacyPolicy'),
+          onPress: () => router.push('/privacy'),
         },
       ],
     },
