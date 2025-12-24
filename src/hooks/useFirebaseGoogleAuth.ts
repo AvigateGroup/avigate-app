@@ -2,8 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Platform, Alert } from 'react-native';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
-import auth from '@react-native-firebase/auth';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
 import { authApi } from '@/api/auth.api';
@@ -11,6 +9,20 @@ import { getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { GoogleAuthDto } from '@/types/auth.types';
 import { GOOGLE_CONFIG } from '@/constants/config';
+
+// Lazy load native modules to prevent crashes if they're not available
+let GoogleSignin: any = null;
+let statusCodes: any = null;
+let auth: any = null;
+
+try {
+  const googleSigninModule = require('@react-native-google-signin/google-signin');
+  GoogleSignin = googleSigninModule.GoogleSignin;
+  statusCodes = googleSigninModule.statusCodes;
+  auth = require('@react-native-firebase/auth').default;
+} catch (error) {
+  console.warn('Native modules not available. Google Sign-In will be disabled.', error);
+}
 
 export const useFirebaseGoogleAuth = () => {
   const router = useRouter();
@@ -24,6 +36,13 @@ export const useFirebaseGoogleAuth = () => {
 
   const configureGoogleSignIn = () => {
     try {
+      // Check if native modules are available
+      if (!GoogleSignin || !auth) {
+        console.warn('Native modules not available. Skipping Google Sign-In configuration.');
+        setIsConfigured(false);
+        return;
+      }
+
       // Validate that we have the required Web Client ID
       if (!GOOGLE_CONFIG.WEB_CLIENT_ID) {
         console.error(' CRITICAL: Google Web Client ID is missing!');

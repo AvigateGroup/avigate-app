@@ -36,6 +36,17 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     loadAuthData();
   }, []);
 
+  // Debug: Log when auth state changes
+  useEffect(() => {
+    const isAuthenticated = !!user && !!accessToken;
+    console.log('AuthContext state changed:', {
+      hasUser: !!user,
+      hasAccessToken: !!accessToken,
+      isAuthenticated,
+      userEmail: user?.email,
+    });
+  }, [user, accessToken]);
+
   const loadAuthData = async () => {
     try {
       const [storedAccessToken, storedRefreshToken, storedUser] = await Promise.all([
@@ -72,17 +83,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (newAccessToken: string, newRefreshToken: string, newUser: User) => {
     try {
-      await Promise.all([
-        setItem(STORAGE_KEYS.ACCESS_TOKEN, newAccessToken),
-        setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken),
-        setObject(STORAGE_KEYS.USER_DATA, newUser),
-      ]);
+      console.log('Login function called with user:', newUser.email);
 
+      // Update state immediately for faster UI response
       setAccessToken(newAccessToken);
       setRefreshToken(newRefreshToken);
       setUser(newUser);
+
+      console.log('Auth state updated immediately. isAuthenticated:', !!(newUser && newAccessToken));
+
+      // Save to storage asynchronously (don't block navigation)
+      Promise.all([
+        setItem(STORAGE_KEYS.ACCESS_TOKEN, newAccessToken),
+        setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken),
+        setObject(STORAGE_KEYS.USER_DATA, newUser),
+      ])
+        .then(() => {
+          console.log('Auth data saved to storage successfully');
+        })
+        .catch((error) => {
+          console.error('Error saving auth data to storage:', error);
+        });
     } catch (error) {
-      console.error('Error saving auth data:', error);
+      console.error('Error in login function:', error);
       throw error;
     }
   };

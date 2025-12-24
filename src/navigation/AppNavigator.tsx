@@ -1,6 +1,6 @@
 // src/navigation/AppNavigator.tsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAuth } from '@/store/AuthContext';
@@ -12,7 +12,15 @@ import { LegalUpdateWrapper } from './LegalUpdateWrapper';
 const Stack = createNativeStackNavigator();
 
 export const AppNavigator = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user, accessToken } = useAuth();
+
+  useEffect(() => {
+    console.log('Auth state changed:', {
+      isAuthenticated,
+      hasUser: !!user,
+      hasToken: !!accessToken,
+    });
+  }, [isAuthenticated, user, accessToken]);
 
   if (isLoading) {
     return <Loading fullScreen message="Loading..." />;
@@ -20,7 +28,10 @@ export const AppNavigator = () => {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        key={isAuthenticated ? 'authenticated' : 'unauthenticated'}
+        screenOptions={{ headerShown: false }}
+      >
         {isAuthenticated ? (
           <Stack.Screen name="Main" component={MainNavigator} />
         ) : (
