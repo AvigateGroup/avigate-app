@@ -2,9 +2,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { AuthStackParamList } from '@/types/navigation.types';
+import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import { AuthLayout } from '@/components/layouts/AuthLayout';
 import { Input } from '@/components/common/Input';
@@ -18,10 +16,8 @@ import { RequestLoginOtpDto } from '@/types/auth.types';
 import { buttonStyles, formStyles, layoutStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
-
 export const LoginScreen: React.FC = () => {
-  const navigation = useNavigation<LoginScreenNavigationProp>();
+  const router = useRouter();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
 
   const [email, setEmail] = useState('');
@@ -59,7 +55,10 @@ export const LoginScreen: React.FC = () => {
           text2: response.message || 'Please check your email for the login code',
         });
 
-        navigation.navigate('VerifyLoginOTP', { email: email.toLowerCase().trim() });
+        router.push({
+          pathname: '/(auth)/verify-login-otp',
+          params: { email: email.toLowerCase().trim() },
+        });
       }
     } catch (error: any) {
       console.error('Request OTP error:', error);
@@ -209,7 +208,7 @@ export const LoginScreen: React.FC = () => {
         <View style={layoutStyles.footer}>
           <Text style={layoutStyles.footerText}>
             Don't have an account?{' '}
-            <Text style={layoutStyles.footerLink} onPress={() => navigation.navigate('Register')}>
+            <Text style={layoutStyles.footerLink} onPress={() => router.push('/(auth)/register')}>
               Sign Up
             </Text>
           </Text>
