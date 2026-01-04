@@ -48,20 +48,14 @@ export const homeFeatureStyles = StyleSheet.create({
     zIndex: 10,
   },
 
-  // ========== TOP RIGHT ICONS (Bolt Style) ==========
-  topRightIcons: {
+  // ========== TOP RIGHT NOTIFICATION BUTTON ==========
+  notificationButton: {
     position: 'absolute',
     top: Platform.OS === 'ios' ? 60 : 50,
     right: 16,
-    flexDirection: 'row',
-    gap: 12,
-    zIndex: 10,
-  },
-
-  iconButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -69,6 +63,7 @@ export const homeFeatureStyles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    zIndex: 10,
   },
 
   // ========== ACTION BUTTONS - MOVED MUCH HIGHER! ==========
@@ -94,16 +89,16 @@ export const homeFeatureStyles = StyleSheet.create({
     elevation: 8,
   },
 
-  // ========== BOTTOM SECTION - RIGHT ABOVE TABS ==========
+  // ========== BOTTOM SECTION - COVERS GOOGLE LOGO ==========
   bottomSection: {
     position: 'absolute',
-    bottom: Platform.OS === 'ios' ? 85 : 65,
+    bottom: 0,
     left: 0,
     right: 0,
     backgroundColor: COLORS.textWhite,
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 12,
+    paddingBottom: Platform.OS === 'ios' ? 95 : 75,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
@@ -111,19 +106,24 @@ export const homeFeatureStyles = StyleSheet.create({
     elevation: 10,
   },
 
-  // ========== SEARCH CONTAINER - DARK LIKE BOLT ==========
+  // ========== SEARCH CONTAINER - VISIBLE GREY BACKGROUND ==========
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#E8E8E8',
+    backgroundColor: '#D1D5DB',
     paddingHorizontal: 16,
     paddingVertical: 16,
-    borderRadius: 8,
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
   },
 
   searchPlaceholder: {
     fontSize: 18,
-    color: COLORS.text,
+    color: '#4B5563',
     marginLeft: 12,
     fontWeight: '500',
   },

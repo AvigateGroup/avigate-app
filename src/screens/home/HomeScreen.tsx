@@ -162,23 +162,29 @@ export const HomeScreen = () => {
   };
 
   const handleMenuPress = () => {
-    // TODO: Open drawer or menu
-    Alert.alert('Menu', 'Menu functionality coming soon!', [
-      { text: 'Profile', onPress: () => router.push('/(tabs)/profile') },
-      { text: 'Settings', onPress: () => router.push('/settings') },
-      { text: 'Community', onPress: () => router.push('/community') },
+    Alert.alert('Community', 'Choose an option', [
+      {
+        text: 'Community Feed',
+        onPress: () => router.push('/community'),
+      },
+      {
+        text: 'Create Post',
+        onPress: () => router.push('/community/create'),
+      },
+      {
+        text: 'Report Safety Concern',
+        onPress: () => router.push('/community/contribute'),
+      },
+      {
+        text: 'Submit Route Contribution',
+        onPress: () => router.push('/community/contribute'),
+      },
       { text: 'Cancel', style: 'cancel' },
     ]);
   };
 
   const handleNotificationPress = () => {
-    // TODO: Navigate to notifications
     router.push('/notifications');
-  };
-
-  const handleLocationPermissionPress = () => {
-    // Re-request location permission
-    requestLocationPermission();
   };
 
   if (loading) {
@@ -203,24 +209,14 @@ export const HomeScreen = () => {
         <Icon name="menu" size={28} color={colors.text} />
       </TouchableOpacity>
 
-      {/* Top Right Icons - Bolt Style */}
-      <View style={homeFeatureStyles.topRightIcons}>
-        <TouchableOpacity
-          style={[homeFeatureStyles.iconButton, { backgroundColor: colors.white }]}
-          onPress={handleNotificationPress}
-          activeOpacity={0.7}
-        >
-          <Icon name="notifications-outline" size={24} color={colors.text} />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[homeFeatureStyles.iconButton, { backgroundColor: colors.white }]}
-          onPress={handleLocationPermissionPress}
-          activeOpacity={0.7}
-        >
-          <Icon name="navigate" size={24} color={colors.primary} />
-        </TouchableOpacity>
-      </View>
+      {/* Top Right Icon - Notification Only */}
+      <TouchableOpacity
+        style={[homeFeatureStyles.notificationButton, { backgroundColor: colors.white }]}
+        onPress={handleNotificationPress}
+        activeOpacity={0.7}
+      >
+        <Icon name="notifications-outline" size={24} color={colors.text} />
+      </TouchableOpacity>
 
       {/* Map */}
       {location && (
@@ -275,14 +271,12 @@ export const HomeScreen = () => {
       {/* Bottom Section - "Where to?" Search Field */}
       <View style={homeFeatureStyles.bottomSection}>
         <TouchableOpacity
-          style={[homeFeatureStyles.searchContainer, { backgroundColor: colors.white }]}
+          style={homeFeatureStyles.searchContainer}
           onPress={handleSearchPress}
           activeOpacity={0.7}
         >
-          <Icon name="search" size={24} color={colors.text} />
-          <Text style={[homeFeatureStyles.searchPlaceholder, { color: colors.textMuted }]}>
-            Where to?
-          </Text>
+          <Icon name="search" size={24} color="#374151" />
+          <Text style={homeFeatureStyles.searchPlaceholder}>Where to?</Text>
         </TouchableOpacity>
       </View>
     </View>
