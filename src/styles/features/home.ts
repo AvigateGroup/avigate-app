@@ -98,7 +98,7 @@ export const homeFeatureStyles = StyleSheet.create({
     backgroundColor: COLORS.textWhite,
     paddingHorizontal: 16,
     paddingTop: 20,
-    paddingBottom: Platform.OS === 'ios' ? 105 : 85,
+    paddingBottom: Platform.OS === 'ios' ? 110 : 90,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
