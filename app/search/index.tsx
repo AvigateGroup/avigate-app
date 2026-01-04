@@ -17,6 +17,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as Location from 'expo-location';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useRouteService } from '@/hooks/useRouteService';
+import { useGooglePlacesAutocomplete, PlaceAutocompleteResult } from '@/hooks/useGooglePlacesAutocomplete';
 
 interface Destination {
   id: string;
@@ -33,6 +34,7 @@ export default function SearchDestination() {
   const params = useLocalSearchParams();
   const colors = useThemedColors();
   const { getPopularRoutes } = useRouteService();
+  const { predictions, debouncedSearch, getPlaceDetails, clearPredictions, isLoading: autocompleteLoading } = useGooglePlacesAutocomplete();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentLocation, setCurrentLocation] = useState<{
@@ -41,6 +43,7 @@ export default function SearchDestination() {
   } | null>(null);
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
 
   useEffect(() => {
     loadDestinations();
@@ -67,7 +70,7 @@ export default function SearchDestination() {
         // Transform routes to destinations
         const popularDestinations: Destination[] = result.data.map((route: any, index: number) => ({
           id: route.id || `dest-${index}`,
-          name: route.endLocationName || route.destination,
+          name: route.endLocationName || route.destination || 'Unknown Destination',
           address: route.endAddress || 'Port Harcourt',
           distance: route.distance ? `${(route.distance / 1000).toFixed(1)} km` : undefined,
           latitude: route.endLat,
@@ -106,6 +109,43 @@ export default function SearchDestination() {
     router.back();
   };
 
+  const handleSearchChange = (text: string) => {
+    setSearchQuery(text);
+
+    if (text.trim().length > 0) {
+      setShowAutocomplete(true);
+      // Trigger Google Places Autocomplete
+      debouncedSearch(text, currentLocation || undefined);
+    } else {
+      setShowAutocomplete(false);
+      clearPredictions();
+    }
+  };
+
+  const handleAutocompleteSelect = async (prediction: PlaceAutocompleteResult) => {
+    setSearchQuery(prediction.mainText);
+    setShowAutocomplete(false);
+    clearPredictions();
+
+    // Get place details
+    const placeDetails = await getPlaceDetails(prediction.placeId);
+
+    if (placeDetails) {
+      // Navigate to route details with selected place
+      router.push({
+        pathname: '/search/route-details',
+        params: {
+          destName: placeDetails.name,
+          destAddress: placeDetails.address,
+          destLat: placeDetails.latitude,
+          destLng: placeDetails.longitude,
+          startLat: currentLocation?.latitude,
+          startLng: currentLocation?.longitude,
+        },
+      });
+    }
+  };
+
   const handleDestinationSelect = (destination: Destination) => {
     // Navigate to route details with selected destination
     router.push({
@@ -141,8 +181,8 @@ export default function SearchDestination() {
   const filteredDestinations = searchQuery
     ? destinations.filter(
         (dest) =>
-          dest.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          dest.address.toLowerCase().includes(searchQuery.toLowerCase()),
+          dest.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          dest.address?.toLowerCase().includes(searchQuery.toLowerCase()),
       )
     : destinations;
 
@@ -175,9 +215,21 @@ export default function SearchDestination() {
             placeholder="Dropoff location"
             placeholderTextColor={colors.textMuted}
             value={searchQuery}
-            onChangeText={setSearchQuery}
+            onChangeText={handleSearchChange}
             autoFocus
           />
+          {searchQuery.length > 0 && (
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={() => {
+                setSearchQuery('');
+                setShowAutocomplete(false);
+                clearPredictions();
+              }}
+            >
+              <Icon name="close-circle" size={24} color={colors.textMuted} />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.addButton}>
             <Icon name="locate" size={24} color={colors.text} />
           </TouchableOpacity>
@@ -194,7 +246,63 @@ export default function SearchDestination() {
         </View>
       ) : (
         <ScrollView style={styles.scrollView}>
-          {filteredDestinations.map((destination) => (
+          {/* Google Places Autocomplete Predictions */}
+          {showAutocomplete && searchQuery.length > 0 && (
+            <>
+              {autocompleteLoading && (
+                <View style={styles.autocompleteLoadingContainer}>
+                  <ActivityIndicator size="small" color={colors.primary} />
+                  <Text style={[styles.autocompleteLoadingText, { color: colors.textMuted }]}>
+                    Searching...
+                  </Text>
+                </View>
+              )}
+
+              {predictions.map((prediction) => (
+                <TouchableOpacity
+                  key={prediction.placeId}
+                  style={[styles.destinationItem, { backgroundColor: colors.white }]}
+                  onPress={() => handleAutocompleteSelect(prediction)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.iconContainer, { backgroundColor: colors.background }]}>
+                    <Icon name="location" size={22} color={colors.primary} />
+                  </View>
+
+                  <View style={styles.destinationInfo}>
+                    <Text style={[styles.destinationName, { color: colors.text }]}>
+                      {prediction.mainText}
+                    </Text>
+                    <Text style={[styles.destinationAddress, { color: colors.textMuted }]}>
+                      {prediction.secondaryText}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              ))}
+
+              {!autocompleteLoading && predictions.length === 0 && (
+                <View style={styles.emptyState}>
+                  <Text style={[styles.emptyText, { color: colors.textMuted }]}>
+                    No places found
+                  </Text>
+                </View>
+              )}
+
+              {/* Divider */}
+              {predictions.length > 0 && (
+                <View style={styles.divider}>
+                  <View style={[styles.dividerLine, { backgroundColor: colors.textMuted }]} />
+                  <Text style={[styles.dividerText, { color: colors.textMuted }]}>
+                    Popular destinations
+                  </Text>
+                  <View style={[styles.dividerLine, { backgroundColor: colors.textMuted }]} />
+                </View>
+              )}
+            </>
+          )}
+
+          {/* Popular/Recent Destinations */}
+          {!showAutocomplete && filteredDestinations.map((destination) => (
             <TouchableOpacity
               key={destination.id}
               style={[styles.destinationItem, { backgroundColor: colors.white }]}
@@ -222,7 +330,7 @@ export default function SearchDestination() {
             </TouchableOpacity>
           ))}
 
-          {filteredDestinations.length === 0 && (
+          {!showAutocomplete && filteredDestinations.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={[styles.emptyText, { color: colors.textMuted }]}>
                 No destinations found
@@ -333,5 +441,33 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
+  },
+  autocompleteLoadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  autocompleteLoadingText: {
+    marginLeft: 8,
+    fontSize: 14,
+  },
+  divider: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 0.5,
+    opacity: 0.3,
+  },
+  dividerText: {
+    fontSize: 12,
+    marginHorizontal: 12,
+    textTransform: 'uppercase',
+    fontWeight: '600',
   },
 });
