@@ -8,7 +8,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { homeFeatureStyles } from '@/styles/features';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 
 interface LocationType {
   latitude: number;
@@ -19,7 +19,7 @@ interface LocationType {
 
 export const HomeScreen = () => {
   const { user } = useAuth();
-  const navigation = useNavigation<any>();
+  const router = useRouter();
   const mapRef = useRef<MapView>(null);
   const colors = useThemedColors();
 
@@ -154,15 +154,15 @@ export const HomeScreen = () => {
   };
 
   const handleSearchPress = () => {
-    // Navigate to search modal using React Navigation
-    navigation.navigate('SearchDestination');
+    // Navigate to search screen using expo-router
+    router.push('/search');
   };
 
   const handleMenuPress = () => {
     // TODO: Open drawer or menu
     Alert.alert('Menu', 'Menu functionality coming soon!', [
-      { text: 'Profile', onPress: () => navigation.navigate('Profile' as never) },
-      { text: 'Settings', onPress: () => {} },
+      { text: 'Profile', onPress: () => router.push('/(tabs)/profile') },
+      { text: 'Settings', onPress: () => router.push('/settings') },
       { text: 'Cancel', style: 'cancel' },
     ]);
   };
