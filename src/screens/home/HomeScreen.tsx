@@ -155,7 +155,10 @@ export const HomeScreen = () => {
 
   const handleSearchPress = () => {
     // Navigate to search screen using expo-router
-    router.push('/search');
+    router.push({
+      pathname: '/search',
+      params: { currentAddress: address },
+    });
   };
 
   const handleMenuPress = () => {
@@ -163,8 +166,19 @@ export const HomeScreen = () => {
     Alert.alert('Menu', 'Menu functionality coming soon!', [
       { text: 'Profile', onPress: () => router.push('/(tabs)/profile') },
       { text: 'Settings', onPress: () => router.push('/settings') },
+      { text: 'Community', onPress: () => router.push('/community') },
       { text: 'Cancel', style: 'cancel' },
     ]);
+  };
+
+  const handleNotificationPress = () => {
+    // TODO: Navigate to notifications
+    router.push('/notifications');
+  };
+
+  const handleLocationPermissionPress = () => {
+    // Re-request location permission
+    requestLocationPermission();
   };
 
   if (loading) {
@@ -188,6 +202,25 @@ export const HomeScreen = () => {
       >
         <Icon name="menu" size={28} color={colors.text} />
       </TouchableOpacity>
+
+      {/* Top Right Icons - Bolt Style */}
+      <View style={homeFeatureStyles.topRightIcons}>
+        <TouchableOpacity
+          style={[homeFeatureStyles.iconButton, { backgroundColor: colors.white }]}
+          onPress={handleNotificationPress}
+          activeOpacity={0.7}
+        >
+          <Icon name="notifications-outline" size={24} color={colors.text} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[homeFeatureStyles.iconButton, { backgroundColor: colors.white }]}
+          onPress={handleLocationPermissionPress}
+          activeOpacity={0.7}
+        >
+          <Icon name="navigate" size={24} color={colors.primary} />
+        </TouchableOpacity>
+      </View>
 
       {/* Map */}
       {location && (
