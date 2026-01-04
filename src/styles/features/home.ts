@@ -97,8 +97,8 @@ export const homeFeatureStyles = StyleSheet.create({
     right: 0,
     backgroundColor: COLORS.textWhite,
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: Platform.OS === 'ios' ? 95 : 75,
+    paddingTop: 20,
+    paddingBottom: Platform.OS === 'ios' ? 105 : 85,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
@@ -106,11 +106,11 @@ export const homeFeatureStyles = StyleSheet.create({
     elevation: 10,
   },
 
-  // ========== SEARCH CONTAINER - VISIBLE GREY BACKGROUND ==========
+  // ========== SEARCH CONTAINER - LIGHTER GREY BACKGROUND ==========
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#D1D5DB',
+    backgroundColor: '#F3F4F6',
     paddingHorizontal: 16,
     paddingVertical: 16,
     borderRadius: 12,
@@ -123,7 +123,7 @@ export const homeFeatureStyles = StyleSheet.create({
 
   searchPlaceholder: {
     fontSize: 18,
-    color: '#4B5563',
+    color: '#6B7280',
     marginLeft: 12,
     fontWeight: '500',
   },

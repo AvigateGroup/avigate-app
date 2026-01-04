@@ -9,6 +9,7 @@ import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { homeFeatureStyles } from '@/styles/features';
 import { useRouter } from 'expo-router';
+import { CommunityDrawer } from '@/components/CommunityDrawer';
 
 interface LocationType {
   latitude: number;
@@ -27,6 +28,7 @@ export const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState('Getting your location...');
   const [mapReady, setMapReady] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   useEffect(() => {
     requestLocationPermission();
@@ -162,25 +164,7 @@ export const HomeScreen = () => {
   };
 
   const handleMenuPress = () => {
-    Alert.alert('Community', 'Choose an option', [
-      {
-        text: 'Community Feed',
-        onPress: () => router.push('/community'),
-      },
-      {
-        text: 'Create Post',
-        onPress: () => router.push('/community/create'),
-      },
-      {
-        text: 'Report Safety Concern',
-        onPress: () => router.push('/community/contribute'),
-      },
-      {
-        text: 'Submit Route Contribution',
-        onPress: () => router.push('/community/contribute'),
-      },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+    setDrawerVisible(true);
   };
 
   const handleNotificationPress = () => {
@@ -275,10 +259,13 @@ export const HomeScreen = () => {
           onPress={handleSearchPress}
           activeOpacity={0.7}
         >
-          <Icon name="search" size={24} color="#374151" />
+          <Icon name="search" size={24} color="#6B7280" />
           <Text style={homeFeatureStyles.searchPlaceholder}>Where to?</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Community Drawer */}
+      <CommunityDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
     </View>
   );
 };
