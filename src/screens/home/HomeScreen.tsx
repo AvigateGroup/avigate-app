@@ -151,12 +151,6 @@ export const HomeScreen = () => {
     }
   };
 
-  const refreshLocation = async () => {
-    setLoading(true);
-    setAddress('Getting your location...');
-    await getCurrentLocation();
-  };
-
   const handleSearchPress = () => {
     // Navigate to search screen using expo-router
     router.push({
@@ -234,24 +228,14 @@ export const HomeScreen = () => {
         </MapView>
       )}
 
-      {/* Action Buttons - Repositioned */}
+      {/* Action Button - Center on User */}
       <View style={homeFeatureStyles.actionButtons}>
-        {/* Center on User Button */}
         <TouchableOpacity
           style={[homeFeatureStyles.actionButton, { backgroundColor: colors.primary }]}
           onPress={centerMapOnUser}
           activeOpacity={0.7}
         >
           <Icon name="navigate" size={24} color={colors.textWhite} />
-        </TouchableOpacity>
-
-        {/* Refresh Location Button */}
-        <TouchableOpacity
-          style={[homeFeatureStyles.actionButton, { backgroundColor: colors.primary }]}
-          onPress={refreshLocation}
-          activeOpacity={0.7}
-        >
-          <Icon name="refresh" size={24} color={colors.textWhite} />
         </TouchableOpacity>
       </View>
 
