@@ -10,6 +10,8 @@ import { useThemedColors } from '@/hooks/useThemedColors';
 import { homeFeatureStyles } from '@/styles/features';
 import { useRouter } from 'expo-router';
 import { CommunityDrawer } from '@/components/CommunityDrawer';
+import { WhereToDrawer } from '@/components/WhereToDrawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 interface LocationType {
   latitude: number;
@@ -183,15 +185,16 @@ export const HomeScreen = () => {
   }
 
   return (
-    <View style={homeFeatureStyles.container}>
-      {/* Hamburger Menu Button */}
-      <TouchableOpacity
-        style={[homeFeatureStyles.menuButton, { backgroundColor: colors.white }]}
-        onPress={handleMenuPress}
-        activeOpacity={0.7}
-      >
-        <Icon name="menu" size={28} color={colors.text} />
-      </TouchableOpacity>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={homeFeatureStyles.container}>
+        {/* Hamburger Menu Button */}
+        <TouchableOpacity
+          style={[homeFeatureStyles.menuButton, { backgroundColor: colors.white }]}
+          onPress={handleMenuPress}
+          activeOpacity={0.7}
+        >
+          <Icon name="menu" size={28} color={colors.text} />
+        </TouchableOpacity>
 
       {/* Top Right Icon - Notification Only */}
       <TouchableOpacity
@@ -252,20 +255,19 @@ export const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Bottom Section - "Where to?" Search Field */}
-      <View style={homeFeatureStyles.bottomSection}>
-        <TouchableOpacity
-          style={homeFeatureStyles.searchContainer}
-          onPress={handleSearchPress}
-          activeOpacity={0.7}
-        >
-          <Icon name="search" size={24} color="#6B7280" />
-          <Text style={homeFeatureStyles.searchPlaceholder}>Where to?</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Where To Drawer - Bottom Sheet */}
+        <WhereToDrawer
+          currentAddress={address}
+          currentLocation={
+            location
+              ? { latitude: location.latitude, longitude: location.longitude }
+              : undefined
+          }
+        />
 
-      {/* Community Drawer */}
-      <CommunityDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
-    </View>
+        {/* Community Drawer */}
+        <CommunityDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+      </View>
+    </GestureHandlerRootView>
   );
 };
