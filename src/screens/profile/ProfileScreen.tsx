@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useUserService } from '@/hooks/useUserService';
+import { useTripService } from '@/hooks/useTripService';
 import { getInitials, formatDate } from '@/utils/helpers';
 import { profileFeatureStyles } from '@/styles/features';
 
@@ -25,6 +26,26 @@ export const ProfileScreen: React.FC = () => {
   const colors = useThemedColors();
   const { pickAndUploadProfilePicture, takeCameraPhoto, isUploadingImage, uploadProgress } =
     useUserService();
+  const { getTripStatistics } = useTripService();
+
+  const [tripStats, setTripStats] = React.useState<{
+    completedTrips: number;
+    totalDistance: string;
+  } | null>(null);
+
+  React.useEffect(() => {
+    const fetchTripStats = async () => {
+      const result = await getTripStatistics();
+      if (result.success && result.data) {
+        setTripStats({
+          completedTrips: result.data.completedTrips || 0,
+          totalDistance: result.data.totalDistance || '0',
+        });
+      }
+    };
+
+    fetchTripStats();
+  }, []);
 
   const handleLogout = () => {
     Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -166,7 +187,16 @@ export const ProfileScreen: React.FC = () => {
               {user?.reputationScore || 100}
             </Text>
             <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>
-              Rating
+              Reputation
+            </Text>
+          </View>
+          <View style={[profileFeatureStyles.statDivider, { backgroundColor: colors.border }]} />
+          <View style={profileFeatureStyles.statItem}>
+            <Text style={[profileFeatureStyles.statValue, { color: colors.text }]}>
+              {tripStats?.completedTrips ?? 0}
+            </Text>
+            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>
+              Trips
             </Text>
           </View>
           <View style={[profileFeatureStyles.statDivider, { backgroundColor: colors.border }]} />
@@ -174,16 +204,9 @@ export const ProfileScreen: React.FC = () => {
             <Text style={[profileFeatureStyles.statValue, { color: colors.text }]}>
               {user?.totalContributions || 0}
             </Text>
-            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>Trips</Text>
-          </View>
-          <View style={[profileFeatureStyles.statDivider, { backgroundColor: colors.border }]} />
-          <View style={profileFeatureStyles.statItem}>
-            <Text style={[profileFeatureStyles.statValue, { color: colors.text }]}>
-              {user?.createdAt
-                ? new Date().getFullYear() - new Date(user.createdAt).getFullYear()
-                : 0}
+            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>
+              Contributions
             </Text>
-            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>Years</Text>
           </View>
         </View>
       </View>
