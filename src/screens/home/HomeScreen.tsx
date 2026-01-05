@@ -12,6 +12,7 @@ import { useRouter } from 'expo-router';
 import { CommunityDrawer } from '@/components/CommunityDrawer';
 import { WhereToDrawer } from '@/components/WhereToDrawer';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useNotifications } from '@/hooks/useNotifications';
 
 interface LocationType {
   latitude: number;
@@ -25,16 +26,26 @@ export const HomeScreen = () => {
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
   const colors = useThemedColors();
+  const { getUnreadCount } = useNotifications();
 
   const [location, setLocation] = useState<LocationType | null>(null);
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState('Getting your location...');
   const [mapReady, setMapReady] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     requestLocationPermission();
+    loadUnreadCount();
   }, []);
+
+  const loadUnreadCount = async () => {
+    const result = await getUnreadCount();
+    if (result.success) {
+      setUnreadCount(result.count);
+    }
+  };
 
   const requestLocationPermission = async () => {
     try {
@@ -190,13 +201,20 @@ export const HomeScreen = () => {
           <Icon name="menu" size={28} color={colors.text} />
         </TouchableOpacity>
 
-      {/* Top Right Icon - Notification Only */}
+      {/* Top Right Icon - Notification with Badge */}
       <TouchableOpacity
         style={[homeFeatureStyles.notificationButton, { backgroundColor: colors.white }]}
         onPress={handleNotificationPress}
         activeOpacity={0.7}
       >
         <Icon name="notifications-outline" size={24} color={colors.text} />
+        {unreadCount > 0 && (
+          <View style={homeFeatureStyles.notificationBadge}>
+            <Text style={homeFeatureStyles.notificationBadgeText}>
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </Text>
+          </View>
+        )}
       </TouchableOpacity>
 
       {/* Map */}
