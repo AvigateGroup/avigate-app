@@ -66,6 +66,27 @@ export const homeFeatureStyles = StyleSheet.create({
     zIndex: 10,
   },
 
+  notificationBadge: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    backgroundColor: '#EF4444',
+    minWidth: 18,
+    height: 18,
+    borderRadius: 9,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 4,
+    borderWidth: 2,
+    borderColor: COLORS.textWhite,
+  },
+
+  notificationBadgeText: {
+    color: COLORS.textWhite,
+    fontSize: 10,
+    fontWeight: '700',
+  },
+
   // ========== ACTION BUTTONS - MOVED MUCH HIGHER! ==========
   actionButtons: {
     position: 'absolute',

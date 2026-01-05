@@ -151,10 +151,12 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
               </View>
             </View>
 
-            {/* Rating */}
+            {/* Reputation */}
             <View style={styles.ratingContainer}>
               <Icon name="star" size={20} color="#10B981" />
-              <Text style={[styles.ratingText, { color: colors.text }]}>5.00 Rating</Text>
+              <Text style={[styles.ratingText, { color: colors.text }]}>
+                {user?.reputationScore || 100} Reputation
+              </Text>
             </View>
           </View>
 

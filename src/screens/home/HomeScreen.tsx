@@ -10,6 +10,9 @@ import { useThemedColors } from '@/hooks/useThemedColors';
 import { homeFeatureStyles } from '@/styles/features';
 import { useRouter } from 'expo-router';
 import { CommunityDrawer } from '@/components/CommunityDrawer';
+import { WhereToDrawer } from '@/components/WhereToDrawer';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useNotifications } from '@/hooks/useNotifications';
 
 interface LocationType {
   latitude: number;
@@ -23,16 +26,26 @@ export const HomeScreen = () => {
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
   const colors = useThemedColors();
+  const { getUnreadCount } = useNotifications();
 
   const [location, setLocation] = useState<LocationType | null>(null);
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState('Getting your location...');
   const [mapReady, setMapReady] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     requestLocationPermission();
+    loadUnreadCount();
   }, []);
+
+  const loadUnreadCount = async () => {
+    const result = await getUnreadCount();
+    if (result.success) {
+      setUnreadCount(result.count);
+    }
+  };
 
   const requestLocationPermission = async () => {
     try {
@@ -149,12 +162,6 @@ export const HomeScreen = () => {
     }
   };
 
-  const refreshLocation = async () => {
-    setLoading(true);
-    setAddress('Getting your location...');
-    await getCurrentLocation();
-  };
-
   const handleSearchPress = () => {
     // Navigate to search screen using expo-router
     router.push({
@@ -183,23 +190,31 @@ export const HomeScreen = () => {
   }
 
   return (
-    <View style={homeFeatureStyles.container}>
-      {/* Hamburger Menu Button */}
-      <TouchableOpacity
-        style={[homeFeatureStyles.menuButton, { backgroundColor: colors.white }]}
-        onPress={handleMenuPress}
-        activeOpacity={0.7}
-      >
-        <Icon name="menu" size={28} color={colors.text} />
-      </TouchableOpacity>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={homeFeatureStyles.container}>
+        {/* Hamburger Menu Button */}
+        <TouchableOpacity
+          style={[homeFeatureStyles.menuButton, { backgroundColor: colors.white }]}
+          onPress={handleMenuPress}
+          activeOpacity={0.7}
+        >
+          <Icon name="menu" size={28} color={colors.text} />
+        </TouchableOpacity>
 
-      {/* Top Right Icon - Notification Only */}
+      {/* Top Right Icon - Notification with Badge */}
       <TouchableOpacity
         style={[homeFeatureStyles.notificationButton, { backgroundColor: colors.white }]}
         onPress={handleNotificationPress}
         activeOpacity={0.7}
       >
         <Icon name="notifications-outline" size={24} color={colors.text} />
+        {unreadCount > 0 && (
+          <View style={homeFeatureStyles.notificationBadge}>
+            <Text style={homeFeatureStyles.notificationBadgeText}>
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </Text>
+          </View>
+        )}
       </TouchableOpacity>
 
       {/* Map */}
@@ -231,9 +246,8 @@ export const HomeScreen = () => {
         </MapView>
       )}
 
-      {/* Action Buttons - Repositioned */}
+      {/* Action Button - Center on User */}
       <View style={homeFeatureStyles.actionButtons}>
-        {/* Center on User Button */}
         <TouchableOpacity
           style={[homeFeatureStyles.actionButton, { backgroundColor: colors.primary }]}
           onPress={centerMapOnUser}
@@ -241,31 +255,21 @@ export const HomeScreen = () => {
         >
           <Icon name="navigate" size={24} color={colors.textWhite} />
         </TouchableOpacity>
-
-        {/* Refresh Location Button */}
-        <TouchableOpacity
-          style={[homeFeatureStyles.actionButton, { backgroundColor: colors.primary }]}
-          onPress={refreshLocation}
-          activeOpacity={0.7}
-        >
-          <Icon name="refresh" size={24} color={colors.textWhite} />
-        </TouchableOpacity>
       </View>
 
-      {/* Bottom Section - "Where to?" Search Field */}
-      <View style={homeFeatureStyles.bottomSection}>
-        <TouchableOpacity
-          style={homeFeatureStyles.searchContainer}
-          onPress={handleSearchPress}
-          activeOpacity={0.7}
-        >
-          <Icon name="search" size={24} color="#6B7280" />
-          <Text style={homeFeatureStyles.searchPlaceholder}>Where to?</Text>
-        </TouchableOpacity>
-      </View>
+      {/* Where To Drawer - Bottom Sheet */}
+        <WhereToDrawer
+          currentAddress={address}
+          currentLocation={
+            location
+              ? { latitude: location.latitude, longitude: location.longitude }
+              : undefined
+          }
+        />
 
-      {/* Community Drawer */}
-      <CommunityDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
-    </View>
+        {/* Community Drawer */}
+        <CommunityDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+      </View>
+    </GestureHandlerRootView>
   );
 };

@@ -12,6 +12,7 @@ import {
   Platform,
   Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -155,11 +156,14 @@ export const CreatePostScreen = () => {
   const selectedType = postTypes.find(t => t.type === postType);
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    <SafeAreaView
+      style={[communityStyles.container, { backgroundColor: colors.background }]}
+      edges={['top', 'left', 'right']}
     >
-      <View style={[communityStyles.container, { backgroundColor: colors.background }]}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
         {/* Header */}
         <View
           style={[
@@ -384,7 +388,7 @@ export const CreatePostScreen = () => {
             />
           </View>
         </ScrollView>
-      </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };

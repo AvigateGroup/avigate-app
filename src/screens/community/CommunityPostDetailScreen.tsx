@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -414,28 +415,35 @@ export const CommunityPostDetailScreen = () => {
 
   if (isLoading || !post) {
     return (
-      <View style={[communityStyles.loadingContainer, { backgroundColor: colors.background }]}>
+      <SafeAreaView
+        style={[communityStyles.loadingContainer, { backgroundColor: colors.background }]}
+        edges={['top', 'left', 'right']}
+      >
         <ActivityIndicator size="large" color={colors.primary} />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <KeyboardAvoidingView
+    <SafeAreaView
       style={{ flex: 1, backgroundColor: colors.background }}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      edges={['top', 'left', 'right']}
     >
-      {/* Header */}
-      <View style={[communityStyles.detailHeader, { backgroundColor: colors.white }]}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={communityStyles.backButton}>
-          <Icon name="arrow-back" size={24} color={colors.text} />
-        </TouchableOpacity>
-        <Text style={[communityStyles.headerTitle, { color: colors.text }]}>Post</Text>
-        <TouchableOpacity onPress={showMoreOptions} style={communityStyles.moreButton}>
-          <Icon name="ellipsis-horizontal" size={24} color={colors.text} />
-        </TouchableOpacity>
-      </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      >
+        {/* Header */}
+        <View style={[communityStyles.detailHeader, { backgroundColor: colors.white }]}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={communityStyles.backButton}>
+            <Icon name="arrow-back" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <Text style={[communityStyles.headerTitle, { color: colors.text }]}>Post</Text>
+          <TouchableOpacity onPress={showMoreOptions} style={communityStyles.moreButton}>
+            <Icon name="ellipsis-horizontal" size={24} color={colors.text} />
+          </TouchableOpacity>
+        </View>
 
       <ScrollView
         style={communityStyles.detailContainer}
@@ -646,6 +654,7 @@ export const CommunityPostDetailScreen = () => {
           style={communityStyles.commentButton}
         />
       </View>
-    </KeyboardAvoidingView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };

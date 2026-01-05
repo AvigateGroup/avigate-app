@@ -12,6 +12,7 @@ import {
   Switch,
   Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -420,7 +421,10 @@ export const CommunityFeedScreen = () => {
   );
 
   return (
-    <View style={[communityStyles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      style={[communityStyles.container, { backgroundColor: colors.background }]}
+      edges={['top', 'left', 'right']}
+    >
       <FlatList
         data={posts}
         renderItem={renderPost}
@@ -462,6 +466,6 @@ export const CommunityFeedScreen = () => {
       >
         <Icon name="add" size={28} color={colors.textWhite} />
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
