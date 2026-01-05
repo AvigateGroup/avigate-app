@@ -196,6 +196,16 @@ function RootLayoutNav() {
           }}
         />
 
+        {/* Search Destination Screen */}
+        <Stack.Screen
+          name="search/index"
+          options={{
+            headerShown: false,
+            presentation: 'modal',
+            animation: 'slide_from_bottom',
+          }}
+        />
+
         {/* Privacy & Terms - Public Routes */}
         <Stack.Screen
           name="privacy/index"

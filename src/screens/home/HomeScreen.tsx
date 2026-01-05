@@ -8,7 +8,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { homeFeatureStyles } from '@/styles/features';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
+import { CommunityDrawer } from '@/components/CommunityDrawer';
 
 interface LocationType {
   latitude: number;
@@ -19,7 +20,7 @@ interface LocationType {
 
 export const HomeScreen = () => {
   const { user } = useAuth();
-  const navigation = useNavigation<any>();
+  const router = useRouter();
   const mapRef = useRef<MapView>(null);
   const colors = useThemedColors();
 
@@ -27,6 +28,7 @@ export const HomeScreen = () => {
   const [loading, setLoading] = useState(true);
   const [address, setAddress] = useState('Getting your location...');
   const [mapReady, setMapReady] = useState(false);
+  const [drawerVisible, setDrawerVisible] = useState(false);
 
   useEffect(() => {
     requestLocationPermission();
@@ -154,17 +156,19 @@ export const HomeScreen = () => {
   };
 
   const handleSearchPress = () => {
-    // Navigate to search modal using React Navigation
-    navigation.navigate('SearchDestination');
+    // Navigate to search screen using expo-router
+    router.push({
+      pathname: '/search',
+      params: { currentAddress: address },
+    });
   };
 
   const handleMenuPress = () => {
-    // TODO: Open drawer or menu
-    Alert.alert('Menu', 'Menu functionality coming soon!', [
-      { text: 'Profile', onPress: () => navigation.navigate('Profile' as never) },
-      { text: 'Settings', onPress: () => {} },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+    setDrawerVisible(true);
+  };
+
+  const handleNotificationPress = () => {
+    router.push('/notifications');
   };
 
   if (loading) {
@@ -187,6 +191,15 @@ export const HomeScreen = () => {
         activeOpacity={0.7}
       >
         <Icon name="menu" size={28} color={colors.text} />
+      </TouchableOpacity>
+
+      {/* Top Right Icon - Notification Only */}
+      <TouchableOpacity
+        style={[homeFeatureStyles.notificationButton, { backgroundColor: colors.white }]}
+        onPress={handleNotificationPress}
+        activeOpacity={0.7}
+      >
+        <Icon name="notifications-outline" size={24} color={colors.text} />
       </TouchableOpacity>
 
       {/* Map */}
@@ -242,16 +255,17 @@ export const HomeScreen = () => {
       {/* Bottom Section - "Where to?" Search Field */}
       <View style={homeFeatureStyles.bottomSection}>
         <TouchableOpacity
-          style={[homeFeatureStyles.searchContainer, { backgroundColor: colors.white }]}
+          style={homeFeatureStyles.searchContainer}
           onPress={handleSearchPress}
           activeOpacity={0.7}
         >
-          <Icon name="search" size={24} color={colors.text} />
-          <Text style={[homeFeatureStyles.searchPlaceholder, { color: colors.textMuted }]}>
-            Where to?
-          </Text>
+          <Icon name="search" size={24} color="#6B7280" />
+          <Text style={homeFeatureStyles.searchPlaceholder}>Where to?</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Community Drawer */}
+      <CommunityDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
     </View>
   );
 };
