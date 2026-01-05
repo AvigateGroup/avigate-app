@@ -1,16 +1,7 @@
 // src/components/WhereToDrawer.tsx
 
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  ActivityIndicator,
-  Image,
-  Dimensions,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
@@ -18,8 +9,7 @@ import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
 import { useRouteService } from '@/hooks/useRouteService';
 import { formatDistanceToNow } from '@/utils/dateUtils';
-
-const { width } = Dimensions.get('window');
+import { PlaceCardSkeleton, PostCardSkeleton } from '@/components/LoadingSkeleton';
 
 interface WhereToDrawerProps {
   currentAddress?: string;
@@ -64,9 +54,13 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
   const [suggestedPlaces, setSuggestedPlaces] = useState<SuggestedPlace[]>([]);
   const [loadingPosts, setLoadingPosts] = useState(true);
   const [loadingPlaces, setLoadingPlaces] = useState(true);
+  const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null);
 
-  // Snap points for the bottom sheet
-  const snapPoints = useMemo(() => ['25%', '50%', '85%'], []);
+  // Dynamic snap points based on content
+  const snapPoints = useMemo(() => {
+    const hasContent = trendingPosts.length > 0 || suggestedPlaces.length > 0;
+    return hasContent ? ['28%', '55%', '90%'] : ['25%', '50%', '85%'];
+  }, [trendingPosts.length, suggestedPlaces.length]);
 
   // Render backdrop
   const renderBackdrop = useCallback(
@@ -85,6 +79,30 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
   useEffect(() => {
     loadSuggestedPlaces();
   }, []);
+
+  // Real-time updates - refresh every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadTrendingPosts();
+    }, 30000); // 30 seconds
+
+    setRefreshInterval(interval);
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (refreshInterval) {
+        clearInterval(refreshInterval);
+      }
+    };
+  }, [refreshInterval]);
 
   const loadTrendingPosts = async () => {
     try {
@@ -202,42 +220,47 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
           <Text style={styles.searchPlaceholder}>Where to?</Text>
         </TouchableOpacity>
 
-        {/* Service Options */}
+        {/* Quick Actions */}
         <View style={styles.servicesContainer}>
           <TouchableOpacity style={styles.serviceCard} onPress={handleSearchPress}>
-            <View style={[styles.serviceIcon, { backgroundColor: '#000' }]}>
-              <Icon name="car" size={24} color="#FFF" />
+            <View style={[styles.serviceIcon, { backgroundColor: '#86B300' }]}>
+              <Icon name="navigate" size={24} color="#FFF" />
             </View>
-            <Text style={styles.serviceTitle}>Rides</Text>
-            <Text style={styles.serviceSubtitle}>Let's get moving</Text>
+            <Text style={styles.serviceTitle}>Find Route</Text>
+            <Text style={styles.serviceSubtitle}>Navigate now</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.serviceCard}
-            onPress={() => router.push('/trips/schedule')}
+            onPress={() => router.push('/community')}
           >
-            <View style={[styles.serviceIcon, { backgroundColor: '#10B981' }]}>
-              <Icon name="time" size={24} color="#FFF" />
+            <View style={[styles.serviceIcon, { backgroundColor: '#3B82F6' }]}>
+              <Icon name="people" size={24} color="#FFF" />
             </View>
-            <Text style={styles.serviceTitle}>Schedule</Text>
-            <Text style={styles.serviceSubtitle}>Book ahead</Text>
+            <Text style={styles.serviceTitle}>Community</Text>
+            <Text style={styles.serviceSubtitle}>Safety updates</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.serviceCard} onPress={() => router.push('/share')}>
-            <View style={[styles.serviceIcon, { backgroundColor: '#F59E0B' }]}>
-              <Icon name="cube" size={24} color="#FFF" />
+          <TouchableOpacity
+            style={styles.serviceCard}
+            onPress={() => router.push('/community/contribute')}
+          >
+            <View style={[styles.serviceIcon, { backgroundColor: '#10B981' }]}>
+              <Icon name="add-circle" size={24} color="#FFF" />
             </View>
-            <Text style={styles.serviceTitle}>Bolt Send</Text>
-            <Text style={styles.serviceSubtitle}>Package deliv...</Text>
+            <Text style={styles.serviceTitle}>Contribute</Text>
+            <Text style={styles.serviceSubtitle}>Share routes</Text>
           </TouchableOpacity>
         </View>
 
         {/* Suggested Places */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Suggested places</Text>
+          <Text style={styles.sectionTitle}>Popular destinations</Text>
           {loadingPlaces ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color={colors.primary} />
+            <View style={styles.placesContainer}>
+              {[1, 2, 3].map((i) => (
+                <PlaceCardSkeleton key={i} />
+              ))}
             </View>
           ) : (
             <View style={styles.placesContainer}>
@@ -278,8 +301,23 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
           </View>
 
           {loadingPosts ? (
-            <View style={styles.loadingContainer}>
-              <ActivityIndicator size="small" color={colors.primary} />
+            <View style={styles.postsContainer}>
+              {[1, 2, 3].map((i) => (
+                <PostCardSkeleton key={i} />
+              ))}
+            </View>
+          ) : trendingPosts.length === 0 ? (
+            <View style={styles.emptyState}>
+              <Icon name="chatbubbles-outline" size={48} color="#9CA3AF" />
+              <Text style={styles.emptyStateText}>No community updates yet</Text>
+              <TouchableOpacity
+                style={styles.emptyStateButton}
+                onPress={() => router.push('/community')}
+              >
+                <Text style={[styles.emptyStateButtonText, { color: colors.primary }]}>
+                  View Community
+                </Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.postsContainer}>
@@ -410,9 +448,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  loadingContainer: {
-    paddingVertical: 20,
+  emptyState: {
     alignItems: 'center',
+    paddingVertical: 32,
+    paddingHorizontal: 24,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    color: '#6B7280',
+    marginTop: 12,
+    marginBottom: 16,
+  },
+  emptyStateButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 8,
+    backgroundColor: '#F3F4F6',
+  },
+  emptyStateButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   placesContainer: {
     gap: 12,
