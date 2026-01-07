@@ -5,18 +5,16 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
   FlatList,
   TouchableOpacity,
   Image,
   ViewToken,
   BackHandler,
+  useWindowDimensions,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface OnboardingSlide {
   id: string;
@@ -48,6 +46,7 @@ const slides: OnboardingSlide[] = [
 
 export const OnboardingScreen: React.FC = () => {
   const router = useRouter();
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
   const flatListRef = useRef<FlatList>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCompleting, setIsCompleting] = useState(false);
@@ -147,7 +146,12 @@ export const OnboardingScreen: React.FC = () => {
   const renderSlide = ({ item }: { item: OnboardingSlide }) => (
     <View style={styles.slide}>
       <View style={styles.imageContainer}>
-        <Image source={item.image} style={styles.image} resizeMode="contain" />
+        <Image
+          source={item.image}
+          style={styles.image}
+          resizeMode="contain"
+          fadeDuration={200}
+        />
       </View>
 
       <View style={styles.textContainer}>
@@ -176,6 +180,7 @@ export const OnboardingScreen: React.FC = () => {
           source={require('../../../assets/images/avigate-logo.png')}
           style={styles.logo}
           resizeMode="contain"
+          fadeDuration={0}
         />
       </View>
 
@@ -193,6 +198,15 @@ export const OnboardingScreen: React.FC = () => {
         bounces={false}
         scrollEnabled={!isCompleting}
         style={styles.flatList}
+        initialNumToRender={1}
+        maxToRenderPerBatch={1}
+        windowSize={3}
+        removeClippedSubviews={false}
+        getItemLayout={(data, index) => ({
+          length: SCREEN_WIDTH,
+          offset: SCREEN_WIDTH * index,
+          index,
+        })}
       />
 
       {/* Footer */}

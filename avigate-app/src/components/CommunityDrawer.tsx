@@ -8,17 +8,14 @@ import {
   StyleSheet,
   Modal,
   Animated,
-  Dimensions,
   Platform,
   ScrollView,
+  useWindowDimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useAuth } from '@/store/AuthContext';
 import { useRouter } from 'expo-router';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const DRAWER_WIDTH = SCREEN_WIDTH * 0.8;
 
 interface CommunityDrawerProps {
   visible: boolean;
@@ -29,6 +26,8 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
   const colors = useThemedColors();
   const { user } = useAuth();
   const router = useRouter();
+  const { width: SCREEN_WIDTH } = useWindowDimensions();
+  const DRAWER_WIDTH = SCREEN_WIDTH * 0.8;
   const slideAnim = React.useRef(new Animated.Value(-DRAWER_WIDTH)).current;
 
   React.useEffect(() => {

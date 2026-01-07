@@ -1,5 +1,6 @@
 // src/styles/features/communityStyles.ts
 import { StyleSheet } from 'react-native';
+import { SPACING, FONT_SIZES, LINE_HEIGHTS, BORDER_RADIUS, ICON_SIZES, moderateScale } from '@/utils/responsive';
 
 export const communityStyles = StyleSheet.create({
   // Container
@@ -16,7 +17,7 @@ export const communityStyles = StyleSheet.create({
 
   // Feed Header
   feedHeader: {
-    padding: 16,
+    padding: SPACING.base,
     borderBottomWidth: 1,
   },
 
@@ -24,17 +25,17 @@ export const communityStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 16,
+    marginBottom: SPACING.base,
   },
 
   settingInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: SPACING.md,
   },
 
   settingText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
 
@@ -42,47 +43,47 @@ export const communityStyles = StyleSheet.create({
   contributionCTA: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.base,
   },
 
   ctaTitle: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
 
   ctaText: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: FONT_SIZES.base,
+    lineHeight: LINE_HEIGHTS.base,
   },
 
   // Filter
   filterContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: SPACING.sm,
   },
 
   filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingHorizontal: SPACING.base,
+    paddingVertical: SPACING.sm,
+    borderRadius: BORDER_RADIUS.xxl,
     borderWidth: 1,
   },
 
   filterButtonText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
   },
 
   // Post Card
   postCard: {
-    marginHorizontal: 16,
-    marginTop: 16,
-    padding: 16,
-    borderRadius: 12,
+    marginHorizontal: SPACING.base,
+    marginTop: SPACING.base,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.md,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -94,7 +95,7 @@ export const communityStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-start',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
 
   authorInfo: {
@@ -104,123 +105,123 @@ export const communityStyles = StyleSheet.create({
   },
 
   authorAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
   },
 
   authorAvatarPlaceholder: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   authorInitials: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: '#FFFFFF',
   },
 
   authorDetails: {
-    marginLeft: 12,
+    marginLeft: SPACING.md,
     flex: 1,
   },
 
   authorName: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
   },
 
   postTime: {
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: FONT_SIZES.sm,
+    marginTop: SPACING.xs / 2,
   },
 
   reputationBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-    gap: 2,
+    paddingHorizontal: SPACING.xs + 2,
+    paddingVertical: SPACING.xs / 2,
+    borderRadius: BORDER_RADIUS.md,
+    gap: SPACING.xs / 2,
   },
 
   reputationText: {
-    fontSize: 11,
+    fontSize: FONT_SIZES.xs + 1,
     fontWeight: '600',
   },
 
   postTypeBadge: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   // Post Content
   postTitle: {
-    fontSize: 18,
+    fontSize: FONT_SIZES.lg,
     fontWeight: '700',
-    marginBottom: 8,
-    lineHeight: 24,
+    marginBottom: SPACING.sm,
+    lineHeight: LINE_HEIGHTS.lg,
   },
 
   postContent: {
-    fontSize: 15,
-    lineHeight: 22,
-    marginBottom: 12,
+    fontSize: FONT_SIZES.base + 1,
+    lineHeight: LINE_HEIGHTS.base + 2,
+    marginBottom: SPACING.md,
   },
 
   postLocation: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
-    gap: 6,
+    marginBottom: SPACING.md,
+    gap: SPACING.xs + 2,
   },
 
   locationText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '500',
   },
 
   postImage: {
     width: '100%',
-    height: 200,
-    borderRadius: 8,
-    marginBottom: 12,
+    height: moderateScale(200),
+    borderRadius: BORDER_RADIUS.base,
+    marginBottom: SPACING.md,
   },
 
   // Post Actions
   postActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingTop: 12,
+    paddingTop: SPACING.md,
     borderTopWidth: 1,
-    gap: 16,
+    gap: SPACING.base,
   },
 
   actionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: SPACING.xs + 2,
   },
 
   actionText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
   },
 
   // FAB
   fab: {
     position: 'absolute',
-    right: 20,
-    bottom: 20,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    right: SPACING.lg,
+    bottom: SPACING.lg,
+    width: moderateScale(56),
+    height: moderateScale(56),
+    borderRadius: moderateScale(28),
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -232,20 +233,20 @@ export const communityStyles = StyleSheet.create({
 
   // Empty State
   emptyState: {
-    padding: 40,
+    padding: SPACING.xxxl,
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   emptyText: {
-    fontSize: 18,
+    fontSize: FONT_SIZES.lg,
     fontWeight: '600',
-    marginTop: 16,
-    marginBottom: 8,
+    marginTop: SPACING.base,
+    marginBottom: SPACING.sm,
   },
 
   emptySubtext: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     textAlign: 'center',
   },
 
@@ -258,27 +259,27 @@ export const communityStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: 16,
+    padding: SPACING.base,
     borderBottomWidth: 1,
   },
 
   backButton: {
-    padding: 4,
+    padding: SPACING.xs,
   },
 
   headerTitle: {
-    fontSize: 18,
+    fontSize: FONT_SIZES.lg,
     fontWeight: '600',
   },
 
   moreButton: {
-    padding: 4,
+    padding: SPACING.xs,
   },
 
   postDetailCard: {
-    margin: 16,
-    padding: 16,
-    borderRadius: 12,
+    margin: SPACING.base,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.md,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -287,144 +288,144 @@ export const communityStyles = StyleSheet.create({
   },
 
   postDetailTitle: {
-    fontSize: 22,
+    fontSize: FONT_SIZES.xxl - 2,
     fontWeight: '700',
-    marginBottom: 12,
-    lineHeight: 30,
+    marginBottom: SPACING.md,
+    lineHeight: LINE_HEIGHTS.xxl + 2,
   },
 
   postDetailContent: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 16,
+    fontSize: FONT_SIZES.md,
+    lineHeight: LINE_HEIGHTS.md,
+    marginBottom: SPACING.base,
   },
 
   imagesContainer: {
-    gap: 12,
-    marginBottom: 16,
+    gap: SPACING.md,
+    marginBottom: SPACING.base,
   },
 
   postDetailImage: {
     width: '100%',
-    height: 250,
-    borderRadius: 8,
+    height: moderateScale(250),
+    borderRadius: BORDER_RADIUS.base,
   },
 
   // Comments
   commentsSection: {
-    padding: 16,
+    padding: SPACING.base,
   },
 
   commentsTitle: {
-    fontSize: 18,
+    fontSize: FONT_SIZES.lg,
     fontWeight: '700',
-    marginBottom: 16,
+    marginBottom: SPACING.base,
   },
 
   commentCard: {
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.base,
+    marginBottom: SPACING.md,
   },
 
   commentHeader: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
 
   commentAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginRight: 8,
+    width: moderateScale(32),
+    height: moderateScale(32),
+    borderRadius: moderateScale(16),
+    marginRight: SPACING.sm,
   },
 
   commentAvatarPlaceholder: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: moderateScale(32),
+    height: moderateScale(32),
+    borderRadius: moderateScale(16),
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 8,
+    marginRight: SPACING.sm,
   },
 
   commentInitials: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
     color: '#FFFFFF',
   },
 
   commentAuthor: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
   },
 
   commentTime: {
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: FONT_SIZES.sm,
+    marginTop: SPACING.xs / 2,
   },
 
   commentContent: {
-    fontSize: 15,
-    lineHeight: 21,
-    marginBottom: 8,
+    fontSize: FONT_SIZES.base + 1,
+    lineHeight: LINE_HEIGHTS.base + 1,
+    marginBottom: SPACING.sm,
   },
 
   commentActions: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: SPACING.md,
   },
 
   commentActionButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: SPACING.xs,
   },
 
   commentActionText: {
-    fontSize: 13,
+    fontSize: FONT_SIZES.sm + 1,
     fontWeight: '600',
   },
 
   noComments: {
-    padding: 40,
+    padding: SPACING.xxxl,
     alignItems: 'center',
   },
 
   noCommentsText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
-    marginTop: 12,
+    marginTop: SPACING.md,
   },
 
   noCommentsSubtext: {
-    fontSize: 14,
-    marginTop: 4,
+    fontSize: FONT_SIZES.base,
+    marginTop: SPACING.xs,
   },
 
   // Comment Input
   commentInputContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    padding: 16,
+    padding: SPACING.base,
     borderTopWidth: 1,
-    gap: 12,
+    gap: SPACING.md,
   },
 
   commentInput: {
     flex: 1,
-    minHeight: 40,
-    maxHeight: 100,
-    borderRadius: 20,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    fontSize: 15,
+    minHeight: moderateScale(40),
+    maxHeight: moderateScale(100),
+    borderRadius: BORDER_RADIUS.xxl,
+    paddingHorizontal: SPACING.base,
+    paddingVertical: SPACING.sm + 2,
+    fontSize: FONT_SIZES.base + 1,
   },
 
   commentButton: {
-    minWidth: 70,
-    height: 40,
+    minWidth: moderateScale(70),
+    height: moderateScale(40),
   },
 });

@@ -1,6 +1,6 @@
 // src/utils/responsive.ts
 
-import { Dimensions, PixelRatio, Platform } from 'react-native';
+import { Dimensions, PixelRatio, Platform, useWindowDimensions } from 'react-native';
 
 /**
  * Responsive utility functions following industry standards
@@ -83,6 +83,16 @@ export const getScreenDimensions = () => ({
   width: SCREEN_WIDTH,
   height: SCREEN_HEIGHT,
 });
+
+/**
+ * Hook for dynamic responsive dimensions
+ * Use this instead of static Dimensions.get('window') for reactive layouts
+ * that need to respond to window size changes (e.g., split-screen, rotation)
+ */
+export const useResponsiveDimensions = () => {
+  const { width, height } = useWindowDimensions();
+  return { width, height };
+};
 
 /**
  * Responsive spacing values (Industry Standard)

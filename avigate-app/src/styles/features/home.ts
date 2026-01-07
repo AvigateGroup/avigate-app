@@ -2,6 +2,7 @@
 
 import { StyleSheet, Platform } from 'react-native';
 import { COLORS } from '../../constants/colors';
+import { SPACING, FONT_SIZES, BORDER_RADIUS, moderateScale, platformValue } from '@/utils/responsive';
 
 export const homeFeatureStyles = StyleSheet.create({
   // ========== MAP STYLES ==========
@@ -14,9 +15,9 @@ export const homeFeatureStyles = StyleSheet.create({
   },
 
   marker: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
@@ -32,12 +33,12 @@ export const homeFeatureStyles = StyleSheet.create({
   // ========== MENU BUTTON ==========
   menuButton: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 50,
-    left: 16,
+    top: platformValue(moderateScale(60), moderateScale(50)),
+    left: SPACING.base,
     backgroundColor: COLORS.textWhite,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: moderateScale(48),
+    height: moderateScale(48),
+    borderRadius: moderateScale(24),
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -51,11 +52,11 @@ export const homeFeatureStyles = StyleSheet.create({
   // ========== TOP RIGHT NOTIFICATION BUTTON ==========
   notificationButton: {
     position: 'absolute',
-    top: Platform.OS === 'ios' ? 60 : 50,
-    right: 16,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    top: platformValue(moderateScale(60), moderateScale(50)),
+    right: SPACING.base,
+    width: moderateScale(48),
+    height: moderateScale(48),
+    borderRadius: moderateScale(24),
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -68,39 +69,39 @@ export const homeFeatureStyles = StyleSheet.create({
 
   notificationBadge: {
     position: 'absolute',
-    top: 4,
-    right: 4,
+    top: SPACING.xs,
+    right: SPACING.xs,
     backgroundColor: '#EF4444',
-    minWidth: 18,
-    height: 18,
-    borderRadius: 9,
+    minWidth: moderateScale(18),
+    height: moderateScale(18),
+    borderRadius: moderateScale(9),
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 4,
+    paddingHorizontal: SPACING.xs,
     borderWidth: 2,
     borderColor: COLORS.textWhite,
   },
 
   notificationBadgeText: {
     color: COLORS.textWhite,
-    fontSize: 10,
+    fontSize: FONT_SIZES.xs,
     fontWeight: '700',
   },
 
   // ========== ACTION BUTTONS - MOVED MUCH HIGHER! ==========
   actionButtons: {
     position: 'absolute',
-    right: 16,
-    bottom: 260, // MOVED WAY UP! (was 200, now 260)
-    gap: 12,
+    right: SPACING.base,
+    bottom: moderateScale(260), // MOVED WAY UP! (was 200, now 260)
+    gap: SPACING.md,
     zIndex: 5,
   },
 
   actionButton: {
     backgroundColor: COLORS.primary,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: moderateScale(56),
+    height: moderateScale(56),
+    borderRadius: moderateScale(28),
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -117,9 +118,9 @@ export const homeFeatureStyles = StyleSheet.create({
     left: 0,
     right: 0,
     backgroundColor: COLORS.textWhite,
-    paddingHorizontal: 16,
-    paddingTop: 20,
-    paddingBottom: Platform.OS === 'ios' ? 90 : 75,
+    paddingHorizontal: SPACING.base,
+    paddingTop: SPACING.lg,
+    paddingBottom: platformValue(moderateScale(90), moderateScale(75)),
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.1,
@@ -132,9 +133,9 @@ export const homeFeatureStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F3F4F6',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderRadius: 12,
+    paddingHorizontal: SPACING.base,
+    paddingVertical: SPACING.base,
+    borderRadius: BORDER_RADIUS.md,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
@@ -143,9 +144,9 @@ export const homeFeatureStyles = StyleSheet.create({
   },
 
   searchPlaceholder: {
-    fontSize: 18,
+    fontSize: FONT_SIZES.lg,
     color: '#6B7280',
-    marginLeft: 12,
+    marginLeft: SPACING.md,
     fontWeight: '500',
   },
 
@@ -158,8 +159,8 @@ export const homeFeatureStyles = StyleSheet.create({
   },
 
   loadingText: {
-    marginTop: 16,
-    fontSize: 16,
+    marginTop: SPACING.base,
+    fontSize: FONT_SIZES.md,
     color: COLORS.textMuted,
   },
 

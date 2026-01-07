@@ -19,6 +19,7 @@ import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
 import { useAuth } from '@/store/AuthContext';
 import { communityStyles } from '@/styles/features';
+import { moderateScale } from '@/utils/responsive';
 
 interface FeedPost {
   id: string;
@@ -232,6 +233,8 @@ export const CommunityFeedScreen = () => {
             <Image
               source={{ uri: item.author.profilePicture }}
               style={communityStyles.authorAvatar}
+              resizeMode="cover"
+              fadeDuration={200}
             />
           ) : (
             <View
@@ -300,6 +303,8 @@ export const CommunityFeedScreen = () => {
           source={{ uri: item.images[0] }}
           style={communityStyles.postImage}
           resizeMode="cover"
+          fadeDuration={300}
+          progressiveRenderingEnabled={true}
         />
       )}
 
@@ -475,6 +480,16 @@ export const CommunityFeedScreen = () => {
           ) : null
         }
         showsVerticalScrollIndicator={false}
+        initialNumToRender={10}
+        maxToRenderPerBatch={5}
+        windowSize={10}
+        removeClippedSubviews={true}
+        updateCellsBatchingPeriod={50}
+        getItemLayout={(data, index) => ({
+          length: moderateScale(300),
+          offset: moderateScale(300) * index,
+          index,
+        })}
       />
 
       {/* FAB for creating post */}

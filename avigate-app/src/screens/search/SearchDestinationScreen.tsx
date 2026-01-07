@@ -19,6 +19,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { searchStyles } from '@/styles/features';
 import { useLocationSearch } from '@/hooks/useLocationSearch';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
+import { moderateScale } from '@/utils/responsive';
 
 interface LocationSuggestion {
   id: string;
@@ -324,6 +325,15 @@ export const SearchDestinationScreen = () => {
                 keyExtractor={item => item.id}
                 renderItem={renderLocationItem}
                 scrollEnabled={false}
+                initialNumToRender={5}
+                maxToRenderPerBatch={3}
+                windowSize={5}
+                removeClippedSubviews={true}
+                getItemLayout={(data, index) => ({
+                  length: moderateScale(72),
+                  offset: moderateScale(72) * index,
+                  index,
+                })}
               />
             </View>
           )}
@@ -337,6 +347,15 @@ export const SearchDestinationScreen = () => {
                 keyExtractor={item => item.id}
                 renderItem={renderLocationItem}
                 scrollEnabled={false}
+                initialNumToRender={5}
+                maxToRenderPerBatch={3}
+                windowSize={5}
+                removeClippedSubviews={true}
+                getItemLayout={(data, index) => ({
+                  length: moderateScale(72),
+                  offset: moderateScale(72) * index,
+                  index,
+                })}
               />
             </View>
           )}
@@ -360,6 +379,15 @@ export const SearchDestinationScreen = () => {
           renderItem={renderLocationItem}
           ListEmptyComponent={renderEmptyState}
           keyboardShouldPersistTaps="handled"
+          initialNumToRender={10}
+          maxToRenderPerBatch={5}
+          windowSize={10}
+          removeClippedSubviews={true}
+          getItemLayout={(data, index) => ({
+            length: moderateScale(72),
+            offset: moderateScale(72) * index,
+            index,
+          })}
         />
       )}
     </SafeAreaView>

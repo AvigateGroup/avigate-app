@@ -2,6 +2,7 @@
 
 import { StyleSheet } from 'react-native';
 import { COLORS } from '../../constants/colors';
+import { SPACING, FONT_SIZES, BORDER_RADIUS, moderateScale } from '@/utils/responsive';
 
 /**
  * Profile and settings screen specific styles
@@ -20,38 +21,38 @@ export const profileFeatureStyles = StyleSheet.create({
   // ========== HEADER ==========
   header: {
     backgroundColor: COLORS.textWhite,
-    paddingTop: 24,
-    paddingBottom: 32,
+    paddingTop: SPACING.xl,
+    paddingBottom: SPACING.xxl,
     alignItems: 'center',
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
+    borderBottomLeftRadius: SPACING.xl,
+    borderBottomRightRadius: SPACING.xl,
   },
 
   // ========== AVATAR ==========
   avatarContainer: {
     position: 'relative',
-    marginBottom: 16,
+    marginBottom: SPACING.base,
   },
 
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: moderateScale(100),
+    height: moderateScale(100),
+    borderRadius: moderateScale(50),
     borderWidth: 3,
     borderColor: COLORS.textWhite,
   },
 
   avatarPlaceholder: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: moderateScale(100),
+    height: moderateScale(100),
+    borderRadius: moderateScale(50),
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
 
   avatarText: {
-    fontSize: 36,
+    fontSize: FONT_SIZES.huge + 4,
     fontWeight: '700',
     color: COLORS.textWhite,
   },
@@ -61,9 +62,9 @@ export const profileFeatureStyles = StyleSheet.create({
     bottom: 0,
     right: 0,
     backgroundColor: COLORS.primary,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: moderateScale(32),
+    height: moderateScale(32),
+    borderRadius: moderateScale(16),
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 3,
@@ -72,34 +73,34 @@ export const profileFeatureStyles = StyleSheet.create({
 
   // ========== USER INFO ==========
   name: {
-    fontSize: 24,
+    fontSize: FONT_SIZES.xxl,
     fontWeight: '700',
     color: COLORS.text,
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
 
   email: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textMuted,
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
 
   phoneContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: SPACING.xs + 2,
   },
 
   phone: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textMuted,
   },
 
   // ========== STATS ==========
   statsContainer: {
     flexDirection: 'row',
-    marginTop: 24,
-    paddingHorizontal: 32,
+    marginTop: SPACING.xl,
+    paddingHorizontal: SPACING.xxl,
   },
 
   statItem: {
@@ -108,64 +109,64 @@ export const profileFeatureStyles = StyleSheet.create({
   },
 
   statValue: {
-    fontSize: 20,
+    fontSize: FONT_SIZES.xl,
     fontWeight: '700',
     color: COLORS.primary,
-    marginBottom: 4,
+    marginBottom: SPACING.xs,
   },
 
   statLabel: {
-    fontSize: 12,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textMuted,
   },
 
   statDivider: {
     width: 1,
-    height: 40,
+    height: moderateScale(40),
     backgroundColor: COLORS.border,
-    marginHorizontal: 16,
+    marginHorizontal: SPACING.base,
   },
 
   // ========== SECTIONS ==========
   section: {
-    marginTop: 16,
-    paddingHorizontal: 16,
+    marginTop: SPACING.base,
+    paddingHorizontal: SPACING.base,
   },
 
   sectionTitle: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '700',
     color: COLORS.text,
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
 
   sectionContent: {
     backgroundColor: COLORS.textWhite,
-    borderRadius: 12,
+    borderRadius: BORDER_RADIUS.md,
     overflow: 'hidden',
   },
 
   // ========== INFO CARD ==========
   infoCard: {
     backgroundColor: COLORS.textWhite,
-    borderRadius: 12,
-    padding: 16,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.base,
   },
 
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: SPACING.sm,
   },
 
   infoLabel: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     color: COLORS.textLight,
   },
 
   infoValue: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
     color: COLORS.text,
   },
@@ -173,18 +174,18 @@ export const profileFeatureStyles = StyleSheet.create({
   infoDivider: {
     height: 1,
     backgroundColor: COLORS.border,
-    marginVertical: 4,
+    marginVertical: SPACING.xs,
   },
 
   // ========== STATUS BADGE ==========
   statusBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: SPACING.xs,
   },
 
   statusText: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.base,
     fontWeight: '600',
     color: COLORS.success,
   },
@@ -194,27 +195,27 @@ export const profileFeatureStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.textWhite,
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 8,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.sm,
   },
 
   menuItemBordered: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: SPACING.base,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
 
   menuIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: COLORS.backgroundLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: SPACING.md,
   },
 
   menuContent: {
@@ -222,14 +223,14 @@ export const profileFeatureStyles = StyleSheet.create({
   },
 
   menuTitle: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: 2,
+    marginBottom: SPACING.xs / 2,
   },
 
   menuSubtitle: {
-    fontSize: 12,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textMuted,
   },
 
@@ -237,19 +238,19 @@ export const profileFeatureStyles = StyleSheet.create({
   settingItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: SPACING.base,
     borderBottomWidth: 1,
     borderBottomColor: COLORS.border,
   },
 
   settingIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: moderateScale(40),
+    height: moderateScale(40),
+    borderRadius: moderateScale(20),
     backgroundColor: COLORS.backgroundLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: SPACING.md,
   },
 
   settingContent: {
@@ -257,14 +258,14 @@ export const profileFeatureStyles = StyleSheet.create({
   },
 
   settingTitle: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.text,
-    marginBottom: 2,
+    marginBottom: SPACING.xs / 2,
   },
 
   settingSubtitle: {
-    fontSize: 12,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textMuted,
   },
 
@@ -274,32 +275,32 @@ export const profileFeatureStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: COLORS.textWhite,
-    marginHorizontal: 16,
-    marginTop: 16,
-    padding: 16,
-    borderRadius: 12,
-    gap: 8,
+    marginHorizontal: SPACING.base,
+    marginTop: SPACING.base,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.md,
+    gap: SPACING.sm,
   },
 
   logoutText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.error,
   },
 
   // ========== DANGER ZONE ==========
   dangerZone: {
-    marginTop: 32,
-    marginHorizontal: 16,
-    marginBottom: 16,
+    marginTop: SPACING.xxl,
+    marginHorizontal: SPACING.base,
+    marginBottom: SPACING.base,
   },
 
   dangerZoneTitle: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '700',
     color: COLORS.error,
-    marginBottom: 12,
-    paddingHorizontal: 4,
+    marginBottom: SPACING.md,
+    paddingHorizontal: SPACING.xs,
   },
 
   deleteButton: {
@@ -307,15 +308,15 @@ export const profileFeatureStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: COLORS.textWhite,
-    padding: 16,
-    borderRadius: 12,
-    gap: 8,
+    padding: SPACING.base,
+    borderRadius: BORDER_RADIUS.md,
+    gap: SPACING.sm,
     borderWidth: 1,
     borderColor: COLORS.error,
   },
 
   deleteButtonText: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     color: COLORS.error,
   },
@@ -323,11 +324,11 @@ export const profileFeatureStyles = StyleSheet.create({
   // ========== FOOTER ==========
   footer: {
     alignItems: 'center',
-    paddingVertical: 24,
+    paddingVertical: SPACING.xl,
   },
 
   footerText: {
-    fontSize: 12,
+    fontSize: FONT_SIZES.sm,
     color: COLORS.textMuted,
   },
 });

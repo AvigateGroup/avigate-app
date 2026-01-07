@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { COLORS } from '@/constants/colors';
+import { SPACING, FONT_SIZES, BORDER_RADIUS, BUTTON_HEIGHTS, ICON_SIZES } from '@/utils/responsive';
 
 interface ButtonProps {
   title: string;
@@ -101,10 +102,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 24,
-    borderRadius: 12,
-    minHeight: 52,
+    paddingVertical: SPACING.base,
+    paddingHorizontal: SPACING.xl,
+    borderRadius: BORDER_RADIUS.md,
+    minHeight: BUTTON_HEIGHTS.medium,
   },
   primaryButton: {
     backgroundColor: COLORS.primary,
@@ -126,7 +127,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   text: {
-    fontSize: 16,
+    fontSize: FONT_SIZES.md,
     fontWeight: '600',
     textAlign: 'center',
   },
@@ -140,9 +141,9 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
   leftIcon: {
-    marginRight: 8,
+    marginRight: SPACING.sm,
   },
   rightIcon: {
-    marginLeft: 8,
+    marginLeft: SPACING.sm,
   },
 });
