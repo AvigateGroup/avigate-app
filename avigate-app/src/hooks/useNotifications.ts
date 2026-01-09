@@ -58,7 +58,7 @@ export const useNotifications = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await apiClient.get<NotificationsResponse>('/notifications', {
+      const response = await apiClient.get<{ success: boolean; data: NotificationsResponse }>('/notifications', {
         params: {
           page: params.page || 1,
           limit: params.limit || 20,
@@ -68,8 +68,8 @@ export const useNotifications = () => {
       });
 
       return {
-        success: true,
-        data: response,
+        success: response.success || true,
+        data: response.data,
       };
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || 'Failed to load notifications';
@@ -102,7 +102,11 @@ export const useNotifications = () => {
         count: 0,
       };
     } catch (err: any) {
-      console.error('Get unread count error:', err);
+      // Silently handle errors - backend may not have this endpoint yet
+      // Only log non-500 errors in development
+      if (__DEV__ && err.response?.status !== 500) {
+        console.warn('Get unread count error:', err.message);
+      }
       return {
         success: false,
         count: 0,

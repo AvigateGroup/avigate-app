@@ -29,7 +29,11 @@ export class NotificationsController {
   @Get()
   @ApiOperation({ summary: 'Get user notifications' })
   async getNotifications(@CurrentUser() user: User, @Query() dto: GetNotificationsDto) {
-    return this.notificationsService.getUserNotifications(user.id, dto);
+    const result = await this.notificationsService.getUserNotifications(user.id, dto);
+    return {
+      success: true,
+      data: result,
+    };
   }
 
   @Get('unread-count')
