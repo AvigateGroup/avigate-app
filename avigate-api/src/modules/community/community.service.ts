@@ -265,7 +265,7 @@ export class CommunityService {
     });
 
     // Get user's vote if userId provided
-    let userVote = null;
+    let userVote: string | null = null;
     if (userId) {
       const vote = await this.postVoteRepository.findOne({
         where: { postId, userId },
@@ -386,6 +386,10 @@ export class CommunityService {
       where: { id: savedComment.id },
       relations: ['author'],
     });
+
+    if (!fullComment) {
+      throw new NotFoundException('Comment not found after creation');
+    }
 
     return {
       success: true,
