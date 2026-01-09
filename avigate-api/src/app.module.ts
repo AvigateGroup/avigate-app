@@ -32,6 +32,9 @@ import { FareFeedback } from './modules/fare/entities/fare-feedback.entity';
 import { Journey } from './modules/journey/entities/journey.entity';
 import { JourneyLeg } from './modules/journey/entities/journey-leg.entity';
 import { CommunityPost } from './modules/community/entities/community-post.entity';
+import { CommunityComment } from './modules/community/entities/community-comment.entity';
+import { PostVote } from './modules/community/entities/post-vote.entity';
+import { CommentVote } from './modules/community/entities/comment-vote.entity';
 import { DirectionShare } from './modules/community/entities/direction-share.entity';
 import { RouteContribution } from './modules/community/entities/route-contribution.entity';
 import { SafetyReport } from './modules/community/entities/safety-report.entity';
@@ -67,6 +70,9 @@ import { Notification } from './modules/notifications/entities/notification.enti
       Journey,
       JourneyLeg,
       CommunityPost,
+      CommunityComment,
+      PostVote,
+      CommentVote,
       DirectionShare,
       RouteContribution,
       SafetyReport,
