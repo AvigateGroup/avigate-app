@@ -449,6 +449,20 @@ export const CommunityFeedScreen = () => {
       style={[communityStyles.container, { backgroundColor: colors.background }]}
       edges={['top', 'left', 'right']}
     >
+      {/* Header */}
+      <View
+        style={[
+          communityStyles.detailHeader,
+          { backgroundColor: colors.white, borderBottomColor: colors.border },
+        ]}
+      >
+        <TouchableOpacity onPress={() => router.back()}>
+          <Icon name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={[communityStyles.headerTitle, { color: colors.text }]}>Community Feed</Text>
+        <View style={{ width: 24 }} />
+      </View>
+
       <FlatList
         data={posts}
         renderItem={renderPost}
