@@ -11,11 +11,13 @@ import {
   Platform,
   ScrollView,
   useWindowDimensions,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useAuth } from '@/store/AuthContext';
 import { useRouter } from 'expo-router';
+import { getInitials } from '@/utils/helpers';
 
 interface CommunityDrawerProps {
   visible: boolean;
@@ -68,12 +70,6 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
       route: '/community/create',
     },
     {
-      icon: 'shield-checkmark-outline',
-      label: 'Safety Reports',
-      subtitle: 'Report safety concerns',
-      route: '/community/contribute',
-    },
-    {
       icon: 'git-network-outline',
       label: 'Route Contributions',
       subtitle: 'Suggest route improvements',
@@ -115,6 +111,7 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
         style={[
           styles.drawer,
           {
+            width: DRAWER_WIDTH,
             backgroundColor: colors.white,
             transform: [{ translateX: slideAnim }],
           },
@@ -137,15 +134,25 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
 
             {/* User Info */}
             <View style={styles.userSection}>
-              <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-                <Icon name="person" size={32} color={colors.white} />
-              </View>
+              {user?.profilePicture ? (
+                <Image
+                  source={{ uri: user.profilePicture }}
+                  style={styles.avatar}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+                  <Text style={styles.avatarText}>
+                    {getInitials(user?.firstName || '', user?.lastName || '')}
+                  </Text>
+                </View>
+              )}
               <View style={styles.userInfo}>
                 <Text style={[styles.userName, { color: colors.text }]}>
                   {user?.firstName} {user?.lastName}
                 </Text>
                 <TouchableOpacity onPress={() => handleMenuItemPress('/(tabs)/profile')}>
-                  <Text style={[styles.myAccount, { color: colors.primary }]}>My account</Text>
+                  <Text style={[styles.myAccount, { color: colors.primary }]}>Profile</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -205,7 +212,6 @@ const styles = StyleSheet.create({
     left: 0,
     top: 0,
     bottom: 0,
-    width: DRAWER_WIDTH,
     shadowColor: '#000',
     shadowOffset: { width: 2, height: 0 },
     shadowOpacity: 0.25,
@@ -238,6 +244,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
+  },
+  avatarText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#fff',
   },
   userInfo: {
     flex: 1,
