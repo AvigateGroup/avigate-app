@@ -38,11 +38,11 @@ export default function Notifications() {
     const result = await getNotifications({ page: currentPage, limit: 20 });
 
     if (result.success && result.data) {
-      const newNotifications = result.data.notifications;
+      const newNotifications = result.data.notifications || [];
       if (refresh) {
         setNotifications(newNotifications);
       } else {
-        setNotifications((prev) => [...prev, ...newNotifications]);
+        setNotifications((prev) => [...(prev || []), ...newNotifications]);
       }
       setHasMore(result.data.page < result.data.totalPages);
       if (!refresh) {
@@ -65,7 +65,7 @@ export default function Notifications() {
   const handleMarkAllAsRead = async () => {
     const result = await markAllAsRead();
     if (result.success) {
-      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+      setNotifications((prev) => (prev || []).map((n) => ({ ...n, isRead: true })));
     }
   };
 
@@ -74,7 +74,7 @@ export default function Notifications() {
     if (!notification.isRead) {
       await markAsRead(notification.id, true);
       setNotifications((prev) =>
-        prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n)),
+        (prev || []).map((n) => (n.id === notification.id ? { ...n, isRead: true } : n)),
       );
     }
 
@@ -93,7 +93,7 @@ export default function Notifications() {
         onPress: async () => {
           const result = await deleteNotification(notificationId);
           if (result.success) {
-            setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+            setNotifications((prev) => (prev || []).filter((n) => n.id !== notificationId));
           }
         },
       },
