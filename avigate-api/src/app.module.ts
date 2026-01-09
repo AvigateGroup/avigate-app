@@ -14,6 +14,7 @@ import { CommunityModule } from './modules/community/community.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { EmailModule } from './modules/email/email.module';
 import { WebsocketModule } from './modules/websocket/websocket.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 import databaseConfig from './config/database.config';
 
 // Import all entities explicitly
@@ -34,6 +35,7 @@ import { CommunityPost } from './modules/community/entities/community-post.entit
 import { DirectionShare } from './modules/community/entities/direction-share.entity';
 import { RouteContribution } from './modules/community/entities/route-contribution.entity';
 import { SafetyReport } from './modules/community/entities/safety-report.entity';
+import { Notification } from './modules/notifications/entities/notification.entity';
 
 @Module({
   imports: [
@@ -45,11 +47,11 @@ import { SafetyReport } from './modules/community/entities/safety-report.entity'
   imports: [ConfigModule],
   useFactory: (configService: ConfigService) => ({
     type: 'postgres',
-    host: configService.get('DATABASE_HOST'), 
-    port: configService.get('DATABASE_PORT'), 
-    username: configService.get('DATABASE_USERNAME'), 
-    password: configService.get('DATABASE_PASSWORD'), 
-    database: configService.get('DATABASE_NAME'), 
+    host: configService.get('DATABASE_HOST'),
+    port: configService.get('DATABASE_PORT'),
+    username: configService.get('DATABASE_USERNAME'),
+    password: configService.get('DATABASE_PASSWORD'),
+    database: configService.get('DATABASE_NAME'),
     entities: [
       Admin,
       AdminSession,
@@ -68,14 +70,23 @@ import { SafetyReport } from './modules/community/entities/safety-report.entity'
       DirectionShare,
       RouteContribution,
       SafetyReport,
+      Notification,
     ],
     synchronize: false, // Disabled to avoid schema conflicts - use migrations instead
     logging: configService.get('NODE_ENV') === 'development',
-    ssl: configService.get('DATABASE_SSL') === 'true' ? { rejectUnauthorized: false } : false, 
+    ssl: configService.get('DATABASE_SSL') === 'true' ? { rejectUnauthorized: false } : false,
     retryAttempts: 10,
     retryDelay: 3000,
-    connectTimeoutMS: 10000,
-    maxQueryExecutionTime: 5000,
+    connectTimeoutMS: 60000, // Increased from 10s to 60s
+    maxQueryExecutionTime: 30000, // Increased from 5s to 30s
+    // Connection pool settings
+    extra: {
+      max: 20, // Maximum pool size
+      min: 5, // Minimum pool size
+      idleTimeoutMillis: 30000, // Close idle connections after 30s
+      connectionTimeoutMillis: 60000, // Wait up to 60s for connection from pool
+      statement_timeout: 30000, // Cancel queries running longer than 30s
+    },
   }),
   inject: [ConfigService],
 }),
@@ -100,6 +111,7 @@ import { SafetyReport } from './modules/community/entities/safety-report.entity'
     AnalyticsModule,
     EmailModule,
     WebsocketModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

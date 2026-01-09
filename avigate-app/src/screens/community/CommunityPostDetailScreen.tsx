@@ -68,7 +68,7 @@ interface Comment {
 }
 
 export const CommunityPostDetailScreen = () => {
-  const navigation = useNavigation<any>();
+  const router = useRouter();
   const params = useLocalSearchParams();
   const postId = params.id as string;
   const colors = useThemedColors();
@@ -245,7 +245,7 @@ export const CommunityPostDetailScreen = () => {
           onPress: async () => {
             const result = await deletePost(postId);
             if (result.success) {
-              navigation.goBack();
+              router.back();
             } else {
               Alert.alert('Error', 'Failed to delete post');
             }
@@ -436,7 +436,7 @@ export const CommunityPostDetailScreen = () => {
       >
         {/* Header */}
         <View style={[communityStyles.detailHeader, { backgroundColor: colors.white }]}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={communityStyles.backButton}>
+          <TouchableOpacity onPress={() => router.back()} style={communityStyles.backButton}>
             <Icon name="arrow-back" size={24} color={colors.text} />
           </TouchableOpacity>
           <Text style={[communityStyles.headerTitle, { color: colors.text }]}>Post</Text>
