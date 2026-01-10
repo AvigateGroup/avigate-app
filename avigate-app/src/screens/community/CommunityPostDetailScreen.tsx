@@ -12,6 +12,7 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -448,7 +449,14 @@ export const CommunityPostDetailScreen = () => {
       <ScrollView
         style={communityStyles.detailContainer}
         showsVerticalScrollIndicator={false}
-        refreshControl={<ActivityIndicator animating={refreshing} color={colors.primary} />}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
       >
         {/* Post Content */}
         <View style={[communityStyles.postDetailCard, { backgroundColor: colors.white }]}>

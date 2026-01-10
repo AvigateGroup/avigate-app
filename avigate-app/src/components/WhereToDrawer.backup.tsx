@@ -1,7 +1,7 @@
 // src/components/WhereToDrawer.tsx
 
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Dimensions } from 'react-native';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
@@ -10,6 +10,8 @@ import { useCommunityService } from '@/hooks/useCommunityService';
 import { useRouteService } from '@/hooks/useRouteService';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 import { PlaceCardSkeleton, PostCardSkeleton } from '@/components/LoadingSkeleton';
+
+const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface WhereToDrawerProps {
   currentAddress?: string;
@@ -44,6 +46,8 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
   currentAddress = '',
   currentLocation,
 }) => {
+  console.log('🔵 WhereToDrawer rendering with address:', currentAddress);
+
   const router = useRouter();
   const colors = useThemedColors();
   const bottomSheetRef = useRef<BottomSheet>(null);
@@ -56,11 +60,23 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
   const [loadingPlaces, setLoadingPlaces] = useState(true);
   const [refreshInterval, setRefreshInterval] = useState<NodeJS.Timeout | null>(null);
 
-  // Dynamic snap points based on content
+  // Dynamic snap points based on content - matching Bolt UI layout
+  // Using percentage-based snap points for better compatibility
   const snapPoints = useMemo(() => {
-    const hasContent = trendingPosts.length > 0 || suggestedPlaces.length > 0;
-    return hasContent ? ['28%', '55%', '90%'] : ['25%', '50%', '85%'];
-  }, [trendingPosts.length, suggestedPlaces.length]);
+    // Initial: Just the "Where to?" search bar (small)
+    // Mid: Show search + quick actions + some suggestions
+    // Expanded: Full content with all suggestions and posts
+    const snapPointsArray = ['22%', '50%', '85%'];
+
+    console.log('WhereToDrawer snapPoints:', snapPointsArray);
+    console.log('Screen height:', SCREEN_HEIGHT);
+    return snapPointsArray;
+  }, []);
+
+  // Debug: Log when component mounts
+  useEffect(() => {
+    console.log('WhereToDrawer mounted, screen height:', SCREEN_HEIGHT);
+  }, []);
 
   // Render backdrop
   const renderBackdrop = useCallback(
@@ -202,13 +218,18 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
       index={0}
       snapPoints={snapPoints}
       backdropComponent={renderBackdrop}
-      handleIndicatorStyle={{ backgroundColor: colors.textMuted }}
-      backgroundStyle={{ backgroundColor: colors.white }}
+      handleIndicatorStyle={{ backgroundColor: colors.textMuted, width: 40, height: 4 }}
+      backgroundStyle={{ backgroundColor: colors.white, elevation: 15, shadowColor: '#000', shadowOffset: { width: 0, height: -4 }, shadowOpacity: 0.15, shadowRadius: 12 }}
+      enablePanDownToClose={false}
+      enableOverDrag={false}
+      animateOnMount={true}
+      containerStyle={{ zIndex: 100 }}
+      style={{ elevation: 15 }}
     >
       <ScrollView
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: 140 }]}
       >
         {/* Where to? Search */}
         <TouchableOpacity
@@ -218,6 +239,10 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
         >
           <Icon name="search" size={24} color="#6B7280" />
           <Text style={styles.searchPlaceholder}>Where to?</Text>
+          <View style={styles.laterButton}>
+            <Icon name="time-outline" size={20} color="#374151" />
+            <Text style={styles.laterButtonText}>Later</Text>
+          </View>
         </TouchableOpacity>
 
         {/* Quick Actions */}
@@ -394,9 +419,24 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   searchPlaceholder: {
+    flex: 1,
     fontSize: 18,
     color: '#6B7280',
     marginLeft: 12,
+    fontWeight: '500',
+  },
+  laterButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
+  },
+  laterButtonText: {
+    fontSize: 14,
+    color: '#374151',
     fontWeight: '500',
   },
   servicesContainer: {

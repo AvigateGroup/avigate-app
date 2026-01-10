@@ -10,8 +10,7 @@ import { useThemedColors } from '@/hooks/useThemedColors';
 import { homeFeatureStyles } from '@/styles/features';
 import { useRouter } from 'expo-router';
 import { CommunityDrawer } from '@/components/CommunityDrawer';
-import { WhereToDrawer } from '@/components/WhereToDrawer';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { SimpleWhereToDrawer } from '@/components/SimpleWhereToDrawer';
 import { useNotifications } from '@/hooks/useNotifications';
 
 interface LocationType {
@@ -105,6 +104,13 @@ export const HomeScreen = () => {
       setLocation(newLocation);
       setLoading(false);
 
+      // Auto-zoom to user location after map is ready
+      setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.animateToRegion(newLocation, 1000);
+        }
+      }, 500);
+
       // Get address from coordinates
       getAddressFromCoordinates(latitude, longitude);
     } catch (error) {
@@ -190,33 +196,7 @@ export const HomeScreen = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={homeFeatureStyles.container}>
-        {/* Hamburger Menu Button */}
-        <TouchableOpacity
-          style={[homeFeatureStyles.menuButton, { backgroundColor: colors.white }]}
-          onPress={handleMenuPress}
-          activeOpacity={0.7}
-        >
-          <Icon name="menu" size={28} color={colors.text} />
-        </TouchableOpacity>
-
-      {/* Top Right Icon - Notification with Badge */}
-      <TouchableOpacity
-        style={[homeFeatureStyles.notificationButton, { backgroundColor: colors.white }]}
-        onPress={handleNotificationPress}
-        activeOpacity={0.7}
-      >
-        <Icon name="notifications-outline" size={24} color={colors.text} />
-        {unreadCount > 0 && (
-          <View style={homeFeatureStyles.notificationBadge}>
-            <Text style={homeFeatureStyles.notificationBadgeText}>
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </Text>
-          </View>
-        )}
-      </TouchableOpacity>
-
+    <View style={homeFeatureStyles.container}>
       {/* Map */}
       {location && (
         <MapView
@@ -246,6 +226,31 @@ export const HomeScreen = () => {
         </MapView>
       )}
 
+      {/* Hamburger Menu Button */}
+      <TouchableOpacity
+        style={[homeFeatureStyles.menuButton, { backgroundColor: colors.white }]}
+        onPress={handleMenuPress}
+        activeOpacity={0.7}
+      >
+        <Icon name="menu" size={28} color={colors.text} />
+      </TouchableOpacity>
+
+      {/* Top Right Icon - Notification with Badge */}
+      <TouchableOpacity
+        style={[homeFeatureStyles.notificationButton, { backgroundColor: colors.white }]}
+        onPress={handleNotificationPress}
+        activeOpacity={0.7}
+      >
+        <Icon name="notifications-outline" size={24} color={colors.text} />
+        {unreadCount > 0 && (
+          <View style={homeFeatureStyles.notificationBadge}>
+            <Text style={homeFeatureStyles.notificationBadgeText}>
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </Text>
+          </View>
+        )}
+      </TouchableOpacity>
+
       {/* Action Button - Center on User */}
       <View style={homeFeatureStyles.actionButtons}>
         <TouchableOpacity
@@ -258,18 +263,17 @@ export const HomeScreen = () => {
       </View>
 
       {/* Where To Drawer - Bottom Sheet */}
-        <WhereToDrawer
-          currentAddress={address}
-          currentLocation={
-            location
-              ? { latitude: location.latitude, longitude: location.longitude }
-              : undefined
-          }
-        />
+      <SimpleWhereToDrawer
+        currentAddress={address}
+        currentLocation={
+          location
+            ? { latitude: location.latitude, longitude: location.longitude }
+            : undefined
+        }
+      />
 
-        {/* Community Drawer */}
-        <CommunityDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
-      </View>
-    </GestureHandlerRootView>
+      {/* Community Drawer */}
+      <CommunityDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+    </View>
   );
 };

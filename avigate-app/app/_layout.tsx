@@ -12,6 +12,7 @@ import { Stack, useRouter, useSegments, usePathname } from 'expo-router';
 import { StatusBar } from 'react-native';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { AuthProvider, useAuth } from '../src/store/AuthContext';
 import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
 import { useThemedColors } from '../src/hooks/useThemedColors';
@@ -117,7 +118,7 @@ function RootLayoutNav() {
   }, [isAuthenticated, segments, isLoading, hasSeenOnboarding, isNavigating, pathname, user]);
 
   return (
-    <>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar
         barStyle={isDark ? 'light-content' : 'dark-content'}
         backgroundColor={colors.primary}
@@ -239,7 +240,7 @@ function RootLayoutNav() {
 
       {/* Toast Notifications */}
       <Toast />
-    </>
+    </GestureHandlerRootView>
   );
 }
 
