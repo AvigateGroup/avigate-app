@@ -95,7 +95,10 @@ export const useCommunityService = () => {
         error: 'Failed to load feed',
       };
     } catch (error: any) {
-      console.error('Get feed error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Get feed error:', error.message);
+      }
       const errorMessage = error.response?.data?.message || error.message || 'Failed to load feed';
       setError(errorMessage);
       return {
@@ -129,7 +132,10 @@ export const useCommunityService = () => {
         error: 'Post not found',
       };
     } catch (error: any) {
-      console.error('Get post error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Get post error:', error.message);
+      }
       const errorMessage = error.response?.data?.message || error.message || 'Failed to load post';
       setError(errorMessage);
       return {
@@ -163,7 +169,10 @@ export const useCommunityService = () => {
         error: 'Failed to create post',
       };
     } catch (error: any) {
-      console.error('Create post error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Create post error:', error.message);
+      }
       const errorMessage =
         error.response?.data?.message || error.message || 'Failed to create post';
       setError(errorMessage);
@@ -197,7 +206,10 @@ export const useCommunityService = () => {
         error: 'Failed to vote',
       };
     } catch (error: any) {
-      console.error('Vote post error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Vote post error:', error.message);
+      }
       return {
         success: false,
         error: error.response?.data?.message || error.message || 'Failed to vote',
@@ -226,7 +238,10 @@ export const useCommunityService = () => {
         error: 'Failed to load comments',
       };
     } catch (error: any) {
-      console.error('Get comments error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Get comments error:', error.message);
+      }
       return {
         success: false,
         error: error.response?.data?.message || error.message || 'Failed to load comments',
@@ -255,7 +270,10 @@ export const useCommunityService = () => {
         error: 'Failed to add comment',
       };
     } catch (error: any) {
-      console.error('Add comment error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Add comment error:', error.message);
+      }
       return {
         success: false,
         error: error.response?.data?.message || error.message || 'Failed to add comment',
@@ -284,7 +302,10 @@ export const useCommunityService = () => {
         error: 'Failed to vote',
       };
     } catch (error: any) {
-      console.error('Vote comment error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Vote comment error:', error.message);
+      }
       return {
         success: false,
         error: error.response?.data?.message || error.message || 'Failed to vote',
@@ -311,7 +332,10 @@ export const useCommunityService = () => {
         error: 'Failed to delete post',
       };
     } catch (error: any) {
-      console.error('Delete post error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Delete post error:', error.message);
+      }
       return {
         success: false,
         error: error.response?.data?.message || error.message || 'Failed to delete post',
@@ -340,7 +364,10 @@ export const useCommunityService = () => {
         error: 'Failed to report post',
       };
     } catch (error: any) {
-      console.error('Report post error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Report post error:', error.message);
+      }
       return {
         success: false,
         error: error.response?.data?.message || error.message || 'Failed to report post',
@@ -374,7 +401,10 @@ export const useCommunityService = () => {
         error: 'Failed to submit contribution',
       };
     } catch (error: any) {
-      console.error('Submit contribution error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Submit contribution error:', error.message);
+      }
       const errorMessage =
         error.response?.data?.message || error.message || 'Failed to submit contribution';
       setError(errorMessage);
@@ -406,7 +436,10 @@ export const useCommunityService = () => {
         error: 'Failed to load contributions',
       };
     } catch (error: any) {
-      console.error('Get contributions error:', error);
+      // Silently handle 500 errors - backend may not have this endpoint yet
+      if (__DEV__ && error.response?.status !== 500) {
+        console.warn('Get contributions error:', error.message);
+      }
       return {
         success: false,
         error: error.response?.data?.message || error.message || 'Failed to load contributions',

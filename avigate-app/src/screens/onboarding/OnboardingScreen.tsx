@@ -144,11 +144,11 @@ export const OnboardingScreen: React.FC = () => {
   };
 
   const renderSlide = ({ item }: { item: OnboardingSlide }) => (
-    <View style={styles.slide}>
+    <View style={[styles.slide, { width: SCREEN_WIDTH }]}>
       <View style={styles.imageContainer}>
         <Image
           source={item.image}
-          style={styles.image}
+          style={[styles.image, { width: SCREEN_WIDTH * 0.65, height: SCREEN_HEIGHT * 0.3 }]}
           resizeMode="contain"
           fadeDuration={200}
         />
@@ -222,7 +222,7 @@ export const OnboardingScreen: React.FC = () => {
         </View>
 
         {/* Navigation Buttons */}
-        <View style={styles.buttonContainer}>
+        <View style={[styles.buttonContainer, { width: SCREEN_WIDTH }]}>
           {/* Skip Button - Left Side */}
           {!isLastSlide && (
             <TouchableOpacity
@@ -273,7 +273,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   slide: {
-    width: SCREEN_WIDTH,
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 40,
@@ -286,8 +285,6 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   image: {
-    width: SCREEN_WIDTH * 0.65,
-    height: SCREEN_HEIGHT * 0.3,
     maxHeight: 300,
   },
   textContainer: {
@@ -339,7 +336,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    width: SCREEN_WIDTH,
     paddingHorizontal: 40,
     position: 'relative',
   },
