@@ -90,14 +90,6 @@ export const SimpleWhereToDrawer: React.FC<SimpleWhereToDrawerProps> = ({
 
       {/* Quick Actions */}
       <View style={styles.servicesContainer}>
-        <TouchableOpacity style={styles.serviceCard} onPress={handleSearchPress}>
-          <View style={[styles.serviceIcon, { backgroundColor: '#86B300' }]}>
-            <Icon name="navigate" size={24} color="#FFF" />
-          </View>
-          <Text style={styles.serviceTitle}>Find Route</Text>
-          <Text style={styles.serviceSubtitle}>Navigate now</Text>
-        </TouchableOpacity>
-
         <TouchableOpacity
           style={styles.serviceCard}
           onPress={() => router.push('/community')}
