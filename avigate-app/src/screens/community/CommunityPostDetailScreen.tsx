@@ -9,7 +9,6 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   RefreshControl,
@@ -20,6 +19,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
 import { useAuth } from '@/store/AuthContext';
+import { useDialog } from '@/contexts/DialogContext';
 import { Button } from '@/components/common/Button';
 import { communityStyles } from '@/styles/features';
 
@@ -74,6 +74,7 @@ export const CommunityPostDetailScreen = () => {
   const postId = params.id as string;
   const colors = useThemedColors();
   const { user } = useAuth();
+  const dialog = useDialog();
   const {
     getPostById,
     votePost,
@@ -205,81 +206,90 @@ export const CommunityPostDetailScreen = () => {
 
       setPost(prev => (prev ? { ...prev, commentCount: prev.commentCount + 1 } : prev));
     } else {
-      Alert.alert('Error', result.error || 'Failed to add comment');
+      dialog.showError('Error', result.error || 'Failed to add comment');
     }
 
     setIsSubmitting(false);
   };
 
   const handleShare = async () => {
-    Alert.alert('Share', 'Share functionality coming soon');
+    dialog.showDialog({
+      type: 'info',
+      title: 'Share',
+      message: 'Share functionality coming soon',
+      buttons: [{ text: 'OK', style: 'primary' }],
+    });
   };
 
   const handleReport = async () => {
-    Alert.alert('Report Post', 'Why are you reporting this post?', [
-      { text: 'Spam', onPress: () => submitReport('spam') },
-      { text: 'Inappropriate', onPress: () => submitReport('inappropriate') },
-      { text: 'Misinformation', onPress: () => submitReport('misinformation') },
-      { text: 'Cancel', style: 'cancel' },
-    ]);
+    dialog.showDialog({
+      type: 'warning',
+      title: 'Report Post',
+      message: 'Why are you reporting this post?',
+      buttons: [
+        { text: 'Spam', onPress: () => submitReport('spam') },
+        { text: 'Inappropriate', onPress: () => submitReport('inappropriate') },
+        { text: 'Misinformation', onPress: () => submitReport('misinformation') },
+        { text: 'Cancel', style: 'cancel' },
+      ],
+    });
   };
 
   const submitReport = async (reason: string) => {
     const result = await reportPost(postId, reason);
 
     if (result.success) {
-      Alert.alert('Success', 'Post reported. Thank you for helping keep Avigate safe.');
+      dialog.showSuccess('Success', 'Post reported. Thank you for helping keep Avigate safe.');
     } else {
-      Alert.alert('Error', 'Failed to report post');
+      dialog.showError('Error', 'Failed to report post');
     }
   };
 
   const handleDelete = async () => {
-    Alert.alert(
+    dialog.showDestructive(
       'Delete Post',
       'Are you sure you want to delete this post? This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            const result = await deletePost(postId);
-            if (result.success) {
-              router.back();
-            } else {
-              Alert.alert('Error', 'Failed to delete post');
-            }
-          },
-        },
-      ],
+      async () => {
+        const result = await deletePost(postId);
+        if (result.success) {
+          router.back();
+        } else {
+          dialog.showError('Error', 'Failed to delete post');
+        }
+      }
     );
   };
 
   const handleEditPost = () => {
-    // For now, navigate back to feed since edit screen doesn't exist yet
-    Alert.alert(
-      'Edit Post',
-      'Post editing is coming soon! For now, you can delete and create a new post.',
-      [{ text: 'OK' }],
-    );
+    dialog.showDialog({
+      type: 'info',
+      title: 'Edit Post',
+      message: 'Post editing is coming soon! For now, you can delete and create a new post.',
+      buttons: [{ text: 'OK', style: 'primary' }],
+    });
   };
 
   const showMoreOptions = () => {
     const isOwner = post?.author.id === user?.id;
 
-    const options = isOwner
-      ? [
+    if (isOwner) {
+      dialog.showDialog({
+        title: 'Post Options',
+        buttons: [
           { text: 'Edit Post', onPress: handleEditPost },
           { text: 'Delete Post', onPress: handleDelete, style: 'destructive' },
           { text: 'Cancel', style: 'cancel' },
-        ]
-      : [
+        ],
+      });
+    } else {
+      dialog.showDialog({
+        title: 'Post Options',
+        buttons: [
           { text: 'Report Post', onPress: handleReport },
           { text: 'Cancel', style: 'cancel' },
-        ];
-
-    Alert.alert('Post Options', undefined, options as any);
+        ],
+      });
+    }
   };
 
   const getPostTypeIcon = (type: string) => {

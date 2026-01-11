@@ -1,12 +1,13 @@
 // src/screens/home/HomeScreen.tsx
 
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { useDialog } from '@/contexts/DialogContext';
 import { homeFeatureStyles } from '@/styles/features';
 import { useRouter } from 'expo-router';
 import { CommunityDrawer } from '@/components/CommunityDrawer';
@@ -25,6 +26,7 @@ export const HomeScreen = () => {
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
   const colors = useThemedColors();
+  const dialog = useDialog();
   const { getUnreadCount } = useNotifications();
 
   const [location, setLocation] = useState<LocationType | null>(null);
@@ -52,20 +54,9 @@ export const HomeScreen = () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== 'granted') {
-        Alert.alert(
+        dialog.showWarning(
           'Permission Denied',
-          'Location permission is required to use this feature. Please enable it in your device settings.',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            {
-              text: 'Open Settings',
-              onPress: () => {
-                if (Platform.OS === 'ios') {
-                  Location.requestForegroundPermissionsAsync();
-                }
-              },
-            },
-          ],
+          'Location permission is required to use this feature. Please enable it in your device settings.'
         );
         setLoading(false);
         // Set fallback location (Lagos, Nigeria)
@@ -115,9 +106,9 @@ export const HomeScreen = () => {
       getAddressFromCoordinates(latitude, longitude);
     } catch (error) {
       console.error('Error getting location:', error);
-      Alert.alert(
+      dialog.showError(
         'Location Error',
-        'Unable to get your current location. Please check your location settings.',
+        'Unable to get your current location. Please check your location settings.'
       );
       setLoading(false);
 

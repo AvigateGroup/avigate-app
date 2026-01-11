@@ -7,7 +7,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert,
   KeyboardAvoidingView,
   Platform,
   Image,
@@ -17,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
+import { useDialog } from '@/contexts/DialogContext';
 import { Button } from '@/components/common/Button';
 import { communityStyles } from '@/styles/features';
 import * as ImagePicker from 'expo-image-picker';
@@ -26,6 +26,7 @@ type PostType = 'traffic_update' | 'route_alert' | 'safety_concern' | 'tip' | 'g
 export const CreatePostScreen = () => {
   const navigation = useNavigation<any>();
   const colors = useThemedColors();
+  const dialog = useDialog();
   const { createPost, isLoading } = useCommunityService();
 
   const [postType, setPostType] = useState<PostType>('general');
@@ -78,14 +79,14 @@ export const CreatePostScreen = () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (status !== 'granted') {
-        Alert.alert('Permission needed', 'Please grant permission to access photos');
+        dialog.showWarning('Permission needed', 'Please grant permission to access photos');
         return;
       }
 
       const remainingSlots = 3 - images.length;
 
       if (remainingSlots === 0) {
-        Alert.alert('Maximum Images', 'You can only add up to 3 images');
+        dialog.showWarning('Maximum Images', 'You can only add up to 3 images');
         return;
       }
 
@@ -102,14 +103,16 @@ export const CreatePostScreen = () => {
         setImages([...images, ...imagesToAdd]);
 
         if (newImages.length > remainingSlots) {
-          Alert.alert(
-            'Image Limit',
-            `Only ${remainingSlots} more image(s) added. Maximum is 3 images total.`,
-          );
+          dialog.showDialog({
+            type: 'info',
+            title: 'Image Limit',
+            message: `Only ${remainingSlots} more image(s) added. Maximum is 3 images total.`,
+            buttons: [{ text: 'OK', style: 'primary' }],
+          });
         }
       }
     } catch (error) {
-      Alert.alert('Error', 'Failed to pick image');
+      dialog.showError('Error', 'Failed to pick image');
     }
   };
 
@@ -119,12 +122,12 @@ export const CreatePostScreen = () => {
 
   const handleSubmit = async () => {
     if (!title.trim()) {
-      Alert.alert('Missing Title', 'Please enter a title for your post');
+      dialog.showWarning('Missing Title', 'Please enter a title for your post');
       return;
     }
 
     if (!content.trim()) {
-      Alert.alert('Missing Content', 'Please enter some content');
+      dialog.showWarning('Missing Content', 'Please enter some content');
       return;
     }
 
@@ -139,17 +142,12 @@ export const CreatePostScreen = () => {
       });
 
       if (result.success) {
-        Alert.alert('Success', 'Your post has been published!', [
-          {
-            text: 'OK',
-            onPress: () => navigation.goBack(),
-          },
-        ]);
+        dialog.showSuccess('Success', 'Your post has been published!', () => navigation.goBack());
       } else {
-        Alert.alert('Error', result.error || 'Failed to create post');
+        dialog.showError('Error', result.error || 'Failed to create post');
       }
     } catch (error) {
-      Alert.alert('Error', 'An unexpected error occurred');
+      dialog.showError('Error', 'An unexpected error occurred');
     }
   };
 
