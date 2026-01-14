@@ -113,6 +113,19 @@ export class IntermediateStopHandlerService {
     const endLat = Number(segment.endLocation?.latitude);
     const endLng = Number(segment.endLocation?.longitude);
 
+    // Validate segment coordinates before processing
+    if (
+      isNaN(startLat) ||
+      isNaN(startLng) ||
+      isNaN(endLat) ||
+      isNaN(endLng) ||
+      !segment.startLocation ||
+      !segment.endLocation
+    ) {
+      logger.warn(`Invalid segment coordinates for segment ${segment.id}`);
+      return false;
+    }
+
     // Check if destination is geographically between start and end
     const isGeographicallyBetween = this.isPointNearLine(
       { lat, lng },
@@ -140,6 +153,17 @@ export class IntermediateStopHandlerService {
         return true;
       }
     } catch (error) {
+      // Only log as debug for expected errors like ZERO_RESULTS
+      const errorMessage = error?.message || String(error);
+      if (
+        errorMessage.includes('ZERO_RESULTS') ||
+        errorMessage.includes('SAME_LOCATION') ||
+        errorMessage.includes('Invalid coordinates')
+      ) {
+        // These are expected cases, just use geographic method
+        return false;
+      }
+      // Log unexpected errors
       logger.warn('Google Maps route check failed, using geographic method', error);
     }
 

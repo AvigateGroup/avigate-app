@@ -7,6 +7,8 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 import { useRouteService } from '@/hooks/useRouteService';
+import { useTripService } from '@/hooks/useTripService';
+import { useDialog } from '@/contexts/DialogContext';
 import { Button } from '@/components/common/Button';
 import { routeStyles } from '@/styles/features';
 import { Route, RouteStep } from '@/types/route';
@@ -14,10 +16,12 @@ import { Route, RouteStep } from '@/types/route';
 export const RoutePlanScreen = () => {
   const navigation = useNavigation<any>();
   const colors = useThemedColors();
+  const dialog = useDialog();
   // TODO: Get params from route when this screen is added to navigator
   const params = {}; // useLocalSearchParams();
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const { findSmartRoutes, isLoading } = useRouteService();
+  const { getActiveTrip, startTrip, cancelTrip, endTrip, isLoading: tripLoading } = useTripService();
 
   const [routes, setRoutes] = useState<Route[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
@@ -69,11 +73,77 @@ export const RoutePlanScreen = () => {
     }
   };
 
-  const handleStartTrip = () => {
-    if (!selectedRoute) return;
+  const handleStartTrip = async () => {
+    if (!selectedRoute || !currentLocation) return;
 
-    // TODO: Navigate to active trip screen when added to navigator
-    Alert.alert('Start Trip', 'Trip tracking feature will be available soon.');
+    // First check if there's an active trip
+    const activeTripResult = await getActiveTrip();
+
+    if (activeTripResult.success && activeTripResult.data?.trip) {
+      // There's already an active trip - show options dialog
+      const existingTrip = activeTripResult.data.trip;
+      const destinationName = existingTrip.route?.endLocation?.name || existingTrip.endLocation?.name || 'your destination';
+
+      dialog.showDialog({
+        type: 'warning',
+        title: 'Active Trip in Progress',
+        message: `You have an ongoing trip to ${destinationName}. What would you like to do?`,
+        buttons: [
+          {
+            text: 'Resume Trip',
+            style: 'primary',
+            onPress: () => {
+              // Navigate to active trip screen
+              navigation.navigate('ActiveTrip' as never);
+            },
+          },
+          {
+            text: 'Cancel & Start New',
+            style: 'destructive',
+            onPress: async () => {
+              const cancelResult = await endTrip(existingTrip.id);
+              if (cancelResult.success) {
+                // Now start the new trip
+                startNewTrip();
+              }
+            },
+          },
+          {
+            text: 'Go Back',
+            style: 'cancel',
+            onPress: () => {}, // Just close the dialog
+          },
+        ],
+      });
+    } else {
+      // No active trip, start a new one
+      startNewTrip();
+    }
+  };
+
+  const startNewTrip = async () => {
+    if (!selectedRoute || !currentLocation) return;
+
+    const result = await startTrip(
+      selectedRoute.id,
+      currentLocation.latitude,
+      currentLocation.longitude
+    );
+
+    if (result.success) {
+      dialog.showSuccess(
+        'Trip Started!',
+        'Your trip tracking has begun. Stay safe!',
+        () => {
+          navigation.navigate('ActiveTrip' as never);
+        }
+      );
+    } else {
+      dialog.showError(
+        'Failed to Start Trip',
+        result.error || 'Unable to start trip. Please try again.'
+      );
+    }
   };
 
   const toggleStepExpansion = (stepOrder: number) => {

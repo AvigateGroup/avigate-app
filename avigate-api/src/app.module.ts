@@ -28,6 +28,7 @@ import { Landmark } from './modules/location/entities/landmark.entity';
 import { Route } from './modules/route/entities/route.entity';
 import { RouteStep } from './modules/route/entities/route-step.entity';
 import { RouteSegment } from './modules/route/entities/route-segment.entity';
+import { ActiveTrip } from './modules/route/entities/active-trip.entity';
 import { FareFeedback } from './modules/fare/entities/fare-feedback.entity';
 import { Journey } from './modules/journey/entities/journey.entity';
 import { JourneyLeg } from './modules/journey/entities/journey-leg.entity';
@@ -66,6 +67,7 @@ import { Notification } from './modules/notifications/entities/notification.enti
       Route,
       RouteStep,
       RouteSegment,
+      ActiveTrip,
       FareFeedback,
       Journey,
       JourneyLeg,

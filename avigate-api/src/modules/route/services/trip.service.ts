@@ -427,14 +427,19 @@ export class TripService {
 
       if (segment) {
         // Create a single step from the segment with full instructions
+        // Convert distance to meters and duration to seconds to match API convention
+        const distanceMeters = Number(segment.distance) * 1000;
+        const durationSeconds = Number(segment.estimatedDuration) * 60;
+
         const steps = [
           {
             id: `segment-step-${segment.id}`,
             stepOrder: 1,
             instructions: segment.instructions,
             transportMode: segment.transportModes[0] || 'bus',
-            distance: Number(segment.distance),
-            estimatedDuration: Number(segment.estimatedDuration),
+            distance: distanceMeters,
+            duration: durationSeconds, // Frontend expects 'duration' field in seconds
+            estimatedDuration: durationSeconds, // Also set for compatibility
             estimatedFare: segment.minFare ? Number(segment.minFare) : undefined,
             fromLocation: segment.startLocation,
             toLocation: segment.endLocation,
@@ -445,8 +450,9 @@ export class TripService {
         (trip as any).route = {
           id: segment.id,
           name: segment.name,
-          distance: Number(segment.distance),
-          estimatedDuration: Number(segment.estimatedDuration),
+          distance: distanceMeters, // in meters
+          duration: durationSeconds, // in seconds
+          estimatedDuration: durationSeconds, // in seconds
           minFare: segment.minFare ? Number(segment.minFare) : undefined,
           maxFare: segment.maxFare ? Number(segment.maxFare) : undefined,
           transportModes: segment.transportModes,

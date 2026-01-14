@@ -16,13 +16,17 @@ import MapView, { Marker, Polyline } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useRouteService } from '@/hooks/useRouteService';
+import { useTripService } from '@/hooks/useTripService';
+import { useDialog } from '@/contexts/DialogContext';
 
 export default function RouteDetails() {
   const router = useRouter();
   const params = useLocalSearchParams();
   const colors = useThemedColors();
+  const dialog = useDialog();
   const mapRef = useRef<MapView>(null);
-  const { findSmartRoutes, startTrip, isLoading } = useRouteService();
+  const { findSmartRoutes } = useRouteService();
+  const { getActiveTrip, startTrip, endTrip, isLoading: tripLoading } = useTripService();
 
   const [routeData, setRouteData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -81,7 +85,55 @@ export default function RouteDetails() {
 
   const handleStartTrip = async () => {
     if (!routeData?.routes?.[selectedRoute]?.id) {
-      Alert.alert('Error', 'No route selected');
+      dialog.showError('Error', 'No route selected');
+      return;
+    }
+
+    // First check if there's an active trip
+    const activeTripResult = await getActiveTrip();
+
+    if (activeTripResult.success && activeTripResult.data?.trip) {
+      // There's already an active trip - show options dialog
+      const existingTrip = activeTripResult.data.trip;
+      const destinationName = existingTrip.route?.endLocation?.name || existingTrip.endLocation?.name || 'your destination';
+
+      dialog.showDialog({
+        type: 'warning',
+        title: 'Active Trip in Progress',
+        message: `You have an ongoing trip to ${destinationName}. What would you like to do?`,
+        buttons: [
+          {
+            text: 'Resume Trip',
+            style: 'primary',
+            onPress: () => {
+              router.push('/trips/active');
+            },
+          },
+          {
+            text: 'Cancel & Start New',
+            style: 'destructive',
+            onPress: async () => {
+              const cancelResult = await endTrip(existingTrip.id);
+              if (cancelResult.success) {
+                startNewTrip();
+              }
+            },
+          },
+          {
+            text: 'Go Back',
+            style: 'cancel',
+            onPress: () => {},
+          },
+        ],
+      });
+    } else {
+      startNewTrip();
+    }
+  };
+
+  const startNewTrip = async () => {
+    if (!routeData?.routes?.[selectedRoute]?.id) {
+      dialog.showError('Error', 'No route selected');
       return;
     }
 
@@ -92,17 +144,15 @@ export default function RouteDetails() {
     const result = await startTrip(routeId, startLat, startLng);
 
     if (result.success) {
-      Alert.alert('Trip Started', 'Your trip has been started successfully!', [
-        {
-          text: 'OK',
-          onPress: () => {
-            // Navigate to active trip screen
-            router.push('/trips/active');
-          },
-        },
-      ]);
+      dialog.showSuccess(
+        'Trip Started!',
+        'Your trip tracking has begun. Stay safe!',
+        () => {
+          router.push('/trips/active');
+        }
+      );
     } else {
-      Alert.alert('Error', result.error || 'Failed to start trip');
+      dialog.showError('Failed to Start Trip', result.error || 'Unable to start trip. Please try again.');
     }
   };
 
@@ -219,6 +269,15 @@ export default function RouteDetails() {
                   {route?.duration ? `${Math.round(route.duration / 60)} min` : 'Calculating...'}
                 </Text>
               </View>
+
+              {route?.minFare && route?.maxFare && (
+                <View style={styles.statItem}>
+                  <Icon name="cash" size={20} color="#10B981" />
+                  <Text style={[styles.statValue, { color: colors.text }]}>
+                    ₦{route.minFare}-₦{route.maxFare}
+                  </Text>
+                </View>
+              )}
             </View>
           </View>
 
@@ -227,13 +286,13 @@ export default function RouteDetails() {
             style={[
               styles.startButton,
               { backgroundColor: colors.primary },
-              isLoading && styles.disabledButton,
+              tripLoading && styles.disabledButton,
             ]}
             onPress={handleStartTrip}
-            disabled={isLoading}
+            disabled={tripLoading}
             activeOpacity={0.7}
           >
-            {isLoading ? (
+            {tripLoading ? (
               <ActivityIndicator color="white" />
             ) : (
               <>
@@ -243,35 +302,68 @@ export default function RouteDetails() {
             )}
           </TouchableOpacity>
 
-          {/* Route Instructions */}
+          {/* Route Steps Preview */}
           {route?.steps && route.steps.length > 0 && (
             <View style={styles.instructionsContainer}>
-              <Text style={[styles.instructionsTitle, { color: colors.text }]}>
-                Directions
-              </Text>
+              <View style={styles.stepsHeader}>
+                <Text style={[styles.instructionsTitle, { color: colors.text }]}>
+                  Trip Stops
+                </Text>
+                <View style={[styles.stepsCount, { backgroundColor: colors.primaryLight }]}>
+                  <Text style={[styles.stepsCountText, { color: colors.primary }]}>
+                    {route.steps.length} {route.steps.length === 1 ? 'stop' : 'stops'}
+                  </Text>
+                </View>
+              </View>
 
-              {route.steps.map((step: any, index: number) => (
+              {route.steps.slice(0, 3).map((step: any, index: number) => (
                 <View key={index} style={styles.stepItem}>
-                  <View style={[styles.stepIcon, { backgroundColor: colors.background }]}>
-                    <Icon
-                      name={getStepIcon(step.maneuver)}
-                      size={18}
-                      color={colors.primary}
-                    />
+                  <View style={[styles.stepNumber, { backgroundColor: colors.primaryLight }]}>
+                    <Text style={[styles.stepNumberText, { color: colors.primary }]}>
+                      {index + 1}
+                    </Text>
                   </View>
 
                   <View style={styles.stepInfo}>
                     <Text style={[styles.stepInstruction, { color: colors.text }]}>
-                      {step.instruction || step.name}
+                      {step.fromLocation || step.instruction || step.name}
                     </Text>
-                    {step.distance && (
-                      <Text style={[styles.stepDistance, { color: colors.textMuted }]}>
-                        {(step.distance / 1000).toFixed(1)} km
-                      </Text>
-                    )}
+                    <View style={styles.stepMeta}>
+                      {step.transportMode && (
+                        <View style={[styles.transportBadge, { backgroundColor: colors.background }]}>
+                          <Icon
+                            name={getTransportIcon(step.transportMode)}
+                            size={14}
+                            color={colors.primary}
+                          />
+                          <Text style={[styles.transportText, { color: colors.textMuted }]}>
+                            {step.transportMode.toUpperCase()}
+                          </Text>
+                        </View>
+                      )}
+                      {step.duration && (
+                        <Text style={[styles.stepDuration, { color: colors.textMuted }]}>
+                          {Math.round(step.duration / 60)} min
+                        </Text>
+                      )}
+                      {step.estimatedFare && (
+                        <Text style={[styles.stepFare, { color: '#10B981' }]}>
+                          ₦{step.estimatedFare}
+                        </Text>
+                      )}
+                    </View>
                   </View>
                 </View>
               ))}
+
+              {route.steps.length > 3 && (
+                <TouchableOpacity style={styles.viewMoreButton}>
+                  <Text style={[styles.viewMoreText, { color: colors.primary }]}>
+                    View all {route.steps.length} stops
+                  </Text>
+                  <Icon name="chevron-forward" size={16} color={colors.primary} />
+                </TouchableOpacity>
+              )}
             </View>
           )}
         </ScrollView>
@@ -293,6 +385,28 @@ function getStepIcon(maneuver: string): string {
   if (lowerManeuver.includes('arrive')) return 'flag';
 
   return 'navigate';
+}
+
+// Helper function to get transport mode icon
+function getTransportIcon(mode: string): string {
+  switch (mode.toLowerCase()) {
+    case 'bus':
+      return 'bus';
+    case 'taxi':
+    case 'car':
+      return 'car';
+    case 'keke':
+    case 'tricycle':
+      return 'car-sport';
+    case 'okada':
+    case 'motorcycle':
+      return 'bicycle';
+    case 'walk':
+    case 'walking':
+      return 'walk';
+    default:
+      return 'navigate';
+  }
 }
 
 const styles = StyleSheet.create({
@@ -397,33 +511,90 @@ const styles = StyleSheet.create({
   instructionsContainer: {
     marginBottom: 20,
   },
+  stepsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
   instructionsTitle: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 12,
+  },
+  stepsCount: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  stepsCountText: {
+    fontSize: 13,
+    fontWeight: '600',
   },
   stepItem: {
     flexDirection: 'row',
     alignItems: 'flex-start',
     marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
   },
-  stepIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+  stepNumber: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
+  },
+  stepNumberText: {
+    fontSize: 14,
+    fontWeight: '700',
   },
   stepInfo: {
     flex: 1,
   },
   stepInstruction: {
     fontSize: 15,
-    marginBottom: 4,
+    fontWeight: '500',
+    marginBottom: 8,
   },
-  stepDistance: {
+  stepMeta: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  transportBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  transportText: {
+    fontSize: 11,
+    fontWeight: '600',
+  },
+  stepDuration: {
     fontSize: 13,
+    fontWeight: '500',
+  },
+  stepFare: {
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  viewMoreButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    paddingVertical: 12,
+    marginTop: 8,
+  },
+  viewMoreText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   loadingContainer: {
     flex: 1,

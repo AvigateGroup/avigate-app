@@ -38,6 +38,20 @@ export class GoogleMapsService {
     mode: 'driving' | 'walking' | 'transit' = 'transit',
   ): Promise<GoogleRouteResponse> {
     try {
+      // Validate coordinates
+      if (!this.isValidCoordinate(origin) || !this.isValidCoordinate(destination)) {
+        throw new Error(
+          `Invalid coordinates - Origin: ${JSON.stringify(origin)}, Destination: ${JSON.stringify(destination)}`,
+        );
+      }
+
+      // Check if coordinates are too close (same location)
+      const distance = this.calculateSimpleDistance(origin, destination);
+      if (distance < 0.01) {
+        // Less than 10 meters
+        throw new Error('SAME_LOCATION: Origin and destination are the same location');
+      }
+
       const request: DirectionsRequest = {
         params: {
           origin: `${origin.lat},${origin.lng}`,
@@ -151,5 +165,44 @@ export class GoogleMapsService {
       logger.error('Distance Matrix API error:', error);
       throw error;
     }
+  }
+
+  /**
+   * Validate if a coordinate object is valid
+   */
+  private isValidCoordinate(coord: { lat: number; lng: number }): boolean {
+    if (!coord || typeof coord !== 'object') return false;
+    if (typeof coord.lat !== 'number' || typeof coord.lng !== 'number') return false;
+    if (isNaN(coord.lat) || isNaN(coord.lng)) return false;
+    if (coord.lat < -90 || coord.lat > 90) return false;
+    if (coord.lng < -180 || coord.lng > 180) return false;
+    return true;
+  }
+
+  /**
+   * Calculate simple distance between two coordinates using Haversine formula (in km)
+   */
+  private calculateSimpleDistance(
+    coord1: { lat: number; lng: number },
+    coord2: { lat: number; lng: number },
+  ): number {
+    const R = 6371; // Earth's radius in km
+    const dLat = this.toRad(coord2.lat - coord1.lat);
+    const dLng = this.toRad(coord2.lng - coord1.lng);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.toRad(coord1.lat)) *
+        Math.cos(this.toRad(coord2.lat)) *
+        Math.sin(dLng / 2) *
+        Math.sin(dLng / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  }
+
+  /**
+   * Convert degrees to radians
+   */
+  private toRad(degrees: number): number {
+    return degrees * (Math.PI / 180);
   }
 }

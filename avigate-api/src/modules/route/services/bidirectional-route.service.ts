@@ -7,11 +7,11 @@ import { RouteSegment } from '../entities/route-segment.entity';
 import { logger } from '@/utils/logger.util';
 
 export interface BidirectionalRouteResult {
-  routeId?: string;
+  id?: string; // Frontend expects 'id'
   routeName: string;
   source: 'database';
-  distance: number;
-  duration: number;
+  distance: number; // in meters
+  duration: number; // in seconds
   minFare?: number;
   maxFare?: number;
   steps: any[];
@@ -58,11 +58,11 @@ export class BidirectionalRouteService {
 
     for (const route of forwardRoutes) {
       routes.push({
-        routeId: route.id,
+        id: route.id, // Frontend expects 'id'
         routeName: route.name,
         source: 'database',
-        distance: Number(route.distance),
-        duration: Number(route.estimatedDuration),
+        distance: Number(route.distance) * 1000, // Convert km to meters
+        duration: Number(route.estimatedDuration) * 60, // Convert minutes to seconds
         minFare: route.minFare ? Number(route.minFare) : undefined,
         maxFare: route.maxFare ? Number(route.maxFare) : undefined,
         steps: route.steps,
@@ -166,11 +166,11 @@ export class BidirectionalRouteService {
       }));
 
     return {
-      routeId: route.id,
+      id: route.id, // Frontend expects 'id'
       routeName: reversedName,
       source: 'database',
-      distance: Number(route.distance),
-      duration: Number(route.estimatedDuration),
+      distance: Number(route.distance) * 1000, // Convert km to meters
+      duration: Number(route.estimatedDuration) * 60, // Convert minutes to seconds
       minFare: route.minFare ? Number(route.minFare) : undefined,
       maxFare: route.maxFare ? Number(route.maxFare) : undefined,
       steps: reversedSteps,
