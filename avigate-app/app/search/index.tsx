@@ -18,6 +18,7 @@ import * as Location from 'expo-location';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useRouteService } from '@/hooks/useRouteService';
 import { useGooglePlacesAutocomplete, PlaceAutocompleteResult } from '@/hooks/useGooglePlacesAutocomplete';
+import recentDestinationsService, { RecentDestination } from '@/services/recentDestinationsService';
 
 interface Destination {
   id: string;
@@ -41,13 +42,24 @@ export default function SearchDestination() {
     latitude: number;
     longitude: number;
   } | null>(null);
+  const [recentDestinations, setRecentDestinations] = useState<RecentDestination[]>([]);
   const [destinations, setDestinations] = useState<Destination[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAutocomplete, setShowAutocomplete] = useState(false);
 
   useEffect(() => {
     loadDestinations();
+    loadRecentDestinations();
   }, []);
+
+  const loadRecentDestinations = async () => {
+    try {
+      const recent = await recentDestinationsService.getRecentDestinations();
+      setRecentDestinations(recent);
+    } catch (error) {
+      console.error('Error loading recent destinations:', error);
+    }
+  };
 
   const loadDestinations = async () => {
     try {
@@ -131,6 +143,17 @@ export default function SearchDestination() {
     const placeDetails = await getPlaceDetails(prediction.placeId);
 
     if (placeDetails) {
+      // Save to recent destinations
+      await recentDestinationsService.addDestination({
+        name: placeDetails.name,
+        address: placeDetails.address,
+        latitude: placeDetails.latitude,
+        longitude: placeDetails.longitude,
+      });
+
+      // Reload recent destinations
+      await loadRecentDestinations();
+
       // Navigate to route details with selected place
       router.push({
         pathname: '/search/route-details',
@@ -146,7 +169,15 @@ export default function SearchDestination() {
     }
   };
 
-  const handleDestinationSelect = (destination: Destination) => {
+  const handleDestinationSelect = async (destination: Destination) => {
+    // Save to recent destinations
+    await recentDestinationsService.addDestination({
+      name: destination.name,
+      address: destination.address,
+      latitude: destination.latitude,
+      longitude: destination.longitude,
+    });
+
     // Navigate to route details with selected destination
     router.push({
       pathname: '/search/route-details',
@@ -159,6 +190,34 @@ export default function SearchDestination() {
         startLng: currentLocation?.longitude,
       },
     });
+  };
+
+  const handleRecentDestinationSelect = async (destination: RecentDestination) => {
+    // Update use count and timestamp
+    await recentDestinationsService.addDestination({
+      name: destination.name,
+      address: destination.address,
+      latitude: destination.latitude,
+      longitude: destination.longitude,
+    });
+
+    // Navigate to route details
+    router.push({
+      pathname: '/search/route-details',
+      params: {
+        destName: destination.name,
+        destAddress: destination.address,
+        destLat: destination.latitude,
+        destLng: destination.longitude,
+        startLat: currentLocation?.latitude,
+        startLng: currentLocation?.longitude,
+      },
+    });
+  };
+
+  const handleDeleteRecent = async (id: string) => {
+    await recentDestinationsService.removeDestination(id);
+    await loadRecentDestinations();
   };
 
   const getIconName = (type: Destination['type']) => {
@@ -301,34 +360,94 @@ export default function SearchDestination() {
             </>
           )}
 
-          {/* Popular/Recent Destinations */}
-          {!showAutocomplete && filteredDestinations.map((destination) => (
-            <TouchableOpacity
-              key={destination.id}
-              style={[styles.destinationItem, { backgroundColor: colors.white }]}
-              onPress={() => handleDestinationSelect(destination)}
-              activeOpacity={0.7}
-            >
-              <View style={[styles.iconContainer, { backgroundColor: colors.background }]}>
-                <Icon name={getIconName(destination.type)} size={22} color={colors.text} />
+          {/* Recent Destinations */}
+          {!showAutocomplete && recentDestinations.length > 0 && (
+            <>
+              <View style={styles.sectionHeader}>
+                <Icon name="time-outline" size={20} color={colors.text} />
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent</Text>
               </View>
 
-              <View style={styles.destinationInfo}>
-                <Text style={[styles.destinationName, { color: colors.text }]}>
-                  {destination.name}
-                </Text>
-                <Text style={[styles.destinationAddress, { color: colors.textMuted }]}>
-                  {destination.address}
-                </Text>
+              {recentDestinations.map((destination) => (
+                <TouchableOpacity
+                  key={destination.id}
+                  style={[styles.destinationItem, { backgroundColor: colors.white }]}
+                  onPress={() => handleRecentDestinationSelect(destination)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.iconContainer, { backgroundColor: colors.background }]}>
+                    <Icon name="time-outline" size={22} color={colors.primary} />
+                  </View>
+
+                  <View style={styles.destinationInfo}>
+                    <Text style={[styles.destinationName, { color: colors.text }]}>
+                      {destination.name}
+                    </Text>
+                    <Text style={[styles.destinationAddress, { color: colors.textMuted }]}>
+                      {destination.address}
+                    </Text>
+                  </View>
+
+                  {destination.useCount > 1 && (
+                    <View style={[styles.useCountBadge, { backgroundColor: colors.primaryLight }]}>
+                      <Text style={[styles.useCountText, { color: colors.primary }]}>
+                        {destination.useCount}
+                      </Text>
+                    </View>
+                  )}
+
+                  <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={(e) => {
+                      e.stopPropagation();
+                      handleDeleteRecent(destination.id);
+                    }}
+                    hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
+                  >
+                    <Icon name="close-circle" size={20} color={colors.textMuted} />
+                  </TouchableOpacity>
+                </TouchableOpacity>
+              ))}
+            </>
+          )}
+
+          {/* Popular Destinations */}
+          {!showAutocomplete && filteredDestinations.length > 0 && (
+            <>
+              <View style={styles.sectionHeader}>
+                <Icon name="flame-outline" size={20} color={colors.text} />
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Popular</Text>
               </View>
 
-              {destination.distance && (
-                <Text style={[styles.distance, { color: colors.textMuted }]}>
-                  {destination.distance}
-                </Text>
-              )}
-            </TouchableOpacity>
-          ))}
+              {filteredDestinations.map((destination) => (
+                <TouchableOpacity
+                  key={destination.id}
+                  style={[styles.destinationItem, { backgroundColor: colors.white }]}
+                  onPress={() => handleDestinationSelect(destination)}
+                  activeOpacity={0.7}
+                >
+                  <View style={[styles.iconContainer, { backgroundColor: colors.background }]}>
+                    <Icon name={getIconName(destination.type)} size={22} color={colors.text} />
+                  </View>
+
+                  <View style={styles.destinationInfo}>
+                    <Text style={[styles.destinationName, { color: colors.text }]}>
+                      {destination.name}
+                    </Text>
+                    <Text style={[styles.destinationAddress, { color: colors.textMuted }]}>
+                      {destination.address}
+                    </Text>
+                  </View>
+
+                  {destination.distance && (
+                    <Text style={[styles.distance, { color: colors.textMuted }]}>
+                      {destination.distance}
+                    </Text>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </>
+          )}
 
           {!showAutocomplete && filteredDestinations.length === 0 && (
             <View style={styles.emptyState}>
@@ -469,5 +588,34 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     textTransform: 'uppercase',
     fontWeight: '600',
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingTop: 20,
+    gap: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  useCountBadge: {
+    minWidth: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 8,
+    marginLeft: 8,
+  },
+  useCountText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  deleteButton: {
+    padding: 8,
+    marginLeft: 8,
   },
 });
