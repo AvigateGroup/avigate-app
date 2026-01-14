@@ -1,6 +1,7 @@
 // src/navigation/MainNavigator.tsx
 
 import React from 'react';
+import { Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -168,9 +169,9 @@ export const MainNavigator = () => {
           backgroundColor: COLORS.white,
           borderTopWidth: 1,
           borderTopColor: COLORS.border,
-          paddingBottom: 10,
-          paddingTop: 10,
-          height: 70,
+          paddingBottom: Platform.OS === 'ios' ? 8 : 8,
+          paddingTop: 8,
+          height: Platform.OS === 'ios' ? 65 : 65,
           elevation: 8,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -2 },
