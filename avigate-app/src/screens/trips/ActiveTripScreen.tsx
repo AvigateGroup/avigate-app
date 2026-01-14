@@ -11,7 +11,7 @@ import {
   Animated,
   Platform,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -61,7 +61,7 @@ interface ActiveTrip {
 }
 
 export const ActiveTripScreen = () => {
-  const navigation = useNavigation<any>();
+  const router = useRouter();
   const colors = useThemedColors();
   const dialog = useDialog();
   const mapRef = useRef<MapView>(null);
@@ -109,7 +109,7 @@ export const ActiveTripScreen = () => {
 
       if (!apiTrip.route) {
         dialog.showError('Error', 'Trip route information is missing');
-        navigation.goBack();
+        router.back();
         return;
       }
 
@@ -139,7 +139,7 @@ export const ActiveTripScreen = () => {
       updateCurrentStepIndex(transformedTrip);
     } else {
       dialog.showError('Error', 'No active trip found');
-      navigation.goBack();
+      router.back();
     }
   };
 
@@ -243,7 +243,7 @@ export const ActiveTripScreen = () => {
             'Trip Completed!',
             'Your trip has been completed. A summary has been sent to your email.',
             () => {
-              navigation.navigate('Home' as never);
+              router.replace('/(tabs)');
             }
           );
         }
@@ -264,7 +264,7 @@ export const ActiveTripScreen = () => {
             'Trip Cancelled',
             'Your trip has been cancelled.',
             () => {
-              navigation.navigate('Home' as never);
+              router.replace('/(tabs)');
             }
           );
         }
