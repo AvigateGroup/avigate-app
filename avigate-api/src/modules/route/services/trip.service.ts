@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { ActiveTrip, TripStatus } from '../entities/active-trip.entity';
 import { Route } from '../entities/route.entity';
 import { RouteStep } from '../entities/route-step.entity';
+import { RouteSegment } from '../entities/route-segment.entity';
 import { User } from '../../user/entities/user.entity';
 import { GeofencingService } from './geofencing.service';
 import { NotificationsService } from '../../notifications/notifications.service';
@@ -35,6 +36,8 @@ export class TripService {
     private routeRepository: Repository<Route>,
     @InjectRepository(RouteStep)
     private stepRepository: Repository<RouteStep>,
+    @InjectRepository(RouteSegment)
+    private segmentRepository: Repository<RouteSegment>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
     private geofencingService: GeofencingService,
@@ -64,67 +67,116 @@ export class TripService {
       );
     }
 
-    // Get route with steps
-    const route = await this.routeRepository.findOne({
+    // Try to get route with steps first
+    let route = await this.routeRepository.findOne({
       where: { id: routeId },
       relations: ['steps', 'startLocation', 'endLocation'],
     });
 
+    // If not found, try to get segment (for intermediate stop routes)
+    let segment: RouteSegment | null = null;
     if (!route) {
-      throw new NotFoundException('Route not found');
+      segment = await this.segmentRepository.findOne({
+        where: { id: routeId },
+        relations: ['startLocation', 'endLocation'],
+      });
+
+      if (!segment) {
+        throw new NotFoundException('Route or segment not found');
+      }
     }
 
-    // Sort steps
-    route.steps.sort((a, b) => a.stepOrder - b.stepOrder);
-    const firstStep = route.steps[0];
+    let firstStepId: string | undefined = undefined;
+    let endLocationId: string;
+    let startLocationId: string;
+    let endLocationName: string;
+    let endLat: number;
+    let endLng: number;
+
+    if (route) {
+      // Traditional route with steps
+      route.steps.sort((a, b) => a.stepOrder - b.stepOrder);
+      const firstStep = route.steps[0];
+      firstStepId = firstStep.id;
+      startLocationId = route.startLocationId;
+      endLocationId = route.endLocationId;
+      endLocationName = route.endLocation.name;
+      endLat = Number(route.endLocation.latitude);
+      endLng = Number(route.endLocation.longitude);
+    } else if (segment) {
+      // Segment-based route (intermediate stop)
+      startLocationId = segment.startLocationId;
+      endLocationId = segment.endLocationId;
+      endLocationName = segment.endLocation?.name || 'destination';
+      endLat = Number(segment.endLocation?.latitude);
+      endLng = Number(segment.endLocation?.longitude);
+    } else {
+      throw new NotFoundException('Route not found');
+    }
 
     // Calculate ETA
     const estimatedArrival = this.geofencingService.calculateETA(
       startLocation,
-      {
-        lat: Number(route.endLocation.latitude),
-        lng: Number(route.endLocation.longitude),
-      },
+      { lat: endLat, lng: endLng },
       30, // average speed in km/h
     );
 
     // Create trip
-    const trip = this.tripRepository.create({
-      userId,
-      routeId,
-      currentStepId: firstStep.id,
-      startLocationId: route.startLocationId,
-      endLocationId: route.endLocationId,
-      currentLat: startLocation.lat,
-      currentLng: startLocation.lng,
-      status: TripStatus.IN_PROGRESS,
-      startedAt: new Date(),
-      estimatedArrival,
-      locationHistory: [
-        {
-          lat: startLocation.lat,
-          lng: startLocation.lng,
-          timestamp: new Date().toISOString(),
-        },
-      ],
-      stepProgress: {
-        [firstStep.id]: {
-          startedAt: new Date().toISOString(),
-        },
+    // For segment-based routes, don't set routeId (to avoid FK constraint violation)
+    // We store the segment info via start/end locations and metadata instead
+    const trip = new ActiveTrip();
+    trip.userId = userId;
+    trip.startLocationId = startLocationId;
+    trip.endLocationId = endLocationId;
+    trip.currentLat = startLocation.lat;
+    trip.currentLng = startLocation.lng;
+    trip.status = TripStatus.IN_PROGRESS;
+    trip.startedAt = new Date();
+    trip.estimatedArrival = estimatedArrival;
+    trip.locationHistory = [
+      {
+        lat: startLocation.lat,
+        lng: startLocation.lng,
+        timestamp: new Date().toISOString(),
       },
-      notificationsSent: {},
-    });
+    ];
+    trip.stepProgress = firstStepId
+      ? {
+          [firstStepId]: {
+            startedAt: new Date().toISOString(),
+          },
+        }
+      : {};
+    trip.notificationsSent = {};
+
+    // Only set routeId if it's an actual route (not a segment)
+    if (route) {
+      trip.routeId = routeId;
+    }
+
+    // Only set currentStepId if it exists
+    if (firstStepId) {
+      trip.currentStepId = firstStepId;
+    }
+
+    // Store segment info in metadata for segment-based trips
+    if (segment) {
+      trip.metadata = {
+        segmentId: segment.id,
+        isSegmentBased: true,
+      };
+    }
 
     await this.tripRepository.save(trip);
 
     // Send welcome notification
     await this.notificationsService.sendToUser(userId, {
       title: 'Trip Started',
-      body: `Your journey to ${route.endLocation.name} has begun. Safe travels!`,
+      body: `Your journey to ${endLocationName} has begun. Safe travels!`,
       type: 'trip_started' as any,
       data: {
         tripId: trip.id,
-        routeId: route.id,
+        routeId: routeId,
       },
     });
 
@@ -143,7 +195,7 @@ export class TripService {
   ): Promise<TripProgressUpdate> {
     const trip = await this.tripRepository.findOne({
       where: { id: tripId, userId },
-      relations: ['route', 'route.steps', 'currentStep', 'route.endLocation'],
+      relations: ['route', 'route.steps', 'currentStep', 'route.endLocation', 'endLocation'],
     });
 
     if (!trip) {
@@ -169,7 +221,71 @@ export class TripService {
       accuracy: location.accuracy,
     });
 
-    // Sort steps
+    // Handle segment-based trips (no route/steps)
+    if (!trip.route || !trip.route.steps || trip.route.steps.length === 0) {
+      // For segment-based trips, check if user has arrived at end location
+      const endLocation = trip.route?.endLocation || trip.endLocation;
+      const destination = {
+        lat: Number(endLocation.latitude),
+        lng: Number(endLocation.longitude),
+      };
+
+      const distanceToDestination = this.geofencingService.calculateDistance(
+        { lat: location.lat, lng: location.lng },
+        destination,
+      );
+
+      const alerts: string[] = [];
+      let currentStepCompleted = false;
+
+      // Check arrival
+      if (
+        this.geofencingService.hasArrived({ lat: location.lat, lng: location.lng }, destination)
+      ) {
+        currentStepCompleted = true;
+        await this.completeTrip(trip.id, userId);
+        alerts.push('Trip completed! You have arrived at your destination.');
+      }
+      // Check if approaching
+      else if (
+        this.geofencingService.isApproaching(
+          { lat: location.lat, lng: location.lng },
+          destination,
+        )
+      ) {
+        const notificationKey = `approaching_destination`;
+        if (!trip.notificationsSent[notificationKey]) {
+          await this.notificationsService.sendToUser(userId, {
+            title: 'Approaching Destination',
+            body: `You are approaching ${endLocation.name}. Get ready to alight.`,
+            type: 'approaching' as any,
+            data: {
+              tripId: trip.id,
+            },
+          });
+          alerts.push(`Approaching ${endLocation.name}`);
+          trip.notificationsSent[notificationKey] = true;
+        }
+      }
+
+      // Update ETA
+      trip.estimatedArrival = this.geofencingService.calculateETA(
+        { lat: location.lat, lng: location.lng },
+        destination,
+      );
+
+      await this.tripRepository.save(trip);
+
+      return {
+        currentStepCompleted,
+        nextStepStarted: false,
+        distanceToNextWaypoint: distanceToDestination,
+        estimatedArrival: trip.estimatedArrival,
+        alerts,
+      };
+    }
+
+    // Sort steps for traditional routes
     trip.route.steps.sort((a, b) => a.stepOrder - b.stepOrder);
 
     const currentStep = trip.currentStep;
@@ -283,7 +399,7 @@ export class TripService {
    * Get active trip for user
    */
   async getActiveTrip(userId: string): Promise<ActiveTrip | null> {
-    return this.tripRepository.findOne({
+    const trip = await this.tripRepository.findOne({
       where: {
         userId,
         status: TripStatus.IN_PROGRESS,
@@ -294,8 +410,71 @@ export class TripService {
         'route.steps.fromLocation',
         'route.steps.toLocation',
         'currentStep',
+        'startLocation',
+        'endLocation',
       ],
     });
+
+    // For segment-based trips, create a route structure with steps from segment
+    if (trip && !trip.route && trip.metadata?.isSegmentBased) {
+      const segmentId = trip.metadata.segmentId;
+
+      // Fetch the segment to get instructions and intermediate stops
+      const segment = await this.segmentRepository.findOne({
+        where: { id: segmentId },
+        relations: ['startLocation', 'endLocation'],
+      });
+
+      if (segment) {
+        // Create a single step from the segment with full instructions
+        const steps = [
+          {
+            id: `segment-step-${segment.id}`,
+            stepOrder: 1,
+            instructions: segment.instructions,
+            transportMode: segment.transportModes[0] || 'bus',
+            distance: Number(segment.distance),
+            estimatedDuration: Number(segment.estimatedDuration),
+            estimatedFare: segment.minFare ? Number(segment.minFare) : undefined,
+            fromLocation: segment.startLocation,
+            toLocation: segment.endLocation,
+          },
+        ];
+
+        // Create a minimal route object for segment-based trips
+        (trip as any).route = {
+          id: segment.id,
+          name: segment.name,
+          distance: Number(segment.distance),
+          estimatedDuration: Number(segment.estimatedDuration),
+          minFare: segment.minFare ? Number(segment.minFare) : undefined,
+          maxFare: segment.maxFare ? Number(segment.maxFare) : undefined,
+          transportModes: segment.transportModes,
+          steps: steps,
+          startLocation: segment.startLocation,
+          endLocation: segment.endLocation,
+        };
+
+        // Set the current step to the segment step if not already set
+        if (!trip.currentStepId) {
+          trip.currentStepId = steps[0].id;
+          (trip as any).currentStep = steps[0];
+        }
+      } else {
+        // Fallback if segment not found
+        (trip as any).route = {
+          id: trip.metadata.segmentId,
+          name: `${trip.startLocation?.name || 'Start'} to ${trip.endLocation?.name || 'End'}`,
+          distance: 0,
+          estimatedDuration: 0,
+          steps: [],
+          startLocation: trip.startLocation,
+          endLocation: trip.endLocation,
+        };
+      }
+    }
+
+    return trip;
   }
 
   /**
@@ -311,6 +490,8 @@ export class TripService {
         'route.steps',
         'route.steps.fromLocation',
         'route.steps.toLocation',
+        'startLocation',
+        'endLocation',
       ],
     });
 
@@ -323,10 +504,14 @@ export class TripService {
 
     await this.tripRepository.save(trip);
 
+    // Get location info (works for both route and segment-based trips)
+    const endLocation = trip.route?.endLocation || trip.endLocation;
+    const startLocation = trip.route?.startLocation || trip.startLocation;
+
     // Send push notification
     await this.notificationsService.sendToUser(userId, {
       title: 'Trip Completed',
-      body: `You have arrived at ${trip.route.endLocation.name}. We hope you had a safe journey!`,
+      body: `You have arrived at ${endLocation.name}. We hope you had a safe journey!`,
       type: 'trip_completed' as any,
       data: {
         tripId: trip.id,
@@ -337,29 +522,36 @@ export class TripService {
     try {
       const user = await this.userRepository.findOne({ where: { id: userId } });
       if (user && user.email) {
-        // Sort steps for email
-        trip.route.steps.sort((a, b) => a.stepOrder - b.stepOrder);
+        // For segment-based trips, we may not have detailed steps
+        const hasSteps = trip.route && trip.route.steps && trip.route.steps.length > 0;
+
+        if (hasSteps) {
+          // Sort steps for email
+          trip.route.steps.sort((a, b) => a.stepOrder - b.stepOrder);
+        }
 
         await this.userTripEmailService.sendTripCompletionEmail({
           tripId: trip.id,
           userName: user.firstName,
           userEmail: user.email,
-          startLocation: trip.route.startLocation.name,
-          endLocation: trip.route.endLocation.name,
+          startLocation: startLocation.name,
+          endLocation: endLocation.name,
           startTime: trip.startedAt,
           endTime: trip.completedAt,
-          distance: Number(trip.route.distance),
-          duration: Number(trip.route.estimatedDuration),
-          transportModes: trip.route.transportModes || [],
-          steps: trip.route.steps.map((step, index) => ({
-            stepNumber: index + 1,
-            instruction: step.instructions,
-            distance: Number(step.distance),
-            duration: Number(step.estimatedDuration),
-            fromLocation: step.fromLocation?.name,
-            toLocation: step.toLocation?.name,
-          })),
-          fare: trip.route.minFare
+          distance: trip.route ? Number(trip.route.distance) : 0,
+          duration: trip.route ? Number(trip.route.estimatedDuration) : 0,
+          transportModes: trip.route?.transportModes || [],
+          steps: hasSteps
+            ? trip.route.steps.map((step, index) => ({
+                stepNumber: index + 1,
+                instruction: step.instructions,
+                distance: Number(step.distance),
+                duration: Number(step.estimatedDuration),
+                fromLocation: step.fromLocation?.name,
+                toLocation: step.toLocation?.name,
+              }))
+            : [],
+          fare: trip.route?.minFare
             ? {
                 min: Number(trip.route.minFare),
                 max: Number(trip.route.maxFare),
@@ -393,6 +585,8 @@ export class TripService {
         'route.steps',
         'route.steps.fromLocation',
         'route.steps.toLocation',
+        'startLocation',
+        'endLocation',
       ],
     });
 
@@ -416,6 +610,10 @@ export class TripService {
 
     await this.tripRepository.save(trip);
 
+    // Get location info (works for both route and segment-based trips)
+    const endLocation = trip.route?.endLocation || trip.endLocation;
+    const startLocation = trip.route?.startLocation || trip.startLocation;
+
     // Send push notification
     await this.notificationsService.sendToUser(userId, {
       title: 'Trip Cancelled',
@@ -430,29 +628,36 @@ export class TripService {
     try {
       const user = await this.userRepository.findOne({ where: { id: userId } });
       if (user && user.email) {
-        // Sort steps for email
-        trip.route.steps.sort((a, b) => a.stepOrder - b.stepOrder);
+        // For segment-based trips, we may not have detailed steps
+        const hasSteps = trip.route && trip.route.steps && trip.route.steps.length > 0;
+
+        if (hasSteps) {
+          // Sort steps for email
+          trip.route.steps.sort((a, b) => a.stepOrder - b.stepOrder);
+        }
 
         await this.userTripEmailService.sendTripCancellationEmail({
           tripId: trip.id,
           userName: user.firstName,
           userEmail: user.email,
-          startLocation: trip.route.startLocation.name,
-          endLocation: trip.route.endLocation.name,
+          startLocation: startLocation.name,
+          endLocation: endLocation.name,
           startTime: trip.startedAt,
           endTime: trip.completedAt,
-          distance: Number(trip.route.distance),
-          duration: Number(trip.route.estimatedDuration),
-          transportModes: trip.route.transportModes || [],
-          steps: trip.route.steps.map((step, index) => ({
-            stepNumber: index + 1,
-            instruction: step.instructions,
-            distance: Number(step.distance),
-            duration: Number(step.estimatedDuration),
-            fromLocation: step.fromLocation?.name,
-            toLocation: step.toLocation?.name,
-          })),
-          fare: trip.route.minFare
+          distance: trip.route ? Number(trip.route.distance) : 0,
+          duration: trip.route ? Number(trip.route.estimatedDuration) : 0,
+          transportModes: trip.route?.transportModes || [],
+          steps: hasSteps
+            ? trip.route.steps.map((step, index) => ({
+                stepNumber: index + 1,
+                instruction: step.instructions,
+                distance: Number(step.distance),
+                duration: Number(step.estimatedDuration),
+                fromLocation: step.fromLocation?.name,
+                toLocation: step.toLocation?.name,
+              }))
+            : [],
+          fare: trip.route?.minFare
             ? {
                 min: Number(trip.route.minFare),
                 max: Number(trip.route.maxFare),
