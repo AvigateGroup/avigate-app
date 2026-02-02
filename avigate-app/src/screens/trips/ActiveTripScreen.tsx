@@ -67,7 +67,7 @@ export const ActiveTripScreen = () => {
   const mapRef = useRef<MapView>(null);
   const locationWatchRef = useRef<Location.LocationSubscription | null>(null);
 
-  const { getActiveTrip, updateTripLocation, endTrip, isLoading } = useTripService();
+  const { getActiveTrip, updateTripLocation, completeTrip, endTrip, isLoading } = useTripService();
 
   const [trip, setTrip] = useState<ActiveTrip | null>(null);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
@@ -240,7 +240,7 @@ export const ActiveTripScreen = () => {
       async () => {
         if (!trip) return;
 
-        const result = await endTrip(trip.id);
+        const result = await completeTrip(trip.id);
         if (result.success) {
           dialog.showSuccess(
             'Trip Completed!',
