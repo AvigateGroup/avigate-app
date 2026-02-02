@@ -325,37 +325,95 @@ export const ActiveTripScreen = () => {
     }
   };
 
-  // Parse instructions into actionable sub-steps - ALWAYS creates proper card-based navigation
+  // Parse markdown instructions into structured sections
+  const parseInstructionSections = (instructions: string): Array<{
+    title: string;
+    items: string[];
+    type: 'info' | 'tip' | 'warning' | 'landmark';
+  }> => {
+    if (!instructions || instructions.trim().length === 0) return [];
+
+    const sections: Array<{ title: string; items: string[]; type: 'info' | 'tip' | 'warning' | 'landmark' }> = [];
+
+    // Split on bold header patterns like **Header:** or **Header**
+    const sectionRegex = /\*\*([^*]+?)(?::)?\*\*\s*/g;
+    const parts = instructions.split(sectionRegex);
+
+    // parts[0] is text before first header, then alternating: header, content, header, content...
+    // If there's content before first header, add as general info
+    if (parts[0] && parts[0].trim().length > 0) {
+      const items = extractItems(parts[0]);
+      if (items.length > 0) {
+        sections.push({ title: 'Overview', items, type: 'info' });
+      }
+    }
+
+    for (let i = 1; i < parts.length; i += 2) {
+      const title = parts[i]?.trim();
+      const content = parts[i + 1] || '';
+      if (!title) continue;
+
+      const items = extractItems(content);
+      if (items.length === 0) continue;
+
+      const type = getSectionType(title);
+      sections.push({ title, items, type });
+    }
+
+    return sections;
+  };
+
+  const extractItems = (text: string): string[] => {
+    const items: string[] = [];
+    const lines = text.split('\n').filter(l => l.trim());
+    for (const line of lines) {
+      const clean = line.replace(/\*\*/g, '').replace(/^[-•*]\s*/, '').trim();
+      if (clean.length > 0) {
+        items.push(clean);
+      }
+    }
+    return items;
+  };
+
+  const getSectionType = (title: string): 'info' | 'tip' | 'warning' | 'landmark' => {
+    const lower = title.toLowerCase();
+    if (lower.includes('safety') || lower.includes('warning') || lower.includes('caution')) return 'warning';
+    if (lower.includes('important') || lower.includes('tip') || lower.includes('smart')) return 'tip';
+    if (lower.includes('look for') || lower.includes('landmark') || lower.includes('identify')) return 'landmark';
+    return 'info';
+  };
+
+  const getSectionIcon = (type: string): string => {
+    switch (type) {
+      case 'warning': return 'alert-circle';
+      case 'tip': return 'bulb';
+      case 'landmark': return 'eye';
+      default: return 'information-circle';
+    }
+  };
+
+  const getSectionColor = (type: string): string => {
+    switch (type) {
+      case 'warning': return '#EF4444';
+      case 'tip': return '#F59E0B';
+      case 'landmark': return '#10B981';
+      default: return '#3B82F6';
+    }
+  };
+
+  // Parse instructions into actionable sub-steps with rich section content
   const parseInstructionsIntoSubSteps = (instructions: string, transportMode: string, step?: RouteStep) => {
     const subSteps: Array<{
       title: string;
       type: 'walking' | 'pickup' | 'transit' | 'arrival' | 'info';
       icon: string;
       content: string[];
-      action?: string; // CTA text
+      sections?: Array<{ title: string; items: string[]; type: 'info' | 'tip' | 'warning' | 'landmark' }>;
+      action?: string;
     }> = [];
 
-    // Safety check for instructions
     const safeInstructions = instructions || '';
-
-    // Debug logging
-    console.log('📍 parseInstructionsIntoSubSteps called:', {
-      instructionsLength: safeInstructions.length,
-      transportMode,
-      stepFromLocation: step?.fromLocation,
-      stepToLocation: step?.toLocation,
-    });
-
-    // Parse any instruction content from database
-    const lines = safeInstructions.split('\n').filter(line => line.trim());
-    const instructionItems: string[] = [];
-
-    for (const line of lines) {
-      const cleanLine = line.replace(/\*\*/g, '').replace(/^[-•]\s*/, '').trim();
-      if (cleanLine.length > 0 && !cleanLine.endsWith(':')) {
-        instructionItems.push(cleanLine);
-      }
-    }
+    const allSections = parseInstructionSections(safeInstructions);
 
     // Get display names
     const fromLocation = step?.fromLocation || 'pickup point';
@@ -365,83 +423,101 @@ export const ActiveTripScreen = () => {
     const duration = step?.duration ? Math.round(step.duration / 60) : null;
     const fare = step?.estimatedFare;
 
+    // Categorize sections into phases by keyword matching
+    const walkingSections: typeof allSections = [];
+    const pickupSections: typeof allSections = [];
+    const transitSections: typeof allSections = [];
+
+    for (const section of allSections) {
+      const lower = section.title.toLowerCase();
+      if (lower.includes('walk') || lower.includes('location') || lower.includes('junction') || lower.includes('direction')) {
+        walkingSections.push(section);
+      } else if (lower.includes('transport') || lower.includes('board') || lower.includes('pickup') || lower.includes('look for') || lower.includes('bus stop') || lower.includes('fare') || lower.includes('local phrase')) {
+        pickupSections.push(section);
+      } else if (lower.includes('journey') || lower.includes('during') || lower.includes('landmark') || lower.includes('arrival') || lower.includes('safety') || lower.includes('smart') || lower.includes('important')) {
+        transitSections.push(section);
+      } else {
+        // Default: put overview/general in walking for walking steps, pickup for vehicle steps
+        if (isWalking) walkingSections.push(section);
+        else pickupSections.push(section);
+      }
+    }
+
     if (isWalking) {
-      // Walking-only step: just walking phase
+      const allWalkSections = [...walkingSections, ...pickupSections, ...transitSections];
+      const fallbackContent = [
+        'Follow the route shown on the map',
+        'Stay on main paths for safety',
+        duration ? `Estimated walking time: ${duration} minutes` : 'Walk at a comfortable pace',
+      ];
+
       subSteps.push({
         title: `Walk to ${toLocation}`,
         type: 'walking',
         icon: 'walk',
-        content: instructionItems.length > 0 ? instructionItems : [
-          'Follow the route shown on the map',
-          'Stay on main paths for safety',
-          duration ? `Estimated walking time: ${duration} minutes` : 'Walk at a comfortable pace',
-        ],
+        content: allWalkSections.length === 0 ? fallbackContent : [],
+        sections: allWalkSections.length > 0 ? allWalkSections : undefined,
         action: 'I\'ve arrived',
       });
     } else {
-      // Vehicle-based transport: walking → pickup → transit phases
+      // Phase 1: Walking to pickup
+      const walkFallback = [
+        `Head to the ${transportName} pickup area`,
+        'Look for other passengers waiting',
+        'Stay visible to drivers',
+      ];
 
-      // Phase 1: Walking to pickup point
       subSteps.push({
         title: `Walk to ${fromLocation}`,
         type: 'walking',
         icon: 'walk',
-        content: [
-          `Head to the ${transportName} pickup area`,
-          'Look for other passengers waiting',
-          'Stay visible to drivers',
-        ],
+        content: walkingSections.length === 0 ? walkFallback : [],
+        sections: walkingSections.length > 0 ? walkingSections : undefined,
         action: 'I\'m at pickup point',
       });
 
-      // Phase 2: Board the vehicle
-      const pickupContent = [
-        `Look for ${transportName}s heading to ${toLocation}`,
-      ];
-
-      // Add Nigerian-specific tips based on transport mode
+      // Phase 2: Board vehicle
+      const pickupFallback = [`Look for ${transportName}s heading to ${toLocation}`];
       if (transportMode === 'bus') {
-        pickupContent.push('Listen for conductors calling your destination');
-        pickupContent.push('Board when the bus stops - they may not wait long');
+        pickupFallback.push('Listen for conductors calling your destination');
+        pickupFallback.push('Board when the bus stops - they may not wait long');
       } else if (transportMode === 'taxi') {
-        pickupContent.push('Tell the driver: "I dey go ' + toLocation + '"');
-        pickupContent.push('Confirm the fare before boarding');
+        pickupFallback.push('Tell the driver: "I dey go ' + toLocation + '"');
+        pickupFallback.push('Confirm the fare before boarding');
       } else if (transportMode === 'keke') {
-        pickupContent.push('Keke-napeps are shared - wait for other passengers');
-        pickupContent.push('Sit in order of your stop');
+        pickupFallback.push('Keke-napeps are shared - wait for other passengers');
+        pickupFallback.push('Sit in order of your stop');
       } else if (transportMode === 'okada') {
-        pickupContent.push('Negotiate the fare before riding');
-        pickupContent.push('Hold on securely during the ride');
+        pickupFallback.push('Negotiate the fare before riding');
+        pickupFallback.push('Hold on securely during the ride');
       }
-
       if (fare) {
-        pickupContent.push(`Expected fare: ₦${fare}`);
+        pickupFallback.push(`Expected fare: ₦${fare}`);
       }
 
       subSteps.push({
         title: `Board ${transportName} to ${toLocation}`,
         type: 'pickup',
         icon: getTransportIcon(transportMode),
-        content: pickupContent,
+        content: pickupSections.length === 0 ? pickupFallback : [],
+        sections: pickupSections.length > 0 ? pickupSections : undefined,
         action: 'I\'m in the vehicle',
       });
 
-      // Phase 3: Transit/Journey
-      const transitContent = instructionItems.length > 0 ? instructionItems : [
+      // Phase 3: Transit
+      const transitFallback = [
         `You are riding to ${toLocation}`,
         'Watch for landmarks mentioned by the conductor',
         'Avigate will notify you when approaching',
       ];
-
-      if (duration) {
-        transitContent.push(`Journey time: approximately ${duration} minutes`);
-      }
+      if (duration) transitFallback.push(`Journey time: approximately ${duration} minutes`);
 
       subSteps.push({
         title: `Riding to ${toLocation}`,
         type: 'transit',
         icon: 'navigate',
-        content: transitContent,
+        content: transitSections.length === 0 ? transitFallback : [],
+        sections: transitSections.length > 0 ? transitSections : undefined,
         action: 'I\'ve arrived',
       });
     }
@@ -452,13 +528,13 @@ export const ActiveTripScreen = () => {
   // Get human-readable transport name
   const getTransportDisplayName = (mode: string): string => {
     switch (mode.toLowerCase()) {
-      case 'bus': return 'bus';
-      case 'taxi': return 'taxi';
-      case 'keke': return 'keke';
-      case 'okada': return 'okada';
+      case 'bus': return 'Bus';
+      case 'taxi': return 'Taxi';
+      case 'keke': return 'Keke';
+      case 'okada': return 'Okada';
       case 'walk':
-      case 'walking': return 'walking';
-      default: return 'transport';
+      case 'walking': return 'Walking';
+      default: return 'Transport';
     }
   };
 
@@ -567,12 +643,32 @@ export const ActiveTripScreen = () => {
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}
         >
+          {/* Plain content items (fallback when no sections) */}
           {currentSubStep.content.map((item, i) => (
             <View key={i} style={styles.instructionItem}>
               <View style={[styles.instructionBullet, { backgroundColor: subStepColor }]} />
               <Text style={styles.instructionItemText}>{item}</Text>
             </View>
           ))}
+
+          {/* Rich section cards from parsed markdown */}
+          {currentSubStep.sections?.map((section, sIdx) => {
+            const sColor = getSectionColor(section.type);
+            return (
+              <View key={sIdx} style={[styles.sectionCard, { borderLeftColor: sColor }]}>
+                <View style={styles.sectionCardHeader}>
+                  <Icon name={getSectionIcon(section.type)} size={18} color={sColor} />
+                  <Text style={[styles.sectionCardTitle, { color: sColor }]}>{section.title}</Text>
+                </View>
+                {section.items.map((item, iIdx) => (
+                  <View key={iIdx} style={styles.sectionCardItem}>
+                    <View style={[styles.bullet, { backgroundColor: sColor }]} />
+                    <Text style={styles.sectionItemText}>{item}</Text>
+                  </View>
+                ))}
+              </View>
+            );
+          })}
         </ScrollView>
 
         {/* Navigation Buttons */}
@@ -611,7 +707,7 @@ export const ActiveTripScreen = () => {
                 color={colors.textMuted}
               />
               <Text style={styles.nextStopText} numberOfLines={1}>
-                {nextMainStep.transportMode.toUpperCase()}: {nextMainStep.toLocation}
+                {getTransportDisplayName(nextMainStep.transportMode)}: {nextMainStep.toLocation}
               </Text>
             </View>
           </View>
@@ -623,7 +719,7 @@ export const ActiveTripScreen = () => {
   const renderProgressBar = () => {
     if (!trip || !trip.route.steps || trip.route.steps.length === 0) return null;
 
-    const progress = ((currentStepIndex + 1) / trip.route.steps.length) * 100;
+    const progress = (currentStepIndex / trip.route.steps.length) * 100;
 
     return (
       <View style={styles.progressContainer}>
@@ -631,7 +727,7 @@ export const ActiveTripScreen = () => {
           <View style={[styles.progressFill, { width: `${progress}%`, backgroundColor: colors.primary }]} />
         </View>
         <Text style={styles.progressText}>
-          {currentStepIndex + 1}/{trip.route.steps.length} stops completed
+          {currentStepIndex}/{trip.route.steps.length} stops completed
         </Text>
       </View>
     );
@@ -672,7 +768,7 @@ export const ActiveTripScreen = () => {
                     styles.stepListMode,
                     isCurrent && styles.stepListModeCurrent,
                   ]}>
-                    {step.transportMode.toUpperCase()}
+                    {getTransportDisplayName(step.transportMode)}
                   </Text>
                 </View>
                 <Text style={[
@@ -783,15 +879,25 @@ export const ActiveTripScreen = () => {
           {renderProgressBar()}
           {isSheetExpanded && renderAllSteps()}
 
-          {/* Complete Button */}
-          <View style={{ padding: 16 }}>
-            <Button
-              title="I've Arrived"
-              onPress={handleCompleteTrip}
-              icon="checkmark-circle"
-              style={{ backgroundColor: colors.success }}
-            />
-          </View>
+          {/* Complete Button - only on last sub-step of last main step */}
+          {trip && trip.route.steps && (() => {
+            const lastStepIndex = trip.route.steps.length - 1;
+            const lastStep = trip.route.steps[lastStepIndex];
+            if (!lastStep) return null;
+            const lastSubSteps = parseInstructionsIntoSubSteps(lastStep.instructions, lastStep.transportMode, lastStep);
+            const isOnFinalSubStep = currentStepIndex === lastStepIndex && currentSubStepIndex === lastSubSteps.length - 1;
+            if (!isOnFinalSubStep) return null;
+            return (
+              <View style={{ padding: 16 }}>
+                <Button
+                  title="Complete Trip"
+                  onPress={handleCompleteTrip}
+                  icon="checkmark-circle"
+                  style={{ backgroundColor: colors.success }}
+                />
+              </View>
+            );
+          })()}
         </ScrollView>
       </Animated.View>
 
@@ -1264,5 +1370,34 @@ const styles = {
     fontSize: 14,
     fontWeight: '600' as const,
     color: '#FFF',
+  },
+  sectionCard: {
+    marginBottom: 12,
+    backgroundColor: '#F9FAFB',
+    borderRadius: 12,
+    padding: 14,
+    borderLeftWidth: 4,
+  },
+  sectionCardHeader: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    gap: 8,
+    marginBottom: 10,
+  },
+  sectionCardTitle: {
+    fontSize: 15,
+    fontWeight: '700' as const,
+  },
+  sectionCardItem: {
+    flexDirection: 'row' as const,
+    alignItems: 'flex-start' as const,
+    gap: 8,
+    marginBottom: 6,
+  },
+  sectionItemText: {
+    flex: 1,
+    fontSize: 14,
+    lineHeight: 20,
+    color: '#374151',
   },
 };
