@@ -326,7 +326,7 @@ export default function RouteDetails() {
 
                   <View style={styles.stepInfo}>
                     <Text style={[styles.stepInstruction, { color: colors.text }]}>
-                      {step.fromLocation || step.instruction || step.name}
+                      {step.instructions || step.fromLocation || step.instruction || step.name}
                     </Text>
                     <View style={styles.stepMeta}>
                       {step.transportMode && (
@@ -340,11 +340,6 @@ export default function RouteDetails() {
                             {step.transportMode.toUpperCase()}
                           </Text>
                         </View>
-                      )}
-                      {step.duration && (
-                        <Text style={[styles.stepDuration, { color: colors.textMuted }]}>
-                          {Math.round(step.duration / 60)} min
-                        </Text>
                       )}
                       {step.estimatedFare && (
                         <Text style={[styles.stepFare, { color: '#10B981' }]}>

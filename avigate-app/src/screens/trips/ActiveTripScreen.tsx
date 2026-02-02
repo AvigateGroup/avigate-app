@@ -189,27 +189,30 @@ export const ActiveTripScreen = () => {
           if (trip) {
             const result = await updateTripLocation(
               trip.id,
-              newLocation.latitude,
-              newLocation.longitude,
-              location.coords.accuracy || undefined
+              {
+                lat: newLocation.latitude,
+                lng: newLocation.longitude,
+                accuracy: location.coords.accuracy || undefined,
+              }
             );
 
-            if (result.success && result.data) {
+            if (result.success && result.data?.progress) {
+              const progress = result.data.progress;
               // Update distance and alerts from backend
-              if (result.data.distanceToNextWaypoint) {
-                setDistanceToNext(result.data.distanceToNextWaypoint);
+              if (progress.distanceToNextWaypoint) {
+                setDistanceToNext(progress.distanceToNextWaypoint);
               }
 
-              if (result.data.alerts && result.data.alerts.length > 0) {
-                setAlerts(result.data.alerts);
+              if (progress.alerts && progress.alerts.length > 0) {
+                setAlerts(progress.alerts);
                 // Show alert banner
-                result.data.alerts.forEach((alert: string) => {
+                progress.alerts.forEach((alert: string) => {
                   dialog.showSuccess('Alert', alert);
                 });
               }
 
               // Check if step completed
-              if (result.data.currentStepCompleted) {
+              if (progress.currentStepCompleted) {
                 // Reload trip to get updated current step
                 loadActiveTrip();
               }
@@ -322,8 +325,8 @@ export const ActiveTripScreen = () => {
     }
   };
 
-  // Parse instructions into actionable sub-steps
-  const parseInstructionsIntoSubSteps = (instructions: string, transportMode: string) => {
+  // Parse instructions into actionable sub-steps - ALWAYS creates proper card-based navigation
+  const parseInstructionsIntoSubSteps = (instructions: string, transportMode: string, step?: RouteStep) => {
     const subSteps: Array<{
       title: string;
       type: 'walking' | 'pickup' | 'transit' | 'arrival' | 'info';
@@ -332,99 +335,138 @@ export const ActiveTripScreen = () => {
       action?: string; // CTA text
     }> = [];
 
-    const lines = instructions.split('\n').filter(line => line.trim());
-    let currentSection: {title: string; items: string[]; type: string} | null = null;
+    // Safety check for instructions
+    const safeInstructions = instructions || '';
 
-    // First pass: group into sections
-    const sections: Array<{title: string; items: string[]; rawType: string}> = [];
-    for (const line of lines) {
-      if (line.includes('**') || (line.endsWith(':') && line.length < 60)) {
-        if (currentSection) {
-          sections.push(currentSection as any);
-        }
-        const title = line.replace(/\*\*/g, '').replace(/:$/, '').trim();
-        currentSection = { title, items: [], rawType: title.toLowerCase() };
-      } else if (line.trim().startsWith('-')) {
-        if (currentSection) {
-          currentSection.items.push(line.trim().substring(1).trim());
-        }
-      } else if (line.trim().length > 0) {
-        if (!currentSection) {
-          currentSection = { title: 'Overview', items: [], rawType: 'overview' };
-        }
-        currentSection.items.push(line.trim());
-      }
-    }
-    if (currentSection) {
-      sections.push(currentSection as any);
-    }
-
-    // Second pass: convert sections into actionable sub-steps
-    sections.forEach(section => {
-      const titleLower = section.rawType;
-
-      // Determine sub-step type
-      if (titleLower.includes('walk') || titleLower.includes('current location') || titleLower.includes('get to')) {
-        subSteps.push({
-          title: section.title,
-          type: 'walking',
-          icon: 'walk',
-          content: section.items,
-          action: 'I\'m at pickup point',
-        });
-      } else if (titleLower.includes('at choba') || titleLower.includes('at rumuokoro') ||
-                 titleLower.includes('look for') || titleLower.includes('board')) {
-        subSteps.push({
-          title: section.title,
-          type: 'pickup',
-          icon: getTransportIcon(transportMode),
-          content: section.items,
-          action: 'I\'m in the vehicle',
-        });
-      } else if (titleLower.includes('what to look for') || titleLower.includes('what to expect') ||
-                 titleLower.includes('journey')) {
-        subSteps.push({
-          title: section.title,
-          type: 'transit',
-          icon: 'navigate',
-          content: section.items,
-          action: 'I\'ve arrived',
-        });
-      } else if (titleLower.includes('alternative')) {
-        subSteps.push({
-          title: section.title,
-          type: 'info',
-          icon: 'git-branch',
-          content: section.items,
-        });
-      } else {
-        subSteps.push({
-          title: section.title,
-          type: 'info',
-          icon: 'information-circle',
-          content: section.items,
-        });
-      }
+    // Debug logging
+    console.log('📍 parseInstructionsIntoSubSteps called:', {
+      instructionsLength: safeInstructions.length,
+      transportMode,
+      stepFromLocation: step?.fromLocation,
+      stepToLocation: step?.toLocation,
     });
 
-    // If no sub-steps were parsed, create a generic one
-    if (subSteps.length === 0) {
+    // Parse any instruction content from database
+    const lines = safeInstructions.split('\n').filter(line => line.trim());
+    const instructionItems: string[] = [];
+
+    for (const line of lines) {
+      const cleanLine = line.replace(/\*\*/g, '').replace(/^[-•]\s*/, '').trim();
+      if (cleanLine.length > 0 && !cleanLine.endsWith(':')) {
+        instructionItems.push(cleanLine);
+      }
+    }
+
+    // Get display names
+    const fromLocation = step?.fromLocation || 'pickup point';
+    const toLocation = step?.toLocation || 'destination';
+    const isWalking = transportMode === 'walk' || transportMode === 'walking';
+    const transportName = getTransportDisplayName(transportMode);
+    const duration = step?.duration ? Math.round(step.duration / 60) : null;
+    const fare = step?.estimatedFare;
+
+    if (isWalking) {
+      // Walking-only step: just walking phase
       subSteps.push({
-        title: 'Navigation Instructions',
-        type: 'info',
+        title: `Walk to ${toLocation}`,
+        type: 'walking',
+        icon: 'walk',
+        content: instructionItems.length > 0 ? instructionItems : [
+          'Follow the route shown on the map',
+          'Stay on main paths for safety',
+          duration ? `Estimated walking time: ${duration} minutes` : 'Walk at a comfortable pace',
+        ],
+        action: 'I\'ve arrived',
+      });
+    } else {
+      // Vehicle-based transport: walking → pickup → transit phases
+
+      // Phase 1: Walking to pickup point
+      subSteps.push({
+        title: `Walk to ${fromLocation}`,
+        type: 'walking',
+        icon: 'walk',
+        content: [
+          `Head to the ${transportName} pickup area`,
+          'Look for other passengers waiting',
+          'Stay visible to drivers',
+        ],
+        action: 'I\'m at pickup point',
+      });
+
+      // Phase 2: Board the vehicle
+      const pickupContent = [
+        `Look for ${transportName}s heading to ${toLocation}`,
+      ];
+
+      // Add Nigerian-specific tips based on transport mode
+      if (transportMode === 'bus') {
+        pickupContent.push('Listen for conductors calling your destination');
+        pickupContent.push('Board when the bus stops - they may not wait long');
+      } else if (transportMode === 'taxi') {
+        pickupContent.push('Tell the driver: "I dey go ' + toLocation + '"');
+        pickupContent.push('Confirm the fare before boarding');
+      } else if (transportMode === 'keke') {
+        pickupContent.push('Keke-napeps are shared - wait for other passengers');
+        pickupContent.push('Sit in order of your stop');
+      } else if (transportMode === 'okada') {
+        pickupContent.push('Negotiate the fare before riding');
+        pickupContent.push('Hold on securely during the ride');
+      }
+
+      if (fare) {
+        pickupContent.push(`Expected fare: ₦${fare}`);
+      }
+
+      subSteps.push({
+        title: `Board ${transportName} to ${toLocation}`,
+        type: 'pickup',
+        icon: getTransportIcon(transportMode),
+        content: pickupContent,
+        action: 'I\'m in the vehicle',
+      });
+
+      // Phase 3: Transit/Journey
+      const transitContent = instructionItems.length > 0 ? instructionItems : [
+        `You are riding to ${toLocation}`,
+        'Watch for landmarks mentioned by the conductor',
+        'Avigate will notify you when approaching',
+      ];
+
+      if (duration) {
+        transitContent.push(`Journey time: approximately ${duration} minutes`);
+      }
+
+      subSteps.push({
+        title: `Riding to ${toLocation}`,
+        type: 'transit',
         icon: 'navigate',
-        content: [instructions],
+        content: transitContent,
+        action: 'I\'ve arrived',
       });
     }
 
     return subSteps;
   };
 
+  // Get human-readable transport name
+  const getTransportDisplayName = (mode: string): string => {
+    switch (mode.toLowerCase()) {
+      case 'bus': return 'bus';
+      case 'taxi': return 'taxi';
+      case 'keke': return 'keke';
+      case 'okada': return 'okada';
+      case 'walk':
+      case 'walking': return 'walking';
+      default: return 'transport';
+    }
+  };
+
   const handleNextSubStep = () => {
     if (!trip || !trip.route.steps || trip.route.steps.length === 0) return;
 
     const currentStep = trip.route.steps[currentStepIndex];
-    const subSteps = parseInstructionsIntoSubSteps(currentStep.instructions, currentStep.transportMode);
+    const subSteps = parseInstructionsIntoSubSteps(currentStep.instructions, currentStep.transportMode, currentStep);
 
     if (currentSubStepIndex < subSteps.length - 1) {
       // Move to next sub-step
@@ -443,7 +485,7 @@ export const ActiveTripScreen = () => {
     } else if (currentStepIndex > 0) {
       // Move to previous main step
       const prevStep = trip!.route.steps[currentStepIndex - 1];
-      const prevSubSteps = parseInstructionsIntoSubSteps(prevStep.instructions, prevStep.transportMode);
+      const prevSubSteps = parseInstructionsIntoSubSteps(prevStep.instructions, prevStep.transportMode, prevStep);
       setCurrentStepIndex(currentStepIndex - 1);
       setCurrentSubStepIndex(prevSubSteps.length - 1);
     }
@@ -465,7 +507,7 @@ export const ActiveTripScreen = () => {
     const currentStep = trip.route.steps[currentStepIndex];
     if (!currentStep) return null;
 
-    const subSteps = parseInstructionsIntoSubSteps(currentStep.instructions, currentStep.transportMode);
+    const subSteps = parseInstructionsIntoSubSteps(currentStep.instructions, currentStep.transportMode, currentStep);
     const currentSubStep = subSteps[currentSubStepIndex] || subSteps[0];
     const isLastStep = currentStepIndex === trip.route.steps.length - 1;
     const isLastSubStep = currentSubStepIndex === subSteps.length - 1;
@@ -503,9 +545,9 @@ export const ActiveTripScreen = () => {
           )}
         </View>
 
-        {/* Large Action Icon */}
+        {/* Large Action Icon - 120px container with 72px icon */}
         <View style={[styles.largeIconContainer, { backgroundColor: subStepColor + '15' }]}>
-          <Icon name={currentSubStep.icon} size={64} color={subStepColor} />
+          <Icon name={currentSubStep.icon} size={72} color={subStepColor} />
         </View>
 
         {/* Main Instruction */}
@@ -707,7 +749,7 @@ export const ActiveTripScreen = () => {
       <View style={styles.topControls}>
         <TouchableOpacity
           style={[styles.controlButton, { backgroundColor: colors.white }]}
-          onPress={() => navigation.goBack()}
+          onPress={() => router.back()}
         >
           <Icon name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
