@@ -90,7 +90,8 @@ export class RouteMatchingService {
       if (directRoutes.length > 0) {
         result.hasDirectRoute = true;
         result.routes.push(...directRoutes);
-        return result; // Have direct routes, return early
+        await this.addWalkingStepIfNeeded(startLat, startLng, result.routes);
+        return result;
       }
     }
 
@@ -136,9 +137,13 @@ export class RouteMatchingService {
         steps: [
           {
             order: 1,
+            transportMode: segment.transportModes?.[0] || 'bus',
+            fromLocation: segment.startLocation?.name || 'Start',
+            toLocation: stopInfo.name,
             instructions: intermediateResult.instructions,
             distance: distanceMeters,
             duration: durationSeconds,
+            estimatedFare: stopInfo.estimatedFare,
           },
         ],
         confidence: 85,
@@ -154,6 +159,7 @@ export class RouteMatchingService {
       logger.info(
         `Intermediate stop route added: ${distanceKm}km, ${durationMin}min, fare: ₦${stopInfo.estimatedFare}`,
       );
+      await this.addWalkingStepIfNeeded(startLat, startLng, result.routes);
       return result;
     }
 
@@ -175,6 +181,11 @@ export class RouteMatchingService {
         result.routes.push(walkingRoute);
         return result;
       }
+    }
+
+    // Step 4b: Prepend walking step if user is far from route start
+    if (result.routes.length > 0) {
+      await this.addWalkingStepIfNeeded(startLat, startLng, result.routes);
     }
 
     // Step 5: Fallback to Google Maps
@@ -248,6 +259,63 @@ export class RouteMatchingService {
 
   async reverseGeocode(lat: number, lng: number): Promise<string | null> {
     return this.googleMapsService.reverseGeocode(lat, lng);
+  }
+
+  /**
+   * Prepend a walking step if the user is >200m from the route's first fromLocation.
+   * Finds the nearest boarding point on the route corridor to minimize backtracking.
+   */
+  private async addWalkingStepIfNeeded(
+    userLat: number,
+    userLng: number,
+    routes: EnhancedRouteResult['routes'],
+  ): Promise<void> {
+    for (const route of routes) {
+      const firstStep = route.steps?.[0];
+      if (!firstStep?.fromLocation) continue;
+
+      // Find the start location coordinates
+      const startLoc = await this.locationFinderService.findNearestMainRoadStop(userLat, userLng);
+      if (!startLoc) continue;
+
+      const distToRouteStart = this.haversineDistance(userLat, userLng, startLoc.lat, startLoc.lng);
+
+      // Only add walking step if user is >200m but <2km from the boarding point
+      if (distToRouteStart > 200 && distToRouteStart < 2000) {
+        const walkingDuration = Math.round((distToRouteStart / 1.4)); // ~1.4 m/s walking speed, in seconds
+
+        const walkingStep = {
+          order: 0,
+          transportMode: 'walking',
+          fromLocation: 'Your Location',
+          toLocation: startLoc.name,
+          instructions: `Walk to ${startLoc.name} (${Math.round(distToRouteStart)}m)`,
+          distance: Math.round(distToRouteStart),
+          duration: walkingDuration,
+        };
+
+        // Prepend walking step and re-number
+        route.steps.unshift(walkingStep);
+        route.steps.forEach((step, i) => { step.order = i + 1; });
+
+        // Update total distance/duration
+        route.distance += Math.round(distToRouteStart);
+        route.duration += walkingDuration;
+
+        logger.info(`Prepended walking step: ${Math.round(distToRouteStart)}m to ${startLoc.name}`);
+      }
+    }
+  }
+
+  private haversineDistance(lat1: number, lng1: number, lat2: number, lng2: number): number {
+    const R = 6371000; // Earth radius in meters
+    const toRad = (deg: number) => (deg * Math.PI) / 180;
+    const dLat = toRad(lat2 - lat1);
+    const dLng = toRad(lng2 - lng1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   }
 
   /**
