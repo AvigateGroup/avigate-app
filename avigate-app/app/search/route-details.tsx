@@ -19,6 +19,37 @@ import { useRouteService } from '@/hooks/useRouteService';
 import { useTripService } from '@/hooks/useTripService';
 import { useDialog } from '@/contexts/DialogContext';
 
+function cleanMarkdown(text: string): string {
+  if (!text) return '';
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove **bold**
+    .replace(/\*(.*?)\*/g, '$1')      // Remove *italic*
+    .replace(/^[-*]\s+/gm, '')        // Remove bullet markers
+    .replace(/#{1,6}\s+/g, '')        // Remove heading markers
+    .replace(/\n{2,}/g, '\n')         // Collapse multiple newlines
+    .trim();
+}
+
+function getTransportDisplayName(mode: string): string {
+  switch (mode?.toLowerCase()) {
+    case 'bus': return 'Bus';
+    case 'taxi': return 'Taxi';
+    case 'keke': return 'Keke';
+    case 'okada': return 'Okada';
+    case 'walk': case 'walking': return 'Walk';
+    default: return mode || 'Transport';
+  }
+}
+
+function getStepSummary(step: any): string {
+  if (step.fromLocation && step.toLocation) {
+    const mode = getTransportDisplayName(step.transportMode);
+    return `${mode} from ${step.fromLocation} to ${step.toLocation}`;
+  }
+  // Fallback: clean any markdown from instructions
+  return cleanMarkdown(step.instructions || step.instruction || step.name || '');
+}
+
 export default function RouteDetails() {
   const router = useRouter();
   const params = useLocalSearchParams();
@@ -95,7 +126,7 @@ export default function RouteDetails() {
     if (activeTripResult.success && activeTripResult.data?.trip) {
       // There's already an active trip - show options dialog
       const existingTrip = activeTripResult.data.trip;
-      const destinationName = existingTrip.route?.endLocation?.name || existingTrip.endLocation?.name || 'your destination';
+      const destinationName = (existingTrip.route as any)?.endLocation?.name || existingTrip.route?.name || 'your destination';
 
       dialog.showDialog({
         type: 'warning',
@@ -326,7 +357,7 @@ export default function RouteDetails() {
 
                   <View style={styles.stepInfo}>
                     <Text style={[styles.stepInstruction, { color: colors.text }]}>
-                      {step.instructions || step.fromLocation || step.instruction || step.name}
+                      {getStepSummary(step)}
                     </Text>
                     <View style={styles.stepMeta}>
                       {step.transportMode && (
@@ -337,9 +368,14 @@ export default function RouteDetails() {
                             color={colors.primary}
                           />
                           <Text style={[styles.transportText, { color: colors.textMuted }]}>
-                            {step.transportMode.toUpperCase()}
+                            {getTransportDisplayName(step.transportMode)}
                           </Text>
                         </View>
+                      )}
+                      {step.duration > 0 && (
+                        <Text style={[styles.stepDuration, { color: colors.textMuted }]}>
+                          {Math.round(step.duration / 60)} min
+                        </Text>
                       )}
                       {step.estimatedFare && (
                         <Text style={[styles.stepFare, { color: '#10B981' }]}>
