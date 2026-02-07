@@ -12,13 +12,15 @@ import {
   Switch,
   Alert,
 } from 'react-native';
+import { CommunityFeedSkeleton } from '@/components/skeletons';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { router } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
 import { useAuth } from '@/store/AuthContext';
 import { communityStyles } from '@/styles/features';
+import { moderateScale } from '@/utils/responsive';
 
 interface FeedPost {
   id: string;
@@ -44,7 +46,6 @@ interface FeedPost {
 }
 
 export const CommunityFeedScreen = () => {
-  const navigation = useNavigation<any>();
   const colors = useThemedColors();
   const { user } = useAuth();
   const { getFeed, toggleRealTimeUpdates, votePost, isLoading } = useCommunityService();
@@ -55,9 +56,10 @@ export const CommunityFeedScreen = () => {
   const [hasMore, setHasMore] = useState(true);
   const [realTimeEnabled, setRealTimeEnabled] = useState(true);
   const [filterType, setFilterType] = useState<string>('all');
+  const [initialLoad, setInitialLoad] = useState(true);
 
   useEffect(() => {
-    loadPosts();
+    loadPosts(true);
   }, [filterType]);
 
   const loadPosts = async (isRefresh = false) => {
@@ -75,9 +77,15 @@ export const CommunityFeedScreen = () => {
         setPosts(result.data.posts);
         setPage(1);
       } else {
-        setPosts([...posts, ...result.data.posts]);
+        // Deduplicate posts by ID to prevent duplicate keys
+        const existingIds = new Set(posts.map(p => p.id));
+        const newPosts = result.data.posts.filter((p: FeedPost) => !existingIds.has(p.id));
+        setPosts([...posts, ...newPosts]);
       }
       setHasMore(result.data.pagination.page < result.data.pagination.pages);
+      setInitialLoad(false);
+    } else {
+      setInitialLoad(false);
     }
   };
 
@@ -89,8 +97,25 @@ export const CommunityFeedScreen = () => {
 
   const handleLoadMore = () => {
     if (hasMore && !isLoading) {
-      setPage(page + 1);
-      loadPosts();
+      const nextPage = page + 1;
+      setPage(nextPage);
+      loadMorePosts(nextPage);
+    }
+  };
+
+  const loadMorePosts = async (pageNum: number) => {
+    const result = await getFeed({
+      page: pageNum,
+      limit: 20,
+      postType: filterType === 'all' ? undefined : filterType,
+    });
+
+    if (result.success) {
+      // Deduplicate posts by ID to prevent duplicate keys
+      const existingIds = new Set(posts.map(p => p.id));
+      const newPosts = result.data.posts.filter((p: FeedPost) => !existingIds.has(p.id));
+      setPosts([...posts, ...newPosts]);
+      setHasMore(result.data.pagination.page < result.data.pagination.pages);
     }
   };
 
@@ -142,15 +167,15 @@ export const CommunityFeedScreen = () => {
     Alert.alert('Contribute to Avigate', 'What would you like to share?', [
       {
         text: 'Route Improvement',
-        onPress: () => navigation.navigate('/(tabs)/community/contribute' as any),
+        onPress: () => router.push('/community/contribute'),
       },
       {
         text: 'Fare Update',
-        onPress: () => navigation.navigate('/(tabs)/community/contribute' as any),
+        onPress: () => router.push('/community/contribute'),
       },
       {
         text: 'New Landmark',
-        onPress: () => navigation.navigate('/(tabs)/community/contribute' as any),
+        onPress: () => router.push('/community/contribute'),
       },
       {
         text: 'Cancel',
@@ -203,7 +228,7 @@ export const CommunityFeedScreen = () => {
   const renderPost = ({ item }: { item: FeedPost }) => (
     <TouchableOpacity
       style={[communityStyles.postCard, { backgroundColor: colors.white }]}
-      onPress={() => navigation.navigate(`/(tabs)/community/${item.id}` as any)}
+      onPress={() => router.push(`/community/${item.id}`)}
       activeOpacity={0.7}
     >
       {/* Header */}
@@ -213,6 +238,8 @@ export const CommunityFeedScreen = () => {
             <Image
               source={{ uri: item.author.profilePicture }}
               style={communityStyles.authorAvatar}
+              resizeMode="cover"
+              fadeDuration={200}
             />
           ) : (
             <View
@@ -281,6 +308,8 @@ export const CommunityFeedScreen = () => {
           source={{ uri: item.images[0] }}
           style={communityStyles.postImage}
           resizeMode="cover"
+          fadeDuration={300}
+          progressiveRenderingEnabled={true}
         />
       )}
 
@@ -334,7 +363,7 @@ export const CommunityFeedScreen = () => {
           style={communityStyles.actionButton}
           onPress={e => {
             e.stopPropagation();
-            navigation.navigate(`/(tabs)/community/${item.id}` as any);
+            router.push(`/community/${item.id}`);
           }}
         >
           <Icon name="chatbubble-outline" size={20} color={colors.textMuted} />
@@ -425,43 +454,71 @@ export const CommunityFeedScreen = () => {
       style={[communityStyles.container, { backgroundColor: colors.background }]}
       edges={['top', 'left', 'right']}
     >
-      <FlatList
-        data={posts}
-        renderItem={renderPost}
-        keyExtractor={item => item.id}
-        ListHeaderComponent={renderHeader}
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={handleRefresh}
-            tintColor={colors.primary}
-          />
-        }
-        onEndReached={handleLoadMore}
-        onEndReachedThreshold={0.5}
-        ListFooterComponent={
-          isLoading ? (
-            <ActivityIndicator size="small" color={colors.primary} style={{ padding: 20 }} />
-          ) : null
-        }
-        ListEmptyComponent={
-          !isLoading ? (
-            <View style={communityStyles.emptyState}>
-              <Icon name="chatbubbles-outline" size={64} color={colors.textMuted} />
-              <Text style={[communityStyles.emptyText, { color: colors.text }]}>No posts yet</Text>
-              <Text style={[communityStyles.emptySubtext, { color: colors.textMuted }]}>
-                Be the first to share an update!
-              </Text>
-            </View>
-          ) : null
-        }
-        showsVerticalScrollIndicator={false}
-      />
+      {/* Header */}
+      <View
+        style={[
+          communityStyles.detailHeader,
+          { backgroundColor: colors.white, borderBottomColor: colors.border },
+        ]}
+      >
+        <TouchableOpacity onPress={() => router.back()}>
+          <Icon name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+        <Text style={[communityStyles.headerTitle, { color: colors.text }]}>Community Feed</Text>
+        <View style={{ width: 24 }} />
+      </View>
+
+      {initialLoad ? (
+        <CommunityFeedSkeleton />
+      ) : (
+        <FlatList
+          data={posts}
+          renderItem={renderPost}
+          keyExtractor={item => item.id}
+          ListHeaderComponent={renderHeader}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              tintColor={colors.primary}
+            />
+          }
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0.5}
+          ListFooterComponent={
+            isLoading ? (
+              <ActivityIndicator size="small" color={colors.primary} style={{ padding: 20 }} />
+            ) : null
+          }
+          ListEmptyComponent={
+            !isLoading ? (
+              <View style={communityStyles.emptyState}>
+                <Icon name="chatbubbles-outline" size={64} color={colors.textMuted} />
+                <Text style={[communityStyles.emptyText, { color: colors.text }]}>No posts yet</Text>
+                <Text style={[communityStyles.emptySubtext, { color: colors.textMuted }]}>
+                  Be the first to share an update!
+                </Text>
+              </View>
+            ) : null
+          }
+          showsVerticalScrollIndicator={false}
+          initialNumToRender={10}
+          maxToRenderPerBatch={5}
+          windowSize={10}
+          removeClippedSubviews={true}
+          updateCellsBatchingPeriod={50}
+          getItemLayout={(data, index) => ({
+            length: moderateScale(300),
+            offset: moderateScale(300) * index,
+            index,
+          })}
+        />
+      )}
 
       {/* FAB for creating post */}
       <TouchableOpacity
         style={[communityStyles.fab, { backgroundColor: colors.primary }]}
-        onPress={() => navigation.navigate('/(tabs)/community/create' as any)}
+        onPress={() => router.push('/community/create')}
         activeOpacity={0.8}
       >
         <Icon name="add" size={28} color={colors.textWhite} />

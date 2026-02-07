@@ -1,13 +1,22 @@
 // src/components/LoadingSkeleton.tsx
 
-import React, { useEffect, useRef } from 'react';
-import { View, StyleSheet, Animated } from 'react-native';
+import React from 'react';
+import { View, StyleSheet, ViewStyle, DimensionValue } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  Easing,
+} from 'react-native-reanimated';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useThemedColors } from '@/hooks/useThemedColors';
 
 interface LoadingSkeletonProps {
-  width?: number | string;
+  width?: DimensionValue;
   height?: number;
   borderRadius?: number;
-  style?: any;
+  style?: ViewStyle;
 }
 
 export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
@@ -16,92 +25,103 @@ export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
   borderRadius = 4,
   style,
 }) => {
-  const animatedValue = useRef(new Animated.Value(0)).current;
+  const colors = useThemedColors();
+  const translateX = useSharedValue(-1);
 
-  useEffect(() => {
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(animatedValue, {
-          toValue: 1,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-        Animated.timing(animatedValue, {
-          toValue: 0,
-          duration: 1000,
-          useNativeDriver: true,
-        }),
-      ]),
-    ).start();
-  }, [animatedValue]);
+  React.useEffect(() => {
+    translateX.value = withRepeat(
+      withTiming(1, { duration: 1200, easing: Easing.inOut(Easing.ease) }),
+      -1,
+      false,
+    );
+  }, []);
 
-  const opacity = animatedValue.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0.3, 0.7],
-  });
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value * 200 }],
+  }));
+
+  const baseColor = colors.border;
+  const highlightColor = colors.background;
 
   return (
-    <Animated.View
+    <View
       style={[
-        styles.skeleton,
         {
           width,
           height,
           borderRadius,
-          opacity,
+          backgroundColor: baseColor,
+          overflow: 'hidden',
         },
         style,
       ]}
-    />
+    >
+      <Animated.View
+        style={[
+          StyleSheet.absoluteFill,
+          { width: '150%', left: '-25%' },
+          animatedStyle,
+        ]}
+      >
+        <LinearGradient
+          colors={[baseColor, highlightColor, baseColor]}
+          start={{ x: 0, y: 0.5 }}
+          end={{ x: 1, y: 0.5 }}
+          style={StyleSheet.absoluteFill}
+        />
+      </Animated.View>
+    </View>
   );
 };
 
-export const PlaceCardSkeleton: React.FC = () => (
-  <View style={styles.placeCardSkeleton}>
-    <LoadingSkeleton width={40} height={40} borderRadius={20} style={{ marginRight: 12 }} />
-    <View style={{ flex: 1 }}>
-      <LoadingSkeleton width="60%" height={16} style={{ marginBottom: 6 }} />
-      <LoadingSkeleton width="80%" height={14} />
-    </View>
-    <LoadingSkeleton width={50} height={14} />
-  </View>
-);
+export const PlaceCardSkeleton: React.FC = () => {
+  const colors = useThemedColors();
 
-export const PostCardSkeleton: React.FC = () => (
-  <View style={styles.postCardSkeleton}>
-    <View style={styles.postHeaderSkeleton}>
-      <LoadingSkeleton width={36} height={36} borderRadius={18} style={{ marginRight: 10 }} />
+  return (
+    <View style={[styles.placeCardSkeleton, { borderBottomColor: colors.border }]}>
+      <LoadingSkeleton width={40} height={40} borderRadius={20} style={{ marginRight: 12 }} />
       <View style={{ flex: 1 }}>
-        <LoadingSkeleton width="50%" height={14} style={{ marginBottom: 4 }} />
-        <LoadingSkeleton width="30%" height={12} />
+        <LoadingSkeleton width="60%" height={16} style={{ marginBottom: 6 }} />
+        <LoadingSkeleton width="80%" height={14} />
+      </View>
+      <LoadingSkeleton width={50} height={14} />
+    </View>
+  );
+};
+
+export const PostCardSkeleton: React.FC = () => {
+  const colors = useThemedColors();
+
+  return (
+    <View style={[styles.postCardSkeleton, { backgroundColor: colors.white, borderColor: colors.border }]}>
+      <View style={styles.postHeaderSkeleton}>
+        <LoadingSkeleton width={36} height={36} borderRadius={18} style={{ marginRight: 10 }} />
+        <View style={{ flex: 1 }}>
+          <LoadingSkeleton width="50%" height={14} style={{ marginBottom: 4 }} />
+          <LoadingSkeleton width="30%" height={12} />
+        </View>
+      </View>
+      <LoadingSkeleton width="100%" height={14} style={{ marginBottom: 4 }} />
+      <LoadingSkeleton width="80%" height={14} style={{ marginBottom: 8 }} />
+      <View style={{ flexDirection: 'row', gap: 16 }}>
+        <LoadingSkeleton width={40} height={12} />
+        <LoadingSkeleton width={40} height={12} />
       </View>
     </View>
-    <LoadingSkeleton width="100%" height={14} style={{ marginBottom: 4 }} />
-    <LoadingSkeleton width="80%" height={14} style={{ marginBottom: 8 }} />
-    <View style={{ flexDirection: 'row', gap: 16 }}>
-      <LoadingSkeleton width={40} height={12} />
-      <LoadingSkeleton width={40} height={12} />
-    </View>
-  </View>
-);
+  );
+};
 
 const styles = StyleSheet.create({
-  skeleton: {
-    backgroundColor: '#E5E7EB',
-  },
   placeCardSkeleton: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
   },
   postCardSkeleton: {
-    backgroundColor: '#F9FAFB',
     borderRadius: 12,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#E5E7EB',
   },
   postHeaderSkeleton: {
     flexDirection: 'row',

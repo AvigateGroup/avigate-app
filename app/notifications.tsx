@@ -16,7 +16,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useNotifications, Notification, NotificationType } from '@/hooks/useNotifications';
 import { formatDistanceToNow } from '@/utils/dateUtils';
-import { LoadingSkeleton } from '@/components/LoadingSkeleton';
+import { NotificationListSkeleton } from '@/components/skeletons';
 
 export default function Notifications() {
   const router = useRouter();
@@ -38,11 +38,11 @@ export default function Notifications() {
     const result = await getNotifications({ page: currentPage, limit: 20 });
 
     if (result.success && result.data) {
-      const newNotifications = result.data.notifications;
+      const newNotifications = result.data.notifications || [];
       if (refresh) {
         setNotifications(newNotifications);
       } else {
-        setNotifications((prev) => [...prev, ...newNotifications]);
+        setNotifications((prev) => [...(prev || []), ...newNotifications]);
       }
       setHasMore(result.data.page < result.data.totalPages);
       if (!refresh) {
@@ -65,7 +65,7 @@ export default function Notifications() {
   const handleMarkAllAsRead = async () => {
     const result = await markAllAsRead();
     if (result.success) {
-      setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
+      setNotifications((prev) => (prev || []).map((n) => ({ ...n, isRead: true })));
     }
   };
 
@@ -74,7 +74,7 @@ export default function Notifications() {
     if (!notification.isRead) {
       await markAsRead(notification.id, true);
       setNotifications((prev) =>
-        prev.map((n) => (n.id === notification.id ? { ...n, isRead: true } : n)),
+        (prev || []).map((n) => (n.id === notification.id ? { ...n, isRead: true } : n)),
       );
     }
 
@@ -93,7 +93,7 @@ export default function Notifications() {
         onPress: async () => {
           const result = await deleteNotification(notificationId);
           if (result.success) {
-            setNotifications((prev) => prev.filter((n) => n.id !== notificationId));
+            setNotifications((prev) => (prev || []).filter((n) => n.id !== notificationId));
           }
         },
       },
@@ -173,18 +173,7 @@ export default function Notifications() {
         }
       >
         {isLoading && notifications.length === 0 ? (
-          <View style={styles.loadingContainer}>
-            {[1, 2, 3, 4, 5].map((i) => (
-              <View key={i} style={styles.notificationCardSkeleton}>
-                <LoadingSkeleton width={40} height={40} borderRadius={20} style={{ marginRight: 12 }} />
-                <View style={{ flex: 1 }}>
-                  <LoadingSkeleton width="70%" height={16} style={{ marginBottom: 6 }} />
-                  <LoadingSkeleton width="90%" height={14} style={{ marginBottom: 4 }} />
-                  <LoadingSkeleton width="40%" height={12} />
-                </View>
-              </View>
-            ))}
-          </View>
+          <NotificationListSkeleton />
         ) : notifications.length === 0 ? (
           <View style={styles.emptyState}>
             <Icon name="notifications-outline" size={64} color={colors.textMuted} />
