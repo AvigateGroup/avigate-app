@@ -6,7 +6,6 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator,
   Alert,
   RefreshControl,
 } from 'react-native';
@@ -15,6 +14,7 @@ import { useThemedColors } from '@/hooks/useThemedColors';
 import { useUserService } from '@/hooks/useUserService';
 import { profileFeatureStyles } from '@/styles/features';
 import { getRelativeTime } from '@/utils/helpers';
+import { DeviceCardSkeleton } from '@/components/skeletons';
 
 interface UserDevice {
   id: string;
@@ -81,13 +81,10 @@ export const DevicesScreen: React.FC = () => {
       <View
         style={[
           profileFeatureStyles.container,
-          { backgroundColor: colors.background, justifyContent: 'center', alignItems: 'center' },
+          { backgroundColor: colors.background },
         ]}
       >
-        <ActivityIndicator size="large" color={colors.primary} />
-        <Text style={[profileFeatureStyles.footerText, { color: colors.textMuted, marginTop: 16 }]}>
-          Loading devices...
-        </Text>
+        <DeviceCardSkeleton />
       </View>
     );
   }
