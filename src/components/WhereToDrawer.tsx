@@ -1,8 +1,8 @@
 // src/components/WhereToDrawer.tsx
 
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -61,14 +61,6 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
     const hasContent = trendingPosts.length > 0 || suggestedPlaces.length > 0;
     return hasContent ? ['28%', '55%', '90%'] : ['25%', '50%', '85%'];
   }, [trendingPosts.length, suggestedPlaces.length]);
-
-  // Render backdrop
-  const renderBackdrop = useCallback(
-    (props: any) => (
-      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} appearsOnIndex={0} opacity={0.3} />
-    ),
-    [],
-  );
 
   // Load trending posts
   useEffect(() => {
@@ -201,11 +193,12 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
       ref={bottomSheetRef}
       index={0}
       snapPoints={snapPoints}
-      backdropComponent={renderBackdrop}
+      enableDynamicSizing={false}
+      enablePanDownToClose={false}
       handleIndicatorStyle={{ backgroundColor: colors.textMuted }}
       backgroundStyle={{ backgroundColor: colors.white }}
     >
-      <ScrollView
+      <BottomSheetScrollView
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
@@ -222,14 +215,6 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
 
         {/* Quick Actions */}
         <View style={styles.servicesContainer}>
-          <TouchableOpacity style={styles.serviceCard} onPress={handleSearchPress}>
-            <View style={[styles.serviceIcon, { backgroundColor: '#86B300' }]}>
-              <Icon name="navigate" size={24} color="#FFF" />
-            </View>
-            <Text style={styles.serviceTitle}>Find Route</Text>
-            <Text style={styles.serviceSubtitle}>Navigate now</Text>
-          </TouchableOpacity>
-
           <TouchableOpacity
             style={styles.serviceCard}
             onPress={() => router.push('/community')}
@@ -369,7 +354,7 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
             </View>
           )}
         </View>
-      </ScrollView>
+      </BottomSheetScrollView>
     </BottomSheet>
   );
 };
