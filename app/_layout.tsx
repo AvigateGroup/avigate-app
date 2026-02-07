@@ -14,6 +14,7 @@ import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthProvider, useAuth } from '../src/store/AuthContext';
 import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
+import { DialogProvider } from '../src/contexts/DialogContext';
 import { useThemedColors } from '../src/hooks/useThemedColors';
 import AnimatedSplashScreen from '../src/components/animation/AnimatedSplashScreen';
 import * as SplashScreen from 'expo-splash-screen';
@@ -247,7 +248,9 @@ function RootLayoutNav() {
 function ThemedRootLayoutNav() {
   return (
     <ThemeProvider>
-      <RootLayoutNav />
+      <DialogProvider>
+        <RootLayoutNav />
+      </DialogProvider>
     </ThemeProvider>
   );
 }

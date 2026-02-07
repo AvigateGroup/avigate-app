@@ -11,7 +11,7 @@ import { useDialog } from '@/contexts/DialogContext';
 import { homeFeatureStyles } from '@/styles/features';
 import { useRouter } from 'expo-router';
 import { CommunityDrawer } from '@/components/CommunityDrawer';
-import { SimpleWhereToDrawer } from '@/components/SimpleWhereToDrawer';
+import { WhereToDrawer } from '@/components/WhereToDrawer';
 import { useNotifications } from '@/hooks/useNotifications';
 import { HomeScreenSkeleton } from '@/components/skeletons';
 
@@ -248,7 +248,7 @@ export const HomeScreen = () => {
       </View>
 
       {/* Where To Drawer - Bottom Sheet */}
-      <SimpleWhereToDrawer
+      <WhereToDrawer
         currentAddress={address}
         currentLocation={
           location
