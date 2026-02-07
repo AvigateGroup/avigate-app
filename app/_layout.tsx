@@ -10,6 +10,7 @@ try {
 import { useEffect, useState, useCallback } from 'react';
 import { Stack, useRouter, useSegments, usePathname } from 'expo-router';
 import { StatusBar } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthProvider, useAuth } from '../src/store/AuthContext';
@@ -291,8 +292,10 @@ export default function RootLayout() {
 
   // Main app content with both AuthProvider and ThemeProvider
   return (
-    <AuthProvider>
-      <ThemedRootLayoutNav />
-    </AuthProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AuthProvider>
+        <ThemedRootLayoutNav />
+      </AuthProvider>
+    </GestureHandlerRootView>
   );
 }
