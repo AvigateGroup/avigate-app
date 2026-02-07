@@ -11,11 +11,11 @@ import {
   Platform,
   Alert,
 } from 'react-native';
-import { RouteDetailsSkeleton } from '@/components/skeletons';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { Loading } from '@/components/common/Loading';
 import { useRouteService } from '@/hooks/useRouteService';
 import { useTripService } from '@/hooks/useTripService';
 import { useDialog } from '@/contexts/DialogContext';
@@ -250,7 +250,14 @@ export default function RouteDetails() {
   };
 
   if (loading) {
-    return <RouteDetailsSkeleton />;
+    return (
+      <Loading
+        fullScreen
+        icon="navigate"
+        message="Finding best routes..."
+        subtitle="Calculating the fastest way there"
+      />
+    );
   }
 
   const route = routeData?.routes?.[selectedRoute];

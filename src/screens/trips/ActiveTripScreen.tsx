@@ -20,7 +20,7 @@ import { useTripService } from '@/hooks/useTripService';
 import { useDialog } from '@/contexts/DialogContext';
 import { Button } from '@/components/common/Button';
 import { tripStyles } from '@/styles/features';
-import { ActiveTripSkeleton } from '@/components/skeletons';
+import { Loading } from '@/components/common/Loading';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -798,7 +798,14 @@ export const ActiveTripScreen = () => {
   };
 
   if (!trip) {
-    return <ActiveTripSkeleton />;
+    return (
+      <Loading
+        fullScreen
+        icon="map"
+        message="Loading your trip..."
+        subtitle="Getting trip details"
+      />
+    );
   }
 
   return (
