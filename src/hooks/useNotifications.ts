@@ -58,7 +58,7 @@ export const useNotifications = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await apiClient.get<NotificationsResponse>('/notifications', {
+      const response = await apiClient.get<any>('/notifications', {
         params: {
           page: params.page || 1,
           limit: params.limit || 20,
@@ -67,9 +67,13 @@ export const useNotifications = () => {
         },
       });
 
+      // Backend TransformInterceptor wraps raw responses in { success, data, timestamp }
+      // Extract the inner data if wrapped, otherwise use response directly
+      const notificationsData: NotificationsResponse = response.data || response;
+
       return {
         success: true,
-        data: response,
+        data: notificationsData,
       };
     } catch (err: any) {
       const errorMessage = err.response?.data?.message || err.message || 'Failed to load notifications';
