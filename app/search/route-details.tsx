@@ -1,16 +1,16 @@
 // app/search/route-details.tsx
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   StyleSheet,
   ActivityIndicator,
-  ScrollView,
   Platform,
   Alert,
 } from 'react-native';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -70,10 +70,11 @@ function getTransportModesDisplay(step: any): string {
   return getTransportDisplayName(step.transportMode);
 }
 
-function getStepSummary(step: any): string {
+function getStepSummary(step: any, isLastStep?: boolean, destName?: string): string {
   if (step.fromLocation && step.toLocation) {
     const mode = getTransportModesDisplay(step);
-    return `${mode} from ${step.fromLocation} to ${step.toLocation}`;
+    const to = isLastStep && destName ? destName : step.toLocation;
+    return `${mode} from ${step.fromLocation} to ${to}`;
   }
   // Fallback: clean any markdown from instructions
   return cleanMarkdown(step.instructions || step.instruction || step.name || '');
@@ -85,6 +86,8 @@ export default function RouteDetails() {
   const colors = useThemedColors();
   const dialog = useDialog();
   const mapRef = useRef<MapView>(null);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ['35%', '70%', '95%'], []);
   const { findSmartRoutes } = useRouteService();
   const { getActiveTrip, startTrip, endTrip, isLoading: tripLoading } = useTripService();
 
@@ -328,10 +331,19 @@ export default function RouteDetails() {
       </TouchableOpacity>
 
       {/* Bottom Sheet */}
-      <View style={[styles.bottomSheet, { backgroundColor: colors.white }]}>
-        <View style={styles.handle} />
-
-        <ScrollView showsVerticalScrollIndicator={false}>
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        enableDynamicSizing={false}
+        enablePanDownToClose={false}
+        handleIndicatorStyle={{ backgroundColor: colors.textMuted }}
+        backgroundStyle={{ backgroundColor: colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
+      >
+        <BottomSheetScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.sheetContent}
+        >
           {/* Route Summary */}
           <View style={styles.routeSummary}>
             <View style={styles.summaryRow}>
@@ -403,7 +415,7 @@ export default function RouteDetails() {
                 </View>
               </View>
 
-              {route.steps.slice(0, 3).map((step: any, index: number) => (
+              {route.steps.map((step: any, index: number) => (
                 <View key={index} style={styles.stepItem}>
                   <View style={[styles.stepNumber, { backgroundColor: colors.primaryLight }]}>
                     <Text style={[styles.stepNumberText, { color: colors.primary }]}>
@@ -413,7 +425,7 @@ export default function RouteDetails() {
 
                   <View style={styles.stepInfo}>
                     <Text style={[styles.stepInstruction, { color: colors.text }]}>
-                      {getStepSummary(step)}
+                      {getStepSummary(step, index === route.steps.length - 1, params.destName as string)}
                     </Text>
                     <View style={styles.stepMeta}>
                       {(step.transportMode || step.transportModes) && (
@@ -443,18 +455,10 @@ export default function RouteDetails() {
                 </View>
               ))}
 
-              {route.steps.length > 3 && (
-                <TouchableOpacity style={styles.viewMoreButton}>
-                  <Text style={[styles.viewMoreText, { color: colors.primary }]}>
-                    View all {route.steps.length} stops
-                  </Text>
-                  <Icon name="chevron-forward" size={16} color={colors.primary} />
-                </TouchableOpacity>
-              )}
             </View>
           )}
-        </ScrollView>
-      </View>
+        </BottomSheetScrollView>
+      </BottomSheet>
     </View>
   );
 }
@@ -546,30 +550,9 @@ const styles = StyleSheet.create({
   endMarker: {
     alignItems: 'center',
   },
-  bottomSheet: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    paddingTop: 8,
+  sheetContent: {
     paddingHorizontal: 20,
     paddingBottom: Platform.OS === 'ios' ? 30 : 20,
-    maxHeight: '60%',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 10,
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: '#DDD',
-    borderRadius: 2,
-    alignSelf: 'center',
-    marginBottom: 16,
   },
   routeSummary: {
     marginBottom: 20,
@@ -688,26 +671,5 @@ const styles = StyleSheet.create({
   stepFare: {
     fontSize: 13,
     fontWeight: '600',
-  },
-  viewMoreButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 4,
-    paddingVertical: 12,
-    marginTop: 8,
-  },
-  viewMoreText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
   },
 });
