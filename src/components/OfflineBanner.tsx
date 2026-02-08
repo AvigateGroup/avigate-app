@@ -6,16 +6,17 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import { useNetwork } from '@/contexts/NetworkContext';
 
 export const OfflineBanner: React.FC = () => {
-  const { isConnected } = useNetwork();
+  const { isConnected, isInternetReachable } = useNetwork();
   const slideAnim = useRef(new Animated.Value(-60)).current;
+  const isOffline = !isConnected || isInternetReachable === false;
 
   useEffect(() => {
     Animated.timing(slideAnim, {
-      toValue: isConnected ? -60 : 0,
+      toValue: isOffline ? 0 : -60,
       duration: 300,
       useNativeDriver: true,
     }).start();
-  }, [isConnected]);
+  }, [isOffline]);
 
   return (
     <Animated.View
@@ -23,7 +24,7 @@ export const OfflineBanner: React.FC = () => {
         styles.container,
         { transform: [{ translateY: slideAnim }] },
       ]}
-      pointerEvents={isConnected ? 'none' : 'auto'}
+      pointerEvents={isOffline ? 'auto' : 'none'}
     >
       <View style={styles.content}>
         <Icon name="cloud-offline-outline" size={18} color="#FFFFFF" />

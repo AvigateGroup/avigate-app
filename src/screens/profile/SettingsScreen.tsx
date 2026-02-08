@@ -35,11 +35,17 @@ export const SettingsScreen = () => {
   };
 
   const confirmDeleteAccount = async () => {
-    const success = await deleteAccount();
-    if (success) {
-      setShowDeleteModal(false);
-      await logout();
-      // Note: Navigation to login will be handled automatically by AuthContext
+    try {
+      const success = await deleteAccount();
+      if (success) {
+        setShowDeleteModal(false);
+        await logout();
+        // Note: Navigation to login will be handled automatically by AuthContext
+      } else {
+        Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to delete account. Please try again.' });
+      }
+    } catch (error) {
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Something went wrong. Please try again.' });
     }
   };
 

@@ -7,7 +7,7 @@ import { getItem, setItem, removeItem } from '@/utils/storage';
 class ApiClient {
   private client: AxiosInstance;
   private isRefreshing = false;
-  private refreshSubscribers: ((token: string) => void)[] = [];
+  private refreshSubscribers: { resolve: (token: string) => void; reject: (err: any) => void }[] = [];
 
   constructor() {
     this.client = axios.create({
@@ -41,14 +41,7 @@ class ApiClient {
         const originalRequest = error.config as any;
 
         // 🔧 CRITICAL FIX: Don't try to refresh tokens for auth endpoints
-        const isAuthEndpoint =
-          originalRequest?.url?.includes('/auth/login') ||
-          originalRequest?.url?.includes('/auth/register') ||
-          originalRequest?.url?.includes('/auth/google') ||
-          originalRequest?.url?.includes('/auth/verify-email') ||
-          originalRequest?.url?.includes('/auth/resend-verification') ||
-          originalRequest?.url?.includes('/auth/refresh-token') ||
-          originalRequest?.url?.includes('/auth/logout');
+        const isAuthEndpoint = originalRequest?.url?.startsWith('/auth/');
 
         // If it's an auth endpoint, just reject the error without trying to refresh
         if (isAuthEndpoint) {
@@ -68,10 +61,13 @@ class ApiClient {
 
           if (this.isRefreshing) {
             // Wait for the refresh to complete
-            return new Promise(resolve => {
-              this.refreshSubscribers.push((token: string) => {
-                originalRequest.headers.Authorization = `Bearer ${token}`;
-                resolve(this.client(originalRequest));
+            return new Promise((resolve, reject) => {
+              this.refreshSubscribers.push({
+                resolve: (token: string) => {
+                  originalRequest.headers.Authorization = `Bearer ${token}`;
+                  resolve(this.client(originalRequest));
+                },
+                reject: (err: any) => reject(err),
               });
             });
           }
@@ -91,16 +87,17 @@ class ApiClient {
               await setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken);
             }
 
-            // Notify all subscribers
-            this.refreshSubscribers.forEach(callback => callback(accessToken));
+            // Notify all subscribers with new token
+            this.refreshSubscribers.forEach(sub => sub.resolve(accessToken));
             this.refreshSubscribers = [];
 
             originalRequest.headers.Authorization = `Bearer ${accessToken}`;
             return this.client(originalRequest);
           } catch (refreshError) {
-            // Refresh failed, clear auth and logout user
-            await this.clearAuth();
+            // Refresh failed, reject all queued requests and clear auth
+            this.refreshSubscribers.forEach(sub => sub.reject(refreshError));
             this.refreshSubscribers = [];
+            await this.clearAuth();
             return Promise.reject(refreshError);
           } finally {
             this.isRefreshing = false;

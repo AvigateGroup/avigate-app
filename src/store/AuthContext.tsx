@@ -132,6 +132,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       removeItem(STORAGE_KEYS.ACCESS_TOKEN),
       removeItem(STORAGE_KEYS.REFRESH_TOKEN),
       removeItem(STORAGE_KEYS.USER_DATA),
+      removeItem(STORAGE_KEYS.FCM_TOKEN),
     ]);
 
     setAccessToken(null);

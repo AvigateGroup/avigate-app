@@ -30,6 +30,8 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({ children })
     NetInfo.fetch().then((state) => {
       setIsConnected(state.isConnected ?? true);
       setIsInternetReachable(state.isInternetReachable);
+    }).catch(() => {
+      // Assume connected if initial check fails
     });
 
     return () => unsubscribe();
