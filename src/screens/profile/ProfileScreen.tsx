@@ -7,14 +7,15 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Alert,
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { useDialog } from '@/contexts/DialogContext';
 import { useUserService } from '@/hooks/useUserService';
 import { useTripService } from '@/hooks/useTripService';
 import { getInitials, formatDate } from '@/utils/helpers';
@@ -24,6 +25,7 @@ export const ProfileScreen: React.FC = () => {
   const router = useRouter();
   const { user, logout } = useAuth();
   const colors = useThemedColors();
+  const dialog = useDialog();
   const { pickAndUploadProfilePicture, takeCameraPhoto, isUploadingImage, uploadProgress } =
     useUserService();
   const { getTripStatistics } = useTripService();
@@ -48,16 +50,14 @@ export const ProfileScreen: React.FC = () => {
   }, []);
 
   const handleLogout = () => {
-    Alert.alert('Logout', 'Are you sure you want to logout?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Logout',
-        style: 'destructive',
-        onPress: async () => {
-          await logout();
-        },
+    dialog.showDestructive(
+      'Logout',
+      'Are you sure you want to logout?',
+      async () => {
+        await logout();
       },
-    ]);
+      'Logout',
+    );
   };
 
   const handleEditProfile = () => {
@@ -65,20 +65,16 @@ export const ProfileScreen: React.FC = () => {
   };
 
   const handleUploadPicture = () => {
-    Alert.alert('Upload Profile Picture', 'Choose an option', [
-      {
-        text: 'Take Photo',
-        onPress: takeCameraPhoto,
-      },
-      {
-        text: 'Choose from Gallery',
-        onPress: pickAndUploadProfilePicture,
-      },
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-    ]);
+    dialog.showDialog({
+      type: 'info',
+      title: 'Upload Profile Picture',
+      message: 'Choose an option',
+      buttons: [
+        { text: 'Take Photo', style: 'primary', onPress: takeCameraPhoto },
+        { text: 'Gallery', style: 'default', onPress: pickAndUploadProfilePicture },
+        { text: 'Cancel', style: 'cancel' },
+      ],
+    });
   };
 
   const menuItems = [
@@ -99,7 +95,7 @@ export const ProfileScreen: React.FC = () => {
       title: 'Trip History',
       subtitle: 'View your past trips',
       onPress: () => {
-        Alert.alert('Coming Soon', 'Trip history feature will be available soon');
+        Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Trip history feature will be available soon' });
       },
     },
     {
@@ -113,7 +109,7 @@ export const ProfileScreen: React.FC = () => {
       title: 'Help & Support',
       subtitle: 'Get help with your account',
       onPress: () => {
-        Alert.alert('Coming Soon', 'Help & support feature will be available soon');
+        Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Help & support feature will be available soon' });
       },
     },
   ];

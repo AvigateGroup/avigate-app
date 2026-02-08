@@ -1,11 +1,13 @@
 // src/screens/profile/SettingsScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Switch, Alert, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Switch, Modal } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { useDialog } from '@/contexts/DialogContext';
 import { useUserService } from '@/hooks/useUserService';
 import { useAuth } from '@/store/AuthContext';
 import { Button } from '@/components/common/Button';
@@ -18,22 +20,17 @@ export const SettingsScreen = () => {
   const { deleteAccount, isLoading } = useUserService();
   const { logout, user } = useAuth();
 
+  const dialog = useDialog();
   const [notifications, setNotifications] = useState(true);
   const [locationSharing, setLocationSharing] = useState(true);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const handleDeleteAccount = async () => {
-    Alert.alert(
+    dialog.showDestructive(
       'Delete Account',
       'Are you absolutely sure you want to delete your account? This action cannot be undone.',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: () => setShowDeleteModal(true),
-        },
-      ],
+      () => setShowDeleteModal(true),
+      'Delete',
     );
   };
 
@@ -86,7 +83,7 @@ export const SettingsScreen = () => {
           title: 'Privacy Settings',
           subtitle: 'Control your privacy',
           type: 'navigation',
-          onPress: () => Alert.alert('Coming Soon', 'Privacy settings coming soon'),
+          onPress: () => Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Privacy settings coming soon' }),
         },
       ],
     },
@@ -98,7 +95,7 @@ export const SettingsScreen = () => {
           title: 'About Avigate',
           subtitle: 'Version 1.0.0',
           type: 'navigation',
-          onPress: () => Alert.alert('Avigate', 'Version 1.0.0\n\nYour trusted ride companion'),
+          onPress: () => Toast.show({ type: 'info', text1: 'Avigate v1.0.0', text2: 'Your trusted ride companion' }),
         },
         {
           icon: 'document-text-outline',
@@ -125,14 +122,14 @@ export const SettingsScreen = () => {
           subtitle: 'Reach out to our team',
           type: 'navigation',
           onPress: () =>
-            Alert.alert('Contact Support', 'Email: hello@avigate.com\nPhone: +234 800 000 0000'),
+            dialog.showDialog({ type: 'info', title: 'Contact Support', message: 'Email: hello@avigate.com\nPhone: +234 800 000 0000', buttons: [{ text: 'OK', style: 'primary' }] }),
         },
         {
           icon: 'star-outline',
           title: 'Rate Avigate',
           subtitle: 'Rate us on the app store',
           type: 'navigation',
-          onPress: () => Alert.alert('Coming Soon', 'App store rating coming soon'),
+          onPress: () => Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'App store rating coming soon' }),
         },
       ],
     },

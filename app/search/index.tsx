@@ -10,7 +10,6 @@ import {
   ScrollView,
   ActivityIndicator,
   Platform,
-  Alert,
 } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -18,6 +17,7 @@ import * as Location from 'expo-location';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useRouteService } from '@/hooks/useRouteService';
 import { useGooglePlacesAutocomplete, PlaceAutocompleteResult } from '@/hooks/useGooglePlacesAutocomplete';
+import { useDialog } from '@/contexts/DialogContext';
 
 interface Destination {
   id: string;
@@ -35,6 +35,7 @@ export default function SearchDestination() {
   const colors = useThemedColors();
   const { getPopularRoutes } = useRouteService();
   const { predictions, debouncedSearch, getPlaceDetails, clearPredictions, isLoading: autocompleteLoading } = useGooglePlacesAutocomplete();
+  const dialog = useDialog();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [currentLocation, setCurrentLocation] = useState<{
@@ -81,24 +82,16 @@ export default function SearchDestination() {
         setDestinations(popularDestinations);
       } else {
         console.error('Failed to load destinations:', result.error);
-        Alert.alert(
+        dialog.showError(
           'Error',
           'Unable to load destinations. Please check your internet connection and try again.',
-          [
-            { text: 'Cancel', onPress: () => router.back() },
-            { text: 'Retry', onPress: () => loadDestinations() },
-          ],
         );
       }
     } catch (error) {
       console.error('Error loading destinations:', error);
-      Alert.alert(
+      dialog.showError(
         'Error',
         'Unable to load destinations. Please check your internet connection and try again.',
-        [
-          { text: 'Cancel', onPress: () => router.back() },
-          { text: 'Retry', onPress: () => loadDestinations() },
-        ],
       );
     } finally {
       setLoading(false);

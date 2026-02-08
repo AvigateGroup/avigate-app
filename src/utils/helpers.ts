@@ -2,6 +2,8 @@
 
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
+import Constants from 'expo-constants';
 
 /**
  * Get device information string for backend
@@ -34,19 +36,12 @@ export const getDeviceInfo = (): string => {
  * npx expo install expo-dev-client && npx expo run:android
  */
 export const getFCMToken = async (): Promise<string | undefined> => {
-  console.log('Push notifications are not available in Expo Go. Use a development build instead.');
-  return undefined;
-
-  /* Uncomment this code when using a development build:
-  
   try {
-    // Check if we're running on a physical device
     if (!Device.isDevice) {
       console.log('Push notifications only work on physical devices');
       return undefined;
     }
 
-    // Request notification permissions
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
@@ -60,17 +55,19 @@ export const getFCMToken = async (): Promise<string | undefined> => {
       return undefined;
     }
 
-    // Get the Expo push token
-    const tokenData = await Notifications.getExpoPushTokenAsync({
-      projectId: Constants.expoConfig?.extra?.eas?.projectId,
-    });
+    const projectId = Constants.expoConfig?.extra?.eas?.projectId;
+    if (!projectId) {
+      console.log('No EAS project ID found, push notifications unavailable');
+      return undefined;
+    }
 
+    const tokenData = await Notifications.getExpoPushTokenAsync({ projectId });
     return tokenData.data;
   } catch (error) {
-    console.error('Error getting FCM token:', error);
+    // Graceful fallback for Expo Go and environments where push is not available
+    console.log('Push notifications not available:', (error as Error).message);
     return undefined;
   }
-  */
 };
 
 /**

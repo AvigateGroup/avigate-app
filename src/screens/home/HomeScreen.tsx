@@ -1,6 +1,6 @@
 // src/screens/home/HomeScreen.tsx
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -9,10 +9,12 @@ import { useAuth } from '@/store/AuthContext';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useDialog } from '@/contexts/DialogContext';
 import { homeFeatureStyles } from '@/styles/features';
-import { useRouter } from 'expo-router';
+import { useRouter, useFocusEffect } from 'expo-router';
 import { CommunityDrawer } from '@/components/CommunityDrawer';
 import { WhereToDrawer } from '@/components/WhereToDrawer';
+import { ActiveTripBanner } from '@/components/ActiveTripBanner';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useTripService } from '@/hooks/useTripService';
 import { HomeScreenSkeleton } from '@/components/skeletons';
 
 interface LocationType {
@@ -29,6 +31,7 @@ export const HomeScreen = () => {
   const colors = useThemedColors();
   const dialog = useDialog();
   const { getUnreadCount } = useNotifications();
+  const { getActiveTrip, endTrip } = useTripService();
 
   const [location, setLocation] = useState<LocationType | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,11 +39,49 @@ export const HomeScreen = () => {
   const [mapReady, setMapReady] = useState(false);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [activeTrip, setActiveTrip] = useState<any>(null);
 
   useEffect(() => {
     requestLocationPermission();
     loadUnreadCount();
   }, []);
+
+  const checkActiveTrip = async () => {
+    try {
+      const result = await getActiveTrip();
+      if (result.success && result.data?.trip && result.data.trip.status === 'in_progress') {
+        setActiveTrip(result.data.trip);
+      } else {
+        setActiveTrip(null);
+      }
+    } catch {
+      // Silently fail — no trip banner if check fails
+    }
+  };
+
+  // Re-check active trip and unread count when screen gains focus
+  useFocusEffect(
+    useCallback(() => {
+      checkActiveTrip();
+      loadUnreadCount();
+    }, [])
+  );
+
+  // Poll active trip every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(checkActiveTrip, 30000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleCancelTrip = async (tripId: string) => {
+    const result = await endTrip(tripId);
+    if (result.success) {
+      setActiveTrip(null);
+      dialog.showSuccess('Trip Cancelled', 'Your trip has been cancelled.');
+    } else {
+      dialog.showError('Error', 'Failed to cancel trip. Please try again.');
+    }
+  };
 
   const loadUnreadCount = async () => {
     const result = await getUnreadCount();
@@ -235,6 +276,14 @@ export const HomeScreen = () => {
           </View>
         )}
       </TouchableOpacity>
+
+      {/* Active Trip Banner */}
+      {activeTrip && (
+        <ActiveTripBanner
+          trip={activeTrip}
+          onCancelTrip={handleCancelTrip}
+        />
+      )}
 
       {/* Action Button - Center on User */}
       <View style={homeFeatureStyles.actionButtons}>

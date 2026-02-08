@@ -107,6 +107,17 @@ class ApiClient {
           }
         }
 
+        // Retry once for server errors (500, 502, 503) and network errors
+        const status = error.response?.status;
+        const isServerError = status === 500 || status === 502 || status === 503;
+        const isNetworkError = !error.response && error.code !== 'ECONNABORTED';
+
+        if ((isServerError || isNetworkError) && !originalRequest._retryCount) {
+          originalRequest._retryCount = 1;
+          await new Promise(resolve => setTimeout(resolve, 2000));
+          return this.client(originalRequest);
+        }
+
         return Promise.reject(error);
       },
     );

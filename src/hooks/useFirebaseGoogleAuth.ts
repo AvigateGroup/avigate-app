@@ -1,7 +1,7 @@
 // src/hooks/useFirebaseGoogleAuth.ts
 
 import { useState, useEffect } from 'react';
-import { Platform, Alert } from 'react-native';
+import { Platform } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { useRouter } from 'expo-router';
 import { authApi } from '@/api/auth.api';
@@ -213,22 +213,12 @@ export const useFirebaseGoogleAuth = () => {
         const lowerMessage = errorMessage.toLowerCase();
 
         if (lowerMessage.includes('different google account')) {
-          Alert.alert(
-            'Account Already Exists',
-            'This email is already registered with different credentials. Would you like to sign in with email instead?',
-            [
-              {
-                text: 'Cancel',
-                style: 'cancel',
-              },
-              {
-                text: 'Sign In',
-                onPress: () => {
-                  router.push('/(auth)/login');
-                },
-              },
-            ],
-          );
+          Toast.show({
+            type: 'error',
+            text1: 'Account Already Exists',
+            text2: 'This email is already registered with different credentials. Please sign in with email instead.',
+            visibilityTime: 5000,
+          });
           return;
         }
 
@@ -289,11 +279,12 @@ export const useFirebaseGoogleAuth = () => {
         console.error('  2. Wrong OAuth Client ID being used');
         console.error('  3. google-services.json not properly configured');
 
-        Alert.alert(
-          'Configuration Error',
-          'Google Sign-In is not properly configured for this build. This usually means the SHA-1 certificate is not registered in Firebase Console.',
-          [{ text: 'OK' }],
-        );
+        Toast.show({
+          type: 'error',
+          text1: 'Configuration Error',
+          text2: 'Google Sign-In is not properly configured for this build. This usually means the SHA-1 certificate is not registered in Firebase Console.',
+          visibilityTime: 8000,
+        });
         return;
       }
 

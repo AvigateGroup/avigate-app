@@ -10,8 +10,8 @@ import {
   SafeAreaView,
   Keyboard,
   ActivityIndicator,
-  Alert,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useNavigation } from '@react-navigation/native';
@@ -150,15 +150,15 @@ export const SearchDestinationScreen = () => {
     Keyboard.dismiss();
 
     // TODO: Navigate to route planning screen when it's added to the navigator
-    // For now, just show a placeholder alert
-    Alert.alert('Route Planning', `Selected destination: ${location.name}\n\nRoute planning feature will be available soon.`);
+    // For now, just show a placeholder toast
+    Toast.show({ type: 'info', text1: 'Route Planning', text2: 'Route planning feature coming soon' });
   };
 
   const handleUseCurrentLocation = async () => {
     const location = await getCurrentLocation();
     if (location) {
       // TODO: Navigate to route planning screen when it's added to the navigator
-      Alert.alert('Route Planning', 'Use current location feature will be available soon.');
+      Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Use current location feature will be available soon' });
     }
   };
 

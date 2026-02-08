@@ -10,15 +10,16 @@ import {
   Image,
   ActivityIndicator,
   Switch,
-  Alert,
 } from 'react-native';
 import { CommunityFeedSkeleton } from '@/components/skeletons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
 import { useAuth } from '@/store/AuthContext';
+import { useDialog } from '@/contexts/DialogContext';
 import { communityStyles } from '@/styles/features';
 import { moderateScale } from '@/utils/responsive';
 
@@ -48,6 +49,7 @@ interface FeedPost {
 export const CommunityFeedScreen = () => {
   const colors = useThemedColors();
   const { user } = useAuth();
+  const dialog = useDialog();
   const { getFeed, toggleRealTimeUpdates, votePost, isLoading } = useCommunityService();
 
   const [posts, setPosts] = useState<FeedPost[]>([]);
@@ -164,24 +166,32 @@ export const CommunityFeedScreen = () => {
   };
 
   const handleQuickContribute = () => {
-    Alert.alert('Contribute to Avigate', 'What would you like to share?', [
-      {
-        text: 'Route Improvement',
-        onPress: () => router.push('/community/contribute'),
-      },
-      {
-        text: 'Fare Update',
-        onPress: () => router.push('/community/contribute'),
-      },
-      {
-        text: 'New Landmark',
-        onPress: () => router.push('/community/contribute'),
-      },
-      {
-        text: 'Cancel',
-        style: 'cancel',
-      },
-    ]);
+    dialog.showDialog({
+      type: 'info',
+      title: 'Contribute to Avigate',
+      message: 'What would you like to share?',
+      buttons: [
+        {
+          text: 'Route Improvement',
+          style: 'default',
+          onPress: () => router.push('/community/contribute'),
+        },
+        {
+          text: 'Fare Update',
+          style: 'default',
+          onPress: () => router.push('/community/contribute'),
+        },
+        {
+          text: 'New Landmark',
+          style: 'default',
+          onPress: () => router.push('/community/contribute'),
+        },
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+      ],
+    });
   };
 
   const getPostTypeIcon = (type: string) => {
@@ -376,7 +386,7 @@ export const CommunityFeedScreen = () => {
           style={communityStyles.actionButton}
           onPress={e => {
             e.stopPropagation();
-            Alert.alert('Share', 'Share functionality coming soon');
+            Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Share functionality coming soon' });
           }}
         >
           <Icon name="share-outline" size={20} color={colors.textMuted} />
