@@ -9,7 +9,7 @@ import { OTPInput } from '@/components/common/OTPInput';
 import { Button } from '@/components/common/Button';
 import { authApi } from '@/api/auth.api';
 import { validateOTP } from '@/utils/validation';
-import { handleApiError, getDeviceInfo } from '@/utils/helpers';
+import { handleApiError, getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useAuth } from '@/store/AuthContext';
 import { APP_CONFIG } from '@/constants/config';
 import { authFeatureStyles } from '@/styles/features/auth';
@@ -49,10 +49,12 @@ export const VerifyLoginOTPScreen: React.FC = () => {
     setError('');
 
     try {
+      const fcmToken = await getFCMToken();
       const response = await authApi.verifyLoginOtp({
         email,
         otpCode: otp,
         deviceInfo: getDeviceInfo(),
+        fcmToken: fcmToken,
       });
 
       console.log('OTP Verification Response:', JSON.stringify(response, null, 2));

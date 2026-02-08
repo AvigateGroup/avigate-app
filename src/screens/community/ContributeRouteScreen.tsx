@@ -7,7 +7,6 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
-  Alert,
   Switch,
   Platform,
   KeyboardAvoidingView,
@@ -15,8 +14,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Toast from 'react-native-toast-message';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCommunityService } from '@/hooks/useCommunityService';
+import { useDialog } from '@/contexts/DialogContext';
 import { Button } from '@/components/common/Button';
 import { contributeStyles } from '@/styles/features';
 
@@ -30,6 +31,7 @@ type ContributionType =
 export const ContributeRouteScreen = () => {
   const navigation = useNavigation<any>();
   const colors = useThemedColors();
+  const dialog = useDialog();
   const { submitContribution, isLoading } = useCommunityService();
 
   const [contributionType, setContributionType] = useState<ContributionType>('route_update');
@@ -97,7 +99,7 @@ export const ContributeRouteScreen = () => {
 
   const handleSubmit = async () => {
     if (!description.trim()) {
-      Alert.alert('Missing Description', 'Please describe your contribution');
+      Toast.show({ type: 'error', text1: 'Missing Description', text2: 'Please describe your contribution' });
       return;
     }
 
@@ -106,7 +108,7 @@ export const ContributeRouteScreen = () => {
     switch (contributionType) {
       case 'new_route':
         if (!routeName || !startLocation || !endLocation) {
-          Alert.alert('Missing Info', 'Please fill in route name, start and end locations');
+          Toast.show({ type: 'error', text1: 'Missing Info', text2: 'Please fill in route name, start and end locations' });
           return;
         }
         proposedData = {
@@ -136,7 +138,7 @@ export const ContributeRouteScreen = () => {
 
       case 'fare_correction':
         if (!minFare || !maxFare) {
-          Alert.alert('Missing Fare', 'Please enter the current fare range');
+          Toast.show({ type: 'error', text1: 'Missing Fare', text2: 'Please enter the current fare range' });
           return;
         }
         proposedData = {
@@ -147,7 +149,7 @@ export const ContributeRouteScreen = () => {
 
       case 'new_intermediate_stop':
         if (!stopName || !segmentName) {
-          Alert.alert('Missing Info', 'Please enter stop name and select a route segment');
+          Toast.show({ type: 'error', text1: 'Missing Info', text2: 'Please enter stop name and select a route segment' });
           return;
         }
         proposedData = {
@@ -163,7 +165,7 @@ export const ContributeRouteScreen = () => {
 
       case 'instructions_update':
         if (!instructions.trim()) {
-          Alert.alert('Missing Instructions', 'Please enter improved directions');
+          Toast.show({ type: 'error', text1: 'Missing Instructions', text2: 'Please enter improved directions' });
           return;
         }
         proposedData = {
@@ -184,21 +186,16 @@ export const ContributeRouteScreen = () => {
       });
 
       if (result.success) {
-        Alert.alert(
-          '🎉 Contribution Submitted!',
-          'You earned 15 reputation points! Your contribution will be reviewed by our team.',
-          [
-            {
-              text: 'Done',
-              onPress: () => navigation.goBack(),
-            },
-          ],
+        dialog.showSuccess(
+          'Thank You!',
+          'Your contribution has been submitted. You earned 15 reputation points! Your contribution will be reviewed by our team.',
+          () => navigation.goBack(),
         );
       } else {
-        Alert.alert('Error', result.error || 'Failed to submit contribution');
+        dialog.showError('Error', result.error || 'Failed to submit contribution');
       }
     } catch (error) {
-      Alert.alert('Error', 'An unexpected error occurred');
+      dialog.showError('Error', 'An unexpected error occurred');
     }
   };
 

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
+import { handleApiError } from '@/utils/helpers';
 
 interface SmartRouteSearchParams {
   startLat: number;
@@ -50,7 +51,7 @@ export const useRouteService = () => {
         error: response.message || 'Failed to find routes',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'An error occurred';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -85,7 +86,7 @@ export const useRouteService = () => {
         error: 'Failed to get popular routes',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message;
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -118,7 +119,7 @@ export const useRouteService = () => {
         error: 'Route not found',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message;
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -155,7 +156,7 @@ export const useRouteService = () => {
         error: 'Failed to start trip',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message;
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -222,7 +223,7 @@ export const useRouteService = () => {
     } catch (err: any) {
       return {
         success: false,
-        error: err.message,
+        error: handleApiError(err),
       };
     }
   };
@@ -248,7 +249,7 @@ export const useRouteService = () => {
     } catch (err: any) {
       return {
         success: false,
-        error: err.message,
+        error: handleApiError(err),
       };
     }
   };
@@ -274,7 +275,7 @@ export const useRouteService = () => {
     } catch (err: any) {
       return {
         success: false,
-        error: err.message,
+        error: handleApiError(err),
       };
     }
   };
@@ -302,7 +303,7 @@ export const useRouteService = () => {
     } catch (err: any) {
       return {
         success: false,
-        error: err.message,
+        error: handleApiError(err),
       };
     }
   };
@@ -330,7 +331,7 @@ export const useRouteService = () => {
     } catch (err: any) {
       return {
         success: false,
-        error: err.message,
+        error: handleApiError(err),
       };
     }
   };

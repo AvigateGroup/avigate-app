@@ -9,19 +9,46 @@ try {
 
 import { useEffect, useState, useCallback } from 'react';
 import { Stack, useRouter, useSegments, usePathname } from 'expo-router';
-import { StatusBar } from 'react-native';
+import { StatusBar, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
 import { AuthProvider, useAuth } from '../src/store/AuthContext';
 import { ThemeProvider, useTheme } from '../src/contexts/ThemeContext';
 import { DialogProvider } from '../src/contexts/DialogContext';
+import { NetworkProvider } from '../src/contexts/NetworkContext';
 import { useThemedColors } from '../src/hooks/useThemedColors';
+import { OfflineBanner } from '../src/components/OfflineBanner';
+import { getFCMToken } from '../src/utils/helpers';
+import { STORAGE_KEYS } from '../src/constants/config';
+import { apiClient } from '../src/api/client';
 import AnimatedSplashScreen from '../src/components/animation/AnimatedSplashScreen';
 import * as SplashScreen from 'expo-splash-screen';
 
 // Prevent native splash from auto-hiding
 SplashScreen.preventAutoHideAsync();
+
+// Configure foreground notification display
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
+
+// Create Android notification channel (required for Android 8+)
+if (Platform.OS === 'android') {
+  Notifications.setNotificationChannelAsync('avigate_alerts', {
+    name: 'Avigate Alerts',
+    importance: Notifications.AndroidImportance.HIGH,
+    vibrationPattern: [0, 250, 250, 250],
+    lightColor: '#86B300',
+    enableVibrate: true,
+    sound: 'default',
+  });
+}
 
 function RootLayoutNav() {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -117,6 +144,77 @@ function RootLayoutNav() {
       return;
     }
   }, [isAuthenticated, segments, isLoading, hasSeenOnboarding, isNavigating, pathname, user]);
+
+  // Push notification listeners and token registration
+  useEffect(() => {
+    if (!isAuthenticated || !user) return;
+
+    let isMounted = true;
+
+    const registerToken = async () => {
+      try {
+        const token = await getFCMToken();
+        if (token && isMounted) {
+          await AsyncStorage.setItem(STORAGE_KEYS.FCM_TOKEN, token);
+          // Send token to backend so it can send push notifications
+          try {
+            await apiClient.post('/users/devices/register-token', { fcmToken: token });
+          } catch (err) {
+            console.warn('Failed to register token with backend:', err);
+          }
+        }
+      } catch (error) {
+        console.log('Failed to register push token:', error);
+      }
+    };
+
+    registerToken();
+
+    // Handle notification that launched the app from killed state
+    Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (response && isMounted) {
+        const data = response.notification.request.content.data;
+        if (data?.actionUrl && typeof data.actionUrl === 'string') {
+          router.push(data.actionUrl as any);
+        } else {
+          router.push('/notifications');
+        }
+      }
+    }).catch(() => {});
+
+    const notificationSubscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log('Notification received:', notification.request.content.title);
+      }
+    );
+
+    const responseSubscription = Notifications.addNotificationResponseReceivedListener(
+      (response) => {
+        const data = response.notification.request.content.data;
+        if (data?.actionUrl && typeof data.actionUrl === 'string') {
+          router.push(data.actionUrl as any);
+        } else {
+          router.push('/notifications');
+        }
+      }
+    );
+
+    // Listen for token refresh (FCM tokens can be rotated)
+    const tokenRefreshSubscription = Notifications.addPushTokenListener((tokenData) => {
+      if (isMounted && tokenData.data) {
+        AsyncStorage.setItem(STORAGE_KEYS.FCM_TOKEN, tokenData.data);
+        apiClient.post('/users/devices/register-token', { fcmToken: tokenData.data })
+          .catch((err) => console.warn('Token refresh registration failed:', err));
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      notificationSubscription.remove();
+      responseSubscription.remove();
+      tokenRefreshSubscription.remove();
+    };
+  }, [isAuthenticated, user]);
 
   return (
     <>
@@ -249,9 +347,12 @@ function RootLayoutNav() {
 function ThemedRootLayoutNav() {
   return (
     <ThemeProvider>
-      <DialogProvider>
-        <RootLayoutNav />
-      </DialogProvider>
+      <NetworkProvider>
+        <DialogProvider>
+          <RootLayoutNav />
+          <OfflineBanner />
+        </DialogProvider>
+      </NetworkProvider>
     </ThemeProvider>
   );
 }

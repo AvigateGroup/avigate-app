@@ -9,11 +9,11 @@ import {
   ScrollView,
   Platform,
   RefreshControl,
-  Alert,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { useDialog } from '@/contexts/DialogContext';
 import { useNotifications, Notification, NotificationType } from '@/hooks/useNotifications';
 import { formatDistanceToNow } from '@/utils/dateUtils';
 import { NotificationListSkeleton } from '@/components/skeletons';
@@ -21,6 +21,7 @@ import { NotificationListSkeleton } from '@/components/skeletons';
 export default function Notifications() {
   const router = useRouter();
   const colors = useThemedColors();
+  const dialog = useDialog();
   const { getNotifications, markAsRead, markAllAsRead, deleteNotification, isLoading } =
     useNotifications();
 
@@ -85,19 +86,16 @@ export default function Notifications() {
   };
 
   const handleDeleteNotification = (notificationId: string) => {
-    Alert.alert('Delete Notification', 'Are you sure you want to delete this notification?', [
-      { text: 'Cancel', style: 'cancel' },
-      {
-        text: 'Delete',
-        style: 'destructive',
-        onPress: async () => {
-          const result = await deleteNotification(notificationId);
-          if (result.success) {
-            setNotifications((prev) => (prev || []).filter((n) => n.id !== notificationId));
-          }
-        },
+    dialog.showDestructive(
+      'Delete Notification',
+      'Are you sure you want to delete this notification?',
+      async () => {
+        const result = await deleteNotification(notificationId);
+        if (result.success) {
+          setNotifications((prev) => (prev || []).filter((n) => n.id !== notificationId));
+        }
       },
-    ]);
+    );
   };
 
   const getNotificationIcon = (type: NotificationType) => {
@@ -235,7 +233,7 @@ export default function Notifications() {
                   style={styles.deleteButton}
                   onPress={() => handleDeleteNotification(notification.id)}
                 >
-                  <Icon name="close" size={20} color={colors.textMuted} />
+                  <Icon name="trash-outline" size={18} color={colors.textMuted} />
                 </TouchableOpacity>
               </TouchableOpacity>
             ))}

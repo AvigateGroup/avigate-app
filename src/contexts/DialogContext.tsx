@@ -24,7 +24,7 @@ interface DialogContextType {
   showError: (title: string, message: string, onDismiss?: () => void) => void;
   showWarning: (title: string, message: string, onDismiss?: () => void) => void;
   showConfirm: (title: string, message: string, onConfirm: () => void, onCancel?: () => void) => void;
-  showDestructive: (title: string, message: string, onConfirm: () => void, onCancel?: () => void) => void;
+  showDestructive: (title: string, message: string, onConfirm: () => void, confirmLabel?: string, onCancel?: () => void) => void;
 }
 
 const DialogContext = createContext<DialogContextType | undefined>(undefined);
@@ -98,14 +98,14 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     });
   }, [showDialog]);
 
-  const showDestructive = useCallback((title: string, message: string, onConfirm: () => void, onCancel?: () => void) => {
+  const showDestructive = useCallback((title: string, message: string, onConfirm: () => void, confirmLabel?: string, onCancel?: () => void) => {
     showDialog({
       type: 'warning',
       title,
       message,
       buttons: [
         { text: 'Cancel', style: 'cancel', onPress: onCancel },
-        { text: 'Confirm', style: 'destructive', onPress: onConfirm },
+        { text: confirmLabel || 'Confirm', style: 'destructive', onPress: onConfirm },
       ],
     });
   }, [showDialog]);

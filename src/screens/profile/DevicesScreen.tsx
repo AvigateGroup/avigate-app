@@ -6,11 +6,11 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  Alert,
   RefreshControl,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
+import { useDialog } from '@/contexts/DialogContext';
 import { useUserService } from '@/hooks/useUserService';
 import { profileFeatureStyles } from '@/styles/features';
 import { getRelativeTime } from '@/utils/helpers';
@@ -29,6 +29,7 @@ interface UserDevice {
 
 export const DevicesScreen: React.FC = () => {
   const colors = useThemedColors();
+  const dialog = useDialog();
   const { getUserDevices, deactivateDevice, isLoading } = useUserService();
   const [devices, setDevices] = useState<UserDevice[]>([]);
   const [refreshing, setRefreshing] = useState(false);
@@ -49,22 +50,16 @@ export const DevicesScreen: React.FC = () => {
   };
 
   const handleDeactivateDevice = (device: UserDevice) => {
-    Alert.alert(
+    dialog.showDestructive(
       'Deactivate Device',
       `Are you sure you want to deactivate this device?\n\n${device.deviceInfo}`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Deactivate',
-          style: 'destructive',
-          onPress: async () => {
-            const success = await deactivateDevice(device.id);
-            if (success) {
-              await loadDevices();
-            }
-          },
-        },
-      ],
+      async () => {
+        const success = await deactivateDevice(device.id);
+        if (success) {
+          await loadDevices();
+        }
+      },
+      'Deactivate',
     );
   };
 

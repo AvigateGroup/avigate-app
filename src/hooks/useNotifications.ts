@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
+import { handleApiError } from '@/utils/helpers';
 
 export enum NotificationType {
   TRIP_STARTED = 'trip_started',
@@ -58,7 +59,7 @@ export const useNotifications = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await apiClient.get<NotificationsResponse>('/notifications', {
+      const response = await apiClient.get<any>('/notifications', {
         params: {
           page: params.page || 1,
           limit: params.limit || 20,
@@ -67,12 +68,16 @@ export const useNotifications = () => {
         },
       });
 
+      // Backend TransformInterceptor wraps raw responses in { success, data, timestamp }
+      // Extract the inner data if wrapped, otherwise use response directly
+      const notificationsData: NotificationsResponse = response.data || response;
+
       return {
         success: true,
-        data: response,
+        data: notificationsData,
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to load notifications';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -135,7 +140,7 @@ export const useNotifications = () => {
         error: 'Failed to update notification',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to update notification';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -168,7 +173,7 @@ export const useNotifications = () => {
         error: 'Failed to mark all as read',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to mark all as read';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -201,7 +206,7 @@ export const useNotifications = () => {
         error: 'Failed to delete notification',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to delete notification';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -234,7 +239,7 @@ export const useNotifications = () => {
         error: 'Failed to delete read notifications',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to delete read notifications';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,

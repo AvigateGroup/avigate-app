@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { handleApiError } from '@/utils/helpers';
 
 interface Post {
   id: string;
@@ -96,7 +97,7 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Get feed error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to load feed';
+      const errorMessage = handleApiError(error);
       setError(errorMessage);
       return {
         success: false,
@@ -130,7 +131,7 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Get post error:', error);
-      const errorMessage = error.response?.data?.message || error.message || 'Failed to load post';
+      const errorMessage = handleApiError(error);
       setError(errorMessage);
       return {
         success: false,
@@ -164,8 +165,7 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Create post error:', error);
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Failed to create post';
+      const errorMessage = handleApiError(error);
       setError(errorMessage);
       return {
         success: false,
@@ -200,7 +200,7 @@ export const useCommunityService = () => {
       console.error('Vote post error:', error);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to vote',
+        error: handleApiError(error),
       };
     }
   };
@@ -229,7 +229,7 @@ export const useCommunityService = () => {
       console.error('Get comments error:', error);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to load comments',
+        error: handleApiError(error),
       };
     }
   };
@@ -258,7 +258,7 @@ export const useCommunityService = () => {
       console.error('Add comment error:', error);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to add comment',
+        error: handleApiError(error),
       };
     }
   };
@@ -287,7 +287,7 @@ export const useCommunityService = () => {
       console.error('Vote comment error:', error);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to vote',
+        error: handleApiError(error),
       };
     }
   };
@@ -314,7 +314,7 @@ export const useCommunityService = () => {
       console.error('Delete post error:', error);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to delete post',
+        error: handleApiError(error),
       };
     }
   };
@@ -343,7 +343,7 @@ export const useCommunityService = () => {
       console.error('Report post error:', error);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to report post',
+        error: handleApiError(error),
       };
     }
   };
@@ -375,8 +375,7 @@ export const useCommunityService = () => {
       };
     } catch (error: any) {
       console.error('Submit contribution error:', error);
-      const errorMessage =
-        error.response?.data?.message || error.message || 'Failed to submit contribution';
+      const errorMessage = handleApiError(error);
       setError(errorMessage);
       return {
         success: false,
@@ -409,7 +408,7 @@ export const useCommunityService = () => {
       console.error('Get contributions error:', error);
       return {
         success: false,
-        error: error.response?.data?.message || error.message || 'Failed to load contributions',
+        error: handleApiError(error),
       };
     }
   };

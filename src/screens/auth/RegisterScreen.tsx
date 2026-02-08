@@ -1,7 +1,7 @@
 // src/screens/auth/RegisterScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -358,14 +358,14 @@ export const RegisterScreen: React.FC = () => {
                 I agree to the{' '}
                 <Text style={typographyStyles.linkText} onPress={() => {
                   // TODO: Navigate to Terms of Service when added to Auth stack
-                  Alert.alert('Terms of Service', 'Please see the full Terms of Service in Settings after registration.');
+                  Toast.show({ type: 'info', text1: 'Terms of Service', text2: 'Full terms available in Settings after registration.' });
                 }}>
                   Terms of Service
                 </Text>{' '}
                 and{' '}
                 <Text style={typographyStyles.linkText} onPress={() => {
                   // TODO: Navigate to Privacy Policy when added to Auth stack
-                  Alert.alert('Privacy Policy', 'Please see the full Privacy Policy in Settings after registration.');
+                  Toast.show({ type: 'info', text1: 'Privacy Policy', text2: 'Full privacy policy available in Settings after registration.' });
                 }}>
                   Privacy Policy
                 </Text>

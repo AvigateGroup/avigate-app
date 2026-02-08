@@ -247,6 +247,8 @@ export const ActiveTripScreen = () => {
               router.replace('/(tabs)');
             }
           );
+        } else {
+          dialog.showError('Error', result.message || 'Failed to complete trip. Please try again.');
         }
       }
     );
@@ -268,6 +270,8 @@ export const ActiveTripScreen = () => {
               router.replace('/(tabs)');
             }
           );
+        } else {
+          dialog.showError('Error', result.message || 'Failed to cancel trip. Please try again.');
         }
       },
       'Cancel Trip'

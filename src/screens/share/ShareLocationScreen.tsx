@@ -8,11 +8,11 @@ import {
   TextInput,
   ScrollView,
   Switch,
-  Alert,
   Share as RNShare,
   Image,
   Modal,
 } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -21,6 +21,7 @@ import { useThemedColors } from '@/hooks/useThemedColors';
 import { useLocationShareService } from '@/hooks/useLocationShareService';
 import { useAuth } from '@/store/AuthContext';
 import { Button } from '@/components/common/Button';
+import { useDialog } from '@/contexts/DialogContext';
 import { shareStyles } from '@/styles/features';
 
 type ShareType = 'public' | 'private' | 'event' | 'business';
@@ -42,6 +43,7 @@ export const ShareLocationScreen = () => {
   const colors = useThemedColors();
   const { user } = useAuth();
   const { createShare, getQRCode, getPrintableQRCode, isLoading } = useLocationShareService();
+  const dialog = useDialog();
 
   const [shareType, setShareType] = useState<ShareType>('public');
   const [locationName, setLocationName] = useState('');
@@ -108,7 +110,7 @@ export const ShareLocationScreen = () => {
 
   const handleCreateShare = async () => {
     if (!locationName.trim()) {
-      Alert.alert('Error', 'Please enter a location name');
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Please enter a location name' });
       return;
     }
 
@@ -125,13 +127,9 @@ export const ShareLocationScreen = () => {
         const { status } = await Location.requestForegroundPermissionsAsync();
 
         if (status !== 'granted') {
-          Alert.alert(
+          dialog.showWarning(
             'Permission Required',
             'Location permission is needed to share your location. Please enable it in settings.',
-            [
-              { text: 'Cancel', style: 'cancel' },
-              { text: 'Try Again', onPress: () => handleCreateShare() },
-            ],
           );
           return;
         }
@@ -159,44 +157,19 @@ export const ShareLocationScreen = () => {
         setQRCodeData(result.data);
         showShareOptions(result.data);
       } else {
-        Alert.alert('Error', result.error || 'Failed to share location');
+        dialog.showError('Error', result.error || 'Failed to share location');
       }
     } catch (error) {
       console.error('Error creating share:', error);
-      Alert.alert(
-        'Location Error',
-        'Could not get your current location. Please check your location settings and try again.',
-        [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Retry', onPress: () => handleCreateShare() },
-        ],
+      dialog.showError(
+        'Connection Error',
+        'Unable to connect to the server. Please check your location settings and try again.',
       );
     }
   };
 
   const showShareOptions = (shareData: ShareResult) => {
-    Alert.alert('Location Shared! 🎉', 'Your location has been shared successfully.', [
-      {
-        text: 'View QR Code',
-        onPress: () => setShowQRModal(true),
-      },
-      {
-        text: 'Copy Link',
-        onPress: () => {
-          // TODO: Implement clipboard copy
-          Alert.alert('Copied!', 'Share link copied to clipboard');
-        },
-      },
-      {
-        text: 'Share',
-        onPress: () => handleShareLink(shareData.shareUrl),
-      },
-      {
-        text: 'Done',
-        style: 'cancel',
-        onPress: () => navigation.goBack(),
-      },
-    ]);
+    dialog.showSuccess('Location Shared!', 'Your location has been shared successfully.');
   };
 
   const handleShareLink = async (url: string) => {
@@ -221,9 +194,9 @@ export const ShareLocationScreen = () => {
     try {
       // TODO: Implement actual download functionality
       // This would involve saving the QR code image to device
-      Alert.alert('Success', 'QR code saved to your device');
+      Toast.show({ type: 'success', text1: 'Success', text2: 'QR code saved to your device' });
     } catch (error) {
-      Alert.alert('Error', 'Failed to download QR code');
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to download QR code' });
     }
   };
 
@@ -234,9 +207,9 @@ export const ShareLocationScreen = () => {
       const printableHTML = await getPrintableQRCode(qrCodeData.shareUrl);
       // TODO: Implement print functionality
       // This could open a web view with print dialog or share as PDF
-      Alert.alert('Print', 'QR code prepared for printing');
+      Toast.show({ type: 'success', text1: 'Print', text2: 'QR code prepared for printing' });
     } catch (error) {
-      Alert.alert('Error', 'Failed to prepare QR code for printing');
+      Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to prepare QR code for printing' });
     }
   };
 

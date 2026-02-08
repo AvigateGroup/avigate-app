@@ -8,7 +8,6 @@ import {
   StyleSheet,
   ActivityIndicator,
   Platform,
-  Alert,
 } from 'react-native';
 import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -163,12 +162,12 @@ export default function RouteDetails() {
           }
         }, 500);
       } else {
-        Alert.alert('Error', result.error || 'Could not find route');
+        dialog.showError('Error', result.error || 'Could not find route');
         router.back();
       }
     } catch (error) {
       console.error('Error loading route:', error);
-      Alert.alert('Error', 'Failed to load route details');
+      dialog.showError('Error', 'Failed to load route details');
       router.back();
     } finally {
       setLoading(false);

@@ -1,13 +1,15 @@
 // src/screens/routes/RoutePlanScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useCurrentLocation } from '@/hooks/useCurrentLocation';
 import { useRouteService } from '@/hooks/useRouteService';
 import { Button } from '@/components/common/Button';
+import { useDialog } from '@/contexts/DialogContext';
 import { routeStyles } from '@/styles/features';
 import { Route, RouteStep } from '@/types/route';
 
@@ -18,6 +20,7 @@ export const RoutePlanScreen = () => {
   const params = {}; // useLocalSearchParams();
   const { currentLocation, getCurrentLocation } = useCurrentLocation();
   const { findSmartRoutes, isLoading } = useRouteService();
+  const dialog = useDialog();
 
   const [routes, setRoutes] = useState<Route[]>([]);
   const [selectedRoute, setSelectedRoute] = useState<Route | null>(null);
@@ -37,7 +40,7 @@ export const RoutePlanScreen = () => {
         startLat = location.latitude;
         startLng = location.longitude;
       } else {
-        Alert.alert('Error', 'Unable to get your current location');
+        dialog.showError('Error', 'Unable to get your current location');
         return;
       }
     }
@@ -47,7 +50,7 @@ export const RoutePlanScreen = () => {
     const destinationName = params.destinationName as string;
 
     if (!destinationLat || !destinationLng) {
-      Alert.alert('Error', 'Invalid destination coordinates');
+      dialog.showError('Error', 'Invalid destination coordinates');
       return;
     }
 
@@ -65,7 +68,7 @@ export const RoutePlanScreen = () => {
         setSelectedRoute(result.data.routes[0]);
       }
     } else {
-      Alert.alert('Error', result.error || 'Failed to find routes');
+      dialog.showError('Error', result.error || 'Failed to find routes');
     }
   };
 
@@ -73,7 +76,7 @@ export const RoutePlanScreen = () => {
     if (!selectedRoute) return;
 
     // TODO: Navigate to active trip screen when added to navigator
-    Alert.alert('Start Trip', 'Trip tracking feature will be available soon.');
+    Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Trip tracking feature will be available soon' });
   };
 
   const toggleStepExpansion = (stepOrder: number) => {

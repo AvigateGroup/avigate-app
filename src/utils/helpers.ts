@@ -2,6 +2,7 @@
 
 import { Platform } from 'react-native';
 import * as Device from 'expo-device';
+import * as Notifications from 'expo-notifications';
 
 /**
  * Get device information string for backend
@@ -26,27 +27,19 @@ export const getDeviceInfo = (): string => {
 };
 
 /**
- * Get FCM (Firebase Cloud Messaging) token for push notifications
+ * Get native push token (FCM on Android, APNs on iOS) for push notifications
  * Returns the token string or undefined if not available
  *
- * NOTE: Push notifications are not supported in Expo Go for SDK 53+
- * To use this feature, you need to create a development build with:
- * npx expo install expo-dev-client && npx expo run:android
+ * NOTE: Push notifications require a development build (not Expo Go)
+ * To use: npx expo install expo-dev-client && npx expo run:android/ios
  */
 export const getFCMToken = async (): Promise<string | undefined> => {
-  console.log('Push notifications are not available in Expo Go. Use a development build instead.');
-  return undefined;
-
-  /* Uncomment this code when using a development build:
-  
   try {
-    // Check if we're running on a physical device
     if (!Device.isDevice) {
       console.log('Push notifications only work on physical devices');
       return undefined;
     }
 
-    // Request notification permissions
     const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
@@ -60,17 +53,15 @@ export const getFCMToken = async (): Promise<string | undefined> => {
       return undefined;
     }
 
-    // Get the Expo push token
-    const tokenData = await Notifications.getExpoPushTokenAsync({
-      projectId: Constants.expoConfig?.extra?.eas?.projectId,
-    });
-
+    // Use getDevicePushTokenAsync to get native FCM/APNs token
+    // (required by Firebase Admin SDK on the backend)
+    const tokenData = await Notifications.getDevicePushTokenAsync();
     return tokenData.data;
   } catch (error) {
-    console.error('Error getting FCM token:', error);
+    // Graceful fallback for Expo Go and environments where push is not available
+    console.log('Push notifications not available:', (error as Error).message);
     return undefined;
   }
-  */
 };
 
 /**
@@ -116,7 +107,7 @@ export const handleApiError = (error: any): string => {
     return 'Network error. Please check your connection.';
   } else {
     // Error in request setup
-    return error.message || 'An unexpected error occurred.';
+    return 'Something went wrong. Please try again.';
   }
 };
 
