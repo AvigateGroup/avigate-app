@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
+import { handleApiError } from '@/utils/helpers';
 
 interface TripProgress {
   currentStepCompleted: boolean;
@@ -98,7 +99,7 @@ export const useTripService = () => {
         data: { trip: response.data.trip },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to start trip';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -126,7 +127,7 @@ export const useTripService = () => {
         data: { trip: response.data?.trip || null },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to get active trip';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -161,7 +162,7 @@ export const useTripService = () => {
         data: { progress: response.data.progress },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to update location';
+      const errorMessage = handleApiError(err);
 
       return {
         success: false,
@@ -191,7 +192,7 @@ export const useTripService = () => {
         data: { trip: response.data.trip },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to complete trip';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -224,7 +225,7 @@ export const useTripService = () => {
         data: { trip: response.data.trip },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to end trip';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -258,7 +259,7 @@ export const useTripService = () => {
         data: { trip: response.data.trip },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to cancel trip';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -290,7 +291,7 @@ export const useTripService = () => {
         data: { trips: response.data?.trips || [] },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to get trip history';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -318,7 +319,7 @@ export const useTripService = () => {
         data: response.data,
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to get trip statistics';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {

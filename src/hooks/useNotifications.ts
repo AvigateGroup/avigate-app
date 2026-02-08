@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
+import { handleApiError } from '@/utils/helpers';
 
 export enum NotificationType {
   TRIP_STARTED = 'trip_started',
@@ -76,7 +77,7 @@ export const useNotifications = () => {
         data: notificationsData,
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to load notifications';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -139,7 +140,7 @@ export const useNotifications = () => {
         error: 'Failed to update notification',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to update notification';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -172,7 +173,7 @@ export const useNotifications = () => {
         error: 'Failed to mark all as read',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to mark all as read';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -205,7 +206,7 @@ export const useNotifications = () => {
         error: 'Failed to delete notification',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to delete notification';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,
@@ -238,7 +239,7 @@ export const useNotifications = () => {
         error: 'Failed to delete read notifications',
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to delete read notifications';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
       return {
         success: false,

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { apiClient } from '@/api/client';
 import { ApiResponse } from '@/types/auth.types';
+import { handleApiError } from '@/utils/helpers';
 
 interface CreateShareDto {
   shareType: 'public' | 'private' | 'event' | 'business';
@@ -107,7 +108,7 @@ export const useLocationShareService = () => {
         },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to create share';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -137,7 +138,7 @@ export const useLocationShareService = () => {
         data: response.data.shares,
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to fetch shares';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -161,7 +162,7 @@ export const useLocationShareService = () => {
         success: true,
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to delete share';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -191,7 +192,7 @@ export const useLocationShareService = () => {
         data: response.data,
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to fetch share details';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -233,7 +234,7 @@ export const useLocationShareService = () => {
         },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to get QR code';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -268,7 +269,7 @@ export const useLocationShareService = () => {
         },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to get printable QR code';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {
@@ -304,7 +305,7 @@ export const useLocationShareService = () => {
         },
       };
     } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Failed to regenerate QR code';
+      const errorMessage = handleApiError(err);
       setError(errorMessage);
 
       return {

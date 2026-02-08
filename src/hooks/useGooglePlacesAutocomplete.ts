@@ -78,7 +78,7 @@ export const useGooglePlacesAutocomplete = () => {
       } else if (data.status === 'ZERO_RESULTS') {
         setPredictions([]);
       } else {
-        setError(`Google Places API error: ${data.status}`);
+        setError('Unable to search locations. Please try again.');
         console.error('Google Places API error:', data);
         setPredictions([]);
       }
@@ -129,7 +129,7 @@ export const useGooglePlacesAutocomplete = () => {
           longitude: result.geometry?.location?.lng || 0,
         };
       } else {
-        setError(`Google Places Details API error: ${data.status}`);
+        setError('Unable to get location details. Please try again.');
         console.error('Google Places Details API error:', data);
         return null;
       }

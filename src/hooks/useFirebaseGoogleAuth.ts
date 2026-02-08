@@ -175,8 +175,7 @@ export const useFirebaseGoogleAuth = () => {
       const errorMessage =
         error?.response?.data?.message ||
         error?.response?.data?.error ||
-        error?.message ||
-        'Authentication failed';
+        'Authentication failed. Please try again.';
 
       // Handle Google Sign-In SDK errors
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
