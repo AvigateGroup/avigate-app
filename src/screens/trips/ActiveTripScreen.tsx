@@ -896,6 +896,18 @@ export const ActiveTripScreen = () => {
               </View>
             );
           })()}
+
+          {/* Cancel Trip Button - always visible */}
+          <View style={styles.cancelTripSection}>
+            <TouchableOpacity
+              style={[styles.cancelTripButton, { borderColor: colors.error }]}
+              onPress={handleCancelTrip}
+              activeOpacity={0.7}
+            >
+              <Icon name="close-circle-outline" size={20} color={colors.error} />
+              <Text style={[styles.cancelTripText, { color: colors.error }]}>Cancel Trip</Text>
+            </TouchableOpacity>
+          </View>
         </BottomSheetScrollView>
       </BottomSheet>
 
@@ -1364,5 +1376,25 @@ const styles = {
     fontSize: 14,
     lineHeight: 20,
     color: '#374151',
+  },
+  cancelTripSection: {
+    padding: 16,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#F3F4F6',
+    marginTop: 8,
+  },
+  cancelTripButton: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'center' as const,
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    gap: 8,
+  },
+  cancelTripText: {
+    fontSize: 16,
+    fontWeight: '600' as const,
   },
 };

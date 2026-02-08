@@ -253,12 +253,52 @@ export default function RouteDetails() {
 
   if (loading) {
     return (
-      <Loading
-        fullScreen
-        icon="navigate"
-        message="Finding best routes..."
-        subtitle="Calculating the fastest way there"
-      />
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <Loading
+          fullScreen
+          icon="navigate"
+          message="Finding best routes..."
+          subtitle="Calculating the fastest way there"
+        />
+        <TouchableOpacity
+          style={[styles.backButton, { backgroundColor: colors.white, top: Platform.OS === 'ios' ? 50 : 40 }]}
+          onPress={handleBack}
+          activeOpacity={0.7}
+        >
+          <Icon name="arrow-back" size={24} color={colors.text} />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  if (!routeData?.routes?.length) {
+    return (
+      <View style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.emptyState}>
+          <View style={[styles.emptyIcon, { backgroundColor: colors.primaryLight }]}>
+            <Icon name="map-outline" size={40} color={colors.primary} />
+          </View>
+          <Text style={[styles.emptyTitle, { color: colors.text }]}>No routes found</Text>
+          <Text style={[styles.emptySubtitle, { color: colors.textMuted }]}>
+            We couldn't find a route to this destination. Try a different location or check your connection.
+          </Text>
+          <TouchableOpacity
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+            onPress={loadRouteData}
+            activeOpacity={0.7}
+          >
+            <Icon name="refresh" size={20} color="white" />
+            <Text style={styles.retryButtonText}>Try Again</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.goBackButton, { borderColor: colors.border }]}
+            onPress={handleBack}
+            activeOpacity={0.7}
+          >
+            <Text style={[styles.goBackButtonText, { color: colors.text }]}>Go Back</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   }
 
@@ -670,5 +710,58 @@ const styles = StyleSheet.create({
   stepFare: {
     fontSize: 13,
     fontWeight: '600',
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  retryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    gap: 8,
+    marginBottom: 12,
+    width: '100%',
+  },
+  retryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  goBackButton: {
+    paddingVertical: 14,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    borderWidth: 1,
+    width: '100%',
+    alignItems: 'center',
+  },
+  goBackButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
 });
