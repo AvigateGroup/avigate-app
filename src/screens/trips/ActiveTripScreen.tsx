@@ -1,16 +1,15 @@
 // src/screens/trips/ActiveTripScreen.tsx - REDESIGNED FOR REAL-TIME NAVIGATION
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
   TouchableOpacity,
   ActivityIndicator,
   ScrollView,
-  Dimensions,
-  Animated,
   Platform,
 } from 'react-native';
+import BottomSheet, { BottomSheetScrollView } from '@gorhom/bottom-sheet';
 import { useRouter } from 'expo-router';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
@@ -21,8 +20,6 @@ import { useDialog } from '@/contexts/DialogContext';
 import { Button } from '@/components/common/Button';
 import { tripStyles } from '@/styles/features';
 import { Loading } from '@/components/common/Loading';
-
-const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 interface RouteStep {
   id: string;
@@ -79,8 +76,8 @@ export const ActiveTripScreen = () => {
   } | null>(null);
   const [distanceToNext, setDistanceToNext] = useState<number | null>(null);
   const [alerts, setAlerts] = useState<string[]>([]);
-  const [sheetHeight] = useState(new Animated.Value(400)); // Bottom sheet height
-  const [isSheetExpanded, setIsSheetExpanded] = useState(false);
+  const bottomSheetRef = useRef<BottomSheet>(null);
+  const snapPoints = useMemo(() => ['40%', '70%', '95%'], []);
 
   useEffect(() => {
     loadActiveTrip();
@@ -275,15 +272,6 @@ export const ActiveTripScreen = () => {
       },
       'Cancel Trip'
     );
-  };
-
-  const toggleSheet = () => {
-    const toValue = isSheetExpanded ? 300 : SCREEN_HEIGHT * 0.7;
-    Animated.spring(sheetHeight, {
-      toValue,
-      useNativeDriver: false,
-    }).start();
-    setIsSheetExpanded(!isSheetExpanded);
   };
 
   const formatTimeRemaining = (estimatedArrival: Date | string | undefined) => {
@@ -868,17 +856,22 @@ export const ActiveTripScreen = () => {
       </View>
 
       {/* Bottom Sheet */}
-      <Animated.View style={[styles.bottomSheet, { height: sheetHeight }]}>
-        {/* Sheet Handle */}
-        <TouchableOpacity onPress={toggleSheet} style={styles.sheetHandle}>
-          <View style={styles.handle} />
-        </TouchableOpacity>
-
-        {/* Sheet Content */}
-        <ScrollView showsVerticalScrollIndicator={false}>
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        enableDynamicSizing={false}
+        enablePanDownToClose={false}
+        handleIndicatorStyle={{ backgroundColor: colors.textMuted }}
+        backgroundStyle={{ backgroundColor: colors.white }}
+      >
+        <BottomSheetScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: 40 }}
+        >
           {renderCurrentStepCard()}
           {renderProgressBar()}
-          {isSheetExpanded && renderAllSteps()}
+          {renderAllSteps()}
 
           {/* Complete Button - only on last sub-step of last main step */}
           {trip && trip.route.steps && (() => {
@@ -899,8 +892,8 @@ export const ActiveTripScreen = () => {
               </View>
             );
           })()}
-        </ScrollView>
-      </Animated.View>
+        </BottomSheetScrollView>
+      </BottomSheet>
 
       {/* Alert Banner */}
       {alerts.length > 0 && (
@@ -919,15 +912,6 @@ const styles = {
   },
   map: {
     flex: 1,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
   },
   topControls: {
     position: 'absolute' as const,
@@ -972,30 +956,6 @@ const styles = {
   etaLabel: {
     fontSize: 12,
     color: '#666',
-  },
-  bottomSheet: {
-    position: 'absolute' as const,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#FFF',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 10,
-  },
-  sheetHandle: {
-    alignItems: 'center' as const,
-    paddingVertical: 12,
-  },
-  handle: {
-    width: 40,
-    height: 4,
-    backgroundColor: '#DDD',
-    borderRadius: 2,
   },
   currentStepCard: {
     padding: 20,
