@@ -233,7 +233,7 @@ export default function Notifications() {
                   style={styles.deleteButton}
                   onPress={() => handleDeleteNotification(notification.id)}
                 >
-                  <Icon name="close" size={20} color={colors.textMuted} />
+                  <Icon name="trash-outline" size={18} color={colors.textMuted} />
                 </TouchableOpacity>
               </TouchableOpacity>
             ))}
