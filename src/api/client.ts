@@ -40,11 +40,13 @@ class ApiClient {
       async (error: AxiosError) => {
         const originalRequest = error.config as any;
 
-        // 🔧 CRITICAL FIX: Don't try to refresh tokens for auth endpoints
-        const isAuthEndpoint = originalRequest?.url?.startsWith('/auth/');
+        // Don't try to refresh tokens for auth mutation endpoints (login, register, etc.)
+        // but DO allow refresh for protected auth endpoints like /auth/me
+        const url = originalRequest?.url || '';
+        const authNoRefreshEndpoints = ['/auth/login', '/auth/register', '/auth/refresh-token', '/auth/google', '/auth/verify-email', '/auth/resend-verification'];
+        const isAuthMutationEndpoint = authNoRefreshEndpoints.some(ep => url.startsWith(ep));
 
-        // If it's an auth endpoint, just reject the error without trying to refresh
-        if (isAuthEndpoint) {
+        if (isAuthMutationEndpoint) {
           return Promise.reject(error);
         }
 
