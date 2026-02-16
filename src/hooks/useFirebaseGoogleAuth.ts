@@ -100,7 +100,14 @@ export const useFirebaseGoogleAuth = () => {
       // Check if device supports Google Play Services
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 
-      // Sign in with Google
+      // Sign out first so the account picker always shows
+      try {
+        await GoogleSignin.signOut();
+      } catch {
+        // Ignore — signOut may fail if not previously signed in
+      }
+
+      // Sign in with Google (account picker will show)
       const signInResult = await GoogleSignin.signIn();
 
       // Handle the response structure

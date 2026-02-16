@@ -61,6 +61,7 @@ function RootLayoutNav() {
   const router = useRouter();
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [hasHandledInitialNotification, setHasHandledInitialNotification] = useState(false);
 
   // Check onboarding status on mount and when pathname changes
   useEffect(() => {
@@ -172,17 +173,20 @@ function RootLayoutNav() {
 
     registerToken();
 
-    // Handle notification that launched the app from killed state
-    Notifications.getLastNotificationResponseAsync().then((response) => {
-      if (response && isMounted) {
-        const data = response.notification.request.content.data;
-        if (data?.actionUrl && typeof data.actionUrl === 'string') {
-          router.push(data.actionUrl as any);
-        } else {
-          router.push('/notifications');
+    // Handle notification that launched the app from killed state (only once)
+    if (!hasHandledInitialNotification) {
+      Notifications.getLastNotificationResponseAsync().then((response) => {
+        if (response && isMounted) {
+          setHasHandledInitialNotification(true);
+          const data = response.notification.request.content.data;
+          if (data?.actionUrl && typeof data.actionUrl === 'string') {
+            router.push(data.actionUrl as any);
+          } else {
+            router.push('/notifications');
+          }
         }
-      }
-    }).catch(() => {});
+      }).catch(() => {});
+    }
 
     const notificationSubscription = Notifications.addNotificationReceivedListener(
       (notification) => {
