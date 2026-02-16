@@ -47,30 +47,63 @@ export const HomeScreenSkeleton: React.FC = () => {
         <LoadingSkeleton width={24} height={24} borderRadius={12} />
       </View>
 
-      {/* Bottom drawer placeholder */}
+      {/* Bottom drawer placeholder — matches WhereToDrawer layout */}
       <View style={[skeletonStyles.bottomDrawer, { backgroundColor: colors.white }]}>
         <View style={[skeletonStyles.handle, { backgroundColor: colors.border }]} />
-        {/* Greeting */}
-        <LoadingSkeleton width="45%" height={18} borderRadius={6} style={{ marginBottom: 8 }} />
-        {/* Search bar placeholder */}
+
+        {/* Search bar */}
         <View
           style={[
             skeletonStyles.searchBar,
-            { backgroundColor: colors.background, borderColor: colors.border },
+            { backgroundColor: '#F3F4F6', borderWidth: 0 },
           ]}
         >
-          <LoadingSkeleton width={20} height={20} borderRadius={10} style={{ marginRight: 12 }} />
-          <LoadingSkeleton width="70%" height={16} borderRadius={6} />
+          <LoadingSkeleton width={24} height={24} borderRadius={12} style={{ marginRight: 12 }} />
+          <LoadingSkeleton width="40%" height={18} borderRadius={6} />
         </View>
-        {/* Recent destinations */}
-        <LoadingSkeleton width="35%" height={14} borderRadius={4} style={{ marginTop: 16, marginBottom: 12 }} />
-        {[1, 2].map((i) => (
-          <View key={i} style={skeletonStyles.recentRow}>
-            <LoadingSkeleton width={36} height={36} borderRadius={18} style={{ marginRight: 12 }} />
-            <View style={{ flex: 1 }}>
-              <LoadingSkeleton width="55%" height={14} borderRadius={4} style={{ marginBottom: 4 }} />
-              <LoadingSkeleton width="75%" height={12} borderRadius={4} />
+
+        {/* Quick action cards */}
+        <View style={skeletonStyles.quickActions}>
+          {[1, 2].map((i) => (
+            <View key={i} style={[skeletonStyles.quickActionCard, { backgroundColor: '#F9FAFB' }]}>
+              <LoadingSkeleton width={40} height={40} borderRadius={8} style={{ marginBottom: 8 }} />
+              <LoadingSkeleton width="60%" height={14} borderRadius={4} style={{ marginBottom: 4 }} />
+              <LoadingSkeleton width="80%" height={12} borderRadius={4} />
             </View>
+          ))}
+        </View>
+
+        {/* Popular destinations */}
+        <LoadingSkeleton width="50%" height={16} borderRadius={4} style={{ marginBottom: 12 }} />
+        {[1, 2, 3].map((i) => (
+          <View key={i} style={skeletonStyles.recentRow}>
+            <LoadingSkeleton width={40} height={40} borderRadius={20} style={{ marginRight: 12 }} />
+            <View style={{ flex: 1 }}>
+              <LoadingSkeleton width="50%" height={15} borderRadius={4} style={{ marginBottom: 4 }} />
+              <LoadingSkeleton width="70%" height={13} borderRadius={4} />
+            </View>
+            <LoadingSkeleton width={40} height={13} borderRadius={4} />
+          </View>
+        ))}
+
+        {/* Community updates header */}
+        <View style={[skeletonStyles.statsRow, { marginTop: 20, marginBottom: 12 }]}>
+          <LoadingSkeleton width="50%" height={16} borderRadius={4} />
+          <LoadingSkeleton width={50} height={14} borderRadius={4} />
+        </View>
+
+        {/* Post cards */}
+        {[1, 2].map((i) => (
+          <View key={i} style={[skeletonStyles.drawerPostCard, { backgroundColor: '#F9FAFB', borderColor: '#E5E7EB' }]}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
+              <LoadingSkeleton width={36} height={36} borderRadius={18} style={{ marginRight: 10 }} />
+              <View style={{ flex: 1 }}>
+                <LoadingSkeleton width="55%" height={14} borderRadius={4} style={{ marginBottom: 4 }} />
+                <LoadingSkeleton width="35%" height={12} borderRadius={4} />
+              </View>
+            </View>
+            <LoadingSkeleton width="90%" height={13} borderRadius={4} style={{ marginBottom: 4 }} />
+            <LoadingSkeleton width="60%" height={13} borderRadius={4} />
           </View>
         ))}
       </View>
@@ -383,10 +416,29 @@ const skeletonStyles = StyleSheet.create({
     paddingVertical: 14,
     marginTop: 8,
   },
+  quickActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginVertical: 20,
+  },
+  quickActionCard: {
+    flex: 1,
+    borderRadius: 12,
+    padding: 12,
+    alignItems: 'flex-start',
+  },
   recentRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F3F4F6',
+  },
+  drawerPostCard: {
+    borderRadius: 12,
+    padding: 12,
+    borderWidth: 1,
+    marginBottom: 12,
   },
   routeBottomSheet: {
     position: 'absolute',
