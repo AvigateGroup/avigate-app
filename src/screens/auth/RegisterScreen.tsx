@@ -1,7 +1,7 @@
 // src/screens/auth/RegisterScreen.tsx
 
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, ActivityIndicator, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -14,6 +14,7 @@ import { authApi } from '@/api/auth.api';
 import { validateEmail, validatePhoneNumber } from '@/utils/validation';
 import { getDeviceInfo, getFCMToken } from '@/utils/helpers';
 import { useFirebaseGoogleAuth } from '@/hooks/useFirebaseGoogleAuth';
+import { useThemedColors } from '@/hooks/useThemedColors';
 import { RegisterDto, UserSex } from '@/types/auth.types';
 import { typographyStyles, formStyles, layoutStyles, spacingStyles } from '@/styles/base';
 import { authFeatureStyles } from '@/styles/features/auth';
@@ -21,6 +22,7 @@ import { COLORS } from '@/constants/colors';
 
 export const RegisterScreen: React.FC = () => {
   const router = useRouter();
+  const colors = useThemedColors();
   const { signInWithGoogle, loading: googleLoading, isReady } = useFirebaseGoogleAuth();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -434,20 +436,34 @@ export const RegisterScreen: React.FC = () => {
               <View style={layoutStyles.dividerLine} />
             </View>
 
-            <TouchableOpacity
-              onPress={signInWithGoogle}
-              disabled={loading || googleLoading}
-              activeOpacity={0.8}
-            >
-              <Image
-                source={require('../../../assets/images/google-icon.png')}
-                style={[
-                  authFeatureStyles.googleButtonImage,
-                  (loading || googleLoading) && { opacity: 0.5 },
-                ]}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+            {googleLoading ? (
+              <View
+                style={googleAuthStyles.loadingContainer}
+                accessible={true}
+                accessibilityRole="progressbar"
+                accessibilityLabel="Signing in with Google"
+              >
+                <ActivityIndicator size="large" color={colors.primary} />
+                <Text style={[googleAuthStyles.loadingText, { color: colors.textMuted }]}>
+                  Signing in with Google...
+                </Text>
+              </View>
+            ) : (
+              <TouchableOpacity
+                onPress={signInWithGoogle}
+                disabled={loading}
+                activeOpacity={0.8}
+              >
+                <Image
+                  source={require('../../../assets/images/google-icon.png')}
+                  style={[
+                    authFeatureStyles.googleButtonImage,
+                    loading && { opacity: 0.5 },
+                  ]}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            )}
           </>
         )}
 
@@ -462,3 +478,16 @@ export const RegisterScreen: React.FC = () => {
     </AuthLayout>
   );
 };
+
+const googleAuthStyles = StyleSheet.create({
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+});
