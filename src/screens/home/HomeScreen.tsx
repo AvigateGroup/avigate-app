@@ -25,7 +25,7 @@ interface LocationType {
 }
 
 export const HomeScreen = () => {
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const router = useRouter();
   const mapRef = useRef<MapView>(null);
   const colors = useThemedColors();
@@ -43,8 +43,14 @@ export const HomeScreen = () => {
 
   useEffect(() => {
     requestLocationPermission();
-    loadUnreadCount();
   }, []);
+
+  // Only fetch API data when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      loadUnreadCount();
+    }
+  }, [isAuthenticated]);
 
   const checkActiveTrip = async () => {
     try {
@@ -59,19 +65,22 @@ export const HomeScreen = () => {
     }
   };
 
-  // Re-check active trip and unread count when screen gains focus
+  // Re-check active trip and unread count when screen gains focus (only if authenticated)
   useFocusEffect(
     useCallback(() => {
-      checkActiveTrip();
-      loadUnreadCount();
-    }, [])
+      if (isAuthenticated) {
+        checkActiveTrip();
+        loadUnreadCount();
+      }
+    }, [isAuthenticated])
   );
 
-  // Poll active trip every 30 seconds
+  // Poll active trip every 30 seconds (only if authenticated)
   useEffect(() => {
+    if (!isAuthenticated) return;
     const interval = setInterval(checkActiveTrip, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isAuthenticated]);
 
   const handleCancelTrip = async (tripId: string) => {
     const result = await endTrip(tripId);

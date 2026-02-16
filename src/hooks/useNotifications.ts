@@ -107,7 +107,11 @@ export const useNotifications = () => {
         count: 0,
       };
     } catch (err: any) {
-      console.error('Get unread count error:', err);
+      // 401s are expected during token expiry — don't log as error
+      const status = err?.response?.status;
+      if (status !== 401) {
+        console.warn('Get unread count error:', err?.message || err);
+      }
       return {
         success: false,
         count: 0,
