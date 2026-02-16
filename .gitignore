@@ -39,7 +39,7 @@ yarn-error.*
 *.tsbuildinfo
 
 # Google Services
-google-services.json
+# google-services.json is committed for EAS Build (contains only public Firebase config)
 GoogleService-Info.plist
 
 # Generated native folders (Expo prebuild)
