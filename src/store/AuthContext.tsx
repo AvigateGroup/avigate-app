@@ -60,17 +60,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setRefreshToken(storedRefreshToken);
         setUser(storedUser);
 
-        // Optionally verify token validity by fetching profile
+        // Verify token validity by fetching profile
+        // The 401 interceptor will automatically refresh the token if expired
         try {
           const response = await authApi.getProfile();
           if (response.success && response.data.user) {
             setUser(response.data.user);
             await setObject(STORAGE_KEYS.USER_DATA, response.data.user);
           }
-        } catch (error) {
-          console.log('Profile verification failed, clearing auth data');
-          // If profile fetch fails, clear auth data
-          await clearAuthData();
+        } catch (error: any) {
+          const status = error?.response?.status;
+          if (status === 401 || status === 403) {
+            // Token refresh also failed — user must re-authenticate
+            console.log('Profile verification failed (token invalid), clearing auth data');
+            await clearAuthData();
+          } else {
+            // Network error or server issue — keep the user logged in with cached data
+            console.log('Profile verification failed (network/server error), keeping cached auth');
+          }
         }
       }
     } catch (error) {
@@ -92,18 +99,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       console.log('Auth state updated immediately. isAuthenticated:', !!(newUser && newAccessToken));
 
-      // Save to storage asynchronously (don't block navigation)
-      Promise.all([
+      // Save to storage before navigation so API client can read the token
+      await Promise.all([
         setItem(STORAGE_KEYS.ACCESS_TOKEN, newAccessToken),
         setItem(STORAGE_KEYS.REFRESH_TOKEN, newRefreshToken),
         setObject(STORAGE_KEYS.USER_DATA, newUser),
-      ])
-        .then(() => {
-          console.log('Auth data saved to storage successfully');
-        })
-        .catch((error) => {
-          console.error('Error saving auth data to storage:', error);
-        });
+      ]);
+      console.log('Auth data saved to storage successfully');
     } catch (error) {
       console.error('Error in login function:', error);
       throw error;
