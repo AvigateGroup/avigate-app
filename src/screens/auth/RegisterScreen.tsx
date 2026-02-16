@@ -437,7 +437,12 @@ export const RegisterScreen: React.FC = () => {
             </View>
 
             {googleLoading ? (
-              <View style={googleAuthStyles.loadingContainer}>
+              <View
+                style={googleAuthStyles.loadingContainer}
+                accessible={true}
+                accessibilityRole="progressbar"
+                accessibilityLabel="Signing in with Google"
+              >
                 <ActivityIndicator size="large" color={colors.primary} />
                 <Text style={[googleAuthStyles.loadingText, { color: colors.textMuted }]}>
                   Signing in with Google...
