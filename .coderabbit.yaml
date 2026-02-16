@@ -1,0 +1,20 @@
+language: "en"
+reviews:
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: "src/api/**"
+      instructions: "Check for proper error handling, no hardcoded URLs, and correct use of the API client."
+    - path: "src/store/**"
+      instructions: "Check for race conditions, proper async/await usage, and state consistency."
+    - path: "src/screens/**"
+      instructions: "Check for proper loading/error states, memory leaks from uncleared subscriptions, and accessibility."
+    - path: "app/**"
+      instructions: "Check for proper Expo Router usage and layout patterns."
+chat:
+  auto_reply: true
