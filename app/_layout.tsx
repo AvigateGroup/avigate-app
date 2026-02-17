@@ -7,7 +7,7 @@ try {
   console.warn('Firebase native modules not available. Some features may be disabled.', error);
 }
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { Stack, useRouter, useSegments, usePathname } from 'expo-router';
 import { StatusBar, Platform } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -61,7 +61,7 @@ function RootLayoutNav() {
   const router = useRouter();
   const [hasSeenOnboarding, setHasSeenOnboarding] = useState<boolean | null>(null);
   const [isNavigating, setIsNavigating] = useState(false);
-  const [hasHandledInitialNotification, setHasHandledInitialNotification] = useState(false);
+  const hasHandledInitialNotification = useRef(false);
 
   // Check onboarding status on mount and when pathname changes
   useEffect(() => {
@@ -174,10 +174,10 @@ function RootLayoutNav() {
     registerToken();
 
     // Handle notification that launched the app from killed state (only once)
-    if (!hasHandledInitialNotification) {
+    if (!hasHandledInitialNotification.current) {
+      hasHandledInitialNotification.current = true;
       Notifications.getLastNotificationResponseAsync().then((response) => {
         if (response && isMounted) {
-          setHasHandledInitialNotification(true);
           const data = response.notification.request.content.data;
           if (data?.actionUrl && typeof data.actionUrl === 'string') {
             router.push(data.actionUrl as any);
