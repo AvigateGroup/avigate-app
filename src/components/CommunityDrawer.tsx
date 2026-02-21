@@ -34,6 +34,10 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
   const slideAnim = React.useRef(new Animated.Value(-DRAWER_WIDTH)).current;
 
   React.useEffect(() => {
+    setImageLoadError(false);
+  }, [user?.profilePicture, visible]);
+
+  React.useEffect(() => {
     if (visible) {
       Animated.spring(slideAnim, {
         toValue: 0,

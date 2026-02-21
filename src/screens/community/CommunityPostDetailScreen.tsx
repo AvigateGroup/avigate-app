@@ -115,8 +115,17 @@ export const CommunityPostDetailScreen = () => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await loadPostData();
-    setRefreshing(false);
+    try {
+      await loadPostData();
+    } catch {
+      Toast.show({
+        type: 'error',
+        text1: 'Refresh Failed',
+        text2: 'Could not reload post. Please try again.',
+      });
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const handleVote = async (voteType: 'up' | 'down') => {
