@@ -138,6 +138,11 @@ export const SearchDestinationScreen = () => {
         setSuggestions(combined);
       } catch (error) {
         console.error('Search error:', error);
+        Toast.show({
+          type: 'error',
+          text1: 'Search Failed',
+          text2: 'Could not fetch results. Please try again.',
+        });
       } finally {
         setIsSearching(false);
       }
@@ -179,7 +184,7 @@ export const SearchDestinationScreen = () => {
   const renderLocationItem = ({ item }: { item: LocationSuggestion }) => {
     let iconName = 'location';
     let iconColor = colors.primary;
-    let badge = null;
+    const badges: React.ReactNode[] = [];
 
     if (item.type === 'recent') {
       iconName = 'time-outline';
@@ -190,22 +195,24 @@ export const SearchDestinationScreen = () => {
     } else if (item.type === 'intermediate_stop') {
       iconName = 'bus-outline';
       iconColor = colors.info;
-      badge = (
-        <View style={[searchStyles.badge, { backgroundColor: colors.infoLight }]}>
+      badges.push(
+        <View key="on-route" style={[searchStyles.badge, { backgroundColor: colors.infoLight }]}>
           <Text style={[searchStyles.badgeText, { color: colors.info }]}>On Route</Text>
-        </View>
+        </View>,
       );
     }
 
-    // NEW - Show walking indicator if needed
     if (item.requiresWalking && item.walkingDistance) {
-      badge = (
-        <View style={[searchStyles.badge, { backgroundColor: colors.warningLight }]}>
+      badges.push(
+        <View
+          key="walking"
+          style={[searchStyles.badge, { backgroundColor: colors.warningLight }]}
+        >
           <Icon name="walk-outline" size={12} color={colors.warning} />
           <Text style={[searchStyles.badgeText, { color: colors.warning }]}>
             {Math.round(item.walkingDistance)}m walk
           </Text>
-        </View>
+        </View>,
       );
     }
 
@@ -223,7 +230,7 @@ export const SearchDestinationScreen = () => {
             <Text style={[searchStyles.suggestionName, { color: colors.text }]} numberOfLines={1}>
               {item.name}
             </Text>
-            {badge}
+            {badges}
           </View>
           <Text
             style={[searchStyles.suggestionAddress, { color: colors.textMuted }]}

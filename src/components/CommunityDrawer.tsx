@@ -1,6 +1,6 @@
 // src/components/CommunityDrawer.tsx
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -28,6 +28,7 @@ interface CommunityDrawerProps {
 
 export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClose }) => {
   const colors = useThemedColors();
+  const [imageLoadError, setImageLoadError] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
   const slideAnim = React.useRef(new Animated.Value(-DRAWER_WIDTH)).current;
@@ -131,11 +132,12 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
 
             {/* User Info */}
             <View style={styles.userSection}>
-              {user?.profilePicture ? (
+              {user?.profilePicture && !imageLoadError ? (
                 <Image
                   source={{ uri: user.profilePicture }}
                   style={styles.avatar}
                   resizeMode="cover"
+                  onError={() => setImageLoadError(true)}
                 />
               ) : (
                 <View style={[styles.avatar, { backgroundColor: colors.primary }]}>

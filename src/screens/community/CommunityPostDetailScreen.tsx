@@ -9,10 +9,12 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
+  RefreshControl,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
@@ -457,7 +459,14 @@ export const CommunityPostDetailScreen = () => {
         <ScrollView
           style={communityStyles.detailContainer}
           showsVerticalScrollIndicator={false}
-          refreshControl={<ActivityIndicator animating={refreshing} color={colors.primary} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
         >
           {/* Post Content */}
           <View style={[communityStyles.postDetailCard, { backgroundColor: colors.white }]}>
