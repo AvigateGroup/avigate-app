@@ -365,8 +365,7 @@ export const CreatePostScreen = () => {
                   Posting Guidelines
                 </Text>
                 <Text style={{ fontSize: 13, color: colors.textMuted, lineHeight: 20 }}>
-                  • Be respectful and helpful{'\n'}• Provide accurate information{'\n'}• Avoid spam
-                  or self-promotion{'\n'}• Report issues, don't create them
+                  {"• Be respectful and helpful\n• Provide accurate information\n• Avoid spam or self-promotion\n• Report issues, don't create them"}
                 </Text>
               </View>
             </View>

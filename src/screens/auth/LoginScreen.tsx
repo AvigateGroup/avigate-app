@@ -226,7 +226,7 @@ export const LoginScreen: React.FC = () => {
 
         <View style={layoutStyles.footer}>
           <Text style={layoutStyles.footerText}>
-            Don't have an account?{' '}
+            {"Don't have an account?"}{' '}
             <Text style={layoutStyles.footerLink} onPress={() => router.push('/(auth)/register')}>
               Sign Up
             </Text>

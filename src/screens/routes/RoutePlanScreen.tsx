@@ -305,7 +305,7 @@ export const RoutePlanScreen = () => {
                 <Text
                   style={[routeStyles.alternativeOptionsDescription, { color: colors.textMuted }]}
                 >
-                  Avigate doesn't have vehicle data for this area. Here's what you can say:
+                  {"Avigate doesn't have vehicle data for this area. Here's what you can say:"}
                 </Text>
 
                 {/* Local Phrases */}
@@ -317,7 +317,7 @@ export const RoutePlanScreen = () => {
                     >
                       <Icon name="chatbubble-outline" size={16} color={colors.primary} />
                       <Text style={[routeStyles.phraseText, { color: colors.text }]}>
-                        "{phrase}"
+                        {`"${phrase}"`}
                       </Text>
                     </View>
                   ))}
@@ -488,8 +488,7 @@ export const RoutePlanScreen = () => {
                     Walking Required
                   </Text>
                   <Text style={[routeStyles.infoText, { color: colors.textMuted }]}>
-                    This destination requires a short walk from the main road. We'll guide you
-                    step-by-step!
+                    {"This destination requires a short walk from the main road. We'll guide you step-by-step!"}
                   </Text>
                 </View>
               </View>
@@ -503,8 +502,7 @@ export const RoutePlanScreen = () => {
                     Intermediate Stop
                   </Text>
                   <Text style={[routeStyles.infoText, { color: colors.textMuted }]}>
-                    Your destination is a stop along this route. Tell the conductor where you're
-                    going!
+                    {"Your destination is a stop along this route. Tell the conductor where you're going!"}
                   </Text>
                 </View>
               </View>

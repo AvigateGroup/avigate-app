@@ -179,7 +179,7 @@ export default function Notifications() {
               No notifications yet
             </Text>
             <Text style={[styles.emptySubtext, { color: colors.textMuted }]}>
-              We'll notify you about trip updates, route alerts, and community posts
+              {"We'll notify you about trip updates, route alerts, and community posts"}
             </Text>
           </View>
         ) : (

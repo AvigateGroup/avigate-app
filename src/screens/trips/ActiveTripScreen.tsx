@@ -1024,11 +1024,6 @@ const styles = {
     borderRadius: 12,
     alignSelf: 'center' as const,
   },
-  destinationText: {
-    fontSize: 16,
-    fontWeight: '600' as const,
-    color: '#111',
-  },
   instructionContentScroll: {
     maxHeight: 200,
     marginBottom: 20,
@@ -1208,12 +1203,6 @@ const styles = {
     height: 6,
     borderRadius: 3,
     marginTop: 6,
-  },
-  sectionItemText: {
-    flex: 1,
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#374151',
   },
   nextStepPreview: {
     backgroundColor: '#EFF6FF',

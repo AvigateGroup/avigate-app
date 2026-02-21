@@ -87,8 +87,7 @@ export const LegalUpdateModal: React.FC<LegalUpdateModalProps> = ({
           </View>
 
           <Text style={[styles.description, { color: colors.textMuted }]}>
-            To continue using Avigate, please review and accept the updated documents. We've made
-            changes to improve your experience and protect your privacy.
+            {"To continue using Avigate, please review and accept the updated documents. We've made changes to improve your experience and protect your privacy."}
           </Text>
 
           {/* Terms of Service Section */}

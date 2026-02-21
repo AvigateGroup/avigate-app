@@ -207,9 +207,9 @@ export const RegisterScreen: React.FC = () => {
       case 1:
         return (
           <View style={authFeatureStyles.stepContainer}>
-            <Text style={authFeatureStyles.stepTitle}>What's your email?</Text>
+            <Text style={authFeatureStyles.stepTitle}>{"What's your email?"}</Text>
             <Text style={authFeatureStyles.stepSubtitle}>
-              We'll use this to create your account and send you a verification code
+              {"We'll use this to create your account and send you a verification code"}
             </Text>
 
             <Input
@@ -228,7 +228,7 @@ export const RegisterScreen: React.FC = () => {
       case 2:
         return (
           <View style={authFeatureStyles.stepContainer}>
-            <Text style={authFeatureStyles.stepTitle}>What's your name?</Text>
+            <Text style={authFeatureStyles.stepTitle}>{"What's your name?"}</Text>
             <Text style={authFeatureStyles.stepSubtitle}>Let us know what to call you</Text>
 
             <Input
@@ -327,7 +327,7 @@ export const RegisterScreen: React.FC = () => {
         return (
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>Complete your profile</Text>
-            <Text style={authFeatureStyles.stepSubtitle}>We'll use this for account security</Text>
+            <Text style={authFeatureStyles.stepSubtitle}>{"We'll use this for account security"}</Text>
 
             <CountryPhonePicker
               countryCode={formData.countryCode}

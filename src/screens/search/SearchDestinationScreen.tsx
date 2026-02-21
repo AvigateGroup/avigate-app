@@ -347,8 +347,7 @@ export const SearchDestinationScreen = () => {
             <View style={{ flex: 1, marginLeft: 12 }}>
               <Text style={[searchStyles.tipsTitle, { color: colors.text }]}>💡 Search Tips</Text>
               <Text style={[searchStyles.tipsText, { color: colors.textMuted }]}>
-                • Search for hotels, schools, or markets{'\n'}• Use landmarks like "near Access
-                Bank"{'\n'}• Search intermediate stops like "Wimpy Junction"
+                {'• Search for hotels, schools, or markets\n• Use landmarks like "near Access Bank"\n• Search intermediate stops like "Wimpy Junction"'}
               </Text>
             </View>
           </View>
