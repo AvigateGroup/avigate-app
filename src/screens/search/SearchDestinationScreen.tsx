@@ -204,10 +204,7 @@ export const SearchDestinationScreen = () => {
 
     if (item.requiresWalking && item.walkingDistance) {
       badges.push(
-        <View
-          key="walking"
-          style={[searchStyles.badge, { backgroundColor: colors.warningLight }]}
-        >
+        <View key="walking" style={[searchStyles.badge, { backgroundColor: colors.warningLight }]}>
           <Icon name="walk-outline" size={12} color={colors.warning} />
           <Text style={[searchStyles.badgeText, { color: colors.warning }]}>
             {Math.round(item.walkingDistance)}m walk
