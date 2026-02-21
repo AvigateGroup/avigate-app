@@ -207,17 +207,10 @@ export const LoginScreen: React.FC = () => {
               </Text>
             </View>
           ) : (
-            <TouchableOpacity
-              onPress={signInWithGoogle}
-              disabled={loading}
-              activeOpacity={0.8}
-            >
+            <TouchableOpacity onPress={signInWithGoogle} disabled={loading} activeOpacity={0.8}>
               <Image
                 source={require('../../../assets/images/google-icon.png')}
-                style={[
-                  authFeatureStyles.googleButtonImage,
-                  loading && { opacity: 0.5 },
-                ]}
+                style={[authFeatureStyles.googleButtonImage, loading && { opacity: 0.5 }]}
                 resizeMode="contain"
               />
             </TouchableOpacity>
@@ -226,7 +219,7 @@ export const LoginScreen: React.FC = () => {
 
         <View style={layoutStyles.footer}>
           <Text style={layoutStyles.footerText}>
-            Don't have an account?{' '}
+            {"Don't have an account?"}{' '}
             <Text style={layoutStyles.footerLink} onPress={() => router.push('/(auth)/register')}>
               Sign Up
             </Text>

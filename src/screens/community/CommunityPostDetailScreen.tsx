@@ -234,7 +234,11 @@ export const CommunityPostDetailScreen = () => {
     const result = await reportPost(postId, reason);
 
     if (result.success) {
-      Toast.show({ type: 'success', text1: 'Report Submitted', text2: 'Post reported. Thank you for helping keep Avigate safe.' });
+      Toast.show({
+        type: 'success',
+        text1: 'Report Submitted',
+        text2: 'Post reported. Thank you for helping keep Avigate safe.',
+      });
     } else {
       Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to report post' });
     }
@@ -257,7 +261,11 @@ export const CommunityPostDetailScreen = () => {
 
   const handleEditPost = () => {
     // For now, navigate back to feed since edit screen doesn't exist yet
-    Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Post editing is coming soon! For now, you can delete and create a new post.' });
+    Toast.show({
+      type: 'info',
+      text1: 'Coming Soon',
+      text2: 'Post editing is coming soon! For now, you can delete and create a new post.',
+    });
   };
 
   const showMoreOptions = () => {
@@ -446,215 +454,218 @@ export const CommunityPostDetailScreen = () => {
           </TouchableOpacity>
         </View>
 
-      <ScrollView
-        style={communityStyles.detailContainer}
-        showsVerticalScrollIndicator={false}
-        refreshControl={<ActivityIndicator animating={refreshing} color={colors.primary} />}
-      >
-        {/* Post Content */}
-        <View style={[communityStyles.postDetailCard, { backgroundColor: colors.white }]}>
-          {/* Author Info */}
-          <View style={communityStyles.postHeader}>
-            <View style={communityStyles.authorInfo}>
-              {post.author.profilePicture ? (
-                <Image
-                  source={{ uri: post.author.profilePicture }}
-                  style={communityStyles.authorAvatar}
+        <ScrollView
+          style={communityStyles.detailContainer}
+          showsVerticalScrollIndicator={false}
+          refreshControl={<ActivityIndicator animating={refreshing} color={colors.primary} />}
+        >
+          {/* Post Content */}
+          <View style={[communityStyles.postDetailCard, { backgroundColor: colors.white }]}>
+            {/* Author Info */}
+            <View style={communityStyles.postHeader}>
+              <View style={communityStyles.authorInfo}>
+                {post.author.profilePicture ? (
+                  <Image
+                    source={{ uri: post.author.profilePicture }}
+                    style={communityStyles.authorAvatar}
+                  />
+                ) : (
+                  <View
+                    style={[
+                      communityStyles.authorAvatarPlaceholder,
+                      { backgroundColor: colors.primaryLight },
+                    ]}
+                  >
+                    <Text style={communityStyles.authorInitials}>
+                      {post.author.firstName[0]}
+                      {post.author.lastName[0]}
+                    </Text>
+                  </View>
+                )}
+                <View style={communityStyles.authorDetails}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <Text style={[communityStyles.authorName, { color: colors.text }]}>
+                      {post.author.firstName} {post.author.lastName}
+                    </Text>
+                    {post.isVerified && (
+                      <Icon name="checkmark-circle" size={16} color={colors.success} />
+                    )}
+                    {post.author.reputationScore && post.author.reputationScore > 50 && (
+                      <View
+                        style={[
+                          communityStyles.reputationBadge,
+                          { backgroundColor: colors.warningLight },
+                        ]}
+                      >
+                        <Icon name="star" size={12} color={colors.warning} />
+                        <Text style={[communityStyles.reputationText, { color: colors.warning }]}>
+                          {post.author.reputationScore}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                  <Text style={[communityStyles.postTime, { color: colors.textMuted }]}>
+                    {formatTimeAgo(post.createdAt)}
+                  </Text>
+                </View>
+              </View>
+              <View
+                style={[
+                  communityStyles.postTypeBadge,
+                  { backgroundColor: getPostTypeColor(post.postType) + '20' },
+                ]}
+              >
+                <Icon
+                  name={getPostTypeIcon(post.postType)}
+                  size={20}
+                  color={getPostTypeColor(post.postType)}
                 />
-              ) : (
-                <View
-                  style={[
-                    communityStyles.authorAvatarPlaceholder,
-                    { backgroundColor: colors.primaryLight },
-                  ]}
-                >
-                  <Text style={communityStyles.authorInitials}>
-                    {post.author.firstName[0]}
-                    {post.author.lastName[0]}
-                  </Text>
-                </View>
-              )}
-              <View style={communityStyles.authorDetails}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <Text style={[communityStyles.authorName, { color: colors.text }]}>
-                    {post.author.firstName} {post.author.lastName}
-                  </Text>
-                  {post.isVerified && (
-                    <Icon name="checkmark-circle" size={16} color={colors.success} />
-                  )}
-                  {post.author.reputationScore && post.author.reputationScore > 50 && (
-                    <View
-                      style={[
-                        communityStyles.reputationBadge,
-                        { backgroundColor: colors.warningLight },
-                      ]}
-                    >
-                      <Icon name="star" size={12} color={colors.warning} />
-                      <Text style={[communityStyles.reputationText, { color: colors.warning }]}>
-                        {post.author.reputationScore}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-                <Text style={[communityStyles.postTime, { color: colors.textMuted }]}>
-                  {formatTimeAgo(post.createdAt)}
-                </Text>
               </View>
             </View>
-            <View
-              style={[
-                communityStyles.postTypeBadge,
-                { backgroundColor: getPostTypeColor(post.postType) + '20' },
-              ]}
-            >
-              <Icon
-                name={getPostTypeIcon(post.postType)}
-                size={20}
-                color={getPostTypeColor(post.postType)}
-              />
-            </View>
-          </View>
 
-          {/* Title & Content */}
-          <Text style={[communityStyles.postDetailTitle, { color: colors.text }]}>
-            {post.title}
-          </Text>
-          <Text style={[communityStyles.postDetailContent, { color: colors.text }]}>
-            {post.content}
-          </Text>
+            {/* Title & Content */}
+            <Text style={[communityStyles.postDetailTitle, { color: colors.text }]}>
+              {post.title}
+            </Text>
+            <Text style={[communityStyles.postDetailContent, { color: colors.text }]}>
+              {post.content}
+            </Text>
 
-          {/* Location/Route */}
-          {post.location && (
-            <View style={communityStyles.postLocation}>
-              <Icon name="location-outline" size={16} color={colors.primary} />
-              <Text style={[communityStyles.locationText, { color: colors.primary }]}>
-                {post.location.name}
-              </Text>
-            </View>
-          )}
+            {/* Location/Route */}
+            {post.location && (
+              <View style={communityStyles.postLocation}>
+                <Icon name="location-outline" size={16} color={colors.primary} />
+                <Text style={[communityStyles.locationText, { color: colors.primary }]}>
+                  {post.location.name}
+                </Text>
+              </View>
+            )}
 
-          {post.route && (
-            <View style={communityStyles.postLocation}>
-              <Icon name="git-branch-outline" size={16} color={colors.info} />
-              <Text style={[communityStyles.locationText, { color: colors.info }]}>
-                {post.route.name}
-              </Text>
-            </View>
-          )}
+            {post.route && (
+              <View style={communityStyles.postLocation}>
+                <Icon name="git-branch-outline" size={16} color={colors.info} />
+                <Text style={[communityStyles.locationText, { color: colors.info }]}>
+                  {post.route.name}
+                </Text>
+              </View>
+            )}
 
-          {/* Images */}
-          {post.images && post.images.length > 0 && (
-            <View style={communityStyles.imagesContainer}>
-              {post.images.map((image, index) => (
-                <Image
-                  key={index}
-                  source={{ uri: image }}
-                  style={communityStyles.postDetailImage}
-                  resizeMode="cover"
+            {/* Images */}
+            {post.images && post.images.length > 0 && (
+              <View style={communityStyles.imagesContainer}>
+                {post.images.map((image, index) => (
+                  <Image
+                    key={index}
+                    source={{ uri: image }}
+                    style={communityStyles.postDetailImage}
+                    resizeMode="cover"
+                  />
+                ))}
+              </View>
+            )}
+
+            {/* Actions */}
+            <View style={[communityStyles.postActions, { borderTopColor: colors.border }]}>
+              <TouchableOpacity
+                style={communityStyles.actionButton}
+                onPress={() => handleVote('up')}
+              >
+                <Icon
+                  name={post.userVote === 'up' ? 'arrow-up' : 'arrow-up-outline'}
+                  size={22}
+                  color={post.userVote === 'up' ? colors.success : colors.textMuted}
                 />
-              ))}
+                <Text
+                  style={[
+                    communityStyles.actionText,
+                    { color: post.userVote === 'up' ? colors.success : colors.text },
+                  ]}
+                >
+                  {post.upvotes}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={communityStyles.actionButton}
+                onPress={() => handleVote('down')}
+              >
+                <Icon
+                  name={post.userVote === 'down' ? 'arrow-down' : 'arrow-down-outline'}
+                  size={22}
+                  color={post.userVote === 'down' ? colors.error : colors.textMuted}
+                />
+                <Text
+                  style={[
+                    communityStyles.actionText,
+                    { color: post.userVote === 'down' ? colors.error : colors.text },
+                  ]}
+                >
+                  {post.downvotes}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={communityStyles.actionButton}>
+                <Icon name="chatbubble" size={20} color={colors.primary} />
+                <Text style={[communityStyles.actionText, { color: colors.text }]}>
+                  {post.commentCount}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={communityStyles.actionButton} onPress={handleShare}>
+                <Icon name="share-outline" size={20} color={colors.textMuted} />
+              </TouchableOpacity>
             </View>
-          )}
-
-          {/* Actions */}
-          <View style={[communityStyles.postActions, { borderTopColor: colors.border }]}>
-            <TouchableOpacity style={communityStyles.actionButton} onPress={() => handleVote('up')}>
-              <Icon
-                name={post.userVote === 'up' ? 'arrow-up' : 'arrow-up-outline'}
-                size={22}
-                color={post.userVote === 'up' ? colors.success : colors.textMuted}
-              />
-              <Text
-                style={[
-                  communityStyles.actionText,
-                  { color: post.userVote === 'up' ? colors.success : colors.text },
-                ]}
-              >
-                {post.upvotes}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={communityStyles.actionButton}
-              onPress={() => handleVote('down')}
-            >
-              <Icon
-                name={post.userVote === 'down' ? 'arrow-down' : 'arrow-down-outline'}
-                size={22}
-                color={post.userVote === 'down' ? colors.error : colors.textMuted}
-              />
-              <Text
-                style={[
-                  communityStyles.actionText,
-                  { color: post.userVote === 'down' ? colors.error : colors.text },
-                ]}
-              >
-                {post.downvotes}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={communityStyles.actionButton}>
-              <Icon name="chatbubble" size={20} color={colors.primary} />
-              <Text style={[communityStyles.actionText, { color: colors.text }]}>
-                {post.commentCount}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={communityStyles.actionButton} onPress={handleShare}>
-              <Icon name="share-outline" size={20} color={colors.textMuted} />
-            </TouchableOpacity>
           </View>
-        </View>
 
-        {/* Comments Section */}
-        <View style={communityStyles.commentsSection}>
-          <Text style={[communityStyles.commentsTitle, { color: colors.text }]}>
-            Comments ({comments.length})
-          </Text>
+          {/* Comments Section */}
+          <View style={communityStyles.commentsSection}>
+            <Text style={[communityStyles.commentsTitle, { color: colors.text }]}>
+              Comments ({comments.length})
+            </Text>
 
-          {comments.map(renderComment)}
+            {comments.map(renderComment)}
 
-          {comments.length === 0 && (
-            <View style={communityStyles.noComments}>
-              <Icon name="chatbubbles-outline" size={48} color={colors.textMuted} />
-              <Text style={[communityStyles.noCommentsText, { color: colors.textMuted }]}>
-                No comments yet
-              </Text>
-              <Text style={[communityStyles.noCommentsSubtext, { color: colors.textMuted }]}>
-                Be the first to comment!
-              </Text>
-            </View>
-          )}
-        </View>
-      </ScrollView>
+            {comments.length === 0 && (
+              <View style={communityStyles.noComments}>
+                <Icon name="chatbubbles-outline" size={48} color={colors.textMuted} />
+                <Text style={[communityStyles.noCommentsText, { color: colors.textMuted }]}>
+                  No comments yet
+                </Text>
+                <Text style={[communityStyles.noCommentsSubtext, { color: colors.textMuted }]}>
+                  Be the first to comment!
+                </Text>
+              </View>
+            )}
+          </View>
+        </ScrollView>
 
-      {/* Comment Input */}
-      <View
-        style={[
-          communityStyles.commentInputContainer,
-          { backgroundColor: colors.white, borderTopColor: colors.border },
-        ]}
-      >
-        <TextInput
+        {/* Comment Input */}
+        <View
           style={[
-            communityStyles.commentInput,
-            { color: colors.text, backgroundColor: colors.backgroundLight },
+            communityStyles.commentInputContainer,
+            { backgroundColor: colors.white, borderTopColor: colors.border },
           ]}
-          placeholder="Add a comment..."
-          placeholderTextColor={colors.textMuted}
-          value={commentText}
-          onChangeText={setCommentText}
-          multiline
-          maxLength={500}
-        />
-        <Button
-          title="Post"
-          onPress={handleAddComment}
-          disabled={!commentText.trim() || isSubmitting}
-          loading={isSubmitting}
-          style={communityStyles.commentButton}
-        />
-      </View>
+        >
+          <TextInput
+            style={[
+              communityStyles.commentInput,
+              { color: colors.text, backgroundColor: colors.backgroundLight },
+            ]}
+            placeholder="Add a comment..."
+            placeholderTextColor={colors.textMuted}
+            value={commentText}
+            onChangeText={setCommentText}
+            multiline
+            maxLength={500}
+          />
+          <Button
+            title="Post"
+            onPress={handleAddComment}
+            disabled={!commentText.trim() || isSubmitting}
+            loading={isSubmitting}
+            style={communityStyles.commentButton}
+          />
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );

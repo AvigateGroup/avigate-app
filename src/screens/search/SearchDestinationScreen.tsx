@@ -151,14 +151,22 @@ export const SearchDestinationScreen = () => {
 
     // TODO: Navigate to route planning screen when it's added to the navigator
     // For now, just show a placeholder toast
-    Toast.show({ type: 'info', text1: 'Route Planning', text2: 'Route planning feature coming soon' });
+    Toast.show({
+      type: 'info',
+      text1: 'Route Planning',
+      text2: 'Route planning feature coming soon',
+    });
   };
 
   const handleUseCurrentLocation = async () => {
     const location = await getCurrentLocation();
     if (location) {
       // TODO: Navigate to route planning screen when it's added to the navigator
-      Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Use current location feature will be available soon' });
+      Toast.show({
+        type: 'info',
+        text1: 'Coming Soon',
+        text2: 'Use current location feature will be available soon',
+      });
     }
   };
 
@@ -347,8 +355,9 @@ export const SearchDestinationScreen = () => {
             <View style={{ flex: 1, marginLeft: 12 }}>
               <Text style={[searchStyles.tipsTitle, { color: colors.text }]}>💡 Search Tips</Text>
               <Text style={[searchStyles.tipsText, { color: colors.textMuted }]}>
-                • Search for hotels, schools, or markets{'\n'}• Use landmarks like "near Access
-                Bank"{'\n'}• Search intermediate stops like "Wimpy Junction"
+                {
+                  '• Search for hotels, schools, or markets\n• Use landmarks like "near Access Bank"\n• Search intermediate stops like "Wimpy Junction"'
+                }
               </Text>
             </View>
           </View>

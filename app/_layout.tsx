@@ -176,41 +176,40 @@ function RootLayoutNav() {
     // Handle notification that launched the app from killed state (only once)
     if (!hasHandledInitialNotification.current) {
       hasHandledInitialNotification.current = true;
-      Notifications.getLastNotificationResponseAsync().then((response) => {
-        if (response && isMounted) {
-          const data = response.notification.request.content.data;
-          if (data?.actionUrl && typeof data.actionUrl === 'string') {
-            router.push(data.actionUrl as any);
-          } else {
-            router.push('/notifications');
+      Notifications.getLastNotificationResponseAsync()
+        .then(response => {
+          if (response && isMounted) {
+            const data = response.notification.request.content.data;
+            if (data?.actionUrl && typeof data.actionUrl === 'string') {
+              router.push(data.actionUrl as any);
+            } else {
+              router.push('/notifications');
+            }
           }
-        }
-      }).catch(() => {});
+        })
+        .catch(() => {});
     }
 
-    const notificationSubscription = Notifications.addNotificationReceivedListener(
-      (notification) => {
-        console.log('Notification received:', notification.request.content.title);
-      }
-    );
+    const notificationSubscription = Notifications.addNotificationReceivedListener(notification => {
+      console.log('Notification received:', notification.request.content.title);
+    });
 
-    const responseSubscription = Notifications.addNotificationResponseReceivedListener(
-      (response) => {
-        const data = response.notification.request.content.data;
-        if (data?.actionUrl && typeof data.actionUrl === 'string') {
-          router.push(data.actionUrl as any);
-        } else {
-          router.push('/notifications');
-        }
+    const responseSubscription = Notifications.addNotificationResponseReceivedListener(response => {
+      const data = response.notification.request.content.data;
+      if (data?.actionUrl && typeof data.actionUrl === 'string') {
+        router.push(data.actionUrl as any);
+      } else {
+        router.push('/notifications');
       }
-    );
+    });
 
     // Listen for token refresh (FCM tokens can be rotated)
-    const tokenRefreshSubscription = Notifications.addPushTokenListener((tokenData) => {
+    const tokenRefreshSubscription = Notifications.addPushTokenListener(tokenData => {
       if (isMounted && tokenData.data) {
         AsyncStorage.setItem(STORAGE_KEYS.FCM_TOKEN, tokenData.data);
-        apiClient.post('/users/devices/register-token', { fcmToken: tokenData.data })
-          .catch((err) => console.warn('Token refresh registration failed:', err));
+        apiClient
+          .post('/users/devices/register-token', { fcmToken: tokenData.data })
+          .catch(err => console.warn('Token refresh registration failed:', err));
       }
     });
 

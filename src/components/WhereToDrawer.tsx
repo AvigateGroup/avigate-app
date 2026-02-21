@@ -215,10 +215,7 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
 
         {/* Quick Actions */}
         <View style={styles.servicesContainer}>
-          <TouchableOpacity
-            style={styles.serviceCard}
-            onPress={() => router.push('/community')}
-          >
+          <TouchableOpacity style={styles.serviceCard} onPress={() => router.push('/community')}>
             <View style={[styles.serviceIcon, { backgroundColor: '#3B82F6' }]}>
               <Icon name="people" size={24} color="#FFF" />
             </View>
@@ -243,13 +240,13 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
           <Text style={styles.sectionTitle}>Popular destinations</Text>
           {loadingPlaces ? (
             <View style={styles.placesContainer}>
-              {[1, 2, 3].map((i) => (
+              {[1, 2, 3].map(i => (
                 <PlaceCardSkeleton key={i} />
               ))}
             </View>
           ) : (
             <View style={styles.placesContainer}>
-              {suggestedPlaces.slice(0, 6).map((place) => (
+              {suggestedPlaces.slice(0, 6).map(place => (
                 <TouchableOpacity
                   key={place.id}
                   style={styles.placeCard}
@@ -267,9 +264,7 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
                       {place.address}
                     </Text>
                   </View>
-                  {place.distance && (
-                    <Text style={styles.placeDistance}>{place.distance}</Text>
-                  )}
+                  {place.distance && <Text style={styles.placeDistance}>{place.distance}</Text>}
                 </TouchableOpacity>
               ))}
             </View>
@@ -287,7 +282,7 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
 
           {loadingPosts ? (
             <View style={styles.postsContainer}>
-              {[1, 2, 3].map((i) => (
+              {[1, 2, 3].map(i => (
                 <PostCardSkeleton key={i} />
               ))}
             </View>
@@ -306,7 +301,7 @@ export const WhereToDrawer: React.FC<WhereToDrawerProps> = ({
             </View>
           ) : (
             <View style={styles.postsContainer}>
-              {trendingPosts.slice(0, 3).map((post) => (
+              {trendingPosts.slice(0, 3).map(post => (
                 <TouchableOpacity
                   key={post.id}
                   style={styles.postCard}

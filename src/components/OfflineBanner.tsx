@@ -20,10 +20,7 @@ export const OfflineBanner: React.FC = () => {
 
   return (
     <Animated.View
-      style={[
-        styles.container,
-        { transform: [{ translateY: slideAnim }] },
-      ]}
+      style={[styles.container, { transform: [{ translateY: slideAnim }] }]}
       pointerEvents={isOffline ? 'auto' : 'none'}
     >
       <View style={styles.content}>

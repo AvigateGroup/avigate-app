@@ -127,10 +127,9 @@ export const useNotifications = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await apiClient.patch<ApiResponse>(
-        `/notifications/${notificationId}/read`,
-        { isRead },
-      );
+      const response = await apiClient.patch<ApiResponse>(`/notifications/${notificationId}/read`, {
+        isRead,
+      });
 
       if (response.success) {
         return {

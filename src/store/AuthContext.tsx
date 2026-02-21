@@ -97,7 +97,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setRefreshToken(newRefreshToken);
       setUser(newUser);
 
-      console.log('Auth state updated immediately. isAuthenticated:', !!(newUser && newAccessToken));
+      console.log(
+        'Auth state updated immediately. isAuthenticated:',
+        !!(newUser && newAccessToken),
+      );
 
       // Save to storage before navigation so API client can read the token
       await Promise.all([

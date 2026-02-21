@@ -1,13 +1,7 @@
 // src/screens/profile/DevicesScreen.tsx
 
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
-} from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useDialog } from '@/contexts/DialogContext';
@@ -73,12 +67,7 @@ export const DevicesScreen: React.FC = () => {
 
   if (isLoading && devices.length === 0) {
     return (
-      <View
-        style={[
-          profileFeatureStyles.container,
-          { backgroundColor: colors.background },
-        ]}
-      >
+      <View style={[profileFeatureStyles.container, { backgroundColor: colors.background }]}>
         <DeviceCardSkeleton />
       </View>
     );

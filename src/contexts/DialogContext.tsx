@@ -23,8 +23,19 @@ interface DialogContextType {
   showSuccess: (title: string, message: string, onDismiss?: () => void) => void;
   showError: (title: string, message: string, onDismiss?: () => void) => void;
   showWarning: (title: string, message: string, onDismiss?: () => void) => void;
-  showConfirm: (title: string, message: string, onConfirm: () => void, onCancel?: () => void) => void;
-  showDestructive: (title: string, message: string, onConfirm: () => void, confirmLabel?: string, onCancel?: () => void) => void;
+  showConfirm: (
+    title: string,
+    message: string,
+    onConfirm: () => void,
+    onCancel?: () => void,
+  ) => void;
+  showDestructive: (
+    title: string,
+    message: string,
+    onConfirm: () => void,
+    confirmLabel?: string,
+    onCancel?: () => void,
+  ) => void;
 }
 
 const DialogContext = createContext<DialogContextType | undefined>(undefined);
@@ -59,56 +70,77 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setVisible(true);
   }, []);
 
-  const showSuccess = useCallback((title: string, message: string, onDismiss?: () => void) => {
-    showDialog({
-      type: 'success',
-      title,
-      message,
-      buttons: [{ text: 'OK', style: 'primary', onPress: onDismiss }],
-    });
-  }, [showDialog]);
+  const showSuccess = useCallback(
+    (title: string, message: string, onDismiss?: () => void) => {
+      showDialog({
+        type: 'success',
+        title,
+        message,
+        buttons: [{ text: 'OK', style: 'primary', onPress: onDismiss }],
+      });
+    },
+    [showDialog],
+  );
 
-  const showError = useCallback((title: string, message: string, onDismiss?: () => void) => {
-    showDialog({
-      type: 'error',
-      title,
-      message,
-      buttons: [{ text: 'OK', style: 'primary', onPress: onDismiss }],
-    });
-  }, [showDialog]);
+  const showError = useCallback(
+    (title: string, message: string, onDismiss?: () => void) => {
+      showDialog({
+        type: 'error',
+        title,
+        message,
+        buttons: [{ text: 'OK', style: 'primary', onPress: onDismiss }],
+      });
+    },
+    [showDialog],
+  );
 
-  const showWarning = useCallback((title: string, message: string, onDismiss?: () => void) => {
-    showDialog({
-      type: 'warning',
-      title,
-      message,
-      buttons: [{ text: 'OK', style: 'primary', onPress: onDismiss }],
-    });
-  }, [showDialog]);
+  const showWarning = useCallback(
+    (title: string, message: string, onDismiss?: () => void) => {
+      showDialog({
+        type: 'warning',
+        title,
+        message,
+        buttons: [{ text: 'OK', style: 'primary', onPress: onDismiss }],
+      });
+    },
+    [showDialog],
+  );
 
-  const showConfirm = useCallback((title: string, message: string, onConfirm: () => void, onCancel?: () => void) => {
-    showDialog({
-      type: 'info',
-      title,
-      message,
-      buttons: [
-        { text: 'Cancel', style: 'cancel', onPress: onCancel },
-        { text: 'Confirm', style: 'primary', onPress: onConfirm },
-      ],
-    });
-  }, [showDialog]);
+  const showConfirm = useCallback(
+    (title: string, message: string, onConfirm: () => void, onCancel?: () => void) => {
+      showDialog({
+        type: 'info',
+        title,
+        message,
+        buttons: [
+          { text: 'Cancel', style: 'cancel', onPress: onCancel },
+          { text: 'Confirm', style: 'primary', onPress: onConfirm },
+        ],
+      });
+    },
+    [showDialog],
+  );
 
-  const showDestructive = useCallback((title: string, message: string, onConfirm: () => void, confirmLabel?: string, onCancel?: () => void) => {
-    showDialog({
-      type: 'warning',
-      title,
-      message,
-      buttons: [
-        { text: 'Cancel', style: 'cancel', onPress: onCancel },
-        { text: confirmLabel || 'Confirm', style: 'destructive', onPress: onConfirm },
-      ],
-    });
-  }, [showDialog]);
+  const showDestructive = useCallback(
+    (
+      title: string,
+      message: string,
+      onConfirm: () => void,
+      confirmLabel?: string,
+      onCancel?: () => void,
+    ) => {
+      showDialog({
+        type: 'warning',
+        title,
+        message,
+        buttons: [
+          { text: 'Cancel', style: 'cancel', onPress: onCancel },
+          { text: confirmLabel || 'Confirm', style: 'destructive', onPress: onConfirm },
+        ],
+      });
+    },
+    [showDialog],
+  );
 
   const handleButtonPress = (button: DialogButton) => {
     dismiss();
@@ -138,29 +170,35 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   return (
-    <DialogContext.Provider value={{ showDialog, showSuccess, showError, showWarning, showConfirm, showDestructive }}>
+    <DialogContext.Provider
+      value={{ showDialog, showSuccess, showError, showWarning, showConfirm, showDestructive }}
+    >
       {children}
       <Modal transparent visible={visible} animationType="fade" onRequestClose={dismiss}>
         <View style={styles.overlay}>
           <View style={[styles.container, { backgroundColor: colors.background }]}>
-            {icon && (
-              <Ionicons name={icon.name} size={48} color={icon.color} style={styles.icon} />
-            )}
+            {icon && <Ionicons name={icon.name} size={48} color={icon.color} style={styles.icon} />}
             <Text style={[styles.title, { color: colors.text }]}>{config?.title}</Text>
             <Text style={[styles.message, { color: colors.textSecondary }]}>{config?.message}</Text>
             <View style={styles.buttonRow}>
-              {(config?.buttons || [{ text: 'OK', style: 'primary' as ButtonStyle }]).map((button, i) => (
-                <TouchableOpacity
-                  key={i}
-                  style={[styles.button, getButtonStyle(button.style), config?.buttons && config.buttons.length > 1 && { flex: 1 }]}
-                  onPress={() => handleButtonPress(button)}
-                  activeOpacity={0.8}
-                >
-                  <Text style={[styles.buttonText, { color: getButtonTextColor(button.style) }]}>
-                    {button.text}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+              {(config?.buttons || [{ text: 'OK', style: 'primary' as ButtonStyle }]).map(
+                (button, i) => (
+                  <TouchableOpacity
+                    key={i}
+                    style={[
+                      styles.button,
+                      getButtonStyle(button.style),
+                      config?.buttons && config.buttons.length > 1 && { flex: 1 },
+                    ]}
+                    onPress={() => handleButtonPress(button)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[styles.buttonText, { color: getButtonTextColor(button.style) }]}>
+                      {button.text}
+                    </Text>
+                  </TouchableOpacity>
+                ),
+              )}
             </View>
           </View>
         </View>

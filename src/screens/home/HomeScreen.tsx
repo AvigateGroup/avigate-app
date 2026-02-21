@@ -72,7 +72,7 @@ export const HomeScreen = () => {
         checkActiveTrip();
         loadUnreadCount();
       }
-    }, [isAuthenticated])
+    }, [isAuthenticated]),
   );
 
   // Poll active trip every 30 seconds (only if authenticated)
@@ -107,7 +107,7 @@ export const HomeScreen = () => {
       if (status !== 'granted') {
         dialog.showWarning(
           'Permission Denied',
-          'Location permission is required to use this feature. Please enable it in your device settings.'
+          'Location permission is required to use this feature. Please enable it in your device settings.',
         );
         setLoading(false);
         // Set fallback location (Lagos, Nigeria)
@@ -159,7 +159,7 @@ export const HomeScreen = () => {
       console.error('Error getting location:', error);
       dialog.showError(
         'Location Error',
-        'Unable to get your current location. Please check your location settings.'
+        'Unable to get your current location. Please check your location settings.',
       );
       setLoading(false);
 
@@ -287,12 +287,7 @@ export const HomeScreen = () => {
       </TouchableOpacity>
 
       {/* Active Trip Banner */}
-      {activeTrip && (
-        <ActiveTripBanner
-          trip={activeTrip}
-          onCancelTrip={handleCancelTrip}
-        />
-      )}
+      {activeTrip && <ActiveTripBanner trip={activeTrip} onCancelTrip={handleCancelTrip} />}
 
       {/* Action Button - Center on User */}
       <View style={homeFeatureStyles.actionButtons}>
@@ -309,9 +304,7 @@ export const HomeScreen = () => {
       <WhereToDrawer
         currentAddress={address}
         currentLocation={
-          location
-            ? { latitude: location.latitude, longitude: location.longitude }
-            : undefined
+          location ? { latitude: location.latitude, longitude: location.longitude } : undefined
         }
       />
 

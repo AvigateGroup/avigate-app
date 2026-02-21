@@ -80,14 +80,22 @@ export const CreatePostScreen = () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
       if (status !== 'granted') {
-        Toast.show({ type: 'error', text1: 'Permission Needed', text2: 'Please grant permission to access photos' });
+        Toast.show({
+          type: 'error',
+          text1: 'Permission Needed',
+          text2: 'Please grant permission to access photos',
+        });
         return;
       }
 
       const remainingSlots = 3 - images.length;
 
       if (remainingSlots === 0) {
-        Toast.show({ type: 'error', text1: 'Maximum Images', text2: 'You can only add up to 3 images' });
+        Toast.show({
+          type: 'error',
+          text1: 'Maximum Images',
+          text2: 'You can only add up to 3 images',
+        });
         return;
       }
 
@@ -104,7 +112,11 @@ export const CreatePostScreen = () => {
         setImages([...images, ...imagesToAdd]);
 
         if (newImages.length > remainingSlots) {
-          Toast.show({ type: 'error', text1: 'Image Limit', text2: `Only ${remainingSlots} more image(s) added. Maximum is 3 images total.` });
+          Toast.show({
+            type: 'error',
+            text1: 'Image Limit',
+            text2: `Only ${remainingSlots} more image(s) added. Maximum is 3 images total.`,
+          });
         }
       }
     } catch (error) {
@@ -118,7 +130,11 @@ export const CreatePostScreen = () => {
 
   const handleSubmit = async () => {
     if (!title.trim()) {
-      Toast.show({ type: 'error', text1: 'Missing Title', text2: 'Please enter a title for your post' });
+      Toast.show({
+        type: 'error',
+        text1: 'Missing Title',
+        text2: 'Please enter a title for your post',
+      });
       return;
     }
 
@@ -138,7 +154,9 @@ export const CreatePostScreen = () => {
       });
 
       if (result.success) {
-        dialog.showSuccess('Post Published', 'Your post has been published!', () => navigation.goBack());
+        dialog.showSuccess('Post Published', 'Your post has been published!', () =>
+          navigation.goBack(),
+        );
       } else {
         dialog.showError('Error', result.error || 'Failed to create post');
       }
@@ -365,8 +383,9 @@ export const CreatePostScreen = () => {
                   Posting Guidelines
                 </Text>
                 <Text style={{ fontSize: 13, color: colors.textMuted, lineHeight: 20 }}>
-                  • Be respectful and helpful{'\n'}• Provide accurate information{'\n'}• Avoid spam
-                  or self-promotion{'\n'}• Report issues, don't create them
+                  {
+                    "• Be respectful and helpful\n• Provide accurate information\n• Avoid spam or self-promotion\n• Report issues, don't create them"
+                  }
                 </Text>
               </View>
             </View>

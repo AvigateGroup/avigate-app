@@ -30,7 +30,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>1. Introduction</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          Welcome to Avigate ("we," "our," or "us"). Avigate is a community-driven mobile
+          {'Welcome to Avigate ("we," "our," or "us"). Avigate is a community-driven mobile'}
           application designed to help residents and visitors navigate Nigerian cities using local
           transportation systems including Keke Napep, commercial buses, taxis, and okada. We are
           committed to protecting your privacy and ensuring transparency about how we collect, use,
@@ -334,7 +334,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
           • Suggest alternative routes if delays are detected
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Update your shared location if you've enabled location sharing
+          {"• Update your shared location if you've enabled location sharing"}
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Improve route accuracy based on actual travel patterns
@@ -599,7 +599,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
           • Your contributed routes have been verified and integrated into our public database
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Your community posts remain relevant for other users' safety (anonymized)
+          {"• Your community posts remain relevant for other users' safety (anonymized)"}
         </Text>
 
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>8.3 Security Measures</Text>
@@ -617,7 +617,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
         <Text style={[styles.subsectionTitle, { color: colors.text }]}>9.1 Access and Update</Text>
         <Text style={[styles.text, { color: colors.text }]}>You have the right to:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Access your personal information through the app's Profile section
+          {"• Access your personal information through the app's Profile section"}
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Update your account information at any time
@@ -644,7 +644,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
           • Edit or delete your community posts (subject to verification status)
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Remove photos you've uploaded
+          {"• Remove photos you've uploaded"}
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Request removal of your contributed routes (may require admin review)
@@ -705,7 +705,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
           You can opt out of promotional communications by:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Clicking "Unsubscribe" in any promotional email
+          {'• Clicking "Unsubscribe" in any promotional email'}
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Adjusting notification settings in the app
@@ -719,7 +719,9 @@ export const PrivacyPolicyScreen: React.FC = () => {
           verification, security alerts, policy changes, and critical safety notifications).
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>10. Children's Privacy</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          {"10. Children's Privacy"}
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           Avigate is not intended for children under 13 years of age. We do not knowingly collect
           personal information from children under 13. If we discover that we have collected
@@ -749,7 +751,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
           legal, operational, or regulatory reasons. When we make changes, we will:
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
-          • Update the "Last Updated" date at the top of this policy
+          {'• Update the "Last Updated" date at the top of this policy'}
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Notify you via email or push notification for material changes
@@ -802,7 +804,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

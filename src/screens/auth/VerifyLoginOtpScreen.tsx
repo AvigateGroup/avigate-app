@@ -133,7 +133,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
           Verify Your Login
         </Text>
         <Text style={[authFeatureStyles.subtitleCentered, { color: colors.textMuted }]}>
-          We've sent a verification code to
+          {"We've sent a verification code to"}
         </Text>
         <Text style={authFeatureStyles.emailText}>{email}</Text>
 
@@ -160,7 +160,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
           {canResend ? (
             <View style={authFeatureStyles.resendRow}>
               <Text style={[authFeatureStyles.resendLabel, { color: colors.textMuted }]}>
-                Didn't receive the code?{' '}
+                {"Didn't receive the code?"}{' '}
               </Text>
               <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
                 <Text style={authFeatureStyles.resendLink}>
@@ -179,15 +179,12 @@ export const VerifyLoginOTPScreen: React.FC = () => {
         <View style={authFeatureStyles.helpNote}>
           <Icon name="information-circle-outline" size={14} color={colors.textMuted} />
           <Text style={[authFeatureStyles.helpText, { color: colors.textMuted }]}>
-            Check your spam folder if you don't see it
+            {"Check your spam folder if you don't see it"}
           </Text>
         </View>
 
         {/* Back to Login */}
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={authFeatureStyles.backLink}
-        >
+        <TouchableOpacity onPress={() => router.back()} style={authFeatureStyles.backLink}>
           <Text style={[authFeatureStyles.backLinkText, { color: colors.primary }]}>
             Change Email
           </Text>

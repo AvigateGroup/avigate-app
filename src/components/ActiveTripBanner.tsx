@@ -26,8 +26,7 @@ export const ActiveTripBanner: React.FC<ActiveTripBannerProps> = ({ trip, onCanc
   const router = useRouter();
   const dialog = useDialog();
 
-  const destinationName =
-    trip.route.endLocation?.name || trip.route.name || 'your destination';
+  const destinationName = trip.route.endLocation?.name || trip.route.name || 'your destination';
 
   const formatETA = () => {
     if (!trip.estimatedArrival) return 'Calculating...';
@@ -73,9 +72,7 @@ export const ActiveTripBanner: React.FC<ActiveTripBannerProps> = ({ trip, onCanc
 
         <View style={styles.etaRow}>
           <Icon name="time-outline" size={16} color={colors.textMuted} />
-          <Text style={[styles.etaText, { color: colors.textMuted }]}>
-            ETA: {formatETA()}
-          </Text>
+          <Text style={[styles.etaText, { color: colors.textMuted }]}>ETA: {formatETA()}</Text>
         </View>
       </View>
 

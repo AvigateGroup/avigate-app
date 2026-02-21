@@ -57,8 +57,7 @@ export const userApi = {
     }),
 
   // Check legal documents status
-  checkLegalStatus: () =>
-    apiClient.get<ApiResponse<LegalStatusResponse>>('/users/legal/status'),
+  checkLegalStatus: () => apiClient.get<ApiResponse<LegalStatusResponse>>('/users/legal/status'),
 
   // Accept updated legal documents
   acceptLegalUpdate: (data: { acceptTerms?: boolean; acceptPrivacy?: boolean }) =>

@@ -16,7 +16,10 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import * as Location from 'expo-location';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { useRouteService } from '@/hooks/useRouteService';
-import { useGooglePlacesAutocomplete, PlaceAutocompleteResult } from '@/hooks/useGooglePlacesAutocomplete';
+import {
+  useGooglePlacesAutocomplete,
+  PlaceAutocompleteResult,
+} from '@/hooks/useGooglePlacesAutocomplete';
 import { useDialog } from '@/contexts/DialogContext';
 
 interface Destination {
@@ -34,7 +37,13 @@ export default function SearchDestination() {
   const params = useLocalSearchParams();
   const colors = useThemedColors();
   const { getPopularRoutes } = useRouteService();
-  const { predictions, debouncedSearch, getPlaceDetails, clearPredictions, isLoading: autocompleteLoading } = useGooglePlacesAutocomplete();
+  const {
+    predictions,
+    debouncedSearch,
+    getPlaceDetails,
+    clearPredictions,
+    isLoading: autocompleteLoading,
+  } = useGooglePlacesAutocomplete();
   const dialog = useDialog();
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -173,7 +182,7 @@ export default function SearchDestination() {
 
   const filteredDestinations = searchQuery
     ? destinations.filter(
-        (dest) =>
+        dest =>
           dest.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
           dest.address?.toLowerCase().includes(searchQuery.toLowerCase()),
       )
@@ -251,7 +260,7 @@ export default function SearchDestination() {
                 </View>
               )}
 
-              {predictions.map((prediction) => (
+              {predictions.map(prediction => (
                 <TouchableOpacity
                   key={prediction.placeId}
                   style={[styles.destinationItem, { backgroundColor: colors.white }]}
@@ -295,33 +304,34 @@ export default function SearchDestination() {
           )}
 
           {/* Popular/Recent Destinations */}
-          {!showAutocomplete && filteredDestinations.map((destination) => (
-            <TouchableOpacity
-              key={destination.id}
-              style={[styles.destinationItem, { backgroundColor: colors.white }]}
-              onPress={() => handleDestinationSelect(destination)}
-              activeOpacity={0.7}
-            >
-              <View style={[styles.iconContainer, { backgroundColor: colors.background }]}>
-                <Icon name={getIconName(destination.type)} size={22} color={colors.text} />
-              </View>
+          {!showAutocomplete &&
+            filteredDestinations.map(destination => (
+              <TouchableOpacity
+                key={destination.id}
+                style={[styles.destinationItem, { backgroundColor: colors.white }]}
+                onPress={() => handleDestinationSelect(destination)}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.iconContainer, { backgroundColor: colors.background }]}>
+                  <Icon name={getIconName(destination.type)} size={22} color={colors.text} />
+                </View>
 
-              <View style={styles.destinationInfo}>
-                <Text style={[styles.destinationName, { color: colors.text }]}>
-                  {destination.name}
-                </Text>
-                <Text style={[styles.destinationAddress, { color: colors.textMuted }]}>
-                  {destination.address}
-                </Text>
-              </View>
+                <View style={styles.destinationInfo}>
+                  <Text style={[styles.destinationName, { color: colors.text }]}>
+                    {destination.name}
+                  </Text>
+                  <Text style={[styles.destinationAddress, { color: colors.textMuted }]}>
+                    {destination.address}
+                  </Text>
+                </View>
 
-              {destination.distance && (
-                <Text style={[styles.distance, { color: colors.textMuted }]}>
-                  {destination.distance}
-                </Text>
-              )}
-            </TouchableOpacity>
-          ))}
+                {destination.distance && (
+                  <Text style={[styles.distance, { color: colors.textMuted }]}>
+                    {destination.distance}
+                  </Text>
+                )}
+              </TouchableOpacity>
+            ))}
 
           {!showAutocomplete && filteredDestinations.length === 0 && (
             <View style={styles.emptyState}>

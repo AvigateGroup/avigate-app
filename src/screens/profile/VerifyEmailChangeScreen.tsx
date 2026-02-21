@@ -131,7 +131,7 @@ export const VerifyEmailChangeScreen: React.FC = () => {
           Verify Your New Email
         </Text>
         <Text style={[authFeatureStyles.subtitleCentered, { color: colors.textMuted }]}>
-          We've sent a verification code to
+          {"We've sent a verification code to"}
         </Text>
         <Text style={authFeatureStyles.emailText}>{newEmail}</Text>
 
@@ -158,7 +158,7 @@ export const VerifyEmailChangeScreen: React.FC = () => {
           {canResend ? (
             <View style={authFeatureStyles.resendRow}>
               <Text style={[authFeatureStyles.resendLabel, { color: colors.textMuted }]}>
-                Didn't receive the code?{' '}
+                {"Didn't receive the code?"}{' '}
               </Text>
               <TouchableOpacity onPress={handleResend} disabled={resendLoading}>
                 <Text style={authFeatureStyles.resendLink}>
@@ -177,7 +177,7 @@ export const VerifyEmailChangeScreen: React.FC = () => {
         <View style={authFeatureStyles.helpNote}>
           <Icon name="information-circle-outline" size={14} color={colors.textMuted} />
           <Text style={[authFeatureStyles.helpText, { color: colors.textMuted }]}>
-            Check your spam folder if you don't see it
+            {"Check your spam folder if you don't see it"}
           </Text>
         </View>
 

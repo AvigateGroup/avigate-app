@@ -91,12 +91,15 @@ export const ActiveTripScreen = () => {
   useEffect(() => {
     if (trip && userLocation && mapRef.current) {
       // Center map on user location
-      mapRef.current.animateToRegion({
-        latitude: userLocation.latitude,
-        longitude: userLocation.longitude,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-      }, 1000);
+      mapRef.current.animateToRegion(
+        {
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+          latitudeDelta: 0.01,
+          longitudeDelta: 0.01,
+        },
+        1000,
+      );
     }
   }, [userLocation]);
 
@@ -154,7 +157,10 @@ export const ActiveTripScreen = () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        dialog.showWarning('Permission Denied', 'Location permission is required for trip tracking');
+        dialog.showWarning(
+          'Permission Denied',
+          'Location permission is required for trip tracking',
+        );
         return;
       }
 
@@ -175,7 +181,7 @@ export const ActiveTripScreen = () => {
           timeInterval: 5000, // Update every 5 seconds
           distanceInterval: 10, // Or when moved 10 meters
         },
-        async (location) => {
+        async location => {
           const newLocation = {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
@@ -185,14 +191,11 @@ export const ActiveTripScreen = () => {
 
           // Send location update to backend
           if (trip) {
-            const result = await updateTripLocation(
-              trip.id,
-              {
-                lat: newLocation.latitude,
-                lng: newLocation.longitude,
-                accuracy: location.coords.accuracy || undefined,
-              }
-            );
+            const result = await updateTripLocation(trip.id, {
+              lat: newLocation.latitude,
+              lng: newLocation.longitude,
+              accuracy: location.coords.accuracy || undefined,
+            });
 
             if (result.success && result.data?.progress) {
               const progress = result.data.progress;
@@ -216,7 +219,7 @@ export const ActiveTripScreen = () => {
               }
             }
           }
-        }
+        },
       );
     } catch (error) {
       console.error('Location tracking error:', error);
@@ -245,12 +248,12 @@ export const ActiveTripScreen = () => {
             'Your trip has been completed. A summary has been sent to your email.',
             () => {
               router.replace('/(tabs)');
-            }
+            },
           );
         } else {
           dialog.showError('Error', result.message || 'Failed to complete trip. Please try again.');
         }
-      }
+      },
     );
   };
 
@@ -263,18 +266,14 @@ export const ActiveTripScreen = () => {
 
         const result = await endTrip(trip.id);
         if (result.success) {
-          dialog.showSuccess(
-            'Trip Cancelled',
-            'Your trip has been cancelled.',
-            () => {
-              router.replace('/(tabs)');
-            }
-          );
+          dialog.showSuccess('Trip Cancelled', 'Your trip has been cancelled.', () => {
+            router.replace('/(tabs)');
+          });
         } else {
           dialog.showError('Error', result.message || 'Failed to cancel trip. Please try again.');
         }
       },
-      'Cancel Trip'
+      'Cancel Trip',
     );
   };
 
@@ -282,7 +281,8 @@ export const ActiveTripScreen = () => {
     if (!estimatedArrival) return 'Calculating...';
 
     const now = new Date();
-    const arrivalDate = typeof estimatedArrival === 'string' ? new Date(estimatedArrival) : estimatedArrival;
+    const arrivalDate =
+      typeof estimatedArrival === 'string' ? new Date(estimatedArrival) : estimatedArrival;
 
     if (isNaN(arrivalDate.getTime())) return 'Calculating...';
 
@@ -298,35 +298,53 @@ export const ActiveTripScreen = () => {
 
   const getTransportIcon = (mode: string) => {
     switch (mode) {
-      case 'bus': return 'bus';
-      case 'taxi': return 'car';
-      case 'keke': return 'car-sport';
-      case 'okada': return 'bicycle';
-      case 'walk': return 'walk';
-      default: return 'navigate';
+      case 'bus':
+        return 'bus';
+      case 'taxi':
+        return 'car';
+      case 'keke':
+        return 'car-sport';
+      case 'okada':
+        return 'bicycle';
+      case 'walk':
+        return 'walk';
+      default:
+        return 'navigate';
     }
   };
 
   const getTransportColor = (mode: string) => {
     switch (mode) {
-      case 'bus': return colors.primary;
-      case 'taxi': return colors.warning;
-      case 'keke': return colors.info;
-      case 'okada': return colors.success;
-      case 'walk': return colors.textMuted;
-      default: return colors.text;
+      case 'bus':
+        return colors.primary;
+      case 'taxi':
+        return colors.warning;
+      case 'keke':
+        return colors.info;
+      case 'okada':
+        return colors.success;
+      case 'walk':
+        return colors.textMuted;
+      default:
+        return colors.text;
     }
   };
 
   // Parse markdown instructions into structured sections
-  const parseInstructionSections = (instructions: string): Array<{
+  const parseInstructionSections = (
+    instructions: string,
+  ): Array<{
     title: string;
     items: string[];
     type: 'info' | 'tip' | 'warning' | 'landmark';
   }> => {
     if (!instructions || instructions.trim().length === 0) return [];
 
-    const sections: Array<{ title: string; items: string[]; type: 'info' | 'tip' | 'warning' | 'landmark' }> = [];
+    const sections: Array<{
+      title: string;
+      items: string[];
+      type: 'info' | 'tip' | 'warning' | 'landmark';
+    }> = [];
 
     // Split on bold header patterns like **Header:** or **Header**
     const sectionRegex = /\*\*([^*]+?)(?::)?\*\*\s*/g;
@@ -360,7 +378,10 @@ export const ActiveTripScreen = () => {
     const items: string[] = [];
     const lines = text.split('\n').filter(l => l.trim());
     for (const line of lines) {
-      const clean = line.replace(/\*\*/g, '').replace(/^[-•*]\s*/, '').trim();
+      const clean = line
+        .replace(/\*\*/g, '')
+        .replace(/^[-•*]\s*/, '')
+        .trim();
       if (clean.length > 0) {
         items.push(clean);
       }
@@ -370,38 +391,57 @@ export const ActiveTripScreen = () => {
 
   const getSectionType = (title: string): 'info' | 'tip' | 'warning' | 'landmark' => {
     const lower = title.toLowerCase();
-    if (lower.includes('safety') || lower.includes('warning') || lower.includes('caution')) return 'warning';
-    if (lower.includes('important') || lower.includes('tip') || lower.includes('smart')) return 'tip';
-    if (lower.includes('look for') || lower.includes('landmark') || lower.includes('identify')) return 'landmark';
+    if (lower.includes('safety') || lower.includes('warning') || lower.includes('caution'))
+      return 'warning';
+    if (lower.includes('important') || lower.includes('tip') || lower.includes('smart'))
+      return 'tip';
+    if (lower.includes('look for') || lower.includes('landmark') || lower.includes('identify'))
+      return 'landmark';
     return 'info';
   };
 
   const getSectionIcon = (type: string): string => {
     switch (type) {
-      case 'warning': return 'alert-circle';
-      case 'tip': return 'bulb';
-      case 'landmark': return 'eye';
-      default: return 'information-circle';
+      case 'warning':
+        return 'alert-circle';
+      case 'tip':
+        return 'bulb';
+      case 'landmark':
+        return 'eye';
+      default:
+        return 'information-circle';
     }
   };
 
   const getSectionColor = (type: string): string => {
     switch (type) {
-      case 'warning': return '#EF4444';
-      case 'tip': return '#F59E0B';
-      case 'landmark': return '#10B981';
-      default: return '#3B82F6';
+      case 'warning':
+        return '#EF4444';
+      case 'tip':
+        return '#F59E0B';
+      case 'landmark':
+        return '#10B981';
+      default:
+        return '#3B82F6';
     }
   };
 
   // Parse instructions into actionable sub-steps with rich section content
-  const parseInstructionsIntoSubSteps = (instructions: string, transportMode: string, step?: RouteStep) => {
+  const parseInstructionsIntoSubSteps = (
+    instructions: string,
+    transportMode: string,
+    step?: RouteStep,
+  ) => {
     const subSteps: Array<{
       title: string;
       type: 'walking' | 'pickup' | 'transit' | 'arrival' | 'info';
       icon: string;
       content: string[];
-      sections?: Array<{ title: string; items: string[]; type: 'info' | 'tip' | 'warning' | 'landmark' }>;
+      sections?: Array<{
+        title: string;
+        items: string[];
+        type: 'info' | 'tip' | 'warning' | 'landmark';
+      }>;
       action?: string;
     }> = [];
 
@@ -423,11 +463,32 @@ export const ActiveTripScreen = () => {
 
     for (const section of allSections) {
       const lower = section.title.toLowerCase();
-      if (lower.includes('walk') || lower.includes('location') || lower.includes('junction') || lower.includes('direction')) {
+      if (
+        lower.includes('walk') ||
+        lower.includes('location') ||
+        lower.includes('junction') ||
+        lower.includes('direction')
+      ) {
         walkingSections.push(section);
-      } else if (lower.includes('transport') || lower.includes('board') || lower.includes('pickup') || lower.includes('look for') || lower.includes('bus stop') || lower.includes('fare') || lower.includes('local phrase')) {
+      } else if (
+        lower.includes('transport') ||
+        lower.includes('board') ||
+        lower.includes('pickup') ||
+        lower.includes('look for') ||
+        lower.includes('bus stop') ||
+        lower.includes('fare') ||
+        lower.includes('local phrase')
+      ) {
         pickupSections.push(section);
-      } else if (lower.includes('journey') || lower.includes('during') || lower.includes('landmark') || lower.includes('arrival') || lower.includes('safety') || lower.includes('smart') || lower.includes('important')) {
+      } else if (
+        lower.includes('journey') ||
+        lower.includes('during') ||
+        lower.includes('landmark') ||
+        lower.includes('arrival') ||
+        lower.includes('safety') ||
+        lower.includes('smart') ||
+        lower.includes('important')
+      ) {
         transitSections.push(section);
       } else {
         // Default: put overview/general in walking for walking steps, pickup for vehicle steps
@@ -450,7 +511,7 @@ export const ActiveTripScreen = () => {
         icon: 'walk',
         content: allWalkSections.length === 0 ? fallbackContent : [],
         sections: allWalkSections.length > 0 ? allWalkSections : undefined,
-        action: 'I\'ve arrived',
+        action: "I've arrived",
       });
     } else {
       // Phase 1: Walking to pickup
@@ -466,7 +527,7 @@ export const ActiveTripScreen = () => {
         icon: 'walk',
         content: walkingSections.length === 0 ? walkFallback : [],
         sections: walkingSections.length > 0 ? walkingSections : undefined,
-        action: 'I\'m at pickup point',
+        action: "I'm at pickup point",
       });
 
       // Phase 2: Board vehicle
@@ -494,7 +555,7 @@ export const ActiveTripScreen = () => {
         icon: getTransportIcon(transportMode),
         content: pickupSections.length === 0 ? pickupFallback : [],
         sections: pickupSections.length > 0 ? pickupSections : undefined,
-        action: 'I\'m in the vehicle',
+        action: "I'm in the vehicle",
       });
 
       // Phase 3: Transit
@@ -511,7 +572,7 @@ export const ActiveTripScreen = () => {
         icon: 'navigate',
         content: transitSections.length === 0 ? transitFallback : [],
         sections: transitSections.length > 0 ? transitSections : undefined,
-        action: 'I\'ve arrived',
+        action: "I've arrived",
       });
     }
 
@@ -521,13 +582,19 @@ export const ActiveTripScreen = () => {
   // Get human-readable transport name
   const getTransportDisplayName = (mode: string): string => {
     switch (mode.toLowerCase()) {
-      case 'bus': return 'Bus';
-      case 'taxi': return 'Taxi';
-      case 'keke': return 'Keke';
-      case 'okada': return 'Okada';
+      case 'bus':
+        return 'Bus';
+      case 'taxi':
+        return 'Taxi';
+      case 'keke':
+        return 'Keke';
+      case 'okada':
+        return 'Okada';
       case 'walk':
-      case 'walking': return 'Walking';
-      default: return 'Transport';
+      case 'walking':
+        return 'Walking';
+      default:
+        return 'Transport';
     }
   };
 
@@ -535,7 +602,11 @@ export const ActiveTripScreen = () => {
     if (!trip || !trip.route.steps || trip.route.steps.length === 0) return;
 
     const currentStep = trip.route.steps[currentStepIndex];
-    const subSteps = parseInstructionsIntoSubSteps(currentStep.instructions, currentStep.transportMode, currentStep);
+    const subSteps = parseInstructionsIntoSubSteps(
+      currentStep.instructions,
+      currentStep.transportMode,
+      currentStep,
+    );
 
     if (currentSubStepIndex < subSteps.length - 1) {
       // Move to next sub-step
@@ -554,7 +625,11 @@ export const ActiveTripScreen = () => {
     } else if (currentStepIndex > 0) {
       // Move to previous main step
       const prevStep = trip!.route.steps[currentStepIndex - 1];
-      const prevSubSteps = parseInstructionsIntoSubSteps(prevStep.instructions, prevStep.transportMode, prevStep);
+      const prevSubSteps = parseInstructionsIntoSubSteps(
+        prevStep.instructions,
+        prevStep.transportMode,
+        prevStep,
+      );
       setCurrentStepIndex(currentStepIndex - 1);
       setCurrentSubStepIndex(prevSubSteps.length - 1);
     }
@@ -562,11 +637,16 @@ export const ActiveTripScreen = () => {
 
   const getSubStepColor = (type: string) => {
     switch (type) {
-      case 'walking': return colors.info;
-      case 'pickup': return colors.warning;
-      case 'transit': return colors.primary;
-      case 'arrival': return colors.success;
-      default: return colors.textMuted;
+      case 'walking':
+        return colors.info;
+      case 'pickup':
+        return colors.warning;
+      case 'transit':
+        return colors.primary;
+      case 'arrival':
+        return colors.success;
+      default:
+        return colors.textMuted;
     }
   };
 
@@ -576,7 +656,11 @@ export const ActiveTripScreen = () => {
     const currentStep = trip.route.steps[currentStepIndex];
     if (!currentStep) return null;
 
-    const subSteps = parseInstructionsIntoSubSteps(currentStep.instructions, currentStep.transportMode, currentStep);
+    const subSteps = parseInstructionsIntoSubSteps(
+      currentStep.instructions,
+      currentStep.transportMode,
+      currentStep,
+    );
     const currentSubStep = subSteps[currentSubStepIndex] || subSteps[0];
     const isLastStep = currentStepIndex === trip.route.steps.length - 1;
     const isLastSubStep = currentSubStepIndex === subSteps.length - 1;
@@ -594,7 +678,7 @@ export const ActiveTripScreen = () => {
                 styles.progressDot,
                 index === currentSubStepIndex && styles.progressDotActive,
                 index < currentSubStepIndex && styles.progressDotCompleted,
-                { backgroundColor: index <= currentSubStepIndex ? subStepColor : '#E5E7EB' }
+                { backgroundColor: index <= currentSubStepIndex ? subStepColor : '#E5E7EB' },
               ]}
             />
           ))}
@@ -608,7 +692,9 @@ export const ActiveTripScreen = () => {
           {distanceToNext !== null && (
             <View style={[styles.distanceBadge, { backgroundColor: subStepColor + '20' }]}>
               <Text style={[styles.distanceText, { color: subStepColor }]}>
-                {distanceToNext < 1000 ? `${Math.round(distanceToNext)}m` : `${(distanceToNext / 1000).toFixed(1)}km`}
+                {distanceToNext < 1000
+                  ? `${Math.round(distanceToNext)}m`
+                  : `${(distanceToNext / 1000).toFixed(1)}km`}
               </Text>
             </View>
           )}
@@ -625,9 +711,7 @@ export const ActiveTripScreen = () => {
         {/* Destination */}
         <View style={styles.destinationRow}>
           <Icon name="location" size={20} color={colors.primary} />
-          <Text style={styles.destinationText}>
-            To: {currentStep.toLocation}
-          </Text>
+          <Text style={styles.destinationText}>To: {currentStep.toLocation}</Text>
         </View>
 
         {/* Instruction Content */}
@@ -717,7 +801,12 @@ export const ActiveTripScreen = () => {
     return (
       <View style={styles.progressContainer}>
         <View style={styles.progressBar}>
-          <View style={[styles.progressFill, { width: `${progress}%`, backgroundColor: colors.primary }]} />
+          <View
+            style={[
+              styles.progressFill,
+              { width: `${progress}%`, backgroundColor: colors.primary },
+            ]}
+          />
         </View>
         <Text style={styles.progressText}>
           {currentStepIndex}/{trip.route.steps.length} stops completed
@@ -738,11 +827,13 @@ export const ActiveTripScreen = () => {
 
           return (
             <View key={step.id} style={styles.stepListItem}>
-              <View style={[
-                styles.stepNumberCircle,
-                isCompleted && styles.stepNumberCircleCompleted,
-                isCurrent && styles.stepNumberCircleCurrent,
-              ]}>
+              <View
+                style={[
+                  styles.stepNumberCircle,
+                  isCompleted && styles.stepNumberCircleCompleted,
+                  isCurrent && styles.stepNumberCircleCurrent,
+                ]}
+              >
                 {isCompleted ? (
                   <Icon name="checkmark" size={16} color={colors.white} />
                 ) : (
@@ -757,28 +848,23 @@ export const ActiveTripScreen = () => {
                     size={16}
                     color={isCurrent ? colors.primary : colors.textMuted}
                   />
-                  <Text style={[
-                    styles.stepListMode,
-                    isCurrent && styles.stepListModeCurrent,
-                  ]}>
+                  <Text style={[styles.stepListMode, isCurrent && styles.stepListModeCurrent]}>
                     {getTransportDisplayName(step.transportMode)}
                   </Text>
                 </View>
-                <Text style={[
-                  styles.stepListLocation,
-                  isCurrent && styles.stepListLocationCurrent,
-                  isCompleted && styles.stepListLocationCompleted,
-                ]}>
+                <Text
+                  style={[
+                    styles.stepListLocation,
+                    isCurrent && styles.stepListLocationCurrent,
+                    isCompleted && styles.stepListLocationCompleted,
+                  ]}
+                >
                   {step.toLocation}
                 </Text>
                 <View style={{ flexDirection: 'row', gap: 12, marginTop: 4 }}>
-                  <Text style={styles.stepListMeta}>
-                    {Math.round(step.duration / 60)} min
-                  </Text>
+                  <Text style={styles.stepListMeta}>{Math.round(step.duration / 60)} min</Text>
                   {step.estimatedFare && (
-                    <Text style={styles.stepListMeta}>
-                      ₦{step.estimatedFare}
-                    </Text>
+                    <Text style={styles.stepListMeta}>₦{step.estimatedFare}</Text>
                   )}
                 </View>
               </View>
@@ -845,9 +931,7 @@ export const ActiveTripScreen = () => {
 
         <View style={[styles.etaBanner, { backgroundColor: colors.white }]}>
           <Icon name="time" size={20} color={colors.primary} />
-          <Text style={styles.etaText}>
-            {formatTimeRemaining(trip.estimatedArrival)}
-          </Text>
+          <Text style={styles.etaText}>{formatTimeRemaining(trip.estimatedArrival)}</Text>
           <Text style={styles.etaLabel}>ETA</Text>
         </View>
 
@@ -878,24 +962,32 @@ export const ActiveTripScreen = () => {
           {renderAllSteps()}
 
           {/* Complete Button - only on last sub-step of last main step */}
-          {trip && trip.route.steps && (() => {
-            const lastStepIndex = trip.route.steps.length - 1;
-            const lastStep = trip.route.steps[lastStepIndex];
-            if (!lastStep) return null;
-            const lastSubSteps = parseInstructionsIntoSubSteps(lastStep.instructions, lastStep.transportMode, lastStep);
-            const isOnFinalSubStep = currentStepIndex === lastStepIndex && currentSubStepIndex === lastSubSteps.length - 1;
-            if (!isOnFinalSubStep) return null;
-            return (
-              <View style={{ padding: 16 }}>
-                <Button
-                  title="Complete Trip"
-                  onPress={handleCompleteTrip}
-                  icon="checkmark-circle"
-                  style={{ backgroundColor: colors.success }}
-                />
-              </View>
-            );
-          })()}
+          {trip &&
+            trip.route.steps &&
+            (() => {
+              const lastStepIndex = trip.route.steps.length - 1;
+              const lastStep = trip.route.steps[lastStepIndex];
+              if (!lastStep) return null;
+              const lastSubSteps = parseInstructionsIntoSubSteps(
+                lastStep.instructions,
+                lastStep.transportMode,
+                lastStep,
+              );
+              const isOnFinalSubStep =
+                currentStepIndex === lastStepIndex &&
+                currentSubStepIndex === lastSubSteps.length - 1;
+              if (!isOnFinalSubStep) return null;
+              return (
+                <View style={{ padding: 16 }}>
+                  <Button
+                    title="Complete Trip"
+                    onPress={handleCompleteTrip}
+                    icon="checkmark-circle"
+                    style={{ backgroundColor: colors.success }}
+                  />
+                </View>
+              );
+            })()}
         </BottomSheetScrollView>
       </BottomSheet>
 
@@ -1023,11 +1115,6 @@ const styles = {
     backgroundColor: '#F9FAFB',
     borderRadius: 12,
     alignSelf: 'center' as const,
-  },
-  destinationText: {
-    fontSize: 16,
-    fontWeight: '600' as const,
-    color: '#111',
   },
   instructionContentScroll: {
     maxHeight: 200,
@@ -1208,12 +1295,6 @@ const styles = {
     height: 6,
     borderRadius: 3,
     marginTop: 6,
-  },
-  sectionItemText: {
-    flex: 1,
-    fontSize: 14,
-    lineHeight: 20,
-    color: '#374151',
   },
   nextStepPreview: {
     backgroundColor: '#EFF6FF',

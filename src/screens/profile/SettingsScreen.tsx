@@ -42,10 +42,18 @@ export const SettingsScreen = () => {
         await logout();
         // Note: Navigation to login will be handled automatically by AuthContext
       } else {
-        Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to delete account. Please try again.' });
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Failed to delete account. Please try again.',
+        });
       }
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Error', text2: 'Something went wrong. Please try again.' });
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Something went wrong. Please try again.',
+      });
     }
   };
 
@@ -89,7 +97,12 @@ export const SettingsScreen = () => {
           title: 'Privacy Settings',
           subtitle: 'Control your privacy',
           type: 'navigation',
-          onPress: () => Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Privacy settings coming soon' }),
+          onPress: () =>
+            Toast.show({
+              type: 'info',
+              text1: 'Coming Soon',
+              text2: 'Privacy settings coming soon',
+            }),
         },
       ],
     },
@@ -101,7 +114,12 @@ export const SettingsScreen = () => {
           title: 'About Avigate',
           subtitle: 'Version 1.0.0',
           type: 'navigation',
-          onPress: () => Toast.show({ type: 'info', text1: 'Avigate v1.0.0', text2: 'Your trusted ride companion' }),
+          onPress: () =>
+            Toast.show({
+              type: 'info',
+              text1: 'Avigate v1.0.0',
+              text2: 'Your trusted ride companion',
+            }),
         },
         {
           icon: 'document-text-outline',
@@ -128,14 +146,24 @@ export const SettingsScreen = () => {
           subtitle: 'Reach out to our team',
           type: 'navigation',
           onPress: () =>
-            dialog.showDialog({ type: 'info', title: 'Contact Support', message: 'Email: hello@avigate.com\nPhone: +234 800 000 0000', buttons: [{ text: 'OK', style: 'primary' }] }),
+            dialog.showDialog({
+              type: 'info',
+              title: 'Contact Support',
+              message: 'Email: hello@avigate.com\nPhone: +234 800 000 0000',
+              buttons: [{ text: 'OK', style: 'primary' }],
+            }),
         },
         {
           icon: 'star-outline',
           title: 'Rate Avigate',
           subtitle: 'Rate us on the app store',
           type: 'navigation',
-          onPress: () => Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'App store rating coming soon' }),
+          onPress: () =>
+            Toast.show({
+              type: 'info',
+              text1: 'Coming Soon',
+              text2: 'App store rating coming soon',
+            }),
         },
       ],
     },

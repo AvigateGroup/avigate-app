@@ -28,12 +28,8 @@ export const Loading: React.FC<LoadingProps> = ({
         </View>
       )}
       <ActivityIndicator size="large" color={colors.primary} style={styles.spinner} />
-      {message && (
-        <Text style={[styles.message, { color: colors.text }]}>{message}</Text>
-      )}
-      {subtitle && (
-        <Text style={[styles.subtitle, { color: colors.textMuted }]}>{subtitle}</Text>
-      )}
+      {message && <Text style={[styles.message, { color: colors.text }]}>{message}</Text>}
+      {subtitle && <Text style={[styles.subtitle, { color: colors.textMuted }]}>{subtitle}</Text>}
     </View>
   );
 };

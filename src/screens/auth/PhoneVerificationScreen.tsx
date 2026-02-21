@@ -23,7 +23,10 @@ import { useAuth } from '@/store/AuthContext';
 import { COLORS } from '@/constants/colors';
 import { UserSex } from '@/types/auth.types';
 
-type PhoneVerificationScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'PhoneVerification'>;
+type PhoneVerificationScreenNavigationProp = NativeStackNavigationProp<
+  AuthStackParamList,
+  'PhoneVerification'
+>;
 type PhoneVerificationScreenRouteProp = RouteProp<AuthStackParamList, 'PhoneVerification'>;
 
 export const PhoneVerificationScreen: React.FC = () => {
