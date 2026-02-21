@@ -57,11 +57,7 @@ export const LoadingSkeleton: React.FC<LoadingSkeletonProps> = ({
       ]}
     >
       <Animated.View
-        style={[
-          StyleSheet.absoluteFill,
-          { width: '150%', left: '-25%' },
-          animatedStyle,
-        ]}
+        style={[StyleSheet.absoluteFill, { width: '150%', left: '-25%' }, animatedStyle]}
       >
         <LinearGradient
           colors={[baseColor, highlightColor, baseColor]}
@@ -93,7 +89,12 @@ export const PostCardSkeleton: React.FC = () => {
   const colors = useThemedColors();
 
   return (
-    <View style={[styles.postCardSkeleton, { backgroundColor: colors.white, borderColor: colors.border }]}>
+    <View
+      style={[
+        styles.postCardSkeleton,
+        { backgroundColor: colors.white, borderColor: colors.border },
+      ]}
+    >
       <View style={styles.postHeaderSkeleton}>
         <LoadingSkeleton width={36} height={36} borderRadius={18} style={{ marginRight: 10 }} />
         <View style={{ flex: 1 }}>

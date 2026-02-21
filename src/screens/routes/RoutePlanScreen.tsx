@@ -76,7 +76,11 @@ export const RoutePlanScreen = () => {
     if (!selectedRoute) return;
 
     // TODO: Navigate to active trip screen when added to navigator
-    Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Trip tracking feature will be available soon' });
+    Toast.show({
+      type: 'info',
+      text1: 'Coming Soon',
+      text2: 'Trip tracking feature will be available soon',
+    });
   };
 
   const toggleStepExpansion = (stepOrder: number) => {
@@ -488,7 +492,9 @@ export const RoutePlanScreen = () => {
                     Walking Required
                   </Text>
                   <Text style={[routeStyles.infoText, { color: colors.textMuted }]}>
-                    {"This destination requires a short walk from the main road. We'll guide you step-by-step!"}
+                    {
+                      "This destination requires a short walk from the main road. We'll guide you step-by-step!"
+                    }
                   </Text>
                 </View>
               </View>
@@ -502,7 +508,9 @@ export const RoutePlanScreen = () => {
                     Intermediate Stop
                   </Text>
                   <Text style={[routeStyles.infoText, { color: colors.textMuted }]}>
-                    {"Your destination is a stop along this route. Tell the conductor where you're going!"}
+                    {
+                      "Your destination is a stop along this route. Tell the conductor where you're going!"
+                    }
                   </Text>
                 </View>
               </View>

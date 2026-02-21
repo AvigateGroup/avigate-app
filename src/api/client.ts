@@ -7,7 +7,8 @@ import { getItem, setItem, removeItem } from '@/utils/storage';
 class ApiClient {
   private client: AxiosInstance;
   private isRefreshing = false;
-  private refreshSubscribers: { resolve: (token: string) => void; reject: (err: any) => void }[] = [];
+  private refreshSubscribers: { resolve: (token: string) => void; reject: (err: any) => void }[] =
+    [];
 
   constructor() {
     this.client = axios.create({
@@ -43,7 +44,14 @@ class ApiClient {
         // Don't try to refresh tokens for auth mutation endpoints (login, register, etc.)
         // but DO allow refresh for protected auth endpoints like /auth/me
         const url = originalRequest?.url || '';
-        const authNoRefreshEndpoints = ['/auth/login', '/auth/register', '/auth/refresh-token', '/auth/google', '/auth/verify-email', '/auth/resend-verification'];
+        const authNoRefreshEndpoints = [
+          '/auth/login',
+          '/auth/register',
+          '/auth/refresh-token',
+          '/auth/google',
+          '/auth/verify-email',
+          '/auth/resend-verification',
+        ];
         const isAuthMutationEndpoint = authNoRefreshEndpoints.some(ep => url.startsWith(ep));
 
         if (isAuthMutationEndpoint) {

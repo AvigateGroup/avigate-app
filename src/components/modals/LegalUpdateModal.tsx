@@ -87,7 +87,9 @@ export const LegalUpdateModal: React.FC<LegalUpdateModalProps> = ({
           </View>
 
           <Text style={[styles.description, { color: colors.textMuted }]}>
-            {"To continue using Avigate, please review and accept the updated documents. We've made changes to improve your experience and protect your privacy."}
+            {
+              "To continue using Avigate, please review and accept the updated documents. We've made changes to improve your experience and protect your privacy."
+            }
           </Text>
 
           {/* Terms of Service Section */}
@@ -95,9 +97,7 @@ export const LegalUpdateModal: React.FC<LegalUpdateModalProps> = ({
             <View style={[styles.documentSection, { borderColor: colors.border }]}>
               <View style={styles.documentHeader}>
                 <Icon name="document-text-outline" size={20} color={colors.primary} />
-                <Text style={[styles.documentTitle, { color: colors.text }]}>
-                  Terms of Service
-                </Text>
+                <Text style={[styles.documentTitle, { color: colors.text }]}>Terms of Service</Text>
                 <View style={[styles.versionBadge, { backgroundColor: colors.primary }]}>
                   <Text style={styles.versionText}>v{currentTermsVersion}</Text>
                 </View>
@@ -119,9 +119,7 @@ export const LegalUpdateModal: React.FC<LegalUpdateModalProps> = ({
               {hasReadTerms && (
                 <View style={styles.checkRow}>
                   <Icon name="checkmark-circle" size={20} color={COLORS.success} />
-                  <Text style={[styles.checkText, { color: COLORS.success }]}>
-                    Marked as read
-                  </Text>
+                  <Text style={[styles.checkText, { color: COLORS.success }]}>Marked as read</Text>
                 </View>
               )}
             </View>
@@ -154,9 +152,7 @@ export const LegalUpdateModal: React.FC<LegalUpdateModalProps> = ({
               {hasReadPrivacy && (
                 <View style={styles.checkRow}>
                   <Icon name="checkmark-circle" size={20} color={COLORS.success} />
-                  <Text style={[styles.checkText, { color: COLORS.success }]}>
-                    Marked as read
-                  </Text>
+                  <Text style={[styles.checkText, { color: COLORS.success }]}>Marked as read</Text>
                 </View>
               )}
             </View>

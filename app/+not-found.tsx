@@ -13,7 +13,9 @@ export default function NotFoundScreen() {
       <Stack.Screen options={{ title: 'Oops! Page not found' }} />
       <View style={[styles.container, { backgroundColor: colors.background }]}>
         <Text style={[styles.title, { color: colors.primary }]}>404</Text>
-        <Text style={[styles.subtitle, { color: colors.text }]}>{"This screen doesn't exist."}</Text>
+        <Text style={[styles.subtitle, { color: colors.text }]}>
+          {"This screen doesn't exist."}
+        </Text>
         <Link href="/" style={[styles.link, { backgroundColor: colors.primary }]}>
           <Text style={[styles.linkText, { color: colors.textWhite }]}>Go to home screen</Text>
         </Link>

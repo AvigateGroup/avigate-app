@@ -99,7 +99,11 @@ export const ContributeRouteScreen = () => {
 
   const handleSubmit = async () => {
     if (!description.trim()) {
-      Toast.show({ type: 'error', text1: 'Missing Description', text2: 'Please describe your contribution' });
+      Toast.show({
+        type: 'error',
+        text1: 'Missing Description',
+        text2: 'Please describe your contribution',
+      });
       return;
     }
 
@@ -108,7 +112,11 @@ export const ContributeRouteScreen = () => {
     switch (contributionType) {
       case 'new_route':
         if (!routeName || !startLocation || !endLocation) {
-          Toast.show({ type: 'error', text1: 'Missing Info', text2: 'Please fill in route name, start and end locations' });
+          Toast.show({
+            type: 'error',
+            text1: 'Missing Info',
+            text2: 'Please fill in route name, start and end locations',
+          });
           return;
         }
         proposedData = {
@@ -138,7 +146,11 @@ export const ContributeRouteScreen = () => {
 
       case 'fare_correction':
         if (!minFare || !maxFare) {
-          Toast.show({ type: 'error', text1: 'Missing Fare', text2: 'Please enter the current fare range' });
+          Toast.show({
+            type: 'error',
+            text1: 'Missing Fare',
+            text2: 'Please enter the current fare range',
+          });
           return;
         }
         proposedData = {
@@ -149,7 +161,11 @@ export const ContributeRouteScreen = () => {
 
       case 'new_intermediate_stop':
         if (!stopName || !segmentName) {
-          Toast.show({ type: 'error', text1: 'Missing Info', text2: 'Please enter stop name and select a route segment' });
+          Toast.show({
+            type: 'error',
+            text1: 'Missing Info',
+            text2: 'Please enter stop name and select a route segment',
+          });
           return;
         }
         proposedData = {
@@ -165,7 +181,11 @@ export const ContributeRouteScreen = () => {
 
       case 'instructions_update':
         if (!instructions.trim()) {
-          Toast.show({ type: 'error', text1: 'Missing Instructions', text2: 'Please enter improved directions' });
+          Toast.show({
+            type: 'error',
+            text1: 'Missing Instructions',
+            text2: 'Please enter improved directions',
+          });
           return;
         }
         proposedData = {

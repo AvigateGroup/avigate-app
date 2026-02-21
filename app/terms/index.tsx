@@ -30,7 +30,9 @@ export default function TermsScreen() {
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>1. Acceptance of Terms</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          {'Welcome to Avigate. These Terms of Service ("Terms") constitute a legally binding agreement between you and Avigate ("we," "us," or "our") regarding your use of the Avigate mobile application and related services (collectively, the "Service").'}
+          {
+            'Welcome to Avigate. These Terms of Service ("Terms") constitute a legally binding agreement between you and Avigate ("we," "us," or "our") regarding your use of the Avigate mobile application and related services (collectively, the "Service").'
+          }
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           By creating an account, accessing, or using Avigate, you acknowledge that you have read,
@@ -635,7 +637,9 @@ export default function TermsScreen() {
           11.1 Location Permission
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          {"Avigate requires access to your device's location services to provide navigation and location sharing features. You grant us permission to:"}
+          {
+            "Avigate requires access to your device's location services to provide navigation and location sharing features. You grant us permission to:"
+          }
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Access your real-time GPS location when using the app
@@ -714,9 +718,13 @@ export default function TermsScreen() {
           12. Disclaimers and Limitations of Liability
         </Text>
 
-        <Text style={[styles.subsectionTitle, { color: colors.text }]}>{'12.1 Service "As Is"'}</Text>
+        <Text style={[styles.subsectionTitle, { color: colors.text }]}>
+          {'12.1 Service "As Is"'}
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          {'THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR ACCURACY.'}
+          {
+            'THE SERVICE IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR ACCURACY.'
+          }
         </Text>
         <Text style={[styles.text, { color: colors.text }]}>We do not warrant that:</Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
@@ -809,7 +817,9 @@ export default function TermsScreen() {
 
         <Text style={[styles.sectionTitle, { color: colors.text }]}>13. Indemnification</Text>
         <Text style={[styles.text, { color: colors.text }]}>
-          {"You agree to defend, indemnify, and hold harmless Avigate, its affiliates, officers, directors, employees, agents, licensors, and suppliers from and against any claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising from:"}
+          {
+            "You agree to defend, indemnify, and hold harmless Avigate, its affiliates, officers, directors, employees, agents, licensors, and suppliers from and against any claims, liabilities, damages, losses, costs, expenses, or fees (including reasonable attorneys' fees) arising from:"
+          }
         </Text>
         <Text style={[styles.bulletText, { color: colors.text }]}>
           • Your use or misuse of the Service

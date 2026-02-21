@@ -104,11 +104,7 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
       statusBarTranslucent
     >
       {/* Backdrop */}
-      <TouchableOpacity
-        style={styles.backdrop}
-        activeOpacity={1}
-        onPress={onClose}
-      >
+      <TouchableOpacity style={styles.backdrop} activeOpacity={1} onPress={onClose}>
         <View style={[styles.backdropOverlay, { backgroundColor: 'rgba(0,0,0,0.5)' }]} />
       </TouchableOpacity>
 
@@ -129,11 +125,7 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
           {/* Header Section */}
           <View style={[styles.header, { borderBottomColor: colors.border }]}>
             {/* Close Button */}
-            <TouchableOpacity
-              style={styles.closeButton}
-              onPress={onClose}
-              activeOpacity={0.7}
-            >
+            <TouchableOpacity style={styles.closeButton} onPress={onClose} activeOpacity={0.7}>
               <Icon name="close" size={28} color={colors.text} />
             </TouchableOpacity>
 

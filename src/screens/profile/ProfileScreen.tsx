@@ -95,7 +95,11 @@ export const ProfileScreen: React.FC = () => {
       title: 'Trip History',
       subtitle: 'View your past trips',
       onPress: () => {
-        Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Trip history feature will be available soon' });
+        Toast.show({
+          type: 'info',
+          text1: 'Coming Soon',
+          text2: 'Trip history feature will be available soon',
+        });
       },
     },
     {
@@ -109,7 +113,11 @@ export const ProfileScreen: React.FC = () => {
       title: 'Help & Support',
       subtitle: 'Get help with your account',
       onPress: () => {
-        Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Help & support feature will be available soon' });
+        Toast.show({
+          type: 'info',
+          text1: 'Coming Soon',
+          text2: 'Help & support feature will be available soon',
+        });
       },
     },
   ];
@@ -191,9 +199,7 @@ export const ProfileScreen: React.FC = () => {
             <Text style={[profileFeatureStyles.statValue, { color: colors.text }]}>
               {tripStats?.completedTrips ?? 0}
             </Text>
-            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>
-              Trips
-            </Text>
+            <Text style={[profileFeatureStyles.statLabel, { color: colors.textMuted }]}>Trips</Text>
           </View>
           <View style={[profileFeatureStyles.statDivider, { backgroundColor: colors.border }]} />
           <View style={profileFeatureStyles.statItem}>

@@ -22,11 +22,11 @@ import { useDialog } from '@/contexts/DialogContext';
 function cleanMarkdown(text: string): string {
   if (!text) return '';
   return text
-    .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove **bold**
-    .replace(/\*(.*?)\*/g, '$1')      // Remove *italic*
-    .replace(/^[-*]\s+/gm, '')        // Remove bullet markers
-    .replace(/#{1,6}\s+/g, '')        // Remove heading markers
-    .replace(/\n{2,}/g, '\n')         // Collapse multiple newlines
+    .replace(/\*\*(.*?)\*\*/g, '$1') // Remove **bold**
+    .replace(/\*(.*?)\*/g, '$1') // Remove *italic*
+    .replace(/^[-*]\s+/gm, '') // Remove bullet markers
+    .replace(/#{1,6}\s+/g, '') // Remove heading markers
+    .replace(/\n{2,}/g, '\n') // Collapse multiple newlines
     .trim();
 }
 
@@ -40,8 +40,8 @@ function getTransportDisplayName(mode: string | any): string {
   } else if (typeof mode === 'string') {
     // Clean up any JSON formatting artifacts
     cleanMode = mode
-      .replace(/^\{?"?/g, '')  // Remove leading { or {"
-      .replace(/"?\}?$/g, '')  // Remove trailing "} or }
+      .replace(/^\{?"?/g, '') // Remove leading { or {"
+      .replace(/"?\}?$/g, '') // Remove trailing "} or }
       .replace(/^["'\[]*/g, '') // Remove leading quotes/brackets
       .replace(/["'\]]*$/g, '') // Remove trailing quotes/brackets
       .trim();
@@ -50,19 +50,30 @@ function getTransportDisplayName(mode: string | any): string {
   const normalizedMode = String(cleanMode).toLowerCase();
 
   switch (normalizedMode) {
-    case 'bus': return 'Bus';
-    case 'taxi': return 'Taxi';
-    case 'keke': return 'Keke';
-    case 'okada': return 'Okada';
-    case 'walk': case 'walking': return 'Walk';
-    default: return cleanMode ? String(cleanMode).charAt(0).toUpperCase() + String(cleanMode).slice(1) : 'Transport';
+    case 'bus':
+      return 'Bus';
+    case 'taxi':
+      return 'Taxi';
+    case 'keke':
+      return 'Keke';
+    case 'okada':
+      return 'Okada';
+    case 'walk':
+    case 'walking':
+      return 'Walk';
+    default:
+      return cleanMode
+        ? String(cleanMode).charAt(0).toUpperCase() + String(cleanMode).slice(1)
+        : 'Transport';
   }
 }
 
 function getTransportModesDisplay(step: any): string {
   // If step has multiple transport modes, show them all
   if (step.transportModes && Array.isArray(step.transportModes) && step.transportModes.length > 1) {
-    const uniqueModes = [...new Set(step.transportModes.map((m: any) => getTransportDisplayName(m)))];
+    const uniqueModes = [
+      ...new Set(step.transportModes.map((m: any) => getTransportDisplayName(m))),
+    ];
     return uniqueModes.join('/');
   }
   // Fallback to single transport mode
@@ -122,12 +133,15 @@ export default function RouteDetails() {
         setTimeout(() => {
           if (mapRef.current) {
             // Start by focusing on user's current location with closer zoom
-            mapRef.current.animateToRegion({
-              latitude: startLat,
-              longitude: startLng,
-              latitudeDelta: 0.008, // ~800m view - close enough to see nearby streets
-              longitudeDelta: 0.008,
-            }, 800);
+            mapRef.current.animateToRegion(
+              {
+                latitude: startLat,
+                longitude: startLng,
+                latitudeDelta: 0.008, // ~800m view - close enough to see nearby streets
+                longitudeDelta: 0.008,
+              },
+              800,
+            );
 
             // After showing user location, expand to show the first step/boarding point
             setTimeout(() => {
@@ -138,13 +152,16 @@ export default function RouteDetails() {
                 // If there's a walking step, zoom to show user location and boarding point
                 if (firstStep?.transportMode === 'walk' || firstStep?.transportMode === 'walking') {
                   // Show user location and the junction they need to walk to
-                  mapRef.current.fitToCoordinates([
-                    { latitude: startLat, longitude: startLng },
-                    { latitude: startLat + 0.005, longitude: startLng + 0.005 }, // Approximate walking destination
-                  ], {
-                    edgePadding: { top: 100, right: 50, bottom: 300, left: 50 },
-                    animated: true,
-                  });
+                  mapRef.current.fitToCoordinates(
+                    [
+                      { latitude: startLat, longitude: startLng },
+                      { latitude: startLat + 0.005, longitude: startLng + 0.005 }, // Approximate walking destination
+                    ],
+                    {
+                      edgePadding: { top: 100, right: 50, bottom: 300, left: 50 },
+                      animated: true,
+                    },
+                  );
                 } else {
                   // Show the full route with more padding at bottom for the sheet
                   const coords = route.polyline || [
@@ -186,7 +203,10 @@ export default function RouteDetails() {
     if (activeTripResult.success && activeTripResult.data?.trip) {
       // There's already an active trip - show options dialog
       const existingTrip = activeTripResult.data.trip;
-      const destinationName = (existingTrip.route as any)?.endLocation?.name || existingTrip.route?.name || 'your destination';
+      const destinationName =
+        (existingTrip.route as any)?.endLocation?.name ||
+        existingTrip.route?.name ||
+        'your destination';
 
       dialog.showDialog({
         type: 'warning',
@@ -235,15 +255,14 @@ export default function RouteDetails() {
     const result = await startTrip(routeId, startLat, startLng);
 
     if (result.success) {
-      dialog.showSuccess(
-        'Trip Started!',
-        'Your trip tracking has begun. Stay safe!',
-        () => {
-          router.push('/trips/active');
-        }
-      );
+      dialog.showSuccess('Trip Started!', 'Your trip tracking has begun. Stay safe!', () => {
+        router.push('/trips/active');
+      });
     } else {
-      dialog.showError('Failed to Start Trip', result.error || 'Unable to start trip. Please try again.');
+      dialog.showError(
+        'Failed to Start Trip',
+        result.error || 'Unable to start trip. Please try again.',
+      );
     }
   };
 
@@ -312,11 +331,7 @@ export default function RouteDetails() {
 
         {/* Route Polyline */}
         {route?.polyline && (
-          <Polyline
-            coordinates={route.polyline}
-            strokeColor={colors.primary}
-            strokeWidth={4}
-          />
+          <Polyline coordinates={route.polyline} strokeColor={colors.primary} strokeWidth={4} />
         )}
       </MapView>
 
@@ -337,7 +352,11 @@ export default function RouteDetails() {
         enableDynamicSizing={false}
         enablePanDownToClose={false}
         handleIndicatorStyle={{ backgroundColor: colors.textMuted }}
-        backgroundStyle={{ backgroundColor: colors.white, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}
+        backgroundStyle={{
+          backgroundColor: colors.white,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        }}
       >
         <BottomSheetScrollView
           showsVerticalScrollIndicator={false}
@@ -355,9 +374,7 @@ export default function RouteDetails() {
               <View style={styles.statItem}>
                 <Icon name="navigate" size={20} color={colors.primary} />
                 <Text style={[styles.statValue, { color: colors.text }]}>
-                  {route?.distance
-                    ? `${(route.distance / 1000).toFixed(1)} km`
-                    : 'Calculating...'}
+                  {route?.distance ? `${(route.distance / 1000).toFixed(1)} km` : 'Calculating...'}
                 </Text>
               </View>
 
@@ -404,9 +421,7 @@ export default function RouteDetails() {
           {route?.steps && route.steps.length > 0 && (
             <View style={styles.instructionsContainer}>
               <View style={styles.stepsHeader}>
-                <Text style={[styles.instructionsTitle, { color: colors.text }]}>
-                  Trip Stops
-                </Text>
+                <Text style={[styles.instructionsTitle, { color: colors.text }]}>Trip Stops</Text>
                 <View style={[styles.stepsCount, { backgroundColor: colors.primaryLight }]}>
                   <Text style={[styles.stepsCountText, { color: colors.primary }]}>
                     {route.steps.length} {route.steps.length === 1 ? 'stop' : 'stops'}
@@ -424,11 +439,17 @@ export default function RouteDetails() {
 
                   <View style={styles.stepInfo}>
                     <Text style={[styles.stepInstruction, { color: colors.text }]}>
-                      {getStepSummary(step, index === route.steps.length - 1, params.destName as string)}
+                      {getStepSummary(
+                        step,
+                        index === route.steps.length - 1,
+                        params.destName as string,
+                      )}
                     </Text>
                     <View style={styles.stepMeta}>
                       {(step.transportMode || step.transportModes) && (
-                        <View style={[styles.transportBadge, { backgroundColor: colors.background }]}>
+                        <View
+                          style={[styles.transportBadge, { backgroundColor: colors.background }]}
+                        >
                           <Icon
                             name={getTransportIcon(step.transportMode || step.transportModes?.[0])}
                             size={14}
@@ -453,7 +474,6 @@ export default function RouteDetails() {
                   </View>
                 </View>
               ))}
-
             </View>
           )}
         </BottomSheetScrollView>
@@ -470,8 +490,7 @@ function getStepIcon(maneuver: string): string {
 
   if (lowerManeuver.includes('right')) return 'arrow-forward';
   if (lowerManeuver.includes('left')) return 'arrow-back';
-  if (lowerManeuver.includes('straight') || lowerManeuver.includes('continue'))
-    return 'arrow-up';
+  if (lowerManeuver.includes('straight') || lowerManeuver.includes('continue')) return 'arrow-up';
   if (lowerManeuver.includes('arrive')) return 'flag';
 
   return 'navigate';

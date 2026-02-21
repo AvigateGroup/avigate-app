@@ -52,22 +52,27 @@ export const HomeScreenSkeleton: React.FC = () => {
         <View style={[skeletonStyles.handle, { backgroundColor: colors.border }]} />
 
         {/* Search bar */}
-        <View
-          style={[
-            skeletonStyles.searchBar,
-            { backgroundColor: '#F3F4F6', borderWidth: 0 },
-          ]}
-        >
+        <View style={[skeletonStyles.searchBar, { backgroundColor: '#F3F4F6', borderWidth: 0 }]}>
           <LoadingSkeleton width={24} height={24} borderRadius={12} style={{ marginRight: 12 }} />
           <LoadingSkeleton width="40%" height={18} borderRadius={6} />
         </View>
 
         {/* Quick action cards */}
         <View style={skeletonStyles.quickActions}>
-          {[1, 2].map((i) => (
+          {[1, 2].map(i => (
             <View key={i} style={[skeletonStyles.quickActionCard, { backgroundColor: '#F9FAFB' }]}>
-              <LoadingSkeleton width={40} height={40} borderRadius={8} style={{ marginBottom: 8 }} />
-              <LoadingSkeleton width="60%" height={14} borderRadius={4} style={{ marginBottom: 4 }} />
+              <LoadingSkeleton
+                width={40}
+                height={40}
+                borderRadius={8}
+                style={{ marginBottom: 8 }}
+              />
+              <LoadingSkeleton
+                width="60%"
+                height={14}
+                borderRadius={4}
+                style={{ marginBottom: 4 }}
+              />
               <LoadingSkeleton width="80%" height={12} borderRadius={4} />
             </View>
           ))}
@@ -75,11 +80,16 @@ export const HomeScreenSkeleton: React.FC = () => {
 
         {/* Popular destinations */}
         <LoadingSkeleton width="50%" height={16} borderRadius={4} style={{ marginBottom: 0 }} />
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3].map(i => (
           <View key={i} style={skeletonStyles.recentRow}>
             <LoadingSkeleton width={40} height={40} borderRadius={20} style={{ marginRight: 12 }} />
             <View style={{ flex: 1 }}>
-              <LoadingSkeleton width="50%" height={15} borderRadius={4} style={{ marginBottom: 4 }} />
+              <LoadingSkeleton
+                width="50%"
+                height={15}
+                borderRadius={4}
+                style={{ marginBottom: 4 }}
+              />
               <LoadingSkeleton width="70%" height={13} borderRadius={4} />
             </View>
             <LoadingSkeleton width={40} height={13} borderRadius={4} />
@@ -93,12 +103,28 @@ export const HomeScreenSkeleton: React.FC = () => {
         </View>
 
         {/* Post cards */}
-        {[1, 2, 3].map((i) => (
-          <View key={i} style={[skeletonStyles.drawerPostCard, { backgroundColor: '#F9FAFB', borderColor: '#E5E7EB' }]}>
+        {[1, 2, 3].map(i => (
+          <View
+            key={i}
+            style={[
+              skeletonStyles.drawerPostCard,
+              { backgroundColor: '#F9FAFB', borderColor: '#E5E7EB' },
+            ]}
+          >
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
-              <LoadingSkeleton width={36} height={36} borderRadius={18} style={{ marginRight: 10 }} />
+              <LoadingSkeleton
+                width={36}
+                height={36}
+                borderRadius={18}
+                style={{ marginRight: 10 }}
+              />
               <View style={{ flex: 1 }}>
-                <LoadingSkeleton width="55%" height={14} borderRadius={4} style={{ marginBottom: 4 }} />
+                <LoadingSkeleton
+                  width="55%"
+                  height={14}
+                  borderRadius={4}
+                  style={{ marginBottom: 4 }}
+                />
                 <LoadingSkeleton width="35%" height={12} borderRadius={4} />
               </View>
             </View>
@@ -159,7 +185,12 @@ export const RouteDetailsSkeleton: React.FC = () => {
         </View>
 
         {/* Start button placeholder */}
-        <LoadingSkeleton width="100%" height={52} borderRadius={12} style={{ marginTop: 20, marginBottom: 20 }} />
+        <LoadingSkeleton
+          width="100%"
+          height={52}
+          borderRadius={12}
+          style={{ marginTop: 20, marginBottom: 20 }}
+        />
 
         {/* Steps header */}
         <View style={[skeletonStyles.statsRow, { marginBottom: 16 }]}>
@@ -168,11 +199,16 @@ export const RouteDetailsSkeleton: React.FC = () => {
         </View>
 
         {/* Step items */}
-        {[1, 2, 3].map((i) => (
+        {[1, 2, 3].map(i => (
           <View key={i} style={skeletonStyles.stepRow}>
             <LoadingSkeleton width={32} height={32} borderRadius={16} style={{ marginRight: 12 }} />
             <View style={{ flex: 1 }}>
-              <LoadingSkeleton width="80%" height={15} borderRadius={4} style={{ marginBottom: 8 }} />
+              <LoadingSkeleton
+                width="80%"
+                height={15}
+                borderRadius={4}
+                style={{ marginBottom: 8 }}
+              />
               <View style={{ flexDirection: 'row', gap: 12 }}>
                 <LoadingSkeleton width={60} height={24} borderRadius={8} />
                 <LoadingSkeleton width={40} height={14} borderRadius={4} />
@@ -214,13 +250,18 @@ export const CommunityFeedSkeleton: React.FC = () => {
       </View>
 
       {/* Post card skeletons */}
-      {[1, 2, 3].map((i) => (
+      {[1, 2, 3].map(i => (
         <View key={i} style={[skeletonStyles.postCard, { backgroundColor: colors.white }]}>
           {/* Author header */}
           <View style={skeletonStyles.postHeader}>
             <LoadingSkeleton width={40} height={40} borderRadius={20} style={{ marginRight: 10 }} />
             <View style={{ flex: 1 }}>
-              <LoadingSkeleton width="45%" height={14} borderRadius={4} style={{ marginBottom: 4 }} />
+              <LoadingSkeleton
+                width="45%"
+                height={14}
+                borderRadius={4}
+                style={{ marginBottom: 4 }}
+              />
               <LoadingSkeleton width="25%" height={12} borderRadius={4} />
             </View>
             <LoadingSkeleton width={24} height={24} borderRadius={4} />
@@ -233,7 +274,7 @@ export const CommunityFeedSkeleton: React.FC = () => {
 
           {/* Actions row */}
           <View style={[skeletonStyles.actionsRow, { borderTopColor: colors.border }]}>
-            {[1, 2, 3, 4].map((j) => (
+            {[1, 2, 3, 4].map(j => (
               <LoadingSkeleton key={j} width={36} height={20} borderRadius={4} />
             ))}
           </View>
@@ -288,11 +329,16 @@ export const ActiveTripSkeleton: React.FC = () => {
         <LoadingSkeleton width="100%" height={4} borderRadius={2} style={{ marginVertical: 16 }} />
 
         {/* Upcoming steps */}
-        {[1, 2].map((i) => (
+        {[1, 2].map(i => (
           <View key={i} style={skeletonStyles.upcomingStep}>
             <LoadingSkeleton width={28} height={28} borderRadius={14} style={{ marginRight: 12 }} />
             <View style={{ flex: 1 }}>
-              <LoadingSkeleton width="70%" height={14} borderRadius={4} style={{ marginBottom: 4 }} />
+              <LoadingSkeleton
+                width="70%"
+                height={14}
+                borderRadius={4}
+                style={{ marginBottom: 4 }}
+              />
               <LoadingSkeleton width="45%" height={12} borderRadius={4} />
             </View>
           </View>
@@ -318,14 +364,9 @@ export const DeviceCardSkeleton: React.FC = () => {
       <LoadingSkeleton width="30%" height={18} borderRadius={4} style={{ marginBottom: 4 }} />
       <LoadingSkeleton width="70%" height={14} borderRadius={4} style={{ marginBottom: 16 }} />
 
-      {[1, 2, 3].map((i) => (
-        <View
-          key={i}
-          style={[skeletonStyles.deviceCard, { backgroundColor: colors.white }]}
-        >
-          <View
-            style={[skeletonStyles.deviceIconBox, { backgroundColor: colors.background }]}
-          >
+      {[1, 2, 3].map(i => (
+        <View key={i} style={[skeletonStyles.deviceCard, { backgroundColor: colors.white }]}>
+          <View style={[skeletonStyles.deviceIconBox, { backgroundColor: colors.background }]}>
             <LoadingSkeleton width={24} height={24} borderRadius={4} />
           </View>
           <View style={{ flex: 1 }}>
@@ -359,7 +400,7 @@ export const NotificationCardSkeleton: React.FC = () => {
 
 export const NotificationListSkeleton: React.FC = () => (
   <View style={{ padding: 16 }}>
-    {[1, 2, 3, 4, 5].map((i) => (
+    {[1, 2, 3, 4, 5].map(i => (
       <NotificationCardSkeleton key={i} />
     ))}
   </View>

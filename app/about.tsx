@@ -1,14 +1,7 @@
 // app/about.tsx
 
 import React from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  Platform,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -43,19 +36,17 @@ export default function About() {
         <View style={[styles.section, { backgroundColor: colors.white }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>About Avigate</Text>
           <Text style={[styles.sectionText, { color: colors.textMuted }]}>
-            Avigate is a community-driven navigation app that helps you find the best routes,
-            share your location, and stay updated with real-time traffic and safety information.
+            Avigate is a community-driven navigation app that helps you find the best routes, share
+            your location, and stay updated with real-time traffic and safety information.
           </Text>
         </View>
 
         <View style={[styles.section, { backgroundColor: colors.white }]}>
           <Text style={[styles.sectionTitle, { color: colors.text }]}>Features</Text>
           <Text style={[styles.sectionText, { color: colors.textMuted }]}>
-            • Smart route finding with turn-by-turn directions{'\n'}
-            • Real-time location sharing{'\n'}
-            • Community feed for route updates{'\n'}
-            • Safety reports and alerts{'\n'}
-            • Route contributions and improvements
+            • Smart route finding with turn-by-turn directions{'\n'}• Real-time location sharing
+            {'\n'}• Community feed for route updates{'\n'}• Safety reports and alerts{'\n'}• Route
+            contributions and improvements
           </Text>
         </View>
 

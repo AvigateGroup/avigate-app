@@ -327,7 +327,9 @@ export const RegisterScreen: React.FC = () => {
         return (
           <View style={authFeatureStyles.stepContainer}>
             <Text style={authFeatureStyles.stepTitle}>Complete your profile</Text>
-            <Text style={authFeatureStyles.stepSubtitle}>{"We'll use this for account security"}</Text>
+            <Text style={authFeatureStyles.stepSubtitle}>
+              {"We'll use this for account security"}
+            </Text>
 
             <CountryPhonePicker
               countryCode={formData.countryCode}
@@ -358,17 +360,31 @@ export const RegisterScreen: React.FC = () => {
               </View>
               <Text style={authFeatureStyles.checkboxLabel}>
                 I agree to the{' '}
-                <Text style={typographyStyles.linkText} onPress={() => {
-                  // TODO: Navigate to Terms of Service when added to Auth stack
-                  Toast.show({ type: 'info', text1: 'Terms of Service', text2: 'Full terms available in Settings after registration.' });
-                }}>
+                <Text
+                  style={typographyStyles.linkText}
+                  onPress={() => {
+                    // TODO: Navigate to Terms of Service when added to Auth stack
+                    Toast.show({
+                      type: 'info',
+                      text1: 'Terms of Service',
+                      text2: 'Full terms available in Settings after registration.',
+                    });
+                  }}
+                >
                   Terms of Service
                 </Text>{' '}
                 and{' '}
-                <Text style={typographyStyles.linkText} onPress={() => {
-                  // TODO: Navigate to Privacy Policy when added to Auth stack
-                  Toast.show({ type: 'info', text1: 'Privacy Policy', text2: 'Full privacy policy available in Settings after registration.' });
-                }}>
+                <Text
+                  style={typographyStyles.linkText}
+                  onPress={() => {
+                    // TODO: Navigate to Privacy Policy when added to Auth stack
+                    Toast.show({
+                      type: 'info',
+                      text1: 'Privacy Policy',
+                      text2: 'Full privacy policy available in Settings after registration.',
+                    });
+                  }}
+                >
                   Privacy Policy
                 </Text>
               </Text>
@@ -449,17 +465,10 @@ export const RegisterScreen: React.FC = () => {
                 </Text>
               </View>
             ) : (
-              <TouchableOpacity
-                onPress={signInWithGoogle}
-                disabled={loading}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity onPress={signInWithGoogle} disabled={loading} activeOpacity={0.8}>
                 <Image
                   source={require('../../../assets/images/google-icon.png')}
-                  style={[
-                    authFeatureStyles.googleButtonImage,
-                    loading && { opacity: 0.5 },
-                  ]}
+                  style={[authFeatureStyles.googleButtonImage, loading && { opacity: 0.5 }]}
                   resizeMode="contain"
                 />
               </TouchableOpacity>

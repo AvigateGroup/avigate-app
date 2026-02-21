@@ -27,12 +27,14 @@ export const NetworkProvider: React.FC<{ children: ReactNode }> = ({ children })
       setIsInternetReachable(state.isInternetReachable);
     });
 
-    NetInfo.fetch().then((state) => {
-      setIsConnected(state.isConnected ?? true);
-      setIsInternetReachable(state.isInternetReachable);
-    }).catch(() => {
-      // Assume connected if initial check fails
-    });
+    NetInfo.fetch()
+      .then(state => {
+        setIsConnected(state.isConnected ?? true);
+        setIsInternetReachable(state.isInternetReachable);
+      })
+      .catch(() => {
+        // Assume connected if initial check fails
+      });
 
     return () => unsubscribe();
   }, []);

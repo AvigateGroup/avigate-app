@@ -222,7 +222,8 @@ export const useFirebaseGoogleAuth = () => {
           Toast.show({
             type: 'error',
             text1: 'Account Already Exists',
-            text2: 'This email is already registered with different credentials. Please sign in with email instead.',
+            text2:
+              'This email is already registered with different credentials. Please sign in with email instead.',
             visibilityTime: 5000,
           });
           return;
@@ -288,7 +289,8 @@ export const useFirebaseGoogleAuth = () => {
         Toast.show({
           type: 'error',
           text1: 'Configuration Error',
-          text2: 'Google Sign-In is not properly configured for this build. This usually means the SHA-1 certificate is not registered in Firebase Console.',
+          text2:
+            'Google Sign-In is not properly configured for this build. This usually means the SHA-1 certificate is not registered in Firebase Console.',
           visibilityTime: 8000,
         });
         return;

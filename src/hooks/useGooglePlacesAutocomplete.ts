@@ -6,7 +6,7 @@ import { GOOGLE_MAPS_CONFIG } from '@/constants/config';
 // Simple debounce function
 function debounce<T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number,
 ): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | null = null;
   return (...args: Parameters<T>) => {
@@ -38,7 +38,10 @@ export const useGooglePlacesAutocomplete = () => {
   /**
    * Search for places using Google Places Autocomplete API
    */
-  const searchPlaces = async (input: string, location?: { latitude: number; longitude: number }) => {
+  const searchPlaces = async (
+    input: string,
+    location?: { latitude: number; longitude: number },
+  ) => {
     if (!input || input.trim().length === 0) {
       setPredictions([]);
       return;

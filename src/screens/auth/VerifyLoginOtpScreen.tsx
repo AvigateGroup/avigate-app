@@ -184,10 +184,7 @@ export const VerifyLoginOTPScreen: React.FC = () => {
         </View>
 
         {/* Back to Login */}
-        <TouchableOpacity
-          onPress={() => router.back()}
-          style={authFeatureStyles.backLink}
-        >
+        <TouchableOpacity onPress={() => router.back()} style={authFeatureStyles.backLink}>
           <Text style={[authFeatureStyles.backLinkText, { color: colors.primary }]}>
             Change Email
           </Text>

@@ -719,7 +719,9 @@ export const PrivacyPolicyScreen: React.FC = () => {
           verification, security alerts, policy changes, and critical safety notifications).
         </Text>
 
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{"10. Children's Privacy"}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>
+          {"10. Children's Privacy"}
+        </Text>
         <Text style={[styles.text, { color: colors.text }]}>
           Avigate is not intended for children under 13 years of age. We do not knowingly collect
           personal information from children under 13. If we discover that we have collected
@@ -802,7 +804,7 @@ export const PrivacyPolicyScreen: React.FC = () => {
       </ScrollView>
     </SafeAreaView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -43,7 +43,7 @@ export default function Notifications() {
       if (refresh) {
         setNotifications(newNotifications);
       } else {
-        setNotifications((prev) => [...(prev || []), ...newNotifications]);
+        setNotifications(prev => [...(prev || []), ...newNotifications]);
       }
       setHasMore(result.data.page < result.data.totalPages);
       if (!refresh) {
@@ -66,7 +66,7 @@ export default function Notifications() {
   const handleMarkAllAsRead = async () => {
     const result = await markAllAsRead();
     if (result.success) {
-      setNotifications((prev) => (prev || []).map((n) => ({ ...n, isRead: true })));
+      setNotifications(prev => (prev || []).map(n => ({ ...n, isRead: true })));
     }
   };
 
@@ -74,8 +74,8 @@ export default function Notifications() {
     // Mark as read if not already
     if (!notification.isRead) {
       await markAsRead(notification.id, true);
-      setNotifications((prev) =>
-        (prev || []).map((n) => (n.id === notification.id ? { ...n, isRead: true } : n)),
+      setNotifications(prev =>
+        (prev || []).map(n => (n.id === notification.id ? { ...n, isRead: true } : n)),
       );
     }
 
@@ -92,7 +92,7 @@ export default function Notifications() {
       async () => {
         const result = await deleteNotification(notificationId);
         if (result.success) {
-          setNotifications((prev) => (prev || []).filter((n) => n.id !== notificationId));
+          setNotifications(prev => (prev || []).filter(n => n.id !== notificationId));
         }
       },
     );
@@ -146,7 +146,7 @@ export default function Notifications() {
     }
   };
 
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const unreadCount = notifications.filter(n => !n.isRead).length;
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -167,7 +167,11 @@ export default function Notifications() {
       <ScrollView
         style={styles.content}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.primary}
+          />
         }
       >
         {isLoading && notifications.length === 0 ? (
@@ -184,7 +188,7 @@ export default function Notifications() {
           </View>
         ) : (
           <View style={styles.notificationsList}>
-            {notifications.map((notification) => (
+            {notifications.map(notification => (
               <TouchableOpacity
                 key={notification.id}
                 style={[
@@ -221,7 +225,10 @@ export default function Notifications() {
                     </Text>
                     {!notification.isRead && <View style={styles.unreadDot} />}
                   </View>
-                  <Text style={[styles.notificationBody, { color: colors.textMuted }]} numberOfLines={2}>
+                  <Text
+                    style={[styles.notificationBody, { color: colors.textMuted }]}
+                    numberOfLines={2}
+                  >
                     {notification.body}
                   </Text>
                   <Text style={[styles.notificationTime, { color: colors.textMuted }]}>

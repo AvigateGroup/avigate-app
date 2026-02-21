@@ -209,7 +209,11 @@ export const ShareLocationScreen = () => {
       // This could open a web view with print dialog or share as PDF
       Toast.show({ type: 'success', text1: 'Print', text2: 'QR code prepared for printing' });
     } catch (error) {
-      Toast.show({ type: 'error', text1: 'Error', text2: 'Failed to prepare QR code for printing' });
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to prepare QR code for printing',
+      });
     }
   };
 

@@ -386,7 +386,11 @@ export const CommunityFeedScreen = () => {
           style={communityStyles.actionButton}
           onPress={e => {
             e.stopPropagation();
-            Toast.show({ type: 'info', text1: 'Coming Soon', text2: 'Share functionality coming soon' });
+            Toast.show({
+              type: 'info',
+              text1: 'Coming Soon',
+              text2: 'Share functionality coming soon',
+            });
           }}
         >
           <Icon name="share-outline" size={20} color={colors.textMuted} />
@@ -504,7 +508,9 @@ export const CommunityFeedScreen = () => {
             !isLoading ? (
               <View style={communityStyles.emptyState}>
                 <Icon name="chatbubbles-outline" size={64} color={colors.textMuted} />
-                <Text style={[communityStyles.emptyText, { color: colors.text }]}>No posts yet</Text>
+                <Text style={[communityStyles.emptyText, { color: colors.text }]}>
+                  No posts yet
+                </Text>
                 <Text style={[communityStyles.emptySubtext, { color: colors.textMuted }]}>
                   Be the first to share an update!
                 </Text>
