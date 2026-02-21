@@ -9,10 +9,12 @@ import {
   Image,
   TextInput,
   ActivityIndicator,
+  RefreshControl,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Toast from 'react-native-toast-message';
@@ -113,8 +115,17 @@ export const CommunityPostDetailScreen = () => {
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    await loadPostData();
-    setRefreshing(false);
+    try {
+      await loadPostData();
+    } catch {
+      Toast.show({
+        type: 'error',
+        text1: 'Refresh Failed',
+        text2: 'Could not reload post. Please try again.',
+      });
+    } finally {
+      setRefreshing(false);
+    }
   };
 
   const handleVote = async (voteType: 'up' | 'down') => {
@@ -457,7 +468,14 @@ export const CommunityPostDetailScreen = () => {
         <ScrollView
           style={communityStyles.detailContainer}
           showsVerticalScrollIndicator={false}
-          refreshControl={<ActivityIndicator animating={refreshing} color={colors.primary} />}
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={handleRefresh}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
         >
           {/* Post Content */}
           <View style={[communityStyles.postDetailCard, { backgroundColor: colors.white }]}>
