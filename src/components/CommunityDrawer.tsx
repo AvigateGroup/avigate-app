@@ -11,6 +11,7 @@ import {
   Dimensions,
   Platform,
   ScrollView,
+  Image,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useThemedColors } from '@/hooks/useThemedColors';
@@ -138,9 +139,17 @@ export const CommunityDrawer: React.FC<CommunityDrawerProps> = ({ visible, onClo
 
             {/* User Info */}
             <View style={styles.userSection}>
-              <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
-                <Icon name="person" size={32} color={colors.white} />
-              </View>
+              {user?.profilePicture ? (
+                <Image
+                  source={{ uri: user.profilePicture }}
+                  style={styles.avatar}
+                  resizeMode="cover"
+                />
+              ) : (
+                <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+                  <Icon name="person" size={32} color={colors.white} />
+                </View>
+              )}
               <View style={styles.userInfo}>
                 <Text style={[styles.userName, { color: colors.text }]}>
                   {user?.firstName} {user?.lastName}

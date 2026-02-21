@@ -74,7 +74,7 @@ export const HomeScreenSkeleton: React.FC = () => {
         </View>
 
         {/* Popular destinations */}
-        <LoadingSkeleton width="50%" height={16} borderRadius={4} style={{ marginBottom: 12 }} />
+        <LoadingSkeleton width="50%" height={16} borderRadius={4} style={{ marginBottom: 0 }} />
         {[1, 2, 3].map((i) => (
           <View key={i} style={skeletonStyles.recentRow}>
             <LoadingSkeleton width={40} height={40} borderRadius={20} style={{ marginRight: 12 }} />
@@ -87,13 +87,13 @@ export const HomeScreenSkeleton: React.FC = () => {
         ))}
 
         {/* Community updates header */}
-        <View style={[skeletonStyles.statsRow, { marginTop: 20, marginBottom: 12 }]}>
+        <View style={[skeletonStyles.statsRow, { marginTop: 24, marginBottom: 12 }]}>
           <LoadingSkeleton width="50%" height={16} borderRadius={4} />
           <LoadingSkeleton width={50} height={14} borderRadius={4} />
         </View>
 
         {/* Post cards */}
-        {[1, 2].map((i) => (
+        {[1, 2, 3].map((i) => (
           <View key={i} style={[skeletonStyles.drawerPostCard, { backgroundColor: '#F9FAFB', borderColor: '#E5E7EB' }]}>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 8 }}>
               <LoadingSkeleton width={36} height={36} borderRadius={18} style={{ marginRight: 10 }} />
@@ -103,7 +103,11 @@ export const HomeScreenSkeleton: React.FC = () => {
               </View>
             </View>
             <LoadingSkeleton width="90%" height={13} borderRadius={4} style={{ marginBottom: 4 }} />
-            <LoadingSkeleton width="60%" height={13} borderRadius={4} />
+            <LoadingSkeleton width="60%" height={13} borderRadius={4} style={{ marginBottom: 8 }} />
+            <View style={{ flexDirection: 'row', gap: 16 }}>
+              <LoadingSkeleton width={32} height={12} borderRadius={4} />
+              <LoadingSkeleton width={32} height={12} borderRadius={4} />
+            </View>
           </View>
         ))}
       </View>
