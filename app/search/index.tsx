@@ -89,18 +89,13 @@ export default function SearchDestination() {
         }));
 
         setDestinations(popularDestinations);
-      } else {
-        console.error('Failed to load destinations:', result.error);
-        dialog.showError(
-          'Error',
-          'Unable to load destinations. Please check your internet connection and try again.',
-        );
       }
+      // No popular routes yet — leave destinations empty, show empty state
     } catch (error) {
       console.error('Error loading destinations:', error);
       dialog.showError(
         'Error',
-        'Unable to load destinations. Please check your internet connection and try again.',
+        'Unable to reach the server. Please check your internet connection and try again.',
       );
     } finally {
       setLoading(false);

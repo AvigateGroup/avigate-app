@@ -185,11 +185,7 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({ childr
                 (button, i) => (
                   <TouchableOpacity
                     key={i}
-                    style={[
-                      styles.button,
-                      getButtonStyle(button.style),
-                      config?.buttons && config.buttons.length > 1 && { flex: 1 },
-                    ]}
+                    style={[styles.button, getButtonStyle(button.style), { flex: 1 }]}
                     onPress={() => handleButtonPress(button)}
                     activeOpacity={0.8}
                   >
