@@ -178,6 +178,12 @@ function RootLayoutNav() {
       Notifications.getLastNotificationResponseAsync()
         .then(response => {
           if (response && isMounted) {
+            // Ignore stale responses from previous sessions.
+            // notification.date is in ms on Android, seconds on iOS.
+            const raw = response.notification.date;
+            const notificationMs = raw > 1e10 ? raw : raw * 1000;
+            if (Date.now() - notificationMs > 30_000) return;
+
             const data = response.notification.request.content.data;
             if (data?.actionUrl && typeof data.actionUrl === 'string') {
               router.push(data.actionUrl as any);
