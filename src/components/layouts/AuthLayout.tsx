@@ -1,13 +1,7 @@
 // src/components/layouts/AuthLayout.tsx
 import React, { ReactNode } from 'react';
-import {
-  View,
-  StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  SafeAreaView,
-  Image,
-} from 'react-native';
+import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useThemedColors } from '@/hooks/useThemedColors';
 import { SPACING, getLogoSize } from '@/utils/responsive';
 
@@ -27,7 +21,12 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = tru
         style={styles.container}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        <View style={styles.content}>
+        <ScrollView
+          style={styles.scrollView}
+          contentContainerStyle={[styles.content, { backgroundColor: colors.background }]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           {showLogo && (
             <View style={styles.logoContainer}>
               <Image
@@ -38,7 +37,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = tru
             </View>
           )}
           <View style={styles.formContent}>{children}</View>
-        </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -47,13 +46,15 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, showLogo = tru
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    // backgroundColor removed - now dynamic
   },
   container: {
     flex: 1,
   },
-  content: {
+  scrollView: {
     flex: 1,
+  },
+  content: {
+    flexGrow: 1,
     paddingHorizontal: SPACING.xl,
   },
   logoContainer: {

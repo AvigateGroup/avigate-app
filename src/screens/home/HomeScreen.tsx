@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { View, Text, TouchableOpacity, Platform } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import * as Location from 'expo-location';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useAuth } from '@/store/AuthContext';
@@ -236,6 +236,7 @@ export const HomeScreen = () => {
       {location && (
         <MapView
           ref={mapRef}
+          provider={PROVIDER_GOOGLE}
           style={homeFeatureStyles.map}
           initialRegion={location}
           showsUserLocation

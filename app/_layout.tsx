@@ -133,13 +133,12 @@ function RootLayoutNav() {
       return;
     }
 
-    // User is authenticated, has phone, but in auth screens or onboarding (not in public routes or phone verification)
+    // User is authenticated, has phone, but in auth screens or onboarding (not in public routes)
     if (
       isAuthenticated &&
       user?.phoneNumberCaptured &&
       (inAuthGroup || inOnboarding) &&
-      !isPublicRoute &&
-      !inPhoneVerification
+      !isPublicRoute
     ) {
       setIsNavigating(true);
       router.replace('/(tabs)');
